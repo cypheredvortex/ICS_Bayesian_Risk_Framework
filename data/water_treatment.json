@@ -1,0 +1,75 @@
+{
+  "assets": {
+    "vendor_remote_access": {
+      "kind": "human",
+      "role": "guest",
+      "awareness": 0.2,
+      "privilege": "elevated",
+      "consequence_severity": 2
+    },
+    "operator": {
+      "kind": "human",
+      "role": "operator",
+      "awareness": 0.5,
+      "privilege": "standard"
+    },
+
+    "engineering_workstation": {
+      "kind": "device",
+      "cvss_type": 8.5,
+      "exposed": true,
+      "patched": false,
+      "consequence_severity": 6
+    },
+    "scada_server": {
+      "kind": "device",
+      "cvss_type": 7.0,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 7
+    },
+    "plc_dosing": {
+      "kind": "device",
+      "cvss_type": 8.0,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 9,
+      "scope": 5
+    },
+    "chlorine_pump": {
+      "kind": "device",
+      "cvss_type": 4.0,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 8,
+      "scope": 4
+    },
+
+    "water_supply": {
+      "kind": "physical",
+      "p_base_override": 0.01,
+      "consequence_severity": 10,
+      "scope": 5
+    },
+
+    "historian": {
+      "kind": "device",
+      "cvss_type": 5.5,
+      "exposed": true,
+      "patched": true,
+      "consequence_severity": 4
+    }
+  },
+
+  "relationships": [
+    ["vendor_remote_access", "engineering_workstation", "connects-to", false],
+    ["engineering_workstation", "scada_server", "controls", false],
+    ["operator", "scada_server", "controls", false],
+
+    ["scada_server", "plc_dosing", "programs / operates", true],
+    ["plc_dosing", "chlorine_pump", "actuates", false],
+    ["chlorine_pump", "water_supply", "actuates", false],
+
+    ["scada_server", "historian", "monitors", false]
+  ]
+}

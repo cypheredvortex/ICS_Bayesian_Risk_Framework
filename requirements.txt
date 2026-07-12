@@ -1,0 +1,4 @@
+pgmpy>=1.0
+pandas>=2.0
+matplotlib>=3.8
+networkx>=3.0

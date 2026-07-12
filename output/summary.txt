@@ -1,0 +1,22 @@
+ICS Risk Pipeline -- Run Summary
+========================================
+Topology file : data/building_automation.json
+Assets        : 6
+Relationships : 5
+Evidence used : {'cloud_bms_portal': 1}
+
+Top 5 assets by risk:
+----------------------------------------
+  hvac_controller          risk=5.872  P(compromised)=0.816  severity=6
+  fire_suppression_controller risk=5.564  P(compromised)=0.442  severity=9
+  building_mgmt_system     risk=4.896  P(compromised)=0.979  severity=5
+  building_climate         risk=4.239  P(compromised)=0.505  severity=7
+  facility_manager         risk=0.000  P(compromised)=0.245  severity=0
+
+Files written this run:
+  output/graph.json        - node list + edges + weights
+  output/graph.png         - visual diagram of the topology
+  output/cpts.json         - full CPT for every node
+  output/posteriors.json   - evidence used + posterior per node
+  output/risk_table.csv    - final ranked risk table
+  output/summary.txt       - this file

@@ -1,0 +1,70 @@
+{
+  "assets": {
+    "protection_engineer": {
+      "kind": "human",
+      "role": "engineer",
+      "awareness": 0.7,
+      "privilege": "admin"
+    },
+    "utility_scada": {
+      "kind": "device",
+      "cvss_type": 6.5,
+      "exposed": true,
+      "patched": true,
+      "consequence_severity": 6
+    },
+    "substation_lan": {
+      "kind": "device",
+      "cvss_type": 5.0,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 3
+    },
+
+    "rtu_primary": {
+      "kind": "device",
+      "cvss_type": 8.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 8,
+      "scope": 4
+    },
+    "rtu_backup": {
+      "kind": "device",
+      "cvss_type": 8.5,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 8,
+      "scope": 4
+    },
+
+    "ied_relay": {
+      "kind": "device",
+      "cvss_type": 7.0,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 9,
+      "scope": 5
+    },
+
+    "circuit_breaker": {
+      "kind": "physical",
+      "p_base_override": 0.01,
+      "consequence_severity": 10,
+      "scope": 5
+    }
+  },
+
+  "relationships": [
+    ["protection_engineer", "utility_scada", "controls", false],
+    ["utility_scada", "substation_lan", "connects-to", false],
+
+    ["substation_lan", "rtu_primary", "programs / operates", true],
+    ["substation_lan", "rtu_backup", "programs / operates", true],
+
+    ["rtu_primary", "ied_relay", "actuates", false],
+    ["rtu_backup", "ied_relay", "actuates", false],
+
+    ["ied_relay", "circuit_breaker", "actuates", false]
+  ]
+}

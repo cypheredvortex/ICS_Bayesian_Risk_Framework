@@ -1,0 +1,6 @@
+asset,P(compromised|evidence),severity,scope_mult,risk
+hvac_controller,0.816,6,1.2,5.872
+fire_suppression_controller,0.442,9,1.4,5.564
+building_mgmt_system,0.979,5,1.0,4.896
+building_climate,0.505,7,1.2,4.239
+facility_manager,0.245,0,1.0,0.0

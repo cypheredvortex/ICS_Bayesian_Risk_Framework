@@ -1,0 +1,58 @@
+{
+  "assets": {
+    "facility_manager": {
+      "kind": "human",
+      "role": "operator",
+      "awareness": 0.3,
+      "privilege": "standard"
+    },
+
+    "cloud_bms_portal": {
+      "kind": "device",
+      "cvss_type": 6.0,
+      "exposed": true,
+      "patched": true,
+      "consequence_severity": 3
+    },
+    "building_mgmt_system": {
+      "kind": "device",
+      "cvss_type": 6.5,
+      "exposed": true,
+      "patched": false,
+      "consequence_severity": 5
+    },
+    "hvac_controller": {
+      "kind": "device",
+      "cvss_type": 5.5,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 6,
+      "scope": 3
+    },
+    "fire_suppression_controller": {
+      "kind": "device",
+      "cvss_type": 7.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 9,
+      "scope": 5
+    },
+
+    "building_climate": {
+      "kind": "physical",
+      "p_base_override": 0.03,
+      "consequence_severity": 7,
+      "scope": 3
+    }
+  },
+
+  "relationships": [
+    ["cloud_bms_portal", "building_mgmt_system", "connects-to", false],
+    ["facility_manager", "building_mgmt_system", "controls", false],
+
+    ["building_mgmt_system", "hvac_controller", "programs / operates", false],
+    ["building_mgmt_system", "fire_suppression_controller", "programs / operates", true],
+
+    ["hvac_controller", "building_climate", "actuates", false]
+  ]
+}

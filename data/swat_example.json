@@ -1,0 +1,105 @@
+{
+  "assets": {
+    "operators": {
+      "kind": "human",
+      "role": "operator",
+      "awareness": 0.4,
+      "privilege": "standard"
+    },
+    "automation_engineers": {
+      "kind": "human",
+      "role": "engineer",
+      "awareness": 0.6,
+      "privilege": "elevated"
+    },
+
+    "local_hmi": {
+      "kind": "device",
+      "cvss_type": 7.5,
+      "exposed": true,
+      "patched": false,
+      "consequence_severity": 5
+    },
+    "scada": {
+      "kind": "device",
+      "cvss_type": 8.0,
+      "exposed": true,
+      "patched": true,
+      "consequence_severity": 7
+    },
+    "industrial_network": {
+      "kind": "device",
+      "cvss_type": 6.0,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 4
+    },
+    "plc_1": {
+      "kind": "device",
+      "cvss_type": 9.0,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 9,
+      "scope": 4
+    },
+    "plc_2": {
+      "kind": "device",
+      "cvss_type": 9.0,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 9,
+      "scope": 4
+    },
+    "sensors_actuators_1": {
+      "kind": "device",
+      "cvss_type": 5.0,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 8,
+      "scope": 4
+    },
+    "sensors_actuators_2": {
+      "kind": "device",
+      "cvss_type": 5.0,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 8,
+      "scope": 4
+    },
+
+    "physical_process": {
+      "kind": "physical",
+      "p_base_override": 0.02,
+      "consequence_severity": 10,
+      "scope": 5
+    },
+
+    "historian": {
+      "kind": "device",
+      "cvss_type": 6.5,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 5
+    }
+  },
+
+  "relationships": [
+    ["operators", "local_hmi", "controls", false],
+    ["operators", "scada", "controls", false],
+
+    ["local_hmi", "industrial_network", "connects-to", false],
+    ["scada", "industrial_network", "connects-to", false],
+
+    ["industrial_network", "plc_1", "programs / operates", true],
+    ["industrial_network", "plc_2", "programs / operates", true],
+
+    ["plc_1", "sensors_actuators_1", "actuates", false],
+    ["plc_2", "sensors_actuators_2", "actuates", false],
+
+    ["sensors_actuators_1", "physical_process", "actuates", false],
+    ["sensors_actuators_2", "physical_process", "actuates", false],
+
+    ["physical_process", "historian", "monitors", false],
+    ["historian", "automation_engineers", "monitors", false]
+  ]
+}

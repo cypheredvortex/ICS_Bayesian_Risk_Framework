@@ -1,0 +1,47 @@
+{
+  "nodes": [
+    "cloud_bms_portal",
+    "building_mgmt_system",
+    "facility_manager",
+    "hvac_controller",
+    "fire_suppression_controller",
+    "building_climate"
+  ],
+  "edges": [
+    {
+      "source": "cloud_bms_portal",
+      "target": "building_mgmt_system",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.5
+    },
+    {
+      "source": "facility_manager",
+      "target": "building_mgmt_system",
+      "rel_type": "controls",
+      "firewalled": false,
+      "weight": 0.7
+    },
+    {
+      "source": "building_mgmt_system",
+      "target": "hvac_controller",
+      "rel_type": "programs / operates",
+      "firewalled": false,
+      "weight": 0.8
+    },
+    {
+      "source": "building_mgmt_system",
+      "target": "fire_suppression_controller",
+      "rel_type": "programs / operates",
+      "firewalled": true,
+      "weight": 0.24
+    },
+    {
+      "source": "hvac_controller",
+      "target": "building_climate",
+      "rel_type": "actuates",
+      "firewalled": false,
+      "weight": 0.6
+    }
+  ]
+}

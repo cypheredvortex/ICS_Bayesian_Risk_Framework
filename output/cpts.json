@@ -1,0 +1,113 @@
+{
+  "cloud_bms_portal": {
+    "parents": [],
+    "rows": [
+      {
+        "parent_state": {},
+        "p_compromised": 0.702
+      }
+    ]
+  },
+  "building_mgmt_system": {
+    "parents": [
+      "cloud_bms_portal",
+      "facility_manager"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "cloud_bms_portal": 0,
+          "facility_manager": 0
+        },
+        "p_compromised": 0.95
+      },
+      {
+        "parent_state": {
+          "cloud_bms_portal": 0,
+          "facility_manager": 1
+        },
+        "p_compromised": 0.985
+      },
+      {
+        "parent_state": {
+          "cloud_bms_portal": 1,
+          "facility_manager": 0
+        },
+        "p_compromised": 0.975
+      },
+      {
+        "parent_state": {
+          "cloud_bms_portal": 1,
+          "facility_manager": 1
+        },
+        "p_compromised": 0.9925
+      }
+    ]
+  },
+  "facility_manager": {
+    "parents": [],
+    "rows": [
+      {
+        "parent_state": {},
+        "p_compromised": 0.245
+      }
+    ]
+  },
+  "hvac_controller": {
+    "parents": [
+      "building_mgmt_system"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "building_mgmt_system": 0
+        },
+        "p_compromised": 0.1485
+      },
+      {
+        "parent_state": {
+          "building_mgmt_system": 1
+        },
+        "p_compromised": 0.8297
+      }
+    ]
+  },
+  "fire_suppression_controller": {
+    "parents": [
+      "building_mgmt_system"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "building_mgmt_system": 0
+        },
+        "p_compromised": 0.27
+      },
+      {
+        "parent_state": {
+          "building_mgmt_system": 1
+        },
+        "p_compromised": 0.4452
+      }
+    ]
+  },
+  "building_climate": {
+    "parents": [
+      "hvac_controller"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "hvac_controller": 0
+        },
+        "p_compromised": 0.03
+      },
+      {
+        "parent_state": {
+          "hvac_controller": 1
+        },
+        "p_compromised": 0.612
+      }
+    ]
+  }
+}
