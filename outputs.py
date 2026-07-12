@@ -91,6 +91,14 @@ def write_posteriors_json(posteriors: dict, evidence: dict, path="output/posteri
     return path
 
 
+def write_metrics_json(metrics: dict, path="output/metrics.json") -> Path:
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w") as f:
+        json.dump(metrics, f, indent=2)
+    return path
+
+
 def write_summary_txt(
     topology_path: str,
     evidence: dict,

@@ -4,7 +4,7 @@ from pathlib import Path
 
 from assets import load_topology
 from graph_builder import build_graph_skeleton
-from outputs import write_graph_image
+from outputs import write_graph_image, write_metrics_json
 
 
 class OutputsTests(unittest.TestCase):
@@ -18,6 +18,14 @@ class OutputsTests(unittest.TestCase):
 
             self.assertTrue(written.exists())
             self.assertEqual(written.suffix, ".png")
+
+    def test_write_metrics_json_creates_json_file(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            out_path = Path(tmpdir) / "metrics.json"
+            written = write_metrics_json({"runtime_seconds": 0.123, "asset_count": 3}, path=out_path)
+
+            self.assertTrue(written.exists())
+            self.assertEqual(written.suffix, ".json")
 
 
 if __name__ == "__main__":

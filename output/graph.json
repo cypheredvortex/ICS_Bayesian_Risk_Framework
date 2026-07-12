@@ -1,47 +1,63 @@
 {
   "nodes": [
-    "cloud_bms_portal",
-    "building_mgmt_system",
-    "facility_manager",
-    "hvac_controller",
-    "fire_suppression_controller",
-    "building_climate"
+    "vendor_remote_access",
+    "engineering_workstation",
+    "scada_server",
+    "operator",
+    "plc_dosing",
+    "chlorine_pump",
+    "water_supply",
+    "historian"
   ],
   "edges": [
     {
-      "source": "cloud_bms_portal",
-      "target": "building_mgmt_system",
+      "source": "vendor_remote_access",
+      "target": "engineering_workstation",
       "rel_type": "connects-to",
       "firewalled": false,
       "weight": 0.5
     },
     {
-      "source": "facility_manager",
-      "target": "building_mgmt_system",
+      "source": "engineering_workstation",
+      "target": "scada_server",
       "rel_type": "controls",
       "firewalled": false,
       "weight": 0.7
     },
     {
-      "source": "building_mgmt_system",
-      "target": "hvac_controller",
-      "rel_type": "programs / operates",
+      "source": "operator",
+      "target": "scada_server",
+      "rel_type": "controls",
       "firewalled": false,
-      "weight": 0.8
+      "weight": 0.7
     },
     {
-      "source": "building_mgmt_system",
-      "target": "fire_suppression_controller",
+      "source": "scada_server",
+      "target": "plc_dosing",
       "rel_type": "programs / operates",
       "firewalled": true,
       "weight": 0.24
     },
     {
-      "source": "hvac_controller",
-      "target": "building_climate",
+      "source": "plc_dosing",
+      "target": "chlorine_pump",
       "rel_type": "actuates",
       "firewalled": false,
       "weight": 0.6
+    },
+    {
+      "source": "chlorine_pump",
+      "target": "water_supply",
+      "rel_type": "actuates",
+      "firewalled": false,
+      "weight": 0.6
+    },
+    {
+      "source": "scada_server",
+      "target": "historian",
+      "rel_type": "monitors",
+      "firewalled": false,
+      "weight": 0.2
     }
   ]
 }
