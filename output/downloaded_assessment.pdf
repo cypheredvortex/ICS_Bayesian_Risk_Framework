@@ -1,0 +1,53 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 71 >>
+stream
+BT /F1 12 Tf 50 770 Td (ICS Bayesian Risk Assessment Report
+======================================
+ICS Risk Pipeline -- Run Summary
+========================================
+Topology file : data/swat_example.json
+Assets        : 11
+Relationships : 12
+Evidence used : {'operators': 1}
+
+Top 5 assets by risk:
+----------------------------------------
+  scada                    risk=6.866  P\(compromised\)=0.981  severity=7
+  physical_process         risk=5.233  P\(compromised\)=0.374  severity=10
+  local_hmi                risk=4.925  P\(compromised\)=0.985  severity=5
+  plc_1                    risk=4.508  P\(compromised\)=0.385  severity=9
+  plc_2                    risk=4.508  P\(compromised\)=0.385  se
+Asset count: 11
+Relationship count: 12
+Risk row count: 10
+Posterior probabilities:
+- evidence: {'operators': 1}
+- posteriors: {'local_hmi': 0.985, 'scada': 0.9808, 'industrial_network': 0.783275, 'plc_1': 0.385305, 'plc_2': 0.385305, 'sensors_actuators_1': 0.334973, 'sensors_actuators_2': 0.334973, 'physical_process': 0.37381, 'historian': 0.237141, 'automation_engineers': 0.146496}) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000001393 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1463
+%%EOF

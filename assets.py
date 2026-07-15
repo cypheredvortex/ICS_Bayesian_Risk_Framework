@@ -25,19 +25,26 @@ REQUIRED_HUMAN_KEYS = {"role", "awareness", "privilege"}
 REQUIRED_PHYSICAL_KEYS: set = set()  # p_base_override is optional, defaults to 0.0
 
 
-def load_topology(path: str | Path) -> tuple[dict, list]:
+def load_topology(path: str | Path | dict) -> tuple[dict, list]:
     """
-    Load and validate assets + relationships from a JSON file.
+    Load and validate assets + relationships from either a JSON file path or
+    an in-memory topology dictionary.
+
     Returns (assets, relationships) in the same shape phase2-5 expect.
     Raises ValueError with a specific message on malformed input, rather
     than failing silently deep in Phase 3.
     """
-    path = Path(path)
-    with open(path) as f:
-        raw = json.load(f)
+    if isinstance(path, dict):
+        raw = path
+        source_label = "inline topology"
+    else:
+        path = Path(path)
+        with open(path) as f:
+            raw = json.load(f)
+        source_label = str(path)
 
     if "assets" not in raw or "relationships" not in raw:
-        raise ValueError(f"{path}: JSON must contain 'assets' and 'relationships' keys")
+        raise ValueError(f"{source_label}: JSON must contain 'assets' and 'relationships' keys")
 
     assets = raw["assets"]
     relationships = [tuple(r) for r in raw["relationships"]]
