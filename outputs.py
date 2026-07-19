@@ -16,6 +16,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import networkx as nx
 
+from attack_paths import _unpack_relationship
 from graph_builder import graph_to_dict
 from cpt_generator import cpts_to_dict
 
@@ -36,7 +37,8 @@ def write_graph_image(model, edge_weights, relationships, path="output/graph.png
     graph = nx.DiGraph()
     graph.add_nodes_from(model.nodes())
 
-    for source, target, rel_type, firewalled in relationships:
+    for rel in relationships:
+        source, target, rel_type, firewalled = _unpack_relationship(rel)[:4]
         graph.add_edge(source, target, rel_type=rel_type, firewalled=firewalled)
 
     pos = nx.spring_layout(graph, seed=7)
@@ -57,7 +59,8 @@ def write_graph_image(model, edge_weights, relationships, path="output/graph.png
         pos,
         edge_labels={
             (s, t): f"{rel_type}\n{edge_weights[(s, t)]:.2f}"
-            for s, t, rel_type, _ in relationships
+            for rel in relationships
+            for s, t, rel_type, _fw, _meta in [_unpack_relationship(rel)]
         },
         font_size=7,
         ax=ax,

@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any
 
 from assets import load_topology
+from attack_paths import compute_attack_paths
 from graph_builder import build_graph_skeleton, graph_to_dict
 from probability import compute_base_probs
 from cpt_generator import parameterize
@@ -60,7 +61,14 @@ def run(topology: str | Path | dict, evidence: dict | None = None, output_dir: s
     risk_table = build_risk_table(posteriors, assets)
     inference_time_seconds = time.perf_counter() - inference_start
 
-    graph = graph_to_dict(model, edge_weights, relationships)
+    graph = graph_to_dict(model, edge_weights, relationships, assets=assets)
+    attack_paths = compute_attack_paths(
+        relationships,
+        edge_weights,
+        evidence_used,
+        risk_table.to_dict(orient="records"),
+        assets,
+    )
     total_risk = round(float(risk_table["risk"].sum()), 6) if not risk_table.empty else 0.0
     risk_level = _derive_risk_level(total_risk)
 
@@ -72,7 +80,7 @@ def run(topology: str | Path | dict, evidence: dict | None = None, output_dir: s
         "graph": graph,
         "posteriors": posteriors,
         "risk_scores": risk_table.to_dict(orient="records"),
-        "attack_paths": [],
+        "attack_paths": attack_paths,
         "evidence_used": evidence_used,
         "risk_table": risk_table,
         "timings": {
@@ -88,6 +96,7 @@ def run(topology: str | Path | dict, evidence: dict | None = None, output_dir: s
             "overall_risk": total_risk,
             "risk_level": risk_level,
             "highest_risk_assets": risk_table.head(5)["asset"].tolist(),
+            "critical_attack_path": attack_paths[0] if attack_paths else None,
         },
     }
 
@@ -121,6 +130,7 @@ def run(topology: str | Path | dict, evidence: dict | None = None, output_dir: s
                 "risk_row_count": len(result["risk_table"]),
                 "evidence_count": len(result["evidence_used"]),
                 "evidence_used": result["evidence_used"],
+                "attack_path_count": len(result["attack_paths"]),
                 "validation": {
                     "success": True,
                     "errors": 0,

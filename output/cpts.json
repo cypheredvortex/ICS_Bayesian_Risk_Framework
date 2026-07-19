@@ -1,234 +1,150 @@
 {
-  "operators": {
+  "vendor_remote_access": {
     "parents": [],
     "rows": [
       {
         "parent_state": {},
-        "p_compromised": 0.21
+        "p_compromised": 0.52
       }
     ]
   },
-  "local_hmi": {
+  "engineering_workstation": {
     "parents": [
-      "operators"
+      "vendor_remote_access"
     ],
     "rows": [
       {
         "parent_state": {
-          "operators": 0
+          "vendor_remote_access": 0
         },
         "p_compromised": 0.95
       },
       {
         "parent_state": {
-          "operators": 1
+          "vendor_remote_access": 1
         },
-        "p_compromised": 0.985
+        "p_compromised": 0.975
       }
     ]
   },
-  "scada": {
+  "scada_server": {
     "parents": [
-      "operators"
+      "engineering_workstation",
+      "operator"
     ],
     "rows": [
       {
         "parent_state": {
-          "operators": 0
+          "engineering_workstation": 0,
+          "operator": 0
         },
-        "p_compromised": 0.936
+        "p_compromised": 0.189
       },
       {
         "parent_state": {
-          "operators": 1
+          "engineering_workstation": 0,
+          "operator": 1
         },
-        "p_compromised": 0.9808
+        "p_compromised": 0.7567
+      },
+      {
+        "parent_state": {
+          "engineering_workstation": 1,
+          "operator": 0
+        },
+        "p_compromised": 0.7567
+      },
+      {
+        "parent_state": {
+          "engineering_workstation": 1,
+          "operator": 1
+        },
+        "p_compromised": 0.92701
       }
     ]
   },
-  "industrial_network": {
+  "operator": {
+    "parents": [],
+    "rows": [
+      {
+        "parent_state": {},
+        "p_compromised": 0.175
+      }
+    ]
+  },
+  "plc_dosing": {
     "parents": [
-      "local_hmi",
-      "scada"
+      "scada_server"
     ],
     "rows": [
       {
         "parent_state": {
-          "local_hmi": 0,
-          "scada": 0
+          "scada_server": 0
         },
-        "p_compromised": 0.162
+        "p_compromised": 0.288
       },
       {
         "parent_state": {
-          "local_hmi": 0,
-          "scada": 1
+          "scada_server": 1
         },
-        "p_compromised": 0.581
-      },
-      {
-        "parent_state": {
-          "local_hmi": 1,
-          "scada": 0
-        },
-        "p_compromised": 0.581
-      },
-      {
-        "parent_state": {
-          "local_hmi": 1,
-          "scada": 1
-        },
-        "p_compromised": 0.7905
+        "p_compromised": 0.45888
       }
     ]
   },
-  "plc_1": {
+  "chlorine_pump": {
     "parents": [
-      "industrial_network"
+      "plc_dosing"
     ],
     "rows": [
       {
         "parent_state": {
-          "industrial_network": 0
+          "plc_dosing": 0
         },
-        "p_compromised": 0.243
+        "p_compromised": 0.108
       },
       {
         "parent_state": {
-          "industrial_network": 1
+          "plc_dosing": 1
         },
-        "p_compromised": 0.42468
+        "p_compromised": 0.6432
       }
     ]
   },
-  "plc_2": {
+  "water_supply": {
     "parents": [
-      "industrial_network"
+      "chlorine_pump"
     ],
     "rows": [
       {
         "parent_state": {
-          "industrial_network": 0
+          "chlorine_pump": 0
         },
-        "p_compromised": 0.243
+        "p_compromised": 0.01
       },
       {
         "parent_state": {
-          "industrial_network": 1
+          "chlorine_pump": 1
         },
-        "p_compromised": 0.42468
-      }
-    ]
-  },
-  "sensors_actuators_1": {
-    "parents": [
-      "plc_1"
-    ],
-    "rows": [
-      {
-        "parent_state": {
-          "plc_1": 0
-        },
-        "p_compromised": 0.135
-      },
-      {
-        "parent_state": {
-          "plc_1": 1
-        },
-        "p_compromised": 0.654
-      }
-    ]
-  },
-  "sensors_actuators_2": {
-    "parents": [
-      "plc_2"
-    ],
-    "rows": [
-      {
-        "parent_state": {
-          "plc_2": 0
-        },
-        "p_compromised": 0.135
-      },
-      {
-        "parent_state": {
-          "plc_2": 1
-        },
-        "p_compromised": 0.654
-      }
-    ]
-  },
-  "physical_process": {
-    "parents": [
-      "sensors_actuators_1",
-      "sensors_actuators_2"
-    ],
-    "rows": [
-      {
-        "parent_state": {
-          "sensors_actuators_1": 0,
-          "sensors_actuators_2": 0
-        },
-        "p_compromised": 0.02
-      },
-      {
-        "parent_state": {
-          "sensors_actuators_1": 0,
-          "sensors_actuators_2": 1
-        },
-        "p_compromised": 0.608
-      },
-      {
-        "parent_state": {
-          "sensors_actuators_1": 1,
-          "sensors_actuators_2": 0
-        },
-        "p_compromised": 0.608
-      },
-      {
-        "parent_state": {
-          "sensors_actuators_1": 1,
-          "sensors_actuators_2": 1
-        },
-        "p_compromised": 0.8432
+        "p_compromised": 0.604
       }
     ]
   },
   "historian": {
     "parents": [
-      "physical_process"
+      "scada_server"
     ],
     "rows": [
       {
         "parent_state": {
-          "physical_process": 0
+          "scada_server": 0
         },
-        "p_compromised": 0.1755
+        "p_compromised": 0.6435
       },
       {
         "parent_state": {
-          "physical_process": 1
+          "scada_server": 1
         },
-        "p_compromised": 0.3404
-      }
-    ]
-  },
-  "automation_engineers": {
-    "parents": [
-      "historian"
-    ],
-    "rows": [
-      {
-        "parent_state": {
-          "historian": 0
-        },
-        "p_compromised": 0.104
-      },
-      {
-        "parent_state": {
-          "historian": 1
-        },
-        "p_compromised": 0.2832
+        "p_compromised": 0.7148
       }
     ]
   }

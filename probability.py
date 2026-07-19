@@ -2,11 +2,19 @@
 probability.py  (PHASE 3A)
 
 Intrinsic base rate per node. Reads only from `assets`, independent of the
-graph -- deliberately kept separate from cpt_generator.py (3B), since this
-step doesn't need to know about parents, edges, or weights at all.
+graph -- deliberately kept separate from cpt_generator.py (3B).
 """
 
-from config import M_EXPOSURE, M_PATCH, R_PHISHING, M_PRIVILEGE, P_BASE_CAP
+from config import (
+    M_EXPOSURE,
+    M_PATCH,
+    M_PRIVILEGE,
+    P_BASE_CAP,
+    R_PHISHING,
+    get_cvss_weight,
+    get_exposure_weight,
+    get_patch_weight,
+)
 
 
 def base_prob(node_id: str, attrs: dict) -> float:
@@ -23,10 +31,10 @@ def base_prob(node_id: str, attrs: dict) -> float:
 
 
 def _device_base_prob(attrs: dict) -> float:
-    m_exposure = M_EXPOSURE[attrs["exposed"]]
-    m_patch = M_PATCH[attrs["patched"]]
-    # cvss_type is on a 0-10 scale; normalize to 0-1 before scaling
-    return (attrs["cvss_type"] / 10.0) * m_exposure * m_patch
+    cvss = float(attrs["cvss_type"])
+    m_exposure = M_EXPOSURE[attrs["exposed"]] ** get_exposure_weight()
+    m_patch = M_PATCH[attrs["patched"]] ** get_patch_weight()
+    return ((cvss / 10.0) ** get_cvss_weight()) * m_exposure * m_patch
 
 
 def _human_base_prob(attrs: dict) -> float:
@@ -37,14 +45,6 @@ def _human_base_prob(attrs: dict) -> float:
 
 
 def _physical_base_prob(attrs: dict) -> float:
-    """
-    Physical equipment/process nodes (pumps, valves, the process itself) have
-    no CVSS score and no phishing profile -- there's no meaningful formula
-    for "how likely is a pump to spontaneously get hacked." Their compromise
-    probability should come almost entirely from noisy-OR over their parents
-    (e.g. sensors/actuators), so we require an explicit low baseline instead
-    of guessing one. Defaults to 0.0 (no intrinsic vulnerability) if omitted.
-    """
     return attrs.get("p_base_override", 0.0)
 
 

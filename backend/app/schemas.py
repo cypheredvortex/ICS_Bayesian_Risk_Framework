@@ -15,3 +15,7 @@ class AnalyzeRequest(BaseModel):
 
 class TopologyUploadRequest(BaseModel):
     topology: dict[str, Any] = Field(..., description="Topology JSON payload")
+
+
+class SettingsUpdateRequest(BaseModel):
+    settings: dict[str, Any] = Field(default_factory=dict)

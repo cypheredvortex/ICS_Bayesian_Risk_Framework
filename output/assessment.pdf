@@ -9,30 +9,32 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
 endobj
 4 0 obj
-<< /Length 71 >>
+<< /Length 636 >>
 stream
-BT /F1 12 Tf 50 770 Td (ICS Bayesian Risk Assessment Report
-======================================
-ICS Risk Pipeline -- Run Summary
-========================================
-Topology file : data/swat_example.json
-Assets        : 11
-Relationships : 12
-Evidence used : {'operators': 1}
+BT /F1 11 Tf 40 780 Td (ICS Bayesian Risk Assessment Report
+==========================================
+Overall risk: 26.632
+Risk level: critical
+Assets: 8
+Relationships: 7
+Evidence used: {}
 
-Top 5 assets by risk:
-----------------------------------------
-  scada                    risk=6.866  P\(compromised\)=0.981  severity=7
-  physical_process         risk=5.233  P\(compromised\)=0.374  severity=10
-  local_hmi                risk=4.925  P\(compromised\)=0.985  severity=5
-  plc_1                    risk=4.508  P\(compromised\)=0.385  severity=9
-  plc_2                    risk=4.508  P\(compromised\)=0.385  se
-Asset count: 11
-Relationship count: 12
-Risk row count: 10
+Top risk assets:
+- engineering_workstation: risk=5.778 P=0.963
+- scada_server: risk=5.377 P=0.768
+- plc_dosing: risk=5.283 P=0.419
+- chlorine_pump: risk=3.457 P=0.332
+- water_supply: risk=2.904 P=0.207
+
 Posterior probabilities:
-- evidence: {'operators': 1}
-- posteriors: {'local_hmi': 0.985, 'scada': 0.9808, 'industrial_network': 0.783275, 'plc_1': 0.385305, 'plc_2': 0.385305, 'sensors_actuators_1': 0.334973, 'sensors_actuators_2': 0.334973, 'physical_process': 0.37381, 'historian': 0.237141, 'automation_engineers': 0.146496}) Tj ET
+- vendor_remote_access: 0.52
+- engineering_workstation: 0.963
+- scada_server: 0.7681
+- operator: 0.175
+- plc_dosing: 0.4192
+- chlorine_pump: 0.3324
+- water_supply: 0.2074
+- historian: 0.6983) Tj ET
 endstream
 endobj
 5 0 obj
@@ -45,9 +47,9 @@ xref
 0000000058 00000 n 
 0000000115 00000 n 
 0000000241 00000 n 
-0000001393 00000 n 
+0000000908 00000 n 
 trailer
 << /Size 6 /Root 1 0 R >>
 startxref
-1463
+978
 %%EOF

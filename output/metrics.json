@@ -1,23 +1,22 @@
 {
   "framework_version": "1.0",
-  "generated_at": "2026-07-15T12:03:24Z",
-  "topology": "data/swat_example.json",
-  "asset_count": 11,
-  "relationship_count": 12,
-  "node_count": 11,
-  "edge_count": 12,
-  "posterior_count": 10,
-  "risk_row_count": 10,
-  "evidence_count": 1,
-  "evidence_used": {
-    "operators": 1
-  },
+  "generated_at": "2026-07-19T13:01:03Z",
+  "topology": "inline-topology",
+  "asset_count": 8,
+  "relationship_count": 7,
+  "node_count": 8,
+  "edge_count": 7,
+  "posterior_count": 8,
+  "risk_row_count": 8,
+  "evidence_count": 0,
+  "evidence_used": {},
+  "attack_path_count": 0,
   "validation": {
     "success": true,
     "errors": 0
   },
   "inference_algorithm": "Variable Elimination",
-  "build_time_seconds": 0.002536,
-  "inference_time_seconds": 0.015386,
-  "total_time_seconds": 0.018184
+  "build_time_seconds": 0.009075,
+  "inference_time_seconds": 0.013296,
+  "total_time_seconds": 0.022371
 }

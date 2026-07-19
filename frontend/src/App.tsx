@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Background,
   Controls,
@@ -26,15 +26,33 @@ import {
 
 type AssetState = 'Unknown' | 'Compromised' | 'Safe'
 
+// Relationships from the backend always come back as 5-element arrays
+// (source, target, rel_type, firewalled, metadata) once they've passed
+// through assets.py's normalizer. Preset dataset files on disk may only
+// have 4 elements, so metadata is optional here.
+type Relationship = [string, string, string, boolean, Record<string, unknown>?]
+
 type TopologyPayload = {
   assets: Record<string, Record<string, unknown>>
-  relationships: Array<[string, string, string, boolean]>
+  relationships: Relationship[]
+}
+
+type GraphNode = { id: string; kind?: string }
+type GraphEdge = {
+  source: string
+  target: string
+  rel_type: string
+  firewalled?: boolean
+  weight?: number
+  protocol?: string | null
+  trust?: string | null
+  mitre?: string | null
 }
 
 type ResultPayload = {
   graph: {
-    nodes: string[]
-    edges: Array<Record<string, unknown>>
+    nodes: GraphNode[]
+    edges: GraphEdge[]
   }
   posteriors: Record<string, number>
   risk_scores: Array<Record<string, unknown>>
@@ -53,107 +71,53 @@ type ResultPayload = {
     total_time_seconds?: number
   }
 }
+
+// Mirrors the fields backend/settings.py actually exposes. Kept as a
+// subset — protocol/trust/mitre multiplier tables exist server-side too
+// but aren't editable here to keep the panel usable.
+type CoreSettings = {
+  cvss_weight: number
+  exposure_weight: number
+  patch_weight: number
+  impact_weight: number
+  noisy_or_leak: number
+  propagation_weights: Record<string, number>
+  firewall_multipliers: Record<'true' | 'false', number>
+}
+
+type ToastItem = {
+  id: number
+  message: string
+  tone: 'info' | 'success' | 'error'
+}
+
 const API_BASE_URL = '/api'
 const defaultTopology: TopologyPayload = {
   assets: {},
   relationships: [],
 }
 const assetStateOrder: AssetState[] = ['Unknown', 'Compromised', 'Safe']
-const presetTopology: TopologyPayload = {
-  assets: {
-    operators: {
-      kind: 'human',
-      role: 'operator',
-      awareness: 0.4,
-      privilege: 'standard',
-    },
-    automation_engineers: {
-      kind: 'human',
-      role: 'engineer',
-      awareness: 0.6,
-      privilege: 'elevated',
-    },
-    local_hmi: {
-      kind: 'device',
-      cvss_type: 7.5,
-      exposed: true,
-      patched: false,
-      consequence_severity: 5,
-    },
-    scada: {
-      kind: 'device',
-      cvss_type: 8.0,
-      exposed: true,
-      patched: true,
-      consequence_severity: 7,
-    },
-    industrial_network: {
-      kind: 'device',
-      cvss_type: 6.0,
-      exposed: false,
-      patched: true,
-      consequence_severity: 4,
-    },
-    plc_1: {
-      kind: 'device',
-      cvss_type: 9.0,
-      exposed: false,
-      patched: true,
-      consequence_severity: 9,
-      scope: 4,
-    },
-    plc_2: {
-      kind: 'device',
-      cvss_type: 9.0,
-      exposed: false,
-      patched: true,
-      consequence_severity: 9,
-      scope: 4,
-    },
-    sensors_actuators_1: {
-      kind: 'device',
-      cvss_type: 5.0,
-      exposed: false,
-      patched: true,
-      consequence_severity: 8,
-      scope: 4,
-    },
-    sensors_actuators_2: {
-      kind: 'device',
-      cvss_type: 5.0,
-      exposed: false,
-      patched: true,
-      consequence_severity: 8,
-      scope: 4,
-    },
-    physical_process: {
-      kind: 'physical',
-      p_base_override: 0.02,
-      consequence_severity: 10,
-      scope: 5,
-    },
-    historian: {
-      kind: 'device',
-      cvss_type: 6.5,
-      exposed: false,
-      patched: true,
-      consequence_severity: 5,
-    },
+
+const defaultCoreSettings: CoreSettings = {
+  cvss_weight: 1.0,
+  exposure_weight: 1.0,
+  patch_weight: 1.0,
+  impact_weight: 1.0,
+  noisy_or_leak: 0.0,
+  propagation_weights: {
+    controls: 0.7,
+    monitors: 0.2,
+    actuates: 0.6,
+    'connects-to': 0.5,
+    'programs / operates': 0.8,
   },
-  relationships: [
-    ['operators', 'local_hmi', 'controls', false],
-    ['operators', 'scada', 'controls', false],
-    ['local_hmi', 'industrial_network', 'connects-to', false],
-    ['scada', 'industrial_network', 'connects-to', false],
-    ['industrial_network', 'plc_1', 'programs / operates', true],
-    ['industrial_network', 'plc_2', 'programs / operates', true],
-    ['plc_1', 'sensors_actuators_1', 'actuates', false],
-    ['plc_2', 'sensors_actuators_2', 'actuates', false],
-    ['sensors_actuators_1', 'physical_process', 'actuates', false],
-    ['sensors_actuators_2', 'physical_process', 'actuates', false],
-    ['physical_process', 'historian', 'monitors', false],
-    ['historian', 'automation_engineers', 'monitors', false],
-  ],
+  firewall_multipliers: { true: 0.3, false: 1.0 },
+}
+
+const kindColors: Record<string, string> = {
+  human: '#a78bfa',
+  device: '#38bdf8',
+  physical: '#f59e0b',
 }
 
 function getRiskTone(level: string) {
@@ -174,24 +138,260 @@ function formatProbability(value: number) {
   return Number(value).toFixed(3)
 }
 
+function downloadBlob(content: string, filename: string, mime: string) {
+  const blob = new Blob([content], { type: mime })
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = filename
+  document.body.appendChild(anchor)
+  anchor.click()
+  anchor.remove()
+  URL.revokeObjectURL(url)
+}
+
+function toCsv(rows: Array<Record<string, unknown>>) {
+  if (!rows.length) return ''
+  const headers = Array.from(
+    rows.reduce((set, row) => {
+      Object.keys(row).forEach((key) => set.add(key))
+      return set
+    }, new Set<string>()),
+  )
+  const lines = [headers.join(',')]
+  for (const row of rows) {
+    lines.push(headers.map((header) => JSON.stringify(row[header] ?? '')).join(','))
+  }
+  return lines.join('\n')
+}
+
+// FastAPI's HTTPException serializes as {"detail": "..."}. Pull that out
+// instead of dumping raw JSON into the UI; fall back to plain text for
+// non-JSON error bodies (e.g. a proxy/500 page).
+async function parseErrorDetail(response: Response, fallback: string): Promise<string> {
+  const raw = await response.text()
+  try {
+    const parsed = JSON.parse(raw)
+    if (typeof parsed?.detail === 'string') return parsed.detail
+    if (parsed?.detail) return JSON.stringify(parsed.detail)
+    return raw || fallback
+  } catch {
+    return raw || fallback
+  }
+}
+
+// Builds a left-to-right layered layout by BFS depth instead of a naive
+// index % 3 grid, so upstream/downstream relationships read left-to-right.
+// This also happens to match the "layered" layout the backend's
+// visualization settings already name.
+function computeLayeredPositions(nodeIds: string[], edges: Array<{ source: string; target: string }>) {
+  const outgoing = new Map<string, string[]>()
+  const incomingCount = new Map<string, number>()
+  nodeIds.forEach((id) => {
+    outgoing.set(id, [])
+    incomingCount.set(id, 0)
+  })
+  edges.forEach(({ source, target }) => {
+    if (!outgoing.has(source) || !incomingCount.has(target)) return
+    outgoing.get(source)!.push(target)
+    incomingCount.set(target, (incomingCount.get(target) ?? 0) + 1)
+  })
+
+  const roots = nodeIds.filter((id) => (incomingCount.get(id) ?? 0) === 0)
+  const queue: Array<{ id: string; depth: number }> = (roots.length ? roots : nodeIds.slice(0, 1)).map((id) => ({
+    id,
+    depth: 0,
+  }))
+  const depth = new Map<string, number>()
+  const visited = new Set<string>()
+
+  while (queue.length) {
+    const { id, depth: d } = queue.shift()!
+    if (visited.has(id)) continue
+    visited.add(id)
+    depth.set(id, d)
+    for (const next of outgoing.get(id) ?? []) {
+      if (!visited.has(next)) queue.push({ id: next, depth: d + 1 })
+    }
+  }
+  let maxDepth = Math.max(0, ...Array.from(depth.values()))
+  nodeIds.forEach((id) => {
+    if (!depth.has(id)) {
+      maxDepth += 1
+      depth.set(id, maxDepth)
+    }
+  })
+
+  const layerCounts = new Map<number, number>()
+  const positions = new Map<string, { x: number; y: number }>()
+  nodeIds.forEach((id) => {
+    const d = depth.get(id) ?? 0
+    const rank = layerCounts.get(d) ?? 0
+    layerCounts.set(d, rank + 1)
+    positions.set(id, { x: d * 240 + 40, y: rank * 110 + 40 })
+  })
+  return positions
+}
+
+function Toasts({ items, onDismiss }: { items: ToastItem[]; onDismiss: (id: number) => void }) {
+  if (!items.length) return null
+  return (
+    <div className="fixed right-4 top-4 z-50 flex w-80 flex-col gap-2">
+      {items.map((toast) => (
+        <div
+          key={toast.id}
+          role="status"
+          className={`rounded-lg border px-4 py-3 text-sm shadow-lg backdrop-blur transition ${
+            toast.tone === 'error'
+              ? 'border-rose-500/40 bg-rose-950/90 text-rose-200'
+              : toast.tone === 'success'
+                ? 'border-emerald-500/40 bg-emerald-950/90 text-emerald-200'
+                : 'border-cyan-500/40 bg-slate-900/95 text-cyan-100'
+          }`}
+        >
+          <div className="flex items-start justify-between gap-3">
+            <span>{toast.message}</span>
+            <button onClick={() => onDismiss(toast.id)} className="text-slate-400 hover:text-white" aria-label="Dismiss notification">
+              ×
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 export default function App() {
   const [topology, setTopology] = useState<TopologyPayload>(defaultTopology)
   const [evidence, setEvidence] = useState<Record<string, AssetState>>({})
   const [result, setResult] = useState<ResultPayload | null>(null)
   const [uploadedFileName, setUploadedFileName] = useState('')
   const [selectedDataset, setSelectedDataset] = useState('swat_example')
-  const [status, setStatus] = useState('Upload a topology or load a preset dataset to begin an assessment.')
+  const [pendingDataset, setPendingDataset] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   const [selectedNode, setSelectedNode] = useState<string | null>(null)
+  const [nodeQuery, setNodeQuery] = useState('')
+  const [colorMode, setColorMode] = useState<'risk' | 'kind'>('risk')
+  const [showAttackPath, setShowAttackPath] = useState(true)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const [serverSettings, setServerSettings] = useState<CoreSettings>(defaultCoreSettings)
+  const [draftSettings, setDraftSettings] = useState<CoreSettings>(defaultCoreSettings)
+  const [settingsLoading, setSettingsLoading] = useState(false)
+  const [toasts, setToasts] = useState<ToastItem[]>([])
+
+  const searchInputRef = useRef<HTMLInputElement>(null)
+  const barChartWrapRef = useRef<HTMLDivElement>(null)
+  const toastCounter = useRef(0)
+
+  const pushToast = useCallback((message: string, tone: ToastItem['tone'] = 'info') => {
+    toastCounter.current += 1
+    const id = toastCounter.current
+    setToasts((current) => [...current, { id, message, tone }])
+    window.setTimeout(() => {
+      setToasts((current) => current.filter((toast) => toast.id !== id))
+    }, 5000)
+  }, [])
+
+  const dismissToast = useCallback((id: number) => {
+    setToasts((current) => current.filter((toast) => toast.id !== id))
+  }, [])
+
+  // Settings live server-side (GET/PUT /settings), independent of any one
+  // analysis run, so pull the current values in on mount.
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/settings`)
+        if (!response.ok) throw new Error(await parseErrorDetail(response, 'Could not load settings.'))
+        const data = (await response.json()) as Record<string, unknown>
+        const merged: CoreSettings = {
+          cvss_weight: Number(data.cvss_weight ?? defaultCoreSettings.cvss_weight),
+          exposure_weight: Number(data.exposure_weight ?? defaultCoreSettings.exposure_weight),
+          patch_weight: Number(data.patch_weight ?? defaultCoreSettings.patch_weight),
+          impact_weight: Number(data.impact_weight ?? defaultCoreSettings.impact_weight),
+          noisy_or_leak: Number(data.noisy_or_leak ?? defaultCoreSettings.noisy_or_leak),
+          propagation_weights: {
+            ...defaultCoreSettings.propagation_weights,
+            ...(data.propagation_weights as Record<string, number> | undefined),
+          },
+          firewall_multipliers: {
+            true: Number((data.firewall_multipliers as Record<string, number> | undefined)?.true ?? defaultCoreSettings.firewall_multipliers.true),
+            false: Number((data.firewall_multipliers as Record<string, number> | undefined)?.false ?? defaultCoreSettings.firewall_multipliers.false),
+          },
+        }
+        setServerSettings(merged)
+        setDraftSettings(merged)
+      } catch {
+        // Backend may not be reachable yet on first paint; sliders keep
+        // sensible defaults and Save will surface the real error.
+      }
+    }
+    void loadSettings()
+  }, [])
+
+  // keyboard shortcuts: "/" focuses node search, "r" runs the assessment
+  useEffect(() => {
+    const handler = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement
+      const typing = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT'
+      if (event.key === '/' && !typing) {
+        event.preventDefault()
+        searchInputRef.current?.focus()
+      }
+      if (event.key.toLowerCase() === 'r' && !typing) {
+        event.preventDefault()
+        void runAssessment()
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [topology, evidence])
 
   const assets = useMemo(() => Object.entries(topology.assets), [topology.assets])
 
+  const nodeIds = useMemo(() => {
+    if (result?.graph?.nodes?.length) return result.graph.nodes.map((node) => node.id)
+    return Object.keys(topology.assets)
+  }, [result, topology.assets])
+
+  const nodeKindMap = useMemo(() => {
+    const map = new Map<string, string>()
+    if (result?.graph?.nodes?.length) {
+      result.graph.nodes.forEach((node) => {
+        if (node.kind) map.set(node.id, node.kind)
+      })
+    }
+    Object.entries(topology.assets).forEach(([id, attrs]) => {
+      if (!map.has(id) && attrs.kind) map.set(id, String(attrs.kind))
+    })
+    return map
+  }, [result, topology.assets])
+
+  // The backend only returns posteriors for nodes NOT pinned by evidence
+  // (compute_posteriors_with_evidence skips them). Merge evidence back in
+  // so evidence-marked assets still show a probability instead of falling
+  // back to 0.
+  const combinedProbabilities = useMemo(() => {
+    const map = new Map<string, number>()
+    nodeIds.forEach((id) => {
+      if (result?.evidence_used && id in result.evidence_used) {
+        map.set(id, result.evidence_used[id])
+      } else if (result?.posteriors && id in result.posteriors) {
+        map.set(id, result.posteriors[id])
+      }
+    })
+    return map
+  }, [nodeIds, result])
+
+  const isEvidenceNode = useCallback((id: string) => Boolean(result?.evidence_used && id in result.evidence_used), [result])
+
   const chartData = useMemo(() => {
-    return Object.entries(result?.posteriors ?? {})
-      .map(([asset, probability]) => ({ asset, probability: Number(probability) }))
+    return nodeIds
+      .filter((id) => combinedProbabilities.has(id))
+      .map((id) => ({ asset: id, probability: Number(combinedProbabilities.get(id)), pinned: isEvidenceNode(id) }))
       .sort((left, right) => right.probability - left.probability)
-  }, [result])
+  }, [nodeIds, combinedProbabilities, isEvidenceNode])
 
   const riskRanking = useMemo(() => {
     return (result?.risk_scores ?? []).slice(0, 5).map((item) => ({
@@ -201,75 +401,140 @@ export default function App() {
     }))
   }, [result])
 
-  const networkNodes = useMemo<Node[]>(() => {
-    const nodeIds = result?.graph?.nodes?.length ? result.graph.nodes : Object.keys(topology.assets)
-    return nodeIds.map((nodeId, index) => ({
-      id: nodeId,
-      data: {
-        label: nodeId,
-        probability: result?.posteriors?.[nodeId] ?? 0,
-      },
-      position: {
-        x: 180 * (index % 3) + 40,
-        y: 120 * Math.floor(index / 3) + 40,
-      },
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
-      style: {
-        background: getProbabilityColor(result?.posteriors?.[nodeId] ?? 0),
-        color: '#02131f',
-        border: selectedNode === nodeId ? '2px solid #f8fafc' : '1px solid rgba(255,255,255,0.14)',
-        boxShadow: selectedNode === nodeId ? '0 0 0 4px rgba(34,211,238,0.25)' : 'none',
-        width: 170,
-      },
-    }))
-  }, [result, selectedNode, topology.assets])
-
-  const networkEdges = useMemo<Edge[]>(() => {
+  const edgeList = useMemo(() => {
     if (result?.graph?.edges?.length) {
-      return result.graph.edges.map((edge, index) => ({
-        id: `${String(edge.source)}-${String(edge.target)}-${index}`,
-        source: String(edge.source),
-        target: String(edge.target),
-        label: String(edge.rel_type ?? 'link'),
-        animated: true,
-        style: { stroke: '#38bdf8' },
-        markerEnd: { type: 'arrowclosed' },
+      return result.graph.edges.map((edge) => ({
+        source: edge.source,
+        target: edge.target,
+        label: `${edge.rel_type}${edge.firewalled ? ' 🔒' : ''}${typeof edge.weight === 'number' ? ` (${edge.weight.toFixed(2)})` : ''}`,
       }))
     }
-
-    return topology.relationships.map(([source, target, relType, firewalled], index) => ({
-      id: `${source}-${target}-${index}`,
+    return topology.relationships.map(([source, target, relType, firewalled]) => ({
       source,
       target,
       label: `${relType}${firewalled ? ' (firewalled)' : ''}`,
-      animated: true,
-      style: { stroke: '#64748b' },
-      markerEnd: { type: 'arrowclosed' },
     }))
   }, [result, topology.relationships])
 
-  const pieData = useMemo(() => {
-    const counts = {
-      critical: 0,
-      high: 0,
-      moderate: 0,
-      low: 0,
-    }
+  const attackPathNodes = useMemo(() => {
+    const first = result?.attack_paths?.[0]
+    if (!first) return new Set<string>()
+    const path = (first.path ?? first.nodes ?? first.assets) as unknown
+    if (Array.isArray(path)) return new Set(path.map(String))
+    return new Set<string>()
+  }, [result])
 
-    const ranking = result?.risk_scores ?? []
-    for (const item of ranking) {
+  const attackPathEdgeKeys = useMemo(() => {
+    const keys = new Set<string>()
+    const ordered = Array.from(attackPathNodes)
+    for (let i = 0; i < ordered.length - 1; i += 1) {
+      keys.add(`${ordered[i]}->${ordered[i + 1]}`)
+    }
+    return keys
+  }, [attackPathNodes])
+
+  const neighborSet = useMemo(() => {
+    if (!selectedNode) return null
+    const neighbors = new Set<string>([selectedNode])
+    edgeList.forEach(({ source, target }) => {
+      if (source === selectedNode) neighbors.add(target)
+      if (target === selectedNode) neighbors.add(source)
+    })
+    return neighbors
+  }, [selectedNode, edgeList])
+
+  const matchingNodes = useMemo(() => {
+    if (!nodeQuery.trim()) return null
+    const query = nodeQuery.trim().toLowerCase()
+    return new Set(nodeIds.filter((id) => id.toLowerCase().includes(query)))
+  }, [nodeQuery, nodeIds])
+
+  const nodePositions = useMemo(() => computeLayeredPositions(nodeIds, edgeList), [nodeIds, edgeList])
+
+  const networkNodes = useMemo<Node[]>(() => {
+    return nodeIds.map((nodeId) => {
+      const probability = combinedProbabilities.get(nodeId) ?? 0
+      const kind = nodeKindMap.get(nodeId) ?? 'device'
+      const baseColor = colorMode === 'kind' ? (kindColors[kind] ?? '#94a3b8') : getProbabilityColor(probability)
+      const dimmed = (matchingNodes && !matchingNodes.has(nodeId)) || (neighborSet && !neighborSet.has(nodeId))
+      const onPath = attackPathNodes.has(nodeId)
+      const position = nodePositions.get(nodeId) ?? { x: 0, y: 0 }
+      const pinned = isEvidenceNode(nodeId)
+
+      return {
+        id: nodeId,
+        data: { label: pinned ? `${nodeId} 📌` : nodeId },
+        position,
+        sourcePosition: Position.Right,
+        targetPosition: Position.Left,
+        style: {
+          background: baseColor,
+          color: '#02131f',
+          border:
+            selectedNode === nodeId
+              ? '2px solid #f8fafc'
+              : onPath && showAttackPath
+                ? '2px solid #fb7185'
+                : pinned
+                  ? '2px dashed #0f172a'
+                  : '1px solid rgba(255,255,255,0.14)',
+          boxShadow: selectedNode === nodeId ? '0 0 0 4px rgba(34,211,238,0.25)' : 'none',
+          opacity: dimmed ? 0.25 : 1,
+          width: 170,
+          transition: 'opacity 150ms ease, border 150ms ease',
+        },
+      }
+    })
+  }, [
+    nodeIds,
+    combinedProbabilities,
+    nodeKindMap,
+    selectedNode,
+    colorMode,
+    matchingNodes,
+    neighborSet,
+    attackPathNodes,
+    showAttackPath,
+    nodePositions,
+    isEvidenceNode,
+  ])
+
+  const networkEdges = useMemo<Edge[]>(() => {
+    return edgeList.map(({ source, target, label }, index) => {
+      const onPath = showAttackPath && attackPathEdgeKeys.has(`${source}->${target}`)
+      const dimmed = neighborSet ? !(neighborSet.has(source) && neighborSet.has(target)) : false
+      return {
+        id: `${source}-${target}-${index}`,
+        source,
+        target,
+        label,
+        type: 'smoothstep',
+        animated: onPath,
+        style: {
+          stroke: onPath ? '#fb7185' : '#64748b',
+          strokeWidth: onPath ? 2.5 : 1.5,
+          opacity: dimmed ? 0.15 : 1,
+        },
+        labelStyle: { fill: '#cbd5e1', fontSize: 11 },
+        labelBgStyle: { fill: '#0f172a', fillOpacity: 0.85 },
+        markerEnd: { type: 'arrowclosed', color: onPath ? '#fb7185' : '#64748b' },
+      }
+    })
+  }, [edgeList, showAttackPath, attackPathEdgeKeys, neighborSet])
+
+  const pieData = useMemo(() => {
+    const counts = { critical: 0, high: 0, moderate: 0, low: 0 }
+    for (const item of result?.risk_scores ?? []) {
       const risk = Number(item.risk ?? 0)
       if (risk >= 1.5) counts.critical += 1
       else if (risk >= 0.8) counts.high += 1
       else if (risk >= 0.3) counts.moderate += 1
       else counts.low += 1
     }
-
     return Object.entries(counts).map(([name, value]) => ({ name, value }))
   }, [result])
 
-  const selectedNodeProbability = result?.posteriors?.[selectedNode ?? ''] ?? null
+  const selectedNodeProbability = selectedNode ? (combinedProbabilities.get(selectedNode) ?? null) : null
 
   const persistTopology = async (payload: TopologyPayload) => {
     const response = await fetch(`${API_BASE_URL}/upload-topology`, {
@@ -277,52 +542,86 @@ export default function App() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ topology: payload }),
     })
-
     if (!response.ok) {
-      const message = await response.text()
-      throw new Error(message || 'Topology upload failed.')
+      throw new Error(await parseErrorDetail(response, 'Topology upload failed.'))
     }
-
     return response.json()
+  }
+
+  const applyTopology = (parsed: TopologyPayload, sourceName: string) => {
+    setUploadedFileName(sourceName)
+    setTopology(parsed)
+    setResult(null)
+    setSelectedNode(null)
+    setEvidence({})
   }
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (!file) return
 
-    const text = await file.text()
-    try {
-      const parsed = JSON.parse(text) as TopologyPayload
-      if (!parsed.assets || !parsed.relationships) {
-        throw new Error('Topology JSON must contain assets and relationships.')
-      }
-
-      setUploadedFileName(file.name)
-      setTopology(parsed)
-      setStatus(`Loaded ${Object.keys(parsed.assets).length} assets and ${parsed.relationships.length} relationships.`)
-      setError(null)
-      await persistTopology(parsed)
-      setStatus(`Uploaded ${file.name} to the backend and loaded ${Object.keys(parsed.assets).length} assets.`)
-    } catch (caughtError) {
-      setError(caughtError instanceof Error ? caughtError.message : 'Invalid topology JSON.')
-      setStatus('Topology validation failed.')
+    const supported = /\.(json|ya?ml|csv)$/i.test(file.name)
+    if (!supported) {
+      pushToast('Unsupported file type. Upload a .json, .yaml/.yml, or .csv topology file.', 'error')
+      event.target.value = ''
+      return
     }
+
+    // The backend's /upload-topology-file endpoint parses and validates
+    // JSON, YAML, and CSV topologies server-side (DAG check, required
+    // per-kind fields, etc.), so hand it the raw file rather than trying
+    // to parse non-JSON formats in the browser.
+    const formData = new FormData()
+    formData.append('file', file)
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/upload-topology-file`, {
+        method: 'POST',
+        body: formData,
+      })
+      if (!response.ok) {
+        throw new Error(await parseErrorDetail(response, 'Topology file upload failed.'))
+      }
+      const data = (await response.json()) as { topology: TopologyPayload; asset_count: number; relationship_count: number }
+      applyTopology(data.topology, file.name)
+      pushToast(`Loaded ${file.name}: ${data.asset_count} assets, ${data.relationship_count} relationships.`, 'success')
+    } catch (caughtError) {
+      pushToast(caughtError instanceof Error ? caughtError.message : 'Invalid topology file.', 'error')
+    } finally {
+      event.target.value = ''
+    }
+  }
+
+  const hasUnsavedEvidence = Object.keys(evidence).some((key) => evidence[key] !== 'Unknown')
+
+  const requestPresetChange = (datasetName: string) => {
+    if (datasetName === selectedDataset) return
+    if (hasUnsavedEvidence) {
+      setPendingDataset(datasetName)
+      return
+    }
+    void loadPresetTopology(datasetName)
   }
 
   const loadPresetTopology = async (datasetName: string) => {
     setSelectedDataset(datasetName)
-    setTopology(presetTopology)
-    setResult(null)
-    setSelectedNode(null)
-    setUploadedFileName(`${datasetName}.json`)
-    setStatus(`Loaded the ${datasetName} preset dataset.`)
-    setError(null)
+    setPendingDataset(null)
+    pushToast(`Loading the ${datasetName.replace(/_/g, ' ')} preset dataset…`)
 
     try {
-      await persistTopology(presetTopology)
-      setStatus(`Preset dataset ${datasetName} uploaded to the backend successfully.`)
+      const response = await fetch(`${API_BASE_URL}/datasets/${datasetName}`)
+      if (!response.ok) {
+        throw new Error(await parseErrorDetail(response, 'Preset dataset could not be loaded.'))
+      }
+      const dataset = (await response.json()) as TopologyPayload
+      if (!dataset.assets || !dataset.relationships) {
+        throw new Error('Preset dataset payload is invalid.')
+      }
+      applyTopology(dataset, `${datasetName}.json`)
+      await persistTopology(dataset)
+      pushToast(`${datasetName.replace(/_/g, ' ')} preset loaded successfully.`, 'success')
     } catch (caughtError) {
-      setError(caughtError instanceof Error ? caughtError.message : 'Failed to persist the preset dataset.')
+      pushToast(caughtError instanceof Error ? caughtError.message : 'Failed to load the preset dataset.', 'error')
     }
   }
 
@@ -331,21 +630,20 @@ export default function App() {
   }
 
   const runAssessment = async () => {
-    if (!topology.assets || !topology.relationships.length) {
-      setError('Upload a valid topology file before running the assessment.')
-      setStatus('No topology available.')
+    if (!topology.assets || !Object.keys(topology.assets).length) {
+      pushToast('Upload a valid topology file before running the assessment.', 'error')
       return
     }
 
     setLoading(true)
-    setError(null)
-    setStatus('Running assessment...')
-
+    // AnalyzeRequest.evidence entries need integer 0/1 state values to
+    // match inference.py's _sanitize_evidence, not the UI's Compromised/Safe
+    // labels — 422 otherwise.
     const payload = {
       topology,
       evidence: Object.entries(evidence)
         .filter(([, state]) => state !== 'Unknown')
-        .map(([asset, state]) => ({ asset, state })),
+        .map(([asset, state]) => ({ asset, state: state === 'Compromised' ? 1 : 0 })),
     }
 
     try {
@@ -354,37 +652,284 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
-
       if (!response.ok) {
-        const message = await response.text()
-        throw new Error(message || 'Assessment request failed.')
+        throw new Error(await parseErrorDetail(response, 'Assessment request failed.'))
       }
-
       const data = (await response.json()) as ResultPayload
       setResult(data)
-      setStatus('Assessment complete. Results are now available in the dashboard.')
-      setSelectedNode(data.graph.nodes[0] ?? null)
+      setSelectedNode(data.graph.nodes[0]?.id ?? null)
+      pushToast('Assessment complete — results are now on the dashboard.', 'success')
     } catch (caughtError) {
-      const message = caughtError instanceof Error ? caughtError.message : 'Assessment could not be completed.'
-      setError(message)
-      setStatus('Assessment failed.')
+      pushToast(caughtError instanceof Error ? caughtError.message : 'Assessment could not be completed.', 'error')
     } finally {
       setLoading(false)
     }
   }
 
+  const saveSettings = async () => {
+    setSettingsLoading(true)
+    try {
+      const response = await fetch(`${API_BASE_URL}/settings`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ settings: draftSettings }),
+      })
+      if (!response.ok) {
+        throw new Error(await parseErrorDetail(response, 'Could not save settings.'))
+      }
+      const data = (await response.json()) as Record<string, unknown>
+      const merged: CoreSettings = {
+        ...draftSettings,
+        cvss_weight: Number(data.cvss_weight ?? draftSettings.cvss_weight),
+        exposure_weight: Number(data.exposure_weight ?? draftSettings.exposure_weight),
+        patch_weight: Number(data.patch_weight ?? draftSettings.patch_weight),
+        impact_weight: Number(data.impact_weight ?? draftSettings.impact_weight),
+        noisy_or_leak: Number(data.noisy_or_leak ?? draftSettings.noisy_or_leak),
+      }
+      setServerSettings(merged)
+      setDraftSettings(merged)
+      pushToast('Settings saved. They apply to the next assessment you run.', 'success')
+    } catch (caughtError) {
+      pushToast(caughtError instanceof Error ? caughtError.message : 'Could not save settings.', 'error')
+    } finally {
+      setSettingsLoading(false)
+    }
+  }
+
+  const resetSettings = async () => {
+    setSettingsLoading(true)
+    try {
+      const response = await fetch(`${API_BASE_URL}/settings/reset`, { method: 'POST' })
+      if (!response.ok) {
+        throw new Error(await parseErrorDetail(response, 'Could not reset settings.'))
+      }
+      const data = (await response.json()) as Record<string, unknown>
+      const merged: CoreSettings = {
+        cvss_weight: Number(data.cvss_weight ?? defaultCoreSettings.cvss_weight),
+        exposure_weight: Number(data.exposure_weight ?? defaultCoreSettings.exposure_weight),
+        patch_weight: Number(data.patch_weight ?? defaultCoreSettings.patch_weight),
+        impact_weight: Number(data.impact_weight ?? defaultCoreSettings.impact_weight),
+        noisy_or_leak: Number(data.noisy_or_leak ?? defaultCoreSettings.noisy_or_leak),
+        propagation_weights: {
+          ...defaultCoreSettings.propagation_weights,
+          ...(data.propagation_weights as Record<string, number> | undefined),
+        },
+        firewall_multipliers: {
+          true: Number((data.firewall_multipliers as Record<string, number> | undefined)?.true ?? defaultCoreSettings.firewall_multipliers.true),
+          false: Number((data.firewall_multipliers as Record<string, number> | undefined)?.false ?? defaultCoreSettings.firewall_multipliers.false),
+        },
+      }
+      setServerSettings(merged)
+      setDraftSettings(merged)
+      pushToast('Settings reset to framework defaults.', 'success')
+    } catch (caughtError) {
+      pushToast(caughtError instanceof Error ? caughtError.message : 'Could not reset settings.', 'error')
+    } finally {
+      setSettingsLoading(false)
+    }
+  }
+
+  const settingsDirty = JSON.stringify(serverSettings) !== JSON.stringify(draftSettings)
+
+  const exportRiskCsv = () => {
+    if (!result?.risk_scores?.length) {
+      pushToast('Run an assessment before exporting the risk table.', 'error')
+      return
+    }
+    downloadBlob(toCsv(result.risk_scores), 'risk_table.csv', 'text/csv')
+    pushToast('Downloaded risk_table.csv', 'success')
+  }
+
+  const exportPosteriorsJson = () => {
+    if (!result) {
+      pushToast('Run an assessment before exporting posteriors.', 'error')
+      return
+    }
+    downloadBlob(JSON.stringify(result.posteriors, null, 2), 'posteriors.json', 'application/json')
+    pushToast('Downloaded posteriors.json', 'success')
+  }
+
+  const exportFullResultJson = () => {
+    if (!result) {
+      pushToast('Run an assessment before exporting results.', 'error')
+      return
+    }
+    downloadBlob(JSON.stringify(result, null, 2), 'assessment_result.json', 'application/json')
+    pushToast('Downloaded assessment_result.json', 'success')
+  }
+
+  const exportChartSvg = () => {
+    const svg = barChartWrapRef.current?.querySelector('svg')
+    if (!svg) {
+      pushToast('Run an assessment to generate the chart before exporting.', 'error')
+      return
+    }
+    const serialized = new XMLSerializer().serializeToString(svg)
+    downloadBlob(`<?xml version="1.0" standalone="no"?>\n${serialized}`, 'risk_distribution.svg', 'image/svg+xml')
+    pushToast('Downloaded risk_distribution.svg', 'success')
+  }
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
+      <Toasts items={toasts} onDismiss={dismissToast} />
+
+      {pendingDataset ? (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
+            <h3 className="text-lg font-semibold">Discard current evidence?</h3>
+            <p className="mt-2 text-sm text-slate-300">
+              Switching to the {pendingDataset.replace(/_/g, ' ')} preset will clear the evidence you've marked on the current topology.
+            </p>
+            <div className="mt-5 flex justify-end gap-3">
+              <button onClick={() => setPendingDataset(null)} className="rounded-lg border border-slate-600 px-4 py-2 text-sm text-slate-200 hover:bg-slate-800">
+                Cancel
+              </button>
+              <button
+                onClick={() => void loadPresetTopology(pendingDataset)}
+                className="rounded-lg bg-rose-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-rose-400"
+              >
+                Discard and switch
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
       <header className="border-b border-slate-800 bg-slate-900/80 p-6 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.24em] text-cyan-300">SOC / Bayesian Risk Console</p>
             <h1 className="mt-2 text-3xl font-semibold">ICS Risk Assessment Framework</h1>
           </div>
-          <div className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-200">
-            Backend API: {API_BASE_URL}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSettingsOpen((open) => !open)}
+              className="rounded-full border border-slate-700 bg-slate-950 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+              aria-expanded={settingsOpen}
+            >
+              Settings {settingsDirty ? '•' : ''}
+            </button>
+            <div className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-200">Backend API: {API_BASE_URL}</div>
           </div>
         </div>
+
+        {settingsOpen ? (
+          <div className="mx-auto mt-4 max-w-7xl rounded-xl border border-slate-800 bg-slate-950/80 p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-300">Analysis Weighting</h3>
+                <p className="mt-1 text-xs text-slate-500">
+                  Stored server-side via GET/PUT /settings and applied to every future run — not just this session.
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => void resetSettings()}
+                  disabled={settingsLoading}
+                  className="rounded-md border border-slate-600 px-3 py-1.5 text-xs text-slate-200 hover:bg-slate-800 disabled:opacity-50"
+                >
+                  Reset to defaults
+                </button>
+                <button
+                  onClick={() => void saveSettings()}
+                  disabled={settingsLoading || !settingsDirty}
+                  className="rounded-md bg-cyan-500 px-3 py-1.5 text-xs font-semibold text-slate-950 hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {settingsLoading ? 'Saving…' : settingsDirty ? 'Save changes' : 'Saved'}
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+              {(
+                [
+                  ['cvss_weight', 'CVSS weight', 0, 2],
+                  ['exposure_weight', 'Exposure weight', 0, 2],
+                  ['patch_weight', 'Patch weight', 0, 2],
+                  ['impact_weight', 'Impact weight', 0, 2],
+                  ['noisy_or_leak', 'Noisy-OR leak', 0, 1],
+                ] as Array<[keyof Omit<CoreSettings, 'propagation_weights' | 'firewall_multipliers'>, string, number, number]>
+              ).map(([key, label, min, max]) => (
+                <label key={key} className="text-xs text-slate-300">
+                  <div className="flex items-center justify-between">
+                    <span>{label}</span>
+                    <span className="font-mono text-cyan-300">{draftSettings[key].toFixed(2)}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={min}
+                    max={max}
+                    step={0.01}
+                    value={draftSettings[key]}
+                    onChange={(event) => setDraftSettings((current) => ({ ...current, [key]: Number(event.target.value) }))}
+                    className="mt-2 w-full accent-cyan-500"
+                    aria-label={label}
+                  />
+                </label>
+              ))}
+            </div>
+
+            <div className="mt-6 border-t border-slate-800 pt-4">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-400">Propagation weight by relationship type</h4>
+              <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+                {Object.entries(draftSettings.propagation_weights).map(([relType, value]) => (
+                  <label key={relType} className="text-xs text-slate-300">
+                    <div className="flex items-center justify-between">
+                      <span className="truncate" title={relType}>
+                        {relType}
+                      </span>
+                      <span className="font-mono text-cyan-300">{value.toFixed(2)}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={1}
+                      step={0.01}
+                      value={value}
+                      onChange={(event) =>
+                        setDraftSettings((current) => ({
+                          ...current,
+                          propagation_weights: { ...current.propagation_weights, [relType]: Number(event.target.value) },
+                        }))
+                      }
+                      className="mt-2 w-full accent-cyan-500"
+                      aria-label={`Propagation weight for ${relType}`}
+                    />
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-6 border-t border-slate-800 pt-4">
+              <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-400">Firewall multiplier</h4>
+              <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:w-1/2">
+                {(['true', 'false'] as const).map((flag) => (
+                  <label key={flag} className="text-xs text-slate-300">
+                    <div className="flex items-center justify-between">
+                      <span>Link is {flag === 'true' ? 'firewalled' : 'not firewalled'}</span>
+                      <span className="font-mono text-cyan-300">{draftSettings.firewall_multipliers[flag].toFixed(2)}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={0}
+                      max={1.5}
+                      step={0.01}
+                      value={draftSettings.firewall_multipliers[flag]}
+                      onChange={(event) =>
+                        setDraftSettings((current) => ({
+                          ...current,
+                          firewall_multipliers: { ...current.firewall_multipliers, [flag]: Number(event.target.value) },
+                        }))
+                      }
+                      className="mt-2 w-full accent-cyan-500"
+                      aria-label={`Firewall multiplier when ${flag}`}
+                    />
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : null}
       </header>
 
       <main className="mx-auto max-w-7xl space-y-6 p-6">
@@ -400,7 +945,7 @@ export default function App() {
                 <select
                   className="bg-slate-950 text-slate-100 outline-none"
                   value={selectedDataset}
-                  onChange={(event) => void loadPresetTopology(event.target.value)}
+                  onChange={(event) => requestPresetChange(event.target.value)}
                   aria-label="Select a predefined dataset"
                 >
                   <option value="swat_example">SWAT Example</option>
@@ -410,10 +955,12 @@ export default function App() {
                 </select>
               </label>
               <button
-                onClick={() => setStatus('Ready for topology upload.')}
-                className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400"
+                onClick={() => void runAssessment()}
+                disabled={loading || !Object.keys(topology.assets).length}
+                className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-50"
+                title="Shortcut: r"
               >
-                Start Assessment
+                {loading ? 'Running…' : 'Run assessment'}
               </button>
             </div>
           </div>
@@ -423,28 +970,32 @@ export default function App() {
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
             <h2 className="text-xl font-semibold">Upload Topology</h2>
             <label className="mt-4 block text-sm text-slate-300" htmlFor="topology-upload">
-              JSON topology file
+              Topology file (.json, .yaml/.yml, or .csv)
             </label>
             <input
               id="topology-upload"
               type="file"
-              accept="application/json"
+              accept=".json,.yaml,.yml,.csv,application/json,text/yaml,text/csv"
               onChange={(event) => void handleFileUpload(event)}
-              className="mt-2 block w-full rounded-lg border border-slate-700 bg-slate-950 p-3 text-sm"
-              aria-label="Upload a topology JSON file"
+              className="mt-2 block w-full rounded-lg border border-slate-700 bg-slate-950 p-3 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-cyan-500 file:px-3 file:py-1.5 file:text-slate-950 file:font-medium hover:file:bg-cyan-400"
+              aria-label="Upload a topology file"
             />
             <div className="mt-4 rounded-xl bg-slate-950/80 p-4 text-sm text-slate-300">
-              <p>File: {uploadedFileName || 'None selected'}</p>
-              <p className="mt-2">Assets: {Object.keys(topology.assets).length}</p>
-              <p>Connections: {topology.relationships.length}</p>
-              <p className="mt-3 text-cyan-200">{status}</p>
-              {error ? <p className="mt-2 text-rose-300">{error}</p> : null}
+              {Object.keys(topology.assets).length ? (
+                <>
+                  <p>File: {uploadedFileName || 'Preset dataset'}</p>
+                  <p className="mt-2">Assets: {Object.keys(topology.assets).length}</p>
+                  <p>Connections: {topology.relationships.length}</p>
+                </>
+              ) : (
+                <p className="text-slate-400">No topology loaded yet. Upload a file or pick a preset dataset above to get started.</p>
+              )}
             </div>
           </div>
 
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
             <h2 className="text-xl font-semibold">Evidence Selection</h2>
-            <div className="mt-4 space-y-3">
+            <div className="mt-4 max-h-72 space-y-3 overflow-y-auto pr-1">
               {assets.length === 0 ? (
                 <p className="text-sm text-slate-400">Upload a topology to populate the evidence controls.</p>
               ) : (
@@ -458,6 +1009,7 @@ export default function App() {
                           onClick={() => updateEvidence(asset, state)}
                           className={`rounded px-3 py-1 text-sm transition ${evidence[asset] === state ? 'bg-cyan-500 text-slate-950' : 'bg-slate-700 text-white hover:bg-slate-600'}`}
                           aria-label={`Mark ${asset} as ${state}`}
+                          aria-pressed={evidence[asset] === state}
                         >
                           {state}
                         </button>
@@ -472,26 +1024,60 @@ export default function App() {
 
         <section className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-xl font-semibold">Network Viewer</h2>
-              <span className="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-300">Interactive topology</span>
-            </div>
-            <div className="h-[420px] rounded-xl bg-slate-950">
-              <ReactFlowProvider>
-                <ReactFlow
-                  nodes={networkNodes}
-                  edges={networkEdges}
-                  fitView
-                  fitViewOptions={{ padding: 0.2 }}
-                  onNodeClick={(_, node) => setSelectedNode(String(node.id))}
-                  proOptions={{ hideAttribution: true }}
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <input
+                  ref={searchInputRef}
+                  value={nodeQuery}
+                  onChange={(event) => setNodeQuery(event.target.value)}
+                  placeholder="Search nodes… ( / )"
+                  className="w-40 rounded-md border border-slate-700 bg-slate-950 px-2 py-1.5 text-slate-100 outline-none focus:border-cyan-500"
+                  aria-label="Search nodes"
+                />
+                <div className="flex overflow-hidden rounded-md border border-slate-700" role="group" aria-label="Color mode">
+                  <button onClick={() => setColorMode('risk')} className={`px-2 py-1.5 ${colorMode === 'risk' ? 'bg-cyan-500 text-slate-950' : 'bg-slate-950 text-slate-300'}`}>
+                    By risk
+                  </button>
+                  <button onClick={() => setColorMode('kind')} className={`px-2 py-1.5 ${colorMode === 'kind' ? 'bg-cyan-500 text-slate-950' : 'bg-slate-950 text-slate-300'}`}>
+                    By asset type
+                  </button>
+                </div>
+                <button
+                  onClick={() => setShowAttackPath((value) => !value)}
+                  className={`rounded-md border px-2 py-1.5 ${showAttackPath ? 'border-rose-400/60 bg-rose-500/10 text-rose-200' : 'border-slate-700 bg-slate-950 text-slate-300'}`}
+                  aria-pressed={showAttackPath}
                 >
-                  <MiniMap pannable zoomable />
-                  <Controls />
-                  <Background />
-                </ReactFlow>
-              </ReactFlowProvider>
+                  Attack path
+                </button>
+              </div>
             </div>
+            <div className="h-[440px] rounded-xl bg-slate-950">
+              {nodeIds.length ? (
+                <ReactFlowProvider>
+                  <ReactFlow
+                    nodes={networkNodes}
+                    edges={networkEdges}
+                    fitView
+                    fitViewOptions={{ padding: 0.2 }}
+                    onNodeClick={(_, node) => setSelectedNode(String(node.id))}
+                    onPaneClick={() => setSelectedNode(null)}
+                    proOptions={{ hideAttribution: true }}
+                  >
+                    <MiniMap pannable zoomable />
+                    <Controls />
+                    <Background />
+                  </ReactFlow>
+                </ReactFlowProvider>
+              ) : (
+                <div className="flex h-full items-center justify-center text-sm text-slate-500">No topology to display yet — upload a file or load a preset.</div>
+              )}
+            </div>
+            <p className="mt-2 text-xs text-slate-500">
+              Colors: {colorMode === 'risk' ? 'blue (low) → amber → rose (high posterior)' : 'purple = human, blue = device, amber = physical process'}. 📌 marks
+              evidence-pinned assets.
+              {showAttackPath && attackPathNodes.size ? ' Rose outline traces the top attack path.' : ''}
+            </p>
           </div>
 
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
@@ -503,33 +1089,30 @@ export default function App() {
                   <span className="font-semibold text-white">{selectedNode}</span>
                 </div>
                 <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Kind</span>
+                  <span className="font-semibold text-white">{nodeKindMap.get(selectedNode) ?? '—'}</span>
+                </div>
+                <div className="flex items-center justify-between">
                   <span className="text-slate-400">Posterior</span>
-                  <span className="font-semibold text-cyan-300">{formatProbability(selectedNodeProbability ?? 0)}</span>
+                  <span className="font-semibold text-cyan-300">
+                    {selectedNodeProbability === null ? '—' : formatProbability(selectedNodeProbability)}
+                    {isEvidenceNode(selectedNode) ? ' (pinned by evidence)' : ''}
+                  </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-slate-400">Risk rank</span>
                   <span className="font-semibold text-white">{riskRanking.findIndex((entry) => entry.asset === selectedNode) + 1 || '—'}</span>
                 </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">On top attack path</span>
+                  <span className={`font-semibold ${attackPathNodes.has(selectedNode) ? 'text-rose-300' : 'text-slate-400'}`}>
+                    {attackPathNodes.has(selectedNode) ? 'Yes' : 'No'}
+                  </span>
+                </div>
               </div>
             ) : (
               <p className="mt-4 text-sm text-slate-400">Select a node in the network to inspect its probability details.</p>
             )}
-          </div>
-        </section>
-
-        <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <h2 className="text-xl font-semibold">Run Assessment</h2>
-            <div className="flex items-center gap-3">
-              {loading ? <span className="text-cyan-300">Computing posterior risk...</span> : null}
-              <button
-                onClick={() => void runAssessment()}
-                className="rounded-lg bg-emerald-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:opacity-60"
-                disabled={loading || !topology.assets || !Object.keys(topology.assets).length}
-              >
-                {loading ? 'Running...' : 'Run Assessment'}
-              </button>
-            </div>
           </div>
         </section>
 
@@ -551,12 +1134,15 @@ export default function App() {
 
                 <div className="rounded-xl bg-slate-800 p-4">
                   <h3 className="font-semibold">Posterior probabilities</h3>
-                  <div className="mt-3 space-y-2 text-sm">
-                    {Object.entries(result.posteriors).map(([asset, probability]) => (
-                      <div key={asset} className="flex items-center justify-between rounded-lg bg-slate-900/70 px-3 py-2">
-                        <span>{asset}</span>
+                  <div className="mt-3 max-h-56 space-y-2 overflow-y-auto pr-1 text-sm">
+                    {chartData.map(({ asset, probability, pinned }) => (
+                      <button key={asset} onClick={() => setSelectedNode(asset)} className="flex w-full items-center justify-between rounded-lg bg-slate-900/70 px-3 py-2 text-left hover:bg-slate-900">
+                        <span>
+                          {asset}
+                          {pinned ? ' 📌' : ''}
+                        </span>
                         <span className="font-medium text-cyan-200">{formatProbability(probability)}</span>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
@@ -565,61 +1151,62 @@ export default function App() {
                   <h3 className="font-semibold">Top high-risk assets</h3>
                   <div className="mt-3 space-y-2 text-sm">
                     {riskRanking.map((entry) => (
-                      <div key={entry.asset} className="flex items-center justify-between rounded-lg bg-slate-900/70 px-3 py-2">
+                      <button key={entry.asset} onClick={() => setSelectedNode(entry.asset)} className="flex w-full items-center justify-between rounded-lg bg-slate-900/70 px-3 py-2 text-left hover:bg-slate-900">
                         <span>{entry.asset}</span>
                         <span className="font-medium text-rose-300">{formatProbability(entry.risk)}</span>
-                      </div>
+                      </button>
                     ))}
                   </div>
                 </div>
 
                 <div className="rounded-xl bg-slate-800 p-4">
                   <h3 className="font-semibold">Critical attack path</h3>
-                  <p className="mt-3 text-sm text-slate-300">
+                  <p className="mt-3 break-words text-sm text-slate-300">
                     {result.attack_paths?.length ? JSON.stringify(result.attack_paths[0]) : 'No attack path available from the current evidence.'}
                   </p>
                 </div>
               </div>
             ) : (
-              <p className="mt-4 text-slate-400">No assessment results available. Run the assessment to populate the dashboard.</p>
+              <p className="mt-4 text-slate-400">No assessment results yet. Load a topology, optionally mark evidence, then run the assessment.</p>
             )}
           </div>
 
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-            <h2 className="text-xl font-semibold">Risk Distribution</h2>
-            <div className="mt-4 h-80 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 10, right: 12, left: 0, bottom: 24 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                  <XAxis
-                    dataKey="asset"
-                    tick={{ fill: '#e2e8f0', fontSize: 12 }}
-                    angle={-24}
-                    textAnchor="end"
-                    height={52}
-                    axisLine={{ stroke: '#64748b' }}
-                    tickLine={{ stroke: '#64748b' }}
-                  />
-                  <YAxis
-                    domain={[0, 1]}
-                    tick={{ fill: '#cbd5e1', fontSize: 12 }}
-                    label={{ value: 'Probability', angle: -90, position: 'insideLeft', fill: '#cbd5e1' }}
-                    axisLine={{ stroke: '#64748b' }}
-                    tickLine={{ stroke: '#64748b' }}
-                  />
-                  <Tooltip
-                    formatter={(value: number) => formatProbability(value)}
-                    labelStyle={{ color: '#e2e8f0' }}
-                    contentStyle={{ background: '#0f172a', borderRadius: '12px', border: '1px solid rgba(56, 189, 248, 0.25)', color: '#e2e8f0' }}
-                  />
-                  <Legend wrapperStyle={{ color: '#e2e8f0' }} />
-                  <Bar dataKey="probability" name="Posterior Probability" radius={[6, 6, 0, 0]}>
-                    {chartData.map((entry) => (
-                      <Cell key={entry.asset} fill={getProbabilityColor(entry.probability)} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold">Risk Distribution</h2>
+              <button onClick={exportChartSvg} className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-300 hover:border-cyan-500/50 hover:text-cyan-200">
+                Export SVG
+              </button>
+            </div>
+            <div ref={barChartWrapRef} className="mt-4 h-80 w-full">
+              {chartData.length ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData} margin={{ top: 10, right: 12, left: 0, bottom: 24 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                    <XAxis dataKey="asset" tick={{ fill: '#e2e8f0', fontSize: 12 }} angle={-24} textAnchor="end" height={52} axisLine={{ stroke: '#64748b' }} tickLine={{ stroke: '#64748b' }} />
+                    <YAxis
+                      domain={[0, 1]}
+                      tick={{ fill: '#cbd5e1', fontSize: 12 }}
+                      label={{ value: 'Probability', angle: -90, position: 'insideLeft', fill: '#cbd5e1' }}
+                      axisLine={{ stroke: '#64748b' }}
+                      tickLine={{ stroke: '#64748b' }}
+                    />
+                    <Tooltip
+                      formatter={(value: number) => formatProbability(value)}
+                      labelStyle={{ color: '#e2e8f0' }}
+                      contentStyle={{ background: '#0f172a', borderRadius: '12px', border: '1px solid rgba(56, 189, 248, 0.25)', color: '#e2e8f0' }}
+                    />
+                    <Legend wrapperStyle={{ color: '#e2e8f0' }} />
+                    <Bar dataKey="probability" name="Posterior Probability" radius={[6, 6, 0, 0]} onClick={(entry: { asset: string }) => setSelectedNode(entry.asset)} cursor="pointer">
+                      {chartData.map((entry) => (
+                        <Cell key={entry.asset} fill={getProbabilityColor(entry.probability)} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full items-center justify-center text-sm text-slate-500">Run an assessment to populate this chart.</div>
+              )}
             </div>
           </div>
         </section>
@@ -628,30 +1215,22 @@ export default function App() {
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
             <h2 className="text-xl font-semibold">Risk Ranking</h2>
             <div className="mt-4 h-72 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    dataKey="value"
-                    nameKey="name"
-                    innerRadius={58}
-                    outerRadius={96}
-                    paddingAngle={3}
-                    label={({ name, percent }) => `${name}: ${(percent ?? 0) * 100}%`}
-                    labelLine={false}
-                  >
-                    <Cell fill="#fb7185" />
-                    <Cell fill="#f59e0b" />
-                    <Cell fill="#38bdf8" />
-                    <Cell fill="#34d399" />
-                  </Pie>
-                  <Tooltip
-                    formatter={(value: number) => [`${value} assets`, 'Count']}
-                    contentStyle={{ background: '#0f172a', border: '1px solid rgba(56, 189, 248, 0.25)', color: '#e2e8f0' }}
-                  />
-                  <Legend wrapperStyle={{ color: '#e2e8f0' }} />
-                </PieChart>
-              </ResponsiveContainer>
+              {pieData.some((entry) => entry.value > 0) ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={58} outerRadius={96} paddingAngle={3} label={({ name, percent }) => `${name}: ${Math.round((percent ?? 0) * 100)}%`} labelLine={false}>
+                      <Cell fill="#fb7185" />
+                      <Cell fill="#f59e0b" />
+                      <Cell fill="#38bdf8" />
+                      <Cell fill="#34d399" />
+                    </Pie>
+                    <Tooltip formatter={(value: number) => [`${value} assets`, 'Count']} contentStyle={{ background: '#0f172a', border: '1px solid rgba(56, 189, 248, 0.25)', color: '#e2e8f0' }} />
+                    <Legend wrapperStyle={{ color: '#e2e8f0' }} />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full items-center justify-center text-sm text-slate-500">Run an assessment to see the risk-level breakdown.</div>
+              )}
             </div>
           </div>
 
@@ -686,19 +1265,42 @@ export default function App() {
 
         <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
           <h2 className="text-xl font-semibold">Reports</h2>
+          <p className="mt-1 text-xs text-slate-500">
+            CSV/JSON/SVG buttons generate from the current in-browser results. Everything else is served by the backend from the last{' '}
+            <code>/analyze</code> run's output directory.
+          </p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <a className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400" href={`${API_BASE_URL}/reports/summary.txt`} download>
-              Summary Report
-            </a>
-            <a className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400" href={`${API_BASE_URL}/reports/risk_table.csv`} download>
-              CSV Risk Table
-            </a>
-            <a className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400" href={`${API_BASE_URL}/reports/posteriors.json`} download>
-              Posterior JSON
-            </a>
-            <a className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400" href={`${API_BASE_URL}/reports/assessment.pdf`} download>
-              Assessment PDF
-            </a>
+            <button onClick={exportRiskCsv} className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400">
+              Export risk table (CSV)
+            </button>
+            <button onClick={exportPosteriorsJson} className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400">
+              Export posteriors (JSON)
+            </button>
+            <button onClick={exportFullResultJson} className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400">
+              Export full result (JSON)
+            </button>
+            <button onClick={exportChartSvg} className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400">
+              Export risk chart (SVG)
+            </button>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-3">
+            {[
+              ['summary.txt', 'Summary (backend)'],
+              ['metrics.json', 'Metrics (backend)'],
+              ['graph.json', 'Graph JSON (backend)'],
+              ['graph.png', 'Graph image (backend)'],
+              ['cpts.json', 'CPTs (backend)'],
+              ['assessment.pdf', 'Assessment PDF (backend)'],
+            ].map(([file, label]) => (
+              <a
+                key={file}
+                className="rounded-lg border border-slate-600 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-cyan-500/50 hover:text-cyan-200"
+                href={`${API_BASE_URL}/reports/${file}`}
+                download
+              >
+                {label}
+              </a>
+            ))}
           </div>
         </section>
       </main>

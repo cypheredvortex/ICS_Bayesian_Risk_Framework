@@ -2,14 +2,13 @@
 risk.py  (PHASE 5)
 
 Posterior Probabilities -> Risk Table.
-Reaches back into Phase 1's `assets` for consequence_severity and scope --
-the one static fact that never needed to flow through the graph/inference
-machinery.
 """
 
 from pathlib import Path
 
 import pandas as pd
+
+from config import get_impact_weight
 
 
 def m_scope(attrs: dict) -> float:
@@ -19,17 +18,20 @@ def m_scope(attrs: dict) -> float:
 
 
 def build_risk_table(posteriors: dict, assets: dict) -> pd.DataFrame:
+    impact_weight = get_impact_weight()
     rows = []
     for node_id, p in posteriors.items():
         attrs = assets[node_id]
-        s = attrs.get("consequence_severity", 0)
+        severity = float(attrs.get("consequence_severity", 0))
         scope_mult = m_scope(attrs)
-        risk = p * s * scope_mult
+        impact = (severity * scope_mult) ** impact_weight
+        risk = p * impact
         rows.append({
             "asset": node_id,
             "P(compromised|evidence)": round(p, 3),
-            "severity": s,
+            "severity": severity,
             "scope_mult": round(scope_mult, 3),
+            "impact": round(impact, 3),
             "risk": round(risk, 3),
         })
 
@@ -55,7 +57,7 @@ if __name__ == "__main__":
     base_probs = compute_base_probs(assets)
     model = parameterize(model, edge_weights, base_probs)
 
-    evidence = {"corp_net": 1}
+    evidence = {"local_hmi": 1}
     posteriors = compute_posteriors(model, evidence)
 
     risk_table = build_risk_table(posteriors, assets)
