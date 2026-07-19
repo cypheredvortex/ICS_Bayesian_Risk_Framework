@@ -55,6 +55,7 @@ type ResultPayload = {
     edges: GraphEdge[]
   }
   posteriors: Record<string, number>
+  cpts?: Record<string, { parents: string[]; rows: Array<{ parent_state: Record<string, number>; p_compromised: number }> }>
   risk_scores: Array<Record<string, unknown>>
   attack_paths: Array<Record<string, unknown>>
   summary: {
@@ -228,7 +229,7 @@ function computeLayeredPositions(nodeIds: string[], edges: Array<{ source: strin
     const d = depth.get(id) ?? 0
     const rank = layerCounts.get(d) ?? 0
     layerCounts.set(d, rank + 1)
-    positions.set(id, { x: d * 240 + 40, y: rank * 110 + 40 })
+    positions.set(id, { x: d * 360 + 60, y: rank * 180 + 60 })
   })
   return positions
 }
@@ -271,6 +272,7 @@ export default function App() {
   const [loading, setLoading] = useState(false)
   const [selectedNode, setSelectedNode] = useState<string | null>(null)
   const [nodeQuery, setNodeQuery] = useState('')
+  const [cptQuery, setCptQuery] = useState('')
   const [colorMode, setColorMode] = useState<'risk' | 'kind'>('risk')
   const [showAttackPath, setShowAttackPath] = useState(true)
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -643,7 +645,7 @@ export default function App() {
       topology,
       evidence: Object.entries(evidence)
         .filter(([, state]) => state !== 'Unknown')
-        .map(([asset, state]) => ({ asset, state: state === 'Compromised' ? 1 : 0 })),
+        .map(([asset, state]) => ({ asset, state })),
     }
 
     try {
@@ -1162,7 +1164,9 @@ export default function App() {
                 <div className="rounded-xl bg-slate-800 p-4">
                   <h3 className="font-semibold">Critical attack path</h3>
                   <p className="mt-3 break-words text-sm text-slate-300">
-                    {result.attack_paths?.length ? JSON.stringify(result.attack_paths[0]) : 'No attack path available from the current evidence.'}
+                    {result.attack_paths?.length
+                      ? `${((result.attack_paths[0].path as string[] | undefined) ?? []).join(' → ')} · score ${formatProbability(Number(result.attack_paths[0].score ?? 0))}`
+                      : 'No connected attack path was found. Select a Compromised evidence asset to trace a specific scenario.'}
                   </p>
                 </div>
               </div>
@@ -1224,7 +1228,7 @@ export default function App() {
                       <Cell fill="#38bdf8" />
                       <Cell fill="#34d399" />
                     </Pie>
-                    <Tooltip formatter={(value: number) => [`${value} assets`, 'Count']} contentStyle={{ background: '#0f172a', border: '1px solid rgba(56, 189, 248, 0.25)', color: '#e2e8f0' }} />
+                    <Tooltip formatter={(value: number) => [`${value} assets`, 'Count']} contentStyle={{ background: '#0f172a', border: '1px solid rgba(56, 189, 248, 0.25)', color: '#f8fafc' }} labelStyle={{ color: '#f8fafc', fontWeight: 700 }} itemStyle={{ color: '#f8fafc' }} />
                     <Legend wrapperStyle={{ color: '#e2e8f0' }} />
                   </PieChart>
                 </ResponsiveContainer>
@@ -1261,6 +1265,32 @@ export default function App() {
               )}
             </div>
           </div>
+        </section>
+
+        <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <h2 className="text-xl font-semibold">Conditional Probability Tables</h2>
+              <p className="mt-1 text-sm text-slate-400">Inspect each node’s generated Noisy-OR CPT. Each row is P(node compromised | parent states).</p>
+            </div>
+            <input value={cptQuery} onChange={(event) => setCptQuery(event.target.value)} placeholder="Search node CPTs" aria-label="Search conditional probability tables" className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-cyan-500" />
+          </div>
+          {result?.cpts ? (
+            <div className="mt-4 grid gap-4 lg:grid-cols-2">
+              {Object.entries(result.cpts).filter(([asset]) => asset.toLowerCase().includes(cptQuery.trim().toLowerCase())).map(([asset, cpt]) => (
+                <details key={asset} className="overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60">
+                  <summary className="cursor-pointer px-4 py-3 font-semibold text-slate-100 hover:bg-slate-800">
+                    {asset} <span className="ml-2 text-xs font-normal text-slate-400">parents: {cpt.parents.length ? cpt.parents.join(', ') : 'none'}</span>
+                  </summary>
+                  <div className="max-h-60 overflow-auto border-t border-slate-800">
+                    <table className="w-full text-left text-xs"><thead className="sticky top-0 bg-slate-800 text-slate-300"><tr><th className="p-3">Parent states</th><th className="p-3">P(compromised)</th></tr></thead>
+                      <tbody>{cpt.rows.map((row, index) => <tr key={index} className="border-t border-slate-800"><td className="p-3 text-slate-300">{Object.entries(row.parent_state).map(([parent, state]) => `${parent}=${state}`).join(', ') || 'Root node'}</td><td className="p-3 font-semibold text-cyan-200">{formatProbability(row.p_compromised)}</td></tr>)}</tbody>
+                    </table>
+                  </div>
+                </details>
+              ))}
+            </div>
+          ) : <p className="mt-4 text-sm text-slate-500">Run an assessment to generate CPTs for every node.</p>}
         </section>
 
         <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6">

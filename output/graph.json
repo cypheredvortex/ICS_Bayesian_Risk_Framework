@@ -1,79 +1,59 @@
 {
   "nodes": [
     {
-      "id": "vendor_remote_access"
+      "id": "cloud_bms_portal"
     },
     {
-      "id": "engineering_workstation"
+      "id": "building_mgmt_system"
     },
     {
-      "id": "scada_server"
+      "id": "facility_manager"
     },
     {
-      "id": "operator"
+      "id": "hvac_controller"
     },
     {
-      "id": "plc_dosing"
+      "id": "fire_suppression_controller"
     },
     {
-      "id": "chlorine_pump"
-    },
-    {
-      "id": "water_supply"
-    },
-    {
-      "id": "historian"
+      "id": "building_climate"
     }
   ],
   "edges": [
     {
-      "source": "vendor_remote_access",
-      "target": "engineering_workstation",
+      "source": "cloud_bms_portal",
+      "target": "building_mgmt_system",
       "rel_type": "connects-to",
       "firewalled": false,
       "weight": 0.5
     },
     {
-      "source": "engineering_workstation",
-      "target": "scada_server",
+      "source": "facility_manager",
+      "target": "building_mgmt_system",
       "rel_type": "controls",
       "firewalled": false,
       "weight": 0.7
     },
     {
-      "source": "operator",
-      "target": "scada_server",
-      "rel_type": "controls",
+      "source": "building_mgmt_system",
+      "target": "hvac_controller",
+      "rel_type": "programs / operates",
       "firewalled": false,
-      "weight": 0.7
+      "weight": 0.8
     },
     {
-      "source": "scada_server",
-      "target": "plc_dosing",
+      "source": "building_mgmt_system",
+      "target": "fire_suppression_controller",
       "rel_type": "programs / operates",
       "firewalled": true,
       "weight": 0.24
     },
     {
-      "source": "plc_dosing",
-      "target": "chlorine_pump",
+      "source": "hvac_controller",
+      "target": "building_climate",
       "rel_type": "actuates",
       "firewalled": false,
       "weight": 0.6
-    },
-    {
-      "source": "chlorine_pump",
-      "target": "water_supply",
-      "rel_type": "actuates",
-      "firewalled": false,
-      "weight": 0.6
-    },
-    {
-      "source": "scada_server",
-      "target": "historian",
-      "rel_type": "monitors",
-      "firewalled": false,
-      "weight": 0.2
     }
   ]
 }

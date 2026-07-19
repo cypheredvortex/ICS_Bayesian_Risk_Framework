@@ -9,18 +9,26 @@ OUTPUT_DIR = Path(__file__).resolve().parents[2] / "output"
 
 def analyze(
     topology: dict[str, Any],
-    evidence: list[dict[str, str]] | None = None,
+    evidence: list[dict[str, Any]] | None = None,
     write_outputs: bool = True,
     output_dir: str | Path | None = None,
 ) -> dict[str, Any]:
     """Adapter that translates HTTP input into the existing framework call."""
     evidence_map: dict[str, int] = {}
     for item in evidence or []:
-        state = item.get("state", "Unknown").strip().lower()
-        if state == "compromised":
+        state = item.get("state", "Unknown")
+        if state in (1, "1"):
             evidence_map[item["asset"]] = 1
-        elif state == "safe":
+        elif state in (0, "0"):
             evidence_map[item["asset"]] = 0
+        elif isinstance(state, str) and state.strip().lower() == "compromised":
+            evidence_map[item["asset"]] = 1
+        elif isinstance(state, str) and state.strip().lower() == "safe":
+            evidence_map[item["asset"]] = 0
+        elif isinstance(state, str) and state.strip().lower() == "unknown":
+            continue
+        else:
+            raise ValueError(f"Evidence state for '{item.get('asset', 'unknown')}' must be Unknown, Compromised, Safe, 0, or 1.")
 
     result = run_framework(
         topology=topology,
@@ -31,6 +39,7 @@ def analyze(
     return {
         "graph": result["graph"],
         "posteriors": result["posteriors"],
+        "cpts": result["cpts"],
         "risk_scores": result["risk_scores"],
         "attack_paths": result["attack_paths"],
         "summary": result["summary"],

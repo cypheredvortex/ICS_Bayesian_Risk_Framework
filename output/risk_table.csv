@@ -1,9 +1,4 @@
 asset,P(compromised|evidence),severity,scope_mult,impact,risk
-engineering_workstation,0.963,6.0,1.0,6.0,5.778
-scada_server,0.768,7.0,1.0,7.0,5.377
-plc_dosing,0.419,9.0,1.4,12.6,5.283
-chlorine_pump,0.332,8.0,1.3,10.4,3.457
-water_supply,0.207,10.0,1.4,14.0,2.904
-historian,0.698,4.0,1.0,4.0,2.793
-vendor_remote_access,0.52,2.0,1.0,2.0,1.04
-operator,0.175,0.0,1.0,0.0,0.0
+fire_suppression_controller,0.27,9.0,1.4,12.6,3.402
+building_climate,0.03,7.0,1.2,8.4,0.252
+facility_manager,0.089,0.0,1.0,0.0,0.0

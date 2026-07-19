@@ -19,7 +19,7 @@ from assets import load_topology
 from attack_paths import compute_attack_paths
 from graph_builder import build_graph_skeleton, graph_to_dict
 from probability import compute_base_probs
-from cpt_generator import parameterize
+from cpt_generator import cpts_to_dict, parameterize
 from inference import compute_posteriors_with_evidence
 from risk import build_risk_table, write_risk_table
 from outputs import (
@@ -77,6 +77,7 @@ def run(topology: str | Path | dict, evidence: dict | None = None, output_dir: s
         "relationships": relationships,
         "model": model,
         "edge_weights": edge_weights,
+        "cpts": cpts_to_dict(model),
         "graph": graph,
         "posteriors": posteriors,
         "risk_scores": risk_table.to_dict(orient="records"),

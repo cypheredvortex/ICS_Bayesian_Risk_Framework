@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 
 class EvidenceEntry(BaseModel):
     asset: str = Field(..., description="Asset identifier")
-    state: str = Field(..., description="Unknown | Compromised | Safe")
+    state: str | int = Field(..., description="Unknown | Compromised | Safe | 0 | 1")
 
 
 class AnalyzeRequest(BaseModel):

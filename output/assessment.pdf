@@ -9,32 +9,29 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
 endobj
 4 0 obj
-<< /Length 636 >>
+<< /Length 651 >>
 stream
 BT /F1 11 Tf 40 780 Td (ICS Bayesian Risk Assessment Report
 ==========================================
-Overall risk: 26.632
+Overall risk: 3.654
 Risk level: critical
-Assets: 8
-Relationships: 7
-Evidence used: {}
+Assets: 6
+Relationships: 5
+Evidence used: {'cloud_bms_portal': 1, 'building_mgmt_system': 0, 'hvac_controller': 0}
 
 Top risk assets:
-- engineering_workstation: risk=5.778 P=0.963
-- scada_server: risk=5.377 P=0.768
-- plc_dosing: risk=5.283 P=0.419
-- chlorine_pump: risk=3.457 P=0.332
-- water_supply: risk=2.904 P=0.207
+- fire_suppression_controller: risk=3.402 P=0.27
+- building_climate: risk=0.252 P=0.03
+- facility_manager: risk=0.0 P=0.089
 
 Posterior probabilities:
-- vendor_remote_access: 0.52
-- engineering_workstation: 0.963
-- scada_server: 0.7681
-- operator: 0.175
-- plc_dosing: 0.4192
-- chlorine_pump: 0.3324
-- water_supply: 0.2074
-- historian: 0.6983) Tj ET
+- facility_manager: 0.0887
+- fire_suppression_controller: 0.27
+- building_climate: 0.03
+
+Critical attack path:
+cloud_bms_portal -> building_mgmt_system -> fire_suppression_controller
+Score: 0.40824) Tj ET
 endstream
 endobj
 5 0 obj
@@ -47,9 +44,9 @@ xref
 0000000058 00000 n 
 0000000115 00000 n 
 0000000241 00000 n 
-0000000908 00000 n 
+0000000923 00000 n 
 trailer
 << /Size 6 /Root 1 0 R >>
 startxref
-978
+993
 %%EOF

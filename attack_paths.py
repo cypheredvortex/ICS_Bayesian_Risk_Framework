@@ -31,15 +31,19 @@ def compute_attack_paths(
         "target_risk": float,
       }
     """
-    sources = [node for node, state in evidence_used.items() if state == 1]
-    if not sources:
-        return []
-
     adjacency: dict[str, list[tuple[str, float, str]]] = {}
+    destinations: set[str] = set()
     for rel in relationships:
         source, target, rel_type, _firewalled, _meta = _unpack_relationship(rel)
         weight = edge_weights.get((source, target), 0.0)
         adjacency.setdefault(source, []).append((target, weight, rel_type))
+        destinations.add(target)
+
+    sources = [node for node, state in evidence_used.items() if state == 1]
+    if not sources:
+        sources = [node for node in adjacency if node not in destinations]
+    if not sources:
+        return []
 
     risk_by_asset = {
         str(row.get("asset")): float(row.get("risk", 0.0))
