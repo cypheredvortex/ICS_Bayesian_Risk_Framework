@@ -3,11 +3,10 @@ ICS Risk Pipeline -- Run Summary
 Topology file : inline-topology
 Assets        : 6
 Relationships : 5
-Evidence used : {'cloud_bms_portal': 1, 'building_mgmt_system': 0, 'hvac_controller': 0}
+Evidence used : {'cloud_bms_portal': 1, 'building_mgmt_system': 0, 'hvac_controller': 0, 'fire_suppression_controller': 1}
 
 Top 5 assets by risk:
 ----------------------------------------
-  fire_suppression_controller risk=3.402  P(compromised)=0.270  severity=9.0
   building_climate         risk=0.252  P(compromised)=0.030  severity=7.0
   facility_manager         risk=0.000  P(compromised)=0.089  severity=0.0
 

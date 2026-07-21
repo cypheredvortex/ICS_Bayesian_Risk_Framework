@@ -41,7 +41,9 @@ def build_risk_table(posteriors: dict, assets: dict) -> pd.DataFrame:
 def write_risk_table(df: pd.DataFrame, path: str | Path = "output/risk_table.csv") -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    df.to_csv(path, index=False)
+    # Keep the downloadable risk register spreadsheet-friendly and consistent:
+    # values remain numeric, while all scores are shown to three decimals.
+    df.to_csv(path, index=False, float_format="%.3f")
     return path
 
 

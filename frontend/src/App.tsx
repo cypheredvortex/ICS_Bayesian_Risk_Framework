@@ -139,33 +139,6 @@ function formatProbability(value: number) {
   return Number(value).toFixed(3)
 }
 
-function downloadBlob(content: string, filename: string, mime: string) {
-  const blob = new Blob([content], { type: mime })
-  const url = URL.createObjectURL(blob)
-  const anchor = document.createElement('a')
-  anchor.href = url
-  anchor.download = filename
-  document.body.appendChild(anchor)
-  anchor.click()
-  anchor.remove()
-  URL.revokeObjectURL(url)
-}
-
-function toCsv(rows: Array<Record<string, unknown>>) {
-  if (!rows.length) return ''
-  const headers = Array.from(
-    rows.reduce((set, row) => {
-      Object.keys(row).forEach((key) => set.add(key))
-      return set
-    }, new Set<string>()),
-  )
-  const lines = [headers.join(',')]
-  for (const row of rows) {
-    lines.push(headers.map((header) => JSON.stringify(row[header] ?? '')).join(','))
-  }
-  return lines.join('\n')
-}
-
 // FastAPI's HTTPException serializes as {"detail": "..."}. Pull that out
 // instead of dumping raw JSON into the UI; fall back to plain text for
 // non-JSON error bodies (e.g. a proxy/500 page).
@@ -282,7 +255,6 @@ export default function App() {
   const [toasts, setToasts] = useState<ToastItem[]>([])
 
   const searchInputRef = useRef<HTMLInputElement>(null)
-  const barChartWrapRef = useRef<HTMLDivElement>(null)
   const toastCounter = useRef(0)
 
   const pushToast = useCallback((message: string, tone: ToastItem['tone'] = 'info') => {
@@ -733,44 +705,6 @@ export default function App() {
 
   const settingsDirty = JSON.stringify(serverSettings) !== JSON.stringify(draftSettings)
 
-  const exportRiskCsv = () => {
-    if (!result?.risk_scores?.length) {
-      pushToast('Run an assessment before exporting the risk table.', 'error')
-      return
-    }
-    downloadBlob(toCsv(result.risk_scores), 'risk_table.csv', 'text/csv')
-    pushToast('Downloaded risk_table.csv', 'success')
-  }
-
-  const exportPosteriorsJson = () => {
-    if (!result) {
-      pushToast('Run an assessment before exporting posteriors.', 'error')
-      return
-    }
-    downloadBlob(JSON.stringify(result.posteriors, null, 2), 'posteriors.json', 'application/json')
-    pushToast('Downloaded posteriors.json', 'success')
-  }
-
-  const exportFullResultJson = () => {
-    if (!result) {
-      pushToast('Run an assessment before exporting results.', 'error')
-      return
-    }
-    downloadBlob(JSON.stringify(result, null, 2), 'assessment_result.json', 'application/json')
-    pushToast('Downloaded assessment_result.json', 'success')
-  }
-
-  const exportChartSvg = () => {
-    const svg = barChartWrapRef.current?.querySelector('svg')
-    if (!svg) {
-      pushToast('Run an assessment to generate the chart before exporting.', 'error')
-      return
-    }
-    const serialized = new XMLSerializer().serializeToString(svg)
-    downloadBlob(`<?xml version="1.0" standalone="no"?>\n${serialized}`, 'risk_distribution.svg', 'image/svg+xml')
-    pushToast('Downloaded risk_distribution.svg', 'success')
-  }
-
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <Toasts items={toasts} onDismiss={dismissToast} />
@@ -938,8 +872,8 @@ export default function App() {
         <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl shadow-slate-950/30">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h2 className="text-2xl font-semibold">Home</h2>
-              <p className="mt-2 text-slate-300">Run a full cyber-risk assessment using the existing Bayesian inference engine.</p>
+              <h2 className="text-2xl font-semibold">Topology &amp; Assessment</h2>
+              <p className="mt-2 text-slate-300">Choose a preset or upload a topology, then run a full Bayesian cyber-risk assessment.</p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
               <label className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200">
@@ -956,6 +890,16 @@ export default function App() {
                   <option value="water_treatment">Water Treatment</option>
                 </select>
               </label>
+              <label className="cursor-pointer rounded-lg border border-slate-600 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:border-cyan-500/50 hover:text-cyan-200">
+                Upload topology
+                <input
+                  type="file"
+                  accept=".json,.yaml,.yml,.csv,application/json,text/yaml,text/csv"
+                  onChange={(event) => void handleFileUpload(event)}
+                  className="sr-only"
+                  aria-label="Upload a topology file"
+                />
+              </label>
               <button
                 onClick={() => void runAssessment()}
                 disabled={loading || !Object.keys(topology.assets).length}
@@ -966,35 +910,16 @@ export default function App() {
               </button>
             </div>
           </div>
+          <div className="mt-4 rounded-xl bg-slate-950/80 px-4 py-3 text-sm text-slate-300" aria-live="polite">
+            {Object.keys(topology.assets).length ? (
+              <span>Active topology: <strong className="text-slate-100">{uploadedFileName || 'Preset dataset'}</strong> &middot; {Object.keys(topology.assets).length} assets &middot; {topology.relationships.length} connections</span>
+            ) : (
+              <span className="text-slate-400">Select a preset or upload a .json, .yaml/.yml, or .csv topology file to begin.</span>
+            )}
+          </div>
         </section>
 
-        <section className="grid gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-            <h2 className="text-xl font-semibold">Upload Topology</h2>
-            <label className="mt-4 block text-sm text-slate-300" htmlFor="topology-upload">
-              Topology file (.json, .yaml/.yml, or .csv)
-            </label>
-            <input
-              id="topology-upload"
-              type="file"
-              accept=".json,.yaml,.yml,.csv,application/json,text/yaml,text/csv"
-              onChange={(event) => void handleFileUpload(event)}
-              className="mt-2 block w-full rounded-lg border border-slate-700 bg-slate-950 p-3 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-cyan-500 file:px-3 file:py-1.5 file:text-slate-950 file:font-medium hover:file:bg-cyan-400"
-              aria-label="Upload a topology file"
-            />
-            <div className="mt-4 rounded-xl bg-slate-950/80 p-4 text-sm text-slate-300">
-              {Object.keys(topology.assets).length ? (
-                <>
-                  <p>File: {uploadedFileName || 'Preset dataset'}</p>
-                  <p className="mt-2">Assets: {Object.keys(topology.assets).length}</p>
-                  <p>Connections: {topology.relationships.length}</p>
-                </>
-              ) : (
-                <p className="text-slate-400">No topology loaded yet. Upload a file or pick a preset dataset above to get started.</p>
-              )}
-            </div>
-          </div>
-
+        <section>
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
             <h2 className="text-xl font-semibold">Evidence Selection</h2>
             <div className="mt-4 max-h-72 space-y-3 overflow-y-auto pr-1">
@@ -1176,13 +1101,8 @@ export default function App() {
           </div>
 
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold">Risk Distribution</h2>
-              <button onClick={exportChartSvg} className="rounded-md border border-slate-700 px-2 py-1 text-xs text-slate-300 hover:border-cyan-500/50 hover:text-cyan-200">
-                Export SVG
-              </button>
-            </div>
-            <div ref={barChartWrapRef} className="mt-4 h-80 w-full">
+            <h2 className="text-xl font-semibold">Risk Distribution</h2>
+            <div className="mt-4 h-80 w-full">
               {chartData.length ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} margin={{ top: 10, right: 12, left: 0, bottom: 24 }}>
@@ -1200,7 +1120,6 @@ export default function App() {
                       labelStyle={{ color: '#e2e8f0' }}
                       contentStyle={{ background: '#0f172a', borderRadius: '12px', border: '1px solid rgba(56, 189, 248, 0.25)', color: '#e2e8f0' }}
                     />
-                    <Legend wrapperStyle={{ color: '#e2e8f0' }} />
                     <Bar dataKey="probability" name="Posterior Probability" radius={[6, 6, 0, 0]} onClick={(entry: { asset: string }) => setSelectedNode(entry.asset)} cursor="pointer">
                       {chartData.map((entry) => (
                         <Cell key={entry.asset} fill={getProbabilityColor(entry.probability)} />
@@ -1222,7 +1141,7 @@ export default function App() {
               {pieData.some((entry) => entry.value > 0) ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
-                    <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={58} outerRadius={96} paddingAngle={3} label={({ name, percent }) => `${name}: ${Math.round((percent ?? 0) * 100)}%`} labelLine={false}>
+                    <Pie data={pieData} dataKey="value" nameKey="name" innerRadius={58} outerRadius={96} paddingAngle={3} label={false} labelLine={false}>
                       <Cell fill="#fb7185" />
                       <Cell fill="#f59e0b" />
                       <Cell fill="#38bdf8" />
@@ -1236,6 +1155,16 @@ export default function App() {
                 <div className="flex h-full items-center justify-center text-sm text-slate-500">Run an assessment to see the risk-level breakdown.</div>
               )}
             </div>
+            {pieData.some((entry) => entry.value > 0) ? (
+              <div className="mt-2 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs" aria-label="Risk level counts">
+                {pieData.map((entry, index) => (
+                  <span key={entry.name} className="whitespace-nowrap text-slate-200">
+                    <span className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full" style={{ backgroundColor: ['#fb7185', '#f59e0b', '#38bdf8', '#34d399'][index] }} />
+                    {entry.name[0].toUpperCase() + entry.name.slice(1)}: {entry.value}
+                  </span>
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
@@ -1295,32 +1224,11 @@ export default function App() {
 
         <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
           <h2 className="text-xl font-semibold">Reports</h2>
-          <p className="mt-1 text-xs text-slate-500">
-            CSV/JSON/SVG buttons generate from the current in-browser results. Everything else is served by the backend from the last{' '}
-            <code>/analyze</code> run's output directory.
-          </p>
+          <p className="mt-1 text-sm text-slate-400">Download the two decision-ready outputs from the latest assessment: a sortable risk register and an executive assessment report.</p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <button onClick={exportRiskCsv} className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400">
-              Export risk table (CSV)
-            </button>
-            <button onClick={exportPosteriorsJson} className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400">
-              Export posteriors (JSON)
-            </button>
-            <button onClick={exportFullResultJson} className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400">
-              Export full result (JSON)
-            </button>
-            <button onClick={exportChartSvg} className="rounded-lg bg-cyan-500 px-4 py-2 font-semibold text-slate-950 transition hover:bg-cyan-400">
-              Export risk chart (SVG)
-            </button>
-          </div>
-          <div className="mt-3 flex flex-wrap gap-3">
             {[
-              ['summary.txt', 'Summary (backend)'],
-              ['metrics.json', 'Metrics (backend)'],
-              ['graph.json', 'Graph JSON (backend)'],
-              ['graph.png', 'Graph image (backend)'],
-              ['cpts.json', 'CPTs (backend)'],
-              ['assessment.pdf', 'Assessment PDF (backend)'],
+              ['risk_table.csv', 'Download risk register (CSV)'],
+              ['assessment.pdf', 'Download assessment report (PDF)'],
             ].map(([file, label]) => (
               <a
                 key={file}

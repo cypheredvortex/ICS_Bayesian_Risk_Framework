@@ -14,13 +14,7 @@ from settings import get_settings, reset_settings, update_settings
 
 DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 REPORT_FILES = {
-    "summary.txt": OUTPUT_DIR / "summary.txt",
     "risk_table.csv": OUTPUT_DIR / "risk_table.csv",
-    "metrics.json": OUTPUT_DIR / "metrics.json",
-    "posteriors.json": OUTPUT_DIR / "posteriors.json",
-    "graph.json": OUTPUT_DIR / "graph.json",
-    "graph.png": OUTPUT_DIR / "graph.png",
-    "cpts.json": OUTPUT_DIR / "cpts.json",
     "assessment.pdf": OUTPUT_DIR / "assessment.pdf",
 }
 DATASET_FILES = {
@@ -33,42 +27,45 @@ DATASET_FILES = {
 
 def _build_pdf_bytes(result: dict[str, Any] | None = None) -> bytes:
     summary = result.get("summary", {}) if result else {}
-    posteriors = result.get("posteriors", {}) if result else {}
     risk_scores = result.get("risk_scores", []) if result else []
     attack_paths = result.get("attack_paths", []) if result else []
 
     lines = [
-        "ICS Bayesian Risk Assessment Report",
-        "=" * 42,
-        f"Overall risk: {summary.get('overall_risk', 'n/a')}",
-        f"Risk level: {summary.get('risk_level', 'n/a')}",
-        f"Assets: {summary.get('asset_count', 'n/a')}",
-        f"Relationships: {summary.get('relationship_count', 'n/a')}",
-        f"Evidence used: {summary.get('evidence_used', {})}",
-        "",
-        "Top risk assets:",
+        ("ICS Bayesian Risk Assessment Report", True),
+        ("Assessment summary", True),
+        (f"Overall risk score: {summary.get('overall_risk', 'n/a')}", False),
+        (f"Risk level: {str(summary.get('risk_level', 'n/a')).title()}", False),
+        (f"Assets assessed: {summary.get('asset_count', 'n/a')}", False),
+        (f"Connections assessed: {summary.get('relationship_count', 'n/a')}", False),
+        (f"Evidence used: {summary.get('evidence_used', {}) or 'None'}", False),
+        ("", False),
+        ("Highest-risk assets", True),
+        ("Asset | Risk score | Probability compromised", False),
     ]
     for row in risk_scores[:5]:
-        lines.append(
-            f"- {row.get('asset')}: risk={row.get('risk')} "
-            f"P={row.get('P(compromised|evidence)')}"
-        )
-
-    lines.append("")
-    lines.append("Posterior probabilities:")
-    for asset, value in list(posteriors.items())[:12]:
-        lines.append(f"- {asset}: {round(float(value), 4)}")
+        lines.append((
+            f"{row.get('asset', 'n/a')} | {row.get('risk', 'n/a')} | {row.get('P(compromised|evidence)', 'n/a')}",
+            False,
+        ))
 
     if attack_paths:
-        lines.append("")
-        lines.append("Critical attack path:")
+        lines.append(("", False))
+        lines.append(("Highest-priority attack path", True))
         path = attack_paths[0]
-        lines.append(" -> ".join(path.get("path", [])))
-        lines.append(f"Score: {path.get('score')}")
+        lines.append((" -> ".join(path.get("path", [])) or "No path available", False))
+        lines.append((f"Path score: {path.get('score', 'n/a')}", False))
 
-    text = "\n".join(lines)[:3500]
-    escaped = text.replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
-    content = f"BT /F1 11 Tf 40 780 Td ({escaped}) Tj ET"
+    # Emit one PDF text command per line. A single Tj command containing newlines
+    # does not render as separate lines in PDF viewers.
+    commands = ["BT"]
+    y = 756
+    for text, is_heading in lines:
+        escaped = str(text)[:100].replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
+        font_size = 16 if text == "ICS Bayesian Risk Assessment Report" else (12 if is_heading else 10)
+        commands.append(f"/F1 {font_size} Tf 1 0 0 1 48 {y} Tm ({escaped}) Tj")
+        y -= 23 if text == "ICS Bayesian Risk Assessment Report" else 16
+    commands.append("ET")
+    content = "\n".join(commands)
     header = b"%PDF-1.4\n"
     objects = [
         b"<< /Type /Catalog /Pages 2 0 R >>",
@@ -235,13 +232,7 @@ def get_dataset(dataset_name: str):
 @app.get("/reports")
 def get_reports():
     return {
-        "summary": "/reports/summary.txt",
         "risk_table": "/reports/risk_table.csv",
-        "metrics": "/reports/metrics.json",
-        "posteriors": "/reports/posteriors.json",
-        "graph": "/reports/graph.json",
-        "graph_image": "/reports/graph.png",
-        "cpts": "/reports/cpts.json",
         "assessment_pdf": "/reports/assessment.pdf",
     }
 
@@ -253,13 +244,7 @@ def download_report(report_name: str):
         raise HTTPException(status_code=404, detail="Requested report does not exist. Run an assessment first.")
 
     media_type = {
-        "summary.txt": "text/plain",
         "risk_table.csv": "text/csv",
-        "metrics.json": "application/json",
-        "posteriors.json": "application/json",
-        "graph.json": "application/json",
-        "cpts.json": "application/json",
-        "graph.png": "image/png",
         "assessment.pdf": "application/pdf",
     }.get(report_name, "application/octet-stream")
 

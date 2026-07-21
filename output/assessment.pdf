@@ -9,29 +9,26 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
 endobj
 4 0 obj
-<< /Length 651 >>
+<< /Length 1053 >>
 stream
-BT /F1 11 Tf 40 780 Td (ICS Bayesian Risk Assessment Report
-==========================================
-Overall risk: 3.654
-Risk level: critical
-Assets: 6
-Relationships: 5
-Evidence used: {'cloud_bms_portal': 1, 'building_mgmt_system': 0, 'hvac_controller': 0}
-
-Top risk assets:
-- fire_suppression_controller: risk=3.402 P=0.27
-- building_climate: risk=0.252 P=0.03
-- facility_manager: risk=0.0 P=0.089
-
-Posterior probabilities:
-- facility_manager: 0.0887
-- fire_suppression_controller: 0.27
-- building_climate: 0.03
-
-Critical attack path:
-cloud_bms_portal -> building_mgmt_system -> fire_suppression_controller
-Score: 0.40824) Tj ET
+BT
+/F1 16 Tf 1 0 0 1 48 756 Tm (ICS Bayesian Risk Assessment Report) Tj
+/F1 12 Tf 1 0 0 1 48 733 Tm (Assessment summary) Tj
+/F1 10 Tf 1 0 0 1 48 717 Tm (Overall risk score: 0.252) Tj
+/F1 10 Tf 1 0 0 1 48 701 Tm (Risk level: Low) Tj
+/F1 10 Tf 1 0 0 1 48 685 Tm (Assets assessed: 6) Tj
+/F1 10 Tf 1 0 0 1 48 669 Tm (Connections assessed: 5) Tj
+/F1 10 Tf 1 0 0 1 48 653 Tm (Evidence used: {'cloud_bms_portal': 1, 'building_mgmt_system': 0, 'hvac_controller': 0, 'fire_suppre) Tj
+/F1 10 Tf 1 0 0 1 48 637 Tm () Tj
+/F1 12 Tf 1 0 0 1 48 621 Tm (Highest-risk assets) Tj
+/F1 10 Tf 1 0 0 1 48 605 Tm (Asset | Risk score | Probability compromised) Tj
+/F1 10 Tf 1 0 0 1 48 589 Tm (building_climate | 0.252 | 0.03) Tj
+/F1 10 Tf 1 0 0 1 48 573 Tm (facility_manager | 0.0 | 0.089) Tj
+/F1 10 Tf 1 0 0 1 48 557 Tm () Tj
+/F1 12 Tf 1 0 0 1 48 541 Tm (Highest-priority attack path) Tj
+/F1 10 Tf 1 0 0 1 48 525 Tm (cloud_bms_portal -> building_mgmt_system -> hvac_controller -> building_climate) Tj
+/F1 10 Tf 1 0 0 1 48 509 Tm (Path score: 0.06048) Tj
+ET
 endstream
 endobj
 5 0 obj
@@ -44,9 +41,9 @@ xref
 0000000058 00000 n 
 0000000115 00000 n 
 0000000241 00000 n 
-0000000923 00000 n 
+0000001326 00000 n 
 trailer
 << /Size 6 /Root 1 0 R >>
 startxref
-993
+1396
 %%EOF
