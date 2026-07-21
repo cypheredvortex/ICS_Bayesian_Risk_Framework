@@ -139,6 +139,12 @@ function formatProbability(value: number) {
   return Number(value).toFixed(3)
 }
 
+function formatEvidence(evidence: Record<string, number>) {
+  const entries = Object.entries(evidence)
+  if (!entries.length) return 'None — probabilities use the topology and configured assumptions.'
+  return entries.map(([asset, state]) => `${asset}: ${state === 1 ? 'Compromised' : 'Safe'}`).join(' · ')
+}
+
 // FastAPI's HTTPException serializes as {"detail": "..."}. Pull that out
 // instead of dumping raw JSON into the UI; fall back to plain text for
 // non-JSON error bodies (e.g. a proxy/500 page).
@@ -1001,9 +1007,9 @@ export default function App() {
               )}
             </div>
             <p className="mt-2 text-xs text-slate-500">
-              Colors: {colorMode === 'risk' ? 'blue (low) → amber → rose (high posterior)' : 'purple = human, blue = device, amber = physical process'}. 📌 marks
-              evidence-pinned assets.
-              {showAttackPath && attackPathNodes.size ? ' Rose outline traces the top attack path.' : ''}
+              Colors: {colorMode === 'risk' ? 'blue (lower posterior probability) → amber → rose (higher posterior probability)' : 'purple = human, blue = device, amber = physical process'}. 📌 marks
+              evidence-pinned assets. An attack path is a calculated sequence of directed links from a likely entry point to a high-risk asset; it is not proof that an attack occurred.
+              {showAttackPath && attackPathNodes.size ? ' The rose outline shows the highest-scoring calculated path in this assessment.' : ''}
             </p>
           </div>
 
@@ -1026,16 +1032,19 @@ export default function App() {
                     {isEvidenceNode(selectedNode) ? ' (pinned by evidence)' : ''}
                   </span>
                 </div>
+                <p className="-mt-2 text-xs text-slate-400">Probability that this asset is compromised after applying evidence and network dependencies. A pinned value comes directly from selected evidence.</p>
                 <div className="flex items-center justify-between">
                   <span className="text-slate-400">Risk rank</span>
                   <span className="font-semibold text-white">{riskRanking.findIndex((entry) => entry.asset === selectedNode) + 1 || '—'}</span>
                 </div>
+                <p className="-mt-2 text-xs text-slate-400">Position in the risk register. Risk combines posterior probability with configured consequence impact; it is not probability alone.</p>
                 <div className="flex items-center justify-between">
                   <span className="text-slate-400">On top attack path</span>
                   <span className={`font-semibold ${attackPathNodes.has(selectedNode) ? 'text-rose-300' : 'text-slate-400'}`}>
                     {attackPathNodes.has(selectedNode) ? 'Yes' : 'No'}
                   </span>
                 </div>
+                <p className="-mt-2 text-xs text-slate-400">“Yes” means that this asset lies on the calculated path with the highest combined propagation-and-target-risk score for this run.</p>
               </div>
             ) : (
               <p className="mt-4 text-sm text-slate-400">Select a node in the network to inspect its probability details.</p>
@@ -1052,6 +1061,7 @@ export default function App() {
                   <div className="rounded-xl bg-slate-800 p-4">
                     <p className="text-sm text-slate-400">Overall Risk</p>
                     <p className="mt-2 text-2xl font-semibold text-cyan-300">{formatProbability(result.summary.overall_risk)}</p>
+                    <p className="mt-1 text-xs text-slate-400">Sum of asset risk scores; compare scenarios using the same model and settings.</p>
                   </div>
                   <div className={`rounded-xl border p-4 ${getRiskTone(result.summary.risk_level)}`}>
                     <p className="text-sm">Risk Level</p>
@@ -1061,6 +1071,7 @@ export default function App() {
 
                 <div className="rounded-xl bg-slate-800 p-4">
                   <h3 className="font-semibold">Posterior probabilities</h3>
+                  <p className="mt-1 text-xs text-slate-400">Estimated compromise probability after evidence propagates through the Bayesian network.</p>
                   <div className="mt-3 max-h-56 space-y-2 overflow-y-auto pr-1 text-sm">
                     {chartData.map(({ asset, probability, pinned }) => (
                       <button key={asset} onClick={() => setSelectedNode(asset)} className="flex w-full items-center justify-between rounded-lg bg-slate-900/70 px-3 py-2 text-left hover:bg-slate-900">
@@ -1076,6 +1087,7 @@ export default function App() {
 
                 <div className="rounded-xl bg-slate-800 p-4">
                   <h3 className="font-semibold">Top high-risk assets</h3>
+                  <p className="mt-1 text-xs text-slate-400">Priorities by risk score: posterior probability × configured consequence impact.</p>
                   <div className="mt-3 space-y-2 text-sm">
                     {riskRanking.map((entry) => (
                       <button key={entry.asset} onClick={() => setSelectedNode(entry.asset)} className="flex w-full items-center justify-between rounded-lg bg-slate-900/70 px-3 py-2 text-left hover:bg-slate-900">
@@ -1087,12 +1099,13 @@ export default function App() {
                 </div>
 
                 <div className="rounded-xl bg-slate-800 p-4">
-                  <h3 className="font-semibold">Critical attack path</h3>
+                  <h3 className="font-semibold">Highest-priority attack path</h3>
                   <p className="mt-3 break-words text-sm text-slate-300">
                     {result.attack_paths?.length
-                      ? `${((result.attack_paths[0].path as string[] | undefined) ?? []).join(' → ')} · score ${formatProbability(Number(result.attack_paths[0].score ?? 0))}`
-                      : 'No connected attack path was found. Select a Compromised evidence asset to trace a specific scenario.'}
+                      ? `${((result.attack_paths[0].path as string[] | undefined) ?? []).join(' → ')}`
+                      : 'No path was calculated. Mark an entry asset as Compromised to analyse a specific scenario.'}
                   </p>
+                  {result.attack_paths?.length ? <p className="mt-2 text-xs text-slate-400">Score {formatProbability(Number(result.attack_paths[0].score ?? 0))}: this modelled route combines link propagation weights and destination risk. It prioritises investigation; it is not proof of a real intrusion.</p> : null}
                 </div>
               </div>
             ) : (
@@ -1101,7 +1114,8 @@ export default function App() {
           </div>
 
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-            <h2 className="text-xl font-semibold">Risk Distribution</h2>
+            <h2 className="text-xl font-semibold">Compromise probability by asset</h2>
+            <p className="mt-1 text-sm text-slate-400">Posterior probability for each asset after the current evidence is applied. This chart shows probability, not the risk score.</p>
             <div className="mt-4 h-80 w-full">
               {chartData.length ? (
                 <ResponsiveContainer width="100%" height="100%">
@@ -1111,14 +1125,15 @@ export default function App() {
                     <YAxis
                       domain={[0, 1]}
                       tick={{ fill: '#cbd5e1', fontSize: 12 }}
-                      label={{ value: 'Probability', angle: -90, position: 'insideLeft', fill: '#cbd5e1' }}
+                      label={{ value: 'Posterior probability (0–1)', angle: -90, position: 'insideLeft', fill: '#f8fafc', fontSize: 13, fontWeight: 700 }}
                       axisLine={{ stroke: '#64748b' }}
                       tickLine={{ stroke: '#64748b' }}
                     />
                     <Tooltip
-                      formatter={(value: number) => formatProbability(value)}
+                      formatter={(value: number) => [formatProbability(value), 'Posterior probability']}
                       labelStyle={{ color: '#e2e8f0' }}
-                      contentStyle={{ background: '#0f172a', borderRadius: '12px', border: '1px solid rgba(56, 189, 248, 0.25)', color: '#e2e8f0' }}
+                      itemStyle={{ color: '#f8fafc', fontWeight: 700 }}
+                      contentStyle={{ background: '#0f172a', borderRadius: '12px', border: '1px solid rgba(56, 189, 248, 0.25)', color: '#f8fafc' }}
                     />
                     <Bar dataKey="probability" name="Posterior Probability" radius={[6, 6, 0, 0]} onClick={(entry: { asset: string }) => setSelectedNode(entry.asset)} cursor="pointer">
                       {chartData.map((entry) => (
@@ -1169,12 +1184,13 @@ export default function App() {
 
           <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
             <h2 className="text-xl font-semibold">Bayesian Results</h2>
+            <p className="mt-1 text-sm text-slate-400">Run context and model outputs. Evidence is what you supplied; probabilities and rankings are calculated from that evidence and the topology.</p>
             <div className="mt-4 rounded-xl bg-slate-950/80 p-4 text-sm">
               {result ? (
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-slate-400">Evidence used</span>
-                    <span className="font-semibold text-white">{JSON.stringify(result.evidence_used)}</span>
+                    <span className="max-w-[65%] text-right font-semibold text-white">{formatEvidence(result.evidence_used)}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-slate-400">Assets</span>

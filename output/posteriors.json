@@ -1,12 +1,11 @@
 {
-  "evidence": {
-    "cloud_bms_portal": 1,
-    "building_mgmt_system": 0,
-    "hvac_controller": 0,
-    "fire_suppression_controller": 1
-  },
+  "evidence": {},
   "posteriors": {
-    "facility_manager": 0.088715,
-    "building_climate": 0.03
+    "cloud_bms_portal": 0.702,
+    "building_mgmt_system": 0.973115,
+    "facility_manager": 0.245,
+    "hvac_controller": 0.811386,
+    "fire_suppression_controller": 0.44049,
+    "building_climate": 0.502227
   }
 }

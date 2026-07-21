@@ -30,6 +30,10 @@ def _build_pdf_bytes(result: dict[str, Any] | None = None) -> bytes:
     risk_scores = result.get("risk_scores", []) if result else []
     attack_paths = result.get("attack_paths", []) if result else []
 
+    evidence = summary.get("evidence_used", {}) or {}
+    evidence_text = ", ".join(
+        f"{asset}: {'Compromised' if state == 1 else 'Safe'}" for asset, state in evidence.items()
+    ) or "None (topology assumptions only)"
     lines = [
         ("ICS Bayesian Risk Assessment Report", True),
         ("Assessment summary", True),
@@ -37,14 +41,15 @@ def _build_pdf_bytes(result: dict[str, Any] | None = None) -> bytes:
         (f"Risk level: {str(summary.get('risk_level', 'n/a')).title()}", False),
         (f"Assets assessed: {summary.get('asset_count', 'n/a')}", False),
         (f"Connections assessed: {summary.get('relationship_count', 'n/a')}", False),
-        (f"Evidence used: {summary.get('evidence_used', {}) or 'None'}", False),
+        (f"Evidence used: {evidence_text}", False),
+        ("Overall risk is the sum of asset risk scores in this assessment.", False),
         ("", False),
         ("Highest-risk assets", True),
-        ("Asset | Risk score | Probability compromised", False),
+        ("Rank | Asset | Risk score | Compromise probability", False),
     ]
-    for row in risk_scores[:5]:
+    for rank, row in enumerate(risk_scores[:5], start=1):
         lines.append((
-            f"{row.get('asset', 'n/a')} | {row.get('risk', 'n/a')} | {row.get('P(compromised|evidence)', 'n/a')}",
+            f"{rank} | {row.get('asset', 'n/a')} | {row.get('risk', 'n/a')} | {row.get('P(compromised|evidence)', 'n/a')}",
             False,
         ))
 
@@ -53,7 +58,15 @@ def _build_pdf_bytes(result: dict[str, Any] | None = None) -> bytes:
         lines.append(("Highest-priority attack path", True))
         path = attack_paths[0]
         lines.append((" -> ".join(path.get("path", [])) or "No path available", False))
-        lines.append((f"Path score: {path.get('score', 'n/a')}", False))
+        lines.append((f"Path score: {path.get('score', 'n/a')} (modelled priority, not proof of intrusion)", False))
+
+    lines.extend([
+        ("", False),
+        ("How to use this report", True),
+        ("Prioritise high-risk assets for investigation or treatment. Risk combines", False),
+        ("compromise probability with configured consequence impact; compare only", False),
+        ("assessments using the same topology assumptions and model settings.", False),
+    ])
 
     # Emit one PDF text command per line. A single Tj command containing newlines
     # does not render as separate lines in PDF viewers.
@@ -62,7 +75,8 @@ def _build_pdf_bytes(result: dict[str, Any] | None = None) -> bytes:
     for text, is_heading in lines:
         escaped = str(text)[:100].replace("\\", "\\\\").replace("(", "\\(").replace(")", "\\)")
         font_size = 16 if text == "ICS Bayesian Risk Assessment Report" else (12 if is_heading else 10)
-        commands.append(f"/F1 {font_size} Tf 1 0 0 1 48 {y} Tm ({escaped}) Tj")
+        color = "0.02 0.45 0.60" if is_heading else "0.12 0.16 0.22"
+        commands.append(f"{color} rg /F1 {font_size} Tf 1 0 0 1 48 {y} Tm ({escaped}) Tj")
         y -= 23 if text == "ICS Bayesian Risk Assessment Report" else 16
     commands.append("ET")
     content = "\n".join(commands)

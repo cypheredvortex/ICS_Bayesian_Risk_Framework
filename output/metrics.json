@@ -1,27 +1,22 @@
 {
   "framework_version": "1.0",
-  "generated_at": "2026-07-21T11:45:15Z",
+  "generated_at": "2026-07-21T12:55:49Z",
   "topology": "inline-topology",
   "asset_count": 6,
   "relationship_count": 5,
   "node_count": 6,
   "edge_count": 5,
-  "posterior_count": 2,
-  "risk_row_count": 2,
-  "evidence_count": 4,
-  "evidence_used": {
-    "cloud_bms_portal": 1,
-    "building_mgmt_system": 0,
-    "hvac_controller": 0,
-    "fire_suppression_controller": 1
-  },
-  "attack_path_count": 1,
+  "posterior_count": 6,
+  "risk_row_count": 6,
+  "evidence_count": 0,
+  "evidence_used": {},
+  "attack_path_count": 5,
   "validation": {
     "success": true,
     "errors": 0
   },
   "inference_algorithm": "Variable Elimination",
-  "build_time_seconds": 0.004006,
-  "inference_time_seconds": 0.004794,
-  "total_time_seconds": 0.0088
+  "build_time_seconds": 0.001707,
+  "inference_time_seconds": 0.004291,
+  "total_time_seconds": 0.005998
 }

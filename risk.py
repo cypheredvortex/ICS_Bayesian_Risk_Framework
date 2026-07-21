@@ -41,9 +41,27 @@ def build_risk_table(posteriors: dict, assets: dict) -> pd.DataFrame:
 def write_risk_table(df: pd.DataFrame, path: str | Path = "output/risk_table.csv") -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    # Keep the downloadable risk register spreadsheet-friendly and consistent:
-    # values remain numeric, while all scores are shown to three decimals.
-    df.to_csv(path, index=False, float_format="%.3f")
+    # The API needs the compact internal columns above, but the download is a
+    # decision-facing register. Export descriptive headers, a rank and a
+    # readable risk level while retaining numeric values for sorting in Excel.
+    export = df.copy().reset_index(drop=True)
+    export.insert(0, "Rank", export.index + 1)
+    export["Risk Level"] = export["risk"].map(
+        lambda value: "Critical" if value >= 1.5 else "High" if value >= 0.8 else "Moderate" if value >= 0.3 else "Low"
+    )
+    export = export.rename(columns={
+        "asset": "Asset",
+        "P(compromised|evidence)": "Compromise Probability",
+        "severity": "Consequence Severity",
+        "scope_mult": "Scope Multiplier",
+        "impact": "Impact Score",
+        "risk": "Risk Score",
+    })[
+        ["Rank", "Asset", "Risk Level", "Risk Score", "Compromise Probability", "Impact Score", "Consequence Severity", "Scope Multiplier"]
+    ]
+    # UTF-8 BOM makes the headings readable when the file is opened directly
+    # in spreadsheet applications on Windows.
+    export.to_csv(path, index=False, float_format="%.3f", encoding="utf-8-sig")
     return path
 
 
