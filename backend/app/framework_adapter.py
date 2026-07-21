@@ -38,6 +38,7 @@ def analyze(
     )
     return {
         "graph": result["graph"],
+        "base_probabilities": result["base_probabilities"],
         "posteriors": result["posteriors"],
         "cpts": result["cpts"],
         "risk_scores": result["risk_scores"],

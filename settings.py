@@ -13,8 +13,6 @@ DEFAULT_SETTINGS: dict[str, Any] = {
     "exposure_weight": 1.0,
     "patch_weight": 1.0,
     "impact_weight": 1.0,
-    "noisy_or_leak": 0.0,
-    "inference_algorithm": "variable_elimination",
     "propagation_weights": {
         "controls": 0.70,
         "monitors": 0.20,
@@ -51,13 +49,6 @@ DEFAULT_SETTINGS: dict[str, Any] = {
         "T0831": 1.10,
         "T0855": 1.25,
         "T0866": 1.05,
-    },
-    "theme": "dark",
-    "language": "en",
-    "visualization": {
-        "layout": "layered",
-        "edge_curvature": True,
-        "show_minimap": True,
     },
 }
 

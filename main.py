@@ -79,6 +79,7 @@ def run(topology: str | Path | dict, evidence: dict | None = None, output_dir: s
         "edge_weights": edge_weights,
         "cpts": cpts_to_dict(model),
         "graph": graph,
+        "base_probabilities": base_probs,
         "posteriors": posteriors,
         "risk_scores": risk_table.to_dict(orient="records"),
         "attack_paths": attack_paths,

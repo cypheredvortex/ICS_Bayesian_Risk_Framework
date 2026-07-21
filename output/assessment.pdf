@@ -9,28 +9,34 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
 endobj
 4 0 obj
-<< /Length 1151 >>
+<< /Length 2204 >>
 stream
 BT
-/F1 16 Tf 1 0 0 1 48 756 Tm (ICS Bayesian Risk Assessment Report) Tj
-/F1 12 Tf 1 0 0 1 48 733 Tm (Assessment summary) Tj
-/F1 10 Tf 1 0 0 1 48 717 Tm (Overall risk score: 22.583) Tj
-/F1 10 Tf 1 0 0 1 48 701 Tm (Risk level: Critical) Tj
-/F1 10 Tf 1 0 0 1 48 685 Tm (Assets assessed: 6) Tj
-/F1 10 Tf 1 0 0 1 48 669 Tm (Connections assessed: 5) Tj
-/F1 10 Tf 1 0 0 1 48 653 Tm (Evidence used: None) Tj
-/F1 10 Tf 1 0 0 1 48 637 Tm () Tj
-/F1 12 Tf 1 0 0 1 48 621 Tm (Highest-risk assets) Tj
-/F1 10 Tf 1 0 0 1 48 605 Tm (Asset | Risk score | Probability compromised) Tj
-/F1 10 Tf 1 0 0 1 48 589 Tm (hvac_controller | 5.842 | 0.811) Tj
-/F1 10 Tf 1 0 0 1 48 573 Tm (fire_suppression_controller | 5.55 | 0.44) Tj
-/F1 10 Tf 1 0 0 1 48 557 Tm (building_mgmt_system | 4.866 | 0.973) Tj
-/F1 10 Tf 1 0 0 1 48 541 Tm (building_climate | 4.219 | 0.502) Tj
-/F1 10 Tf 1 0 0 1 48 525 Tm (cloud_bms_portal | 2.106 | 0.702) Tj
-/F1 10 Tf 1 0 0 1 48 509 Tm () Tj
-/F1 12 Tf 1 0 0 1 48 493 Tm (Highest-priority attack path) Tj
-/F1 10 Tf 1 0 0 1 48 477 Tm (facility_manager -> building_mgmt_system) Tj
-/F1 10 Tf 1 0 0 1 48 461 Tm (Path score: 3.4062) Tj
+0.02 0.45 0.60 rg /F1 16 Tf 1 0 0 1 48 756 Tm (ICS Bayesian Risk Assessment Report) Tj
+0.02 0.45 0.60 rg /F1 12 Tf 1 0 0 1 48 733 Tm (Assessment summary) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 717 Tm (Overall risk score: 22.583) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 701 Tm (Risk level: Critical) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 685 Tm (Assets assessed: 6) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 669 Tm (Connections assessed: 5) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 653 Tm (Evidence used: None \(topology assumptions only\)) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 637 Tm (Overall risk is the sum of asset risk scores in this assessment.) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 621 Tm () Tj
+0.02 0.45 0.60 rg /F1 12 Tf 1 0 0 1 48 605 Tm (Highest-risk assets) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 589 Tm (Rank | Asset | Risk score | Compromise probability) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 573 Tm (1 | hvac_controller | 5.842 | 0.811) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 557 Tm (2 | fire_suppression_controller | 5.55 | 0.44) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 541 Tm (3 | building_mgmt_system | 4.866 | 0.973) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 525 Tm (4 | building_climate | 4.219 | 0.502) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 509 Tm (5 | cloud_bms_portal | 2.106 | 0.702) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 493 Tm () Tj
+0.02 0.45 0.60 rg /F1 12 Tf 1 0 0 1 48 477 Tm (Highest-priority attack path) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 461 Tm (facility_manager -> building_mgmt_system) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 445 Tm (Path score: 3.4062 \(modelled priority, not proof of intrusion\)) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 429 Tm () Tj
+0.02 0.45 0.60 rg /F1 12 Tf 1 0 0 1 48 413 Tm (How to use this report) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 397 Tm (Prioritise high-risk assets for investigation or treatment. Risk combines) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 381 Tm (compromise probability with configured consequence impact; compare only) Tj
+0.12 0.16 0.22 rg /F1 10 Tf 1 0 0 1 48 365 Tm (assessments using the same topology assumptions and model settings.) Tj
 ET
 endstream
 endobj
@@ -44,9 +50,9 @@ xref
 0000000058 00000 n 
 0000000115 00000 n 
 0000000241 00000 n 
-0000001424 00000 n 
+0000002477 00000 n 
 trailer
 << /Size 6 /Root 1 0 R >>
 startxref
-1494
+2547
 %%EOF

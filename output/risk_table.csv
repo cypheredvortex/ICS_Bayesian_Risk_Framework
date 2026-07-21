@@ -1,7 +1,7 @@
-asset,P(compromised|evidence),severity,scope_mult,impact,risk
-hvac_controller,0.811,6.000,1.200,7.200,5.842
-fire_suppression_controller,0.440,9.000,1.400,12.600,5.550
-building_mgmt_system,0.973,5.000,1.000,5.000,4.866
-building_climate,0.502,7.000,1.200,8.400,4.219
-cloud_bms_portal,0.702,3.000,1.000,3.000,2.106
-facility_manager,0.245,0.000,1.000,0.000,0.000
+﻿Rank,Asset,Risk Level,Risk Score,Compromise Probability,Impact Score,Consequence Severity,Scope Multiplier
+1,hvac_controller,Critical,5.842,0.811,7.200,6.000,1.200
+2,fire_suppression_controller,Critical,5.550,0.440,12.600,9.000,1.400
+3,building_mgmt_system,Critical,4.866,0.973,5.000,5.000,1.000
+4,building_climate,Critical,4.219,0.502,8.400,7.000,1.200
+5,cloud_bms_portal,Critical,2.106,0.702,3.000,3.000,1.000
+6,facility_manager,Low,0.000,0.245,0.000,0.000,1.000

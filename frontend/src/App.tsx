@@ -55,6 +55,7 @@ type ResultPayload = {
     edges: GraphEdge[]
   }
   posteriors: Record<string, number>
+  base_probabilities: Record<string, number>
   cpts?: Record<string, { parents: string[]; rows: Array<{ parent_state: Record<string, number>; p_compromised: number }> }>
   risk_scores: Array<Record<string, unknown>>
   attack_paths: Array<Record<string, unknown>>
@@ -81,7 +82,6 @@ type CoreSettings = {
   exposure_weight: number
   patch_weight: number
   impact_weight: number
-  noisy_or_leak: number
   propagation_weights: Record<string, number>
   firewall_multipliers: Record<'true' | 'false', number>
 }
@@ -104,7 +104,6 @@ const defaultCoreSettings: CoreSettings = {
   exposure_weight: 1.0,
   patch_weight: 1.0,
   impact_weight: 1.0,
-  noisy_or_leak: 0.0,
   propagation_weights: {
     controls: 0.7,
     monitors: 0.2,
@@ -289,7 +288,6 @@ export default function App() {
           exposure_weight: Number(data.exposure_weight ?? defaultCoreSettings.exposure_weight),
           patch_weight: Number(data.patch_weight ?? defaultCoreSettings.patch_weight),
           impact_weight: Number(data.impact_weight ?? defaultCoreSettings.impact_weight),
-          noisy_or_leak: Number(data.noisy_or_leak ?? defaultCoreSettings.noisy_or_leak),
           propagation_weights: {
             ...defaultCoreSettings.propagation_weights,
             ...(data.propagation_weights as Record<string, number> | undefined),
@@ -664,7 +662,6 @@ export default function App() {
         exposure_weight: Number(data.exposure_weight ?? draftSettings.exposure_weight),
         patch_weight: Number(data.patch_weight ?? draftSettings.patch_weight),
         impact_weight: Number(data.impact_weight ?? draftSettings.impact_weight),
-        noisy_or_leak: Number(data.noisy_or_leak ?? draftSettings.noisy_or_leak),
       }
       setServerSettings(merged)
       setDraftSettings(merged)
@@ -689,7 +686,6 @@ export default function App() {
         exposure_weight: Number(data.exposure_weight ?? defaultCoreSettings.exposure_weight),
         patch_weight: Number(data.patch_weight ?? defaultCoreSettings.patch_weight),
         impact_weight: Number(data.impact_weight ?? defaultCoreSettings.impact_weight),
-        noisy_or_leak: Number(data.noisy_or_leak ?? defaultCoreSettings.noisy_or_leak),
         propagation_weights: {
           ...defaultCoreSettings.propagation_weights,
           ...(data.propagation_weights as Record<string, number> | undefined),
@@ -789,7 +785,6 @@ export default function App() {
                   ['exposure_weight', 'Exposure weight', 0, 2],
                   ['patch_weight', 'Patch weight', 0, 2],
                   ['impact_weight', 'Impact weight', 0, 2],
-                  ['noisy_or_leak', 'Noisy-OR leak', 0, 1],
                 ] as Array<[keyof Omit<CoreSettings, 'propagation_weights' | 'firewall_multipliers'>, string, number, number]>
               ).map(([key, label, min, max]) => (
                 <label key={key} className="text-xs text-slate-300">
@@ -1026,6 +1021,11 @@ export default function App() {
                   <span className="font-semibold text-white">{nodeKindMap.get(selectedNode) ?? '—'}</span>
                 </div>
                 <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Intrinsic probability</span>
+                  <span className="font-semibold text-violet-200">{result?.base_probabilities?.[selectedNode] === undefined ? '—' : formatProbability(result.base_probabilities[selectedNode])}</span>
+                </div>
+                <p className="-mt-2 text-xs text-slate-400">Starting compromise probability derived from this asset's own attributes before network propagation or selected evidence.</p>
+                <div className="flex items-center justify-between">
                   <span className="text-slate-400">Posterior</span>
                   <span className="font-semibold text-cyan-300">
                     {selectedNodeProbability === null ? '—' : formatProbability(selectedNodeProbability)}
@@ -1066,6 +1066,7 @@ export default function App() {
                   <div className={`rounded-xl border p-4 ${getRiskTone(result.summary.risk_level)}`}>
                     <p className="text-sm">Risk Level</p>
                     <p className="mt-2 text-2xl font-semibold uppercase">{result.summary.risk_level}</p>
+                    <p className="mt-1 text-xs">Overall-risk scale: Low &lt; 0.50 · Moderate 0.50–0.999 · High 1.00–1.999 · Critical ≥ 2.00</p>
                   </div>
                 </div>
 
@@ -1105,7 +1106,23 @@ export default function App() {
                       ? `${((result.attack_paths[0].path as string[] | undefined) ?? []).join(' → ')}`
                       : 'No path was calculated. Mark an entry asset as Compromised to analyse a specific scenario.'}
                   </p>
-                  {result.attack_paths?.length ? <p className="mt-2 text-xs text-slate-400">Score {formatProbability(Number(result.attack_paths[0].score ?? 0))}: this modelled route combines link propagation weights and destination risk. It prioritises investigation; it is not proof of a real intrusion.</p> : null}
+                  {result.attack_paths?.length ? (
+                    <>
+                      <p className="mt-2 text-xs text-slate-400">Score {formatProbability(Number(result.attack_paths[0].score ?? 0))}: this modelled route combines link propagation weights and destination risk. It prioritises investigation; it is not proof of a real intrusion.</p>
+                      <details className="mt-3 rounded-lg border border-slate-700 bg-slate-950/60 p-3">
+                        <summary className="cursor-pointer text-sm font-semibold text-cyan-200">All calculated attack paths ({result.attack_paths.length})</summary>
+                        <ol className="mt-3 max-h-64 space-y-2 overflow-y-auto pr-1 text-xs text-slate-300">
+                          {result.attack_paths.map((path, index) => (
+                            <li key={`${String(path.source ?? 'source')}-${index}`} className="rounded-md bg-slate-900/80 p-2">
+                              <span className="font-semibold text-slate-100">{index + 1}.</span> {((path.path as string[] | undefined) ?? []).join(' → ')}
+                              <span className="ml-2 text-cyan-200">score {formatProbability(Number(path.score ?? 0))}</span>
+                            </li>
+                          ))}
+                        </ol>
+                        <p className="mt-2 text-xs text-slate-400">Ordered by score. The list includes every route meeting the model's minimum propagation threshold and maximum-depth safeguards.</p>
+                      </details>
+                    </>
+                  ) : null}
                 </div>
               </div>
             ) : (

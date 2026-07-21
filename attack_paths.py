@@ -15,7 +15,7 @@ def compute_attack_paths(
     evidence_used: dict[str, int],
     risk_scores: list[dict[str, Any]],
     assets: dict,
-    max_paths: int = 5,
+    max_paths: int | None = None,
     max_depth: int = 12,
 ) -> list[dict[str, Any]]:
     """
@@ -49,12 +49,10 @@ def compute_attack_paths(
         str(row.get("asset")): float(row.get("risk", 0.0))
         for row in risk_scores
     }
-    targets = sorted(
-        risk_by_asset.keys(),
-        key=lambda asset_id: risk_by_asset.get(asset_id, 0.0),
-        reverse=True,
-    )[: max(3, min(8, len(risk_by_asset)))]
-    target_set = set(targets)
+    # Keep every reachable asset as a possible destination. Traversal still
+    # has a maximum depth and minimum propagation threshold, which prevents
+    # impractical path enumeration while preserving all meaningful routes.
+    target_set = set(risk_by_asset)
 
     ranked: list[dict[str, Any]] = []
     seen_signatures: set[tuple[str, ...]] = set()
@@ -107,7 +105,7 @@ def compute_attack_paths(
                 )
 
     ranked.sort(key=lambda item: item["score"], reverse=True)
-    return ranked[:max_paths]
+    return ranked if max_paths is None else ranked[:max_paths]
 
 
 def _unpack_relationship(relationship) -> tuple[str, str, str, bool, dict]:

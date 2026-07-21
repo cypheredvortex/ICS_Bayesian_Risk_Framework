@@ -133,5 +133,3 @@ def get_impact_weight() -> float:
     return float(get_settings().get("impact_weight", 1.0))
 
 
-def get_noisy_or_leak() -> float:
-    return float(get_settings().get("noisy_or_leak", 0.0))
