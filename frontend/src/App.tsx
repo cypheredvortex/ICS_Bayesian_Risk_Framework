@@ -839,30 +839,43 @@ export default function App() {
 
             <div className="mt-6 border-t border-slate-800 pt-4">
               <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-400">Firewall multiplier</h4>
+              <p className="mt-1 text-xs text-slate-500">
+                A firewall can only reduce propagated risk, never increase it — the "firewalled" slider is capped at
+                the "not firewalled" value.
+              </p>
               <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:w-1/2">
-                {(['true', 'false'] as const).map((flag) => (
-                  <label key={flag} className="text-xs text-slate-300">
-                    <div className="flex items-center justify-between">
-                      <span>Link is {flag === 'true' ? 'firewalled' : 'not firewalled'}</span>
-                      <span className="font-mono text-cyan-300">{draftSettings.firewall_multipliers[flag].toFixed(2)}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min={0}
-                      max={1.5}
-                      step={0.01}
-                      value={draftSettings.firewall_multipliers[flag]}
-                      onChange={(event) =>
-                        setDraftSettings((current) => ({
-                          ...current,
-                          firewall_multipliers: { ...current.firewall_multipliers, [flag]: Number(event.target.value) },
-                        }))
-                      }
-                      className="mt-2 w-full accent-cyan-500"
-                      aria-label={`Firewall multiplier when ${flag}`}
-                    />
-                  </label>
-                ))}
+                {(['true', 'false'] as const).map((flag) => {
+                  // "firewalled" must never exceed "not firewalled" — a
+                  // firewall that increases propagated risk is nonsensical.
+                  // Cap each slider's range against the other's current value
+                  // instead of a fixed range so this holds no matter which
+                  // one the user drags first.
+                  const min = flag === 'false' ? draftSettings.firewall_multipliers.true : 0
+                  const max = flag === 'true' ? draftSettings.firewall_multipliers.false : 1.5
+                  return (
+                    <label key={flag} className="text-xs text-slate-300">
+                      <div className="flex items-center justify-between">
+                        <span>Link is {flag === 'true' ? 'firewalled' : 'not firewalled'}</span>
+                        <span className="font-mono text-cyan-300">{draftSettings.firewall_multipliers[flag].toFixed(2)}</span>
+                      </div>
+                      <input
+                        type="range"
+                        min={min}
+                        max={max}
+                        step={0.01}
+                        value={draftSettings.firewall_multipliers[flag]}
+                        onChange={(event) =>
+                          setDraftSettings((current) => ({
+                            ...current,
+                            firewall_multipliers: { ...current.firewall_multipliers, [flag]: Number(event.target.value) },
+                          }))
+                        }
+                        className="mt-2 w-full accent-cyan-500"
+                        aria-label={`Firewall multiplier when ${flag}`}
+                      />
+                    </label>
+                  )
+                })}
               </div>
             </div>
           </div>
@@ -1061,12 +1074,12 @@ export default function App() {
                   <div className="rounded-xl bg-slate-800 p-4">
                     <p className="text-sm text-slate-400">Overall Risk</p>
                     <p className="mt-2 text-2xl font-semibold text-cyan-300">{formatProbability(result.summary.overall_risk)}</p>
-                    <p className="mt-1 text-xs text-slate-400">Sum of asset risk scores; compare scenarios using the same model and settings.</p>
+                    <p className="mt-1 text-xs text-slate-400">Average risk of the top 5 highest-risk assets — this stays comparable across topologies of different sizes, unlike a raw total.</p>
                   </div>
                   <div className={`rounded-xl border p-4 ${getRiskTone(result.summary.risk_level)}`}>
                     <p className="text-sm">Risk Level</p>
                     <p className="mt-2 text-2xl font-semibold uppercase">{result.summary.risk_level}</p>
-                    <p className="mt-1 text-xs">Overall-risk scale: Low &lt; 0.50 · Moderate 0.50–0.999 · High 1.00–1.999 · Critical ≥ 2.00</p>
+                    <p className="mt-1 text-xs">Same scale as the per-asset chart below: Low &lt; 0.30 · Moderate 0.30–0.799 · High 0.80–1.499 · Critical ≥ 1.50</p>
                   </div>
                 </div>
 

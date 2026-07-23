@@ -2,6 +2,16 @@
 risk.py  (PHASE 5)
 
 Posterior Probabilities -> Risk Table.
+
+FIX APPLIED: impact_weight was previously an EXPONENT on
+(severity * scope_mult). Whether raising that exponent actually
+amplified impact depended entirely on whether the topology author set
+consequence_severity above or below 1 -- an undocumented, easy-to-get-
+backwards convention. It's now a direct linear multiplier: weight=1.0
+reproduces the original default behavior exactly
+(severity * scope_mult * 1.0 == (severity * scope_mult) ** 1.0), and
+increasing the slider always increases impact regardless of how
+severity happens to be scaled in a given topology.
 """
 
 from pathlib import Path
@@ -24,7 +34,9 @@ def build_risk_table(posteriors: dict, assets: dict) -> pd.DataFrame:
         attrs = assets[node_id]
         severity = float(attrs.get("consequence_severity", 0))
         scope_mult = m_scope(attrs)
-        impact = (severity * scope_mult) ** impact_weight
+        # Linear multiplier -- see module docstring. weight=1.0 matches
+        # the original (severity * scope_mult) ** 1.0 behavior exactly.
+        impact = severity * scope_mult * impact_weight
         risk = p * impact
         rows.append({
             "asset": node_id,
@@ -38,6 +50,27 @@ def build_risk_table(posteriors: dict, assets: dict) -> pd.DataFrame:
     return pd.DataFrame(rows).sort_values("risk", ascending=False).reset_index(drop=True)
 
 
+# Shared risk-level thresholds -- kept in one place so the CSV export, the
+# aggregate summary (main.py), and the frontend can't drift out of sync
+# with each other again. See main.py's RISK_LEVEL_THRESHOLDS docstring for
+# why these specific cut points were chosen.
+RISK_LEVEL_THRESHOLDS = {
+    "critical": 1.5,
+    "high": 0.8,
+    "moderate": 0.3,
+}
+
+
+def risk_level_for(value: float) -> str:
+    if value >= RISK_LEVEL_THRESHOLDS["critical"]:
+        return "Critical"
+    if value >= RISK_LEVEL_THRESHOLDS["high"]:
+        return "High"
+    if value >= RISK_LEVEL_THRESHOLDS["moderate"]:
+        return "Moderate"
+    return "Low"
+
+
 def write_risk_table(df: pd.DataFrame, path: str | Path = "output/risk_table.csv") -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -46,9 +79,7 @@ def write_risk_table(df: pd.DataFrame, path: str | Path = "output/risk_table.csv
     # readable risk level while retaining numeric values for sorting in Excel.
     export = df.copy().reset_index(drop=True)
     export.insert(0, "Rank", export.index + 1)
-    export["Risk Level"] = export["risk"].map(
-        lambda value: "Critical" if value >= 1.5 else "High" if value >= 0.8 else "Moderate" if value >= 0.3 else "Low"
-    )
+    export["Risk Level"] = export["risk"].map(risk_level_for)
     export = export.rename(columns={
         "asset": "Asset",
         "P(compromised|evidence)": "Compromise Probability",

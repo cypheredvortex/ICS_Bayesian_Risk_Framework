@@ -42,7 +42,7 @@ def _build_pdf_bytes(result: dict[str, Any] | None = None) -> bytes:
         (f"Assets assessed: {summary.get('asset_count', 'n/a')}", False),
         (f"Connections assessed: {summary.get('relationship_count', 'n/a')}", False),
         (f"Evidence used: {evidence_text}", False),
-        ("Overall risk is the sum of asset risk scores in this assessment.", False),
+        ("Overall risk is the average risk of the top 5 highest-risk assets in this assessment.", False),
         ("", False),
         ("Highest-risk assets", True),
         ("Rank | Asset | Risk score | Compromise probability", False),

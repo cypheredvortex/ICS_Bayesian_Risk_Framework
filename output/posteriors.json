@@ -1,11 +1,14 @@
 {
-  "evidence": {},
+  "evidence": {
+    "scada_server": 1
+  },
   "posteriors": {
-    "cloud_bms_portal": 0.702,
-    "building_mgmt_system": 0.973115,
-    "facility_manager": 0.245,
-    "hvac_controller": 0.811386,
-    "fire_suppression_controller": 0.44049,
-    "building_climate": 0.502227
+    "vendor_remote_access": 0.524047,
+    "engineering_workstation": 0.98611,
+    "operator": 0.209777,
+    "plc_dosing": 0.45888,
+    "chlorine_pump": 0.353593,
+    "water_supply": 0.220034,
+    "historian": 0.7148
   }
 }

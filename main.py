@@ -7,6 +7,24 @@ Usage:
     python3 main.py
     python3 main.py --topology data/swat_example.json --evidence corp_net=1
     python3 main.py --evidence corp_net=1 --evidence hmi=1
+
+FIX APPLIED: `overall_risk` was previously `risk_table["risk"].sum()`, an
+UNNORMALIZED total across every asset. Because it's a raw sum, the
+critical/high/moderate/low thresholds effectively measured topology size
+as much as actual risk -- a 20-asset topology where every asset is
+individually "Low" risk could sum past the "Critical" threshold, while a
+2-asset topology with both assets maxed out at "Critical" individually
+might land at "Moderate" overall. Neither result reflects the analyst's
+actual security posture.
+
+`overall_risk` is now the MEAN of the top-N riskiest assets (N=5, or
+fewer if the topology has fewer assets) -- a size-invariant aggregate
+that answers "how bad are my worst assets," which is what an analyst
+scanning the top-level badge actually wants to know. Because this
+produces a value on the same scale as an individual asset's risk score,
+it now reuses the exact same thresholds as the per-asset CSV export and
+frontend pie chart (via risk.risk_level_for), instead of maintaining a
+second, inconsistent set of cut points.
 """
 
 import argparse
@@ -21,7 +39,7 @@ from graph_builder import build_graph_skeleton, graph_to_dict
 from probability import compute_base_probs
 from cpt_generator import cpts_to_dict, parameterize
 from inference import compute_posteriors_with_evidence
-from risk import build_risk_table, write_risk_table
+from risk import build_risk_table, write_risk_table, risk_level_for
 from outputs import (
     write_graph_image,
     write_graph_json,
@@ -30,6 +48,12 @@ from outputs import (
     write_metrics_json,
     write_summary_txt,
 )
+
+# Number of highest-risk assets averaged together to produce overall_risk.
+# Kept small and fixed rather than scaling with topology size, so the
+# aggregate always reflects "how bad are the worst few assets" regardless
+# of how large the topology is.
+_OVERALL_RISK_TOP_N = 5
 
 
 def run(topology: str | Path | dict, evidence: dict | None = None, output_dir: str | Path | None = None, write_outputs: bool = False) -> dict[str, Any]:
@@ -69,8 +93,8 @@ def run(topology: str | Path | dict, evidence: dict | None = None, output_dir: s
         risk_table.to_dict(orient="records"),
         assets,
     )
-    total_risk = round(float(risk_table["risk"].sum()), 6) if not risk_table.empty else 0.0
-    risk_level = _derive_risk_level(total_risk)
+    overall_risk = _compute_overall_risk(risk_table)
+    risk_level = risk_level_for(overall_risk).lower()
 
     result = {
         "assets": assets,
@@ -95,7 +119,8 @@ def run(topology: str | Path | dict, evidence: dict | None = None, output_dir: s
             "asset_count": len(assets),
             "relationship_count": len(relationships),
             "evidence_used": evidence_used,
-            "overall_risk": total_risk,
+            "overall_risk": overall_risk,
+            "overall_risk_basis": f"mean of top {min(_OVERALL_RISK_TOP_N, len(risk_table))} highest-risk assets",
             "risk_level": risk_level,
             "highest_risk_assets": risk_table.head(5)["asset"].tolist(),
             "critical_attack_path": attack_paths[0] if attack_paths else None,
@@ -170,14 +195,15 @@ def run_pipeline(topology_path: str | Path | dict, evidence: dict):
     return run(topology_path, evidence=evidence, write_outputs=False)
 
 
-def _derive_risk_level(overall_risk: float) -> str:
-    if overall_risk >= 2.0:
-        return "critical"
-    if overall_risk >= 1.0:
-        return "high"
-    if overall_risk >= 0.5:
-        return "moderate"
-    return "low"
+def _compute_overall_risk(risk_table) -> float:
+    """Mean risk of the top-N riskiest assets. Size-invariant: adding more
+    low-risk assets to a topology no longer inflates this number, and a
+    small topology of a few very risky assets is no longer structurally
+    incapable of reaching "Critical"."""
+    if risk_table.empty:
+        return 0.0
+    top_n = risk_table["risk"].head(_OVERALL_RISK_TOP_N)
+    return round(float(top_n.mean()), 6)
 
 
 def parse_evidence(pairs: list[str]) -> dict:
