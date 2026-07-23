@@ -64,21 +64,21 @@
           "local_hmi": 0,
           "scada": 1
         },
-        "p_compromised": 0.581
+        "p_compromised": 0.23742
       },
       {
         "parent_state": {
           "local_hmi": 1,
           "scada": 0
         },
-        "p_compromised": 0.581
+        "p_compromised": 0.23742
       },
       {
         "parent_state": {
           "local_hmi": 1,
           "scada": 1
         },
-        "p_compromised": 0.7905
+        "p_compromised": 0.306052
       }
     ]
   },
@@ -97,7 +97,7 @@
         "parent_state": {
           "industrial_network": 1
         },
-        "p_compromised": 0.42468
+        "p_compromised": 0.243
       }
     ]
   },
@@ -116,7 +116,7 @@
         "parent_state": {
           "industrial_network": 1
         },
-        "p_compromised": 0.42468
+        "p_compromised": 0.243
       }
     ]
   },

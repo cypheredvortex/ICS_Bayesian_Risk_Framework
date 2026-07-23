@@ -1,6 +1,6 @@
 {
   "framework_version": "1.0",
-  "generated_at": "2026-07-23T14:46:24Z",
+  "generated_at": "2026-07-23T15:05:52Z",
   "topology": "inline-topology",
   "asset_count": 11,
   "relationship_count": 12,
@@ -10,13 +10,13 @@
   "risk_row_count": 11,
   "evidence_count": 0,
   "evidence_used": {},
-  "attack_path_count": 20,
+  "attack_path_count": 4,
   "validation": {
     "success": true,
     "errors": 0
   },
   "inference_algorithm": "Variable Elimination",
-  "build_time_seconds": 0.043676,
-  "inference_time_seconds": 0.009495,
-  "total_time_seconds": 0.053171
+  "build_time_seconds": 0.052365,
+  "inference_time_seconds": 0.010652,
+  "total_time_seconds": 0.063018
 }

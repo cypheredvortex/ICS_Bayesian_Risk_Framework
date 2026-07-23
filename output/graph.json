@@ -54,28 +54,28 @@
       "target": "industrial_network",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5
+      "weight": 0.09
     },
     {
       "source": "scada",
       "target": "industrial_network",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5
+      "weight": 0.09
     },
     {
       "source": "industrial_network",
       "target": "plc_1",
       "rel_type": "programs / operates",
       "firewalled": true,
-      "weight": 0.24
+      "weight": 0.0
     },
     {
       "source": "industrial_network",
       "target": "plc_2",
       "rel_type": "programs / operates",
       "firewalled": true,
-      "weight": 0.24
+      "weight": 0.0
     },
     {
       "source": "plc_1",

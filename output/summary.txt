@@ -8,10 +8,10 @@ Evidence used : (none provided)
 Top 5 assets by risk:
 ----------------------------------------
   scada                    risk=6.618  P(compromised)=0.945  severity=7.0
-  physical_process         risk=5.216  P(compromised)=0.373  severity=10.0
   local_hmi                risk=4.787  P(compromised)=0.957  severity=5.0
-  plc_2                    risk=4.479  P(compromised)=0.383  severity=9.0
-  plc_1                    risk=4.479  P(compromised)=0.383  severity=9.0
+  physical_process         risk=4.242  P(compromised)=0.303  severity=10.0
+  plc_2                    risk=2.843  P(compromised)=0.243  severity=9.0
+  plc_1                    risk=2.843  P(compromised)=0.243  severity=9.0
 
 Files written this run:
   output/graph.json        - node list + edges + weights

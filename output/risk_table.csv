@@ -1,12 +1,12 @@
 ﻿Rank,Asset,Risk Level,Risk Score,Compromise Probability,Impact Score,Consequence Severity,Scope Multiplier
 1,scada,Critical,6.618,0.945,7.000,7.000,1.000
-2,physical_process,Critical,5.216,0.373,14.000,10.000,1.400
-3,local_hmi,Critical,4.787,0.957,5.000,5.000,1.000
-4,plc_2,Critical,4.479,0.383,11.700,9.000,1.300
-5,plc_1,Critical,4.479,0.383,11.700,9.000,1.300
-6,sensors_actuators_2,Critical,3.470,0.334,10.400,8.000,1.300
-7,sensors_actuators_1,Critical,3.470,0.334,10.400,8.000,1.300
-8,industrial_network,Critical,3.078,0.770,4.000,4.000,1.000
-9,historian,High,1.185,0.237,5.000,5.000,1.000
+2,local_hmi,Critical,4.787,0.957,5.000,5.000,1.000
+3,physical_process,Critical,4.242,0.303,14.000,10.000,1.400
+4,plc_2,Critical,2.843,0.243,11.700,9.000,1.300
+5,plc_1,Critical,2.843,0.243,11.700,9.000,1.300
+6,sensors_actuators_2,Critical,2.716,0.261,10.400,8.000,1.300
+7,sensors_actuators_1,Critical,2.716,0.261,10.400,8.000,1.300
+8,industrial_network,High,1.197,0.299,4.000,4.000,1.000
+9,historian,High,1.127,0.225,5.000,5.000,1.000
 10,operators,Low,0.000,0.210,0.000,0.000,1.000
-11,automation_engineers,Low,0.000,0.146,0.000,0.000,1.000
+11,automation_engineers,Low,0.000,0.144,0.000,0.000,1.000
