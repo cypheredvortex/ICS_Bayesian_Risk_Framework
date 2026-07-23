@@ -70,7 +70,17 @@ class AssetRepository(BaseRepository[Asset]):
         super().__init__(session, Asset)
 
     def create_for_project(self, project_id: int, asset_data: dict[str, Any]) -> Asset:
-        asset = Asset(project_id=project_id, asset_name=asset_data.get("asset_name", asset_data.get("name", "")))
+        asset_name = asset_data.get("asset_name", asset_data.get("name", ""))
+        # Check if asset already exists for this project (idempotent persistence)
+        existing = self.session.scalar(
+            select(Asset).where(
+                Asset.project_id == project_id,
+                Asset.asset_name == asset_name,
+            )
+        )
+        if existing is not None:
+            return existing
+        asset = Asset(project_id=project_id, asset_name=asset_name)
         asset.asset_type = asset_data.get("asset_type")
         asset.zone = asset_data.get("zone")
         asset.vendor = asset_data.get("vendor")
@@ -97,12 +107,22 @@ class ConnectionRepository(BaseRepository[Connection]):
 
     def create_for_project(self, project_id: int, relationship: tuple[Any, ...]) -> Connection:
         source, target, rel_type, firewalled, metadata = relationship
+        # Check if connection already exists (idempotent persistence)
+        existing = self.session.scalar(
+            select(Connection).where(
+                Connection.project_id == project_id,
+                Connection.source_asset == str(source),
+                Connection.destination_asset == str(target),
+            )
+        )
+        if existing is not None:
+            return existing
         connection = Connection(
             project_id=project_id,
             source_asset=str(source),
             destination_asset=str(target),
             relationship_type=str(rel_type),
-            propagation_weight=float(metadata.get("weight", 0.0)) if isinstance(metadata, dict) else None,
+            propagation_weight=None,  # Weight computed by graph_builder.edge_weight; not stored in relationship metadata.
         )
         self.add(connection)
         return connection
@@ -116,6 +136,15 @@ class CPTRepository(BaseRepository[CPT]):
         super().__init__(session, CPT)
 
     def create_for_project(self, project_id: int, node_name: str, table_data: dict[str, Any]) -> CPT:
+        existing = self.session.scalar(
+            select(CPT).where(
+                CPT.project_id == project_id,
+                CPT.node_name == node_name,
+            )
+        )
+        if existing is not None:
+            existing.table_data = table_data
+            return existing
         cpt = CPT(project_id=project_id, node_name=node_name, table_data=table_data)
         self.add(cpt)
         return cpt
@@ -129,6 +158,7 @@ class InferenceRepository(BaseRepository[InferenceResult]):
         super().__init__(session, InferenceResult)
 
     def create_for_project(self, project_id: int, asset_name: str, posterior_probability: float, asset_id: int | None = None) -> InferenceResult:
+        # Always create new inference result (timestamp acts as version history)
         inference = InferenceResult(
             project_id=project_id,
             asset_id=asset_id,
@@ -146,11 +176,14 @@ class RiskRepository(BaseRepository[RiskResult]):
     def __init__(self, session: Session) -> None:
         super().__init__(session, RiskResult)
 
-    def create_for_project(self, project_id: int, asset_name: str, risk_score: float | None, risk_level: str | None = None, asset_id: int | None = None) -> RiskResult:
+    def create_for_project(self, project_id: int, asset_name: str, risk_score: float | None, risk_level: str | None = None, asset_id: int | None = None, likelihood: float | None = None, impact: float | None = None) -> RiskResult:
+        # Always create new risk result (timestamp acts as version history)
         risk = RiskResult(
             project_id=project_id,
             asset_id=asset_id,
             asset_name=asset_name,
+            likelihood=likelihood,
+            impact=impact,
             risk_score=risk_score,
             risk_level=risk_level,
         )
@@ -166,6 +199,14 @@ class ReportRepository(BaseRepository[Report]):
         super().__init__(session, Report)
 
     def create_for_project(self, project_id: int, filename: str, path: str | None, report_type: str | None) -> Report:
+        existing = self.session.scalar(
+            select(Report).where(
+                Report.project_id == project_id,
+                Report.filename == filename,
+            )
+        )
+        if existing is not None:
+            return existing
         report = Report(project_id=project_id, filename=filename, path=path, report_type=report_type)
         self.add(report)
         return report

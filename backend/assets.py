@@ -260,12 +260,12 @@ def _validate_graph_structure(assets: dict, relationships: list, source_label: s
     if graph.number_of_nodes() > 1 and graph.number_of_edges() == 0:
         raise ValueError(f"{source_label}: topology has assets but no relationships.")
 
-    if not nx.is_weakly_connected(graph) and graph.number_of_edges() > 0:
+    if graph.number_of_edges() > 0:
         components = list(nx.weakly_connected_components(graph))
-        if len(components) > 1:
-            component_sizes = sorted((len(c) for c in components), reverse=True)
-            if component_sizes[0] > 1 and component_sizes[1] > 1:
-                raise ValueError(
-                    f"{source_label}: topology contains disconnected subgraphs with multiple nodes."
-                )
+        non_singleton_components = [c for c in components if len(c) > 1]
+        if len(non_singleton_components) > 1:
+            raise ValueError(
+                f"{source_label}: topology contains disconnected subgraphs with multiple nodes. "
+                f"Found {len(non_singleton_components)} components with more than one node."
+            )
 

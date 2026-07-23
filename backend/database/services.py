@@ -149,6 +149,8 @@ class AssessmentPersistenceService:
                     risk_score=row.get("risk"),
                     risk_level=row.get("risk_level"),
                     asset_id=asset.id if asset else None,
+                    likelihood=row.get("P(compromised|evidence)"),
+                    impact=row.get("impact"),
                 )
 
             report_path = analysis_result.get("artifacts", {}).get("risk_table")
@@ -160,7 +162,20 @@ class AssessmentPersistenceService:
 
             setting_repo.upsert("theme", "light")
             setting_repo.upsert("export_directory", str(Path("output")))
-            setting_repo.upsert("recent_projects", json.dumps([project.name]))
+            # Append to recent projects list instead of overwriting
+            existing_recent = setting_repo.get_by_key("recent_projects")
+            if existing_recent is not None and existing_recent.value:
+                try:
+                    recent_list = json.loads(existing_recent.value)
+                except (json.JSONDecodeError, TypeError):
+                    recent_list = []
+            else:
+                recent_list = []
+            if project.name not in recent_list:
+                recent_list.append(project.name)
+            # Keep only the 20 most recent projects
+            recent_list = recent_list[-20:]
+            setting_repo.upsert("recent_projects", json.dumps(recent_list))
             setting_repo.upsert("language", "en")
             session.commit()
             # Re-fetch the project within the same session to avoid

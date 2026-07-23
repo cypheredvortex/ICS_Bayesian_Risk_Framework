@@ -33,8 +33,8 @@ RUN apt-get update && \
 # Copy the wheel from builder
 COPY --from=builder /build/dist/*.whl /tmp/
 
-# Install the wheel
-RUN pip install --no-cache-dir /tmp/*.whl
+# Install the wheel (use find since the filename includes the version)
+RUN pip install --no-cache-dir $(find /tmp -name '*.whl' | head -1)
 
 # Create data and output directories
 RUN mkdir -p /app/data /app/output

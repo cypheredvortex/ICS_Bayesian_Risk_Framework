@@ -1,120 +1,76 @@
 {
   "nodes": [
     {
-      "id": "operators"
+      "id": "vendor_remote_access"
     },
     {
-      "id": "local_hmi"
+      "id": "engineering_workstation"
     },
     {
-      "id": "scada"
+      "id": "scada_server"
     },
     {
-      "id": "industrial_network"
+      "id": "operator"
     },
     {
-      "id": "plc_1"
+      "id": "plc_dosing"
     },
     {
-      "id": "plc_2"
+      "id": "chlorine_pump"
     },
     {
-      "id": "sensors_actuators_1"
-    },
-    {
-      "id": "sensors_actuators_2"
-    },
-    {
-      "id": "physical_process"
+      "id": "water_supply"
     },
     {
       "id": "historian"
-    },
-    {
-      "id": "automation_engineers"
     }
   ],
   "edges": [
     {
-      "source": "operators",
-      "target": "local_hmi",
+      "source": "vendor_remote_access",
+      "target": "engineering_workstation",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.5
+    },
+    {
+      "source": "engineering_workstation",
+      "target": "scada_server",
       "rel_type": "controls",
       "firewalled": false,
       "weight": 0.7
     },
     {
-      "source": "operators",
-      "target": "scada",
+      "source": "operator",
+      "target": "scada_server",
       "rel_type": "controls",
       "firewalled": false,
       "weight": 0.7
     },
     {
-      "source": "local_hmi",
-      "target": "industrial_network",
-      "rel_type": "connects-to",
-      "firewalled": false,
-      "weight": 0.09
-    },
-    {
-      "source": "scada",
-      "target": "industrial_network",
-      "rel_type": "connects-to",
-      "firewalled": false,
-      "weight": 0.09
-    },
-    {
-      "source": "industrial_network",
-      "target": "plc_1",
+      "source": "scada_server",
+      "target": "plc_dosing",
       "rel_type": "programs / operates",
       "firewalled": true,
-      "weight": 0.0
+      "weight": 0.24
     },
     {
-      "source": "industrial_network",
-      "target": "plc_2",
-      "rel_type": "programs / operates",
-      "firewalled": true,
-      "weight": 0.0
-    },
-    {
-      "source": "plc_1",
-      "target": "sensors_actuators_1",
+      "source": "plc_dosing",
+      "target": "chlorine_pump",
       "rel_type": "actuates",
       "firewalled": false,
       "weight": 0.6
     },
     {
-      "source": "plc_2",
-      "target": "sensors_actuators_2",
+      "source": "chlorine_pump",
+      "target": "water_supply",
       "rel_type": "actuates",
       "firewalled": false,
       "weight": 0.6
     },
     {
-      "source": "sensors_actuators_1",
-      "target": "physical_process",
-      "rel_type": "actuates",
-      "firewalled": false,
-      "weight": 0.6
-    },
-    {
-      "source": "sensors_actuators_2",
-      "target": "physical_process",
-      "rel_type": "actuates",
-      "firewalled": false,
-      "weight": 0.6
-    },
-    {
-      "source": "physical_process",
+      "source": "scada_server",
       "target": "historian",
-      "rel_type": "monitors",
-      "firewalled": false,
-      "weight": 0.2
-    },
-    {
-      "source": "historian",
-      "target": "automation_engineers",
       "rel_type": "monitors",
       "firewalled": false,
       "weight": 0.2
