@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ics-risk-api
+    ports:
+      - "8000:8000"
+    environment:
+      - ICS_DB_URL=postgresql://icsuser:icspass@db:5432/icsrisk
+      - CORS_ORIGINS=http://localhost:5173,http://localhost:3000
+      - LOG_LEVEL=INFO
+      - LOG_FORMAT=json
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - MAX_UPLOAD_SIZE_MB=50
+      - RATE_LIMIT_PER_MINUTE=60
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./data:/app/data
+      - ./output:/app/output
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: ics-risk-db
+    environment:
+      - POSTGRES_USER=icsuser
+      - POSTGRES_PASSWORD=icspass
+      - POSTGRES_DB=icsrisk
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U icsuser -d icsrisk"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    container_name: ics-risk-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000/api
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+

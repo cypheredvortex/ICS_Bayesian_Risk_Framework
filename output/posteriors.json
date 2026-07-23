@@ -1,14 +1,16 @@
 {
-  "evidence": {
-    "scada_server": 1
-  },
+  "evidence": {},
   "posteriors": {
-    "vendor_remote_access": 0.524047,
-    "engineering_workstation": 0.98611,
-    "operator": 0.209777,
-    "plc_dosing": 0.45888,
-    "chlorine_pump": 0.353593,
-    "water_supply": 0.220034,
-    "historian": 0.7148
+    "operators": 0.21,
+    "local_hmi": 0.95735,
+    "scada": 0.945408,
+    "industrial_network": 0.769586,
+    "plc_1": 0.382818,
+    "plc_2": 0.382818,
+    "sensors_actuators_1": 0.333683,
+    "sensors_actuators_2": 0.333683,
+    "physical_process": 0.372572,
+    "historian": 0.236937,
+    "automation_engineers": 0.146459
   }
 }

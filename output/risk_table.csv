@@ -1,8 +1,12 @@
 ﻿Rank,Asset,Risk Level,Risk Score,Compromise Probability,Impact Score,Consequence Severity,Scope Multiplier
-1,engineering_workstation,Critical,5.917,0.986,6.000,6.000,1.000
-2,plc_dosing,Critical,5.782,0.459,12.600,9.000,1.400
-3,chlorine_pump,Critical,3.677,0.354,10.400,8.000,1.300
-4,water_supply,Critical,3.080,0.220,14.000,10.000,1.400
-5,historian,Critical,2.859,0.715,4.000,4.000,1.000
-6,vendor_remote_access,High,1.048,0.524,2.000,2.000,1.000
-7,operator,Low,0.000,0.210,0.000,0.000,1.000
+1,scada,Critical,6.618,0.945,7.000,7.000,1.000
+2,physical_process,Critical,5.216,0.373,14.000,10.000,1.400
+3,local_hmi,Critical,4.787,0.957,5.000,5.000,1.000
+4,plc_2,Critical,4.479,0.383,11.700,9.000,1.300
+5,plc_1,Critical,4.479,0.383,11.700,9.000,1.300
+6,sensors_actuators_2,Critical,3.470,0.334,10.400,8.000,1.300
+7,sensors_actuators_1,Critical,3.470,0.334,10.400,8.000,1.300
+8,industrial_network,Critical,3.078,0.770,4.000,4.000,1.000
+9,historian,High,1.185,0.237,5.000,5.000,1.000
+10,operators,Low,0.000,0.210,0.000,0.000,1.000
+11,automation_engineers,Low,0.000,0.146,0.000,0.000,1.000

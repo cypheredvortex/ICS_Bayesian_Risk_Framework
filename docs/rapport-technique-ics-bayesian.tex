@@ -1,0 +1,841 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{colortbl}
+\usepackage{xcolor}
+\usepackage{titling}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{microtype}
+\usepackage{mathpazo}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{needspace}
+\usepackage{etoolbox}
+\usepackage{titlesec}
+\usepackage{tabularx}
+
+\usetikzlibrary{positioning,arrows.meta,shapes,calc,shadows,shadows.blur,decorations.pathreplacing,backgrounds}
+\pgfplotsset{compat=1.18}
+
+% Géométrie et marges
+\geometry{a4paper, margin=2.8cm, top=3cm, bottom=3cm, headheight=15pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.2ex plus 0.3ex minus 0.2ex}
+
+% Interligne
+\onehalfspacing
+
+% Pénalités
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+\raggedbottom
+
+% Flottants
+\renewcommand{\floatpagefraction}{0.9}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\topfraction}{0.95}
+\renewcommand{\bottomfraction}{0.8}
+
+% Hyperliens
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary!70,
+    urlcolor=secondary,
+    pdftitle={Rapport technique - Framework d'évaluation quantitative des risques ICS}
+}
+
+% Couleurs
+\definecolor{primary}{RGB}{0,51,102}
+\definecolor{secondary}{RGB}{0,102,204}
+\definecolor{lightgray}{RGB}{245,245,245}
+\definecolor{darkgray}{RGB}{50,50,50}
+\definecolor{ucblue}{RGB}{70,130,180}
+\definecolor{classblue}{RGB}{100,149,237}
+\definecolor{sequenceblue}{RGB}{135,206,250}
+\definecolor{actorcolor}{RGB}{210,225,240}
+\definecolor{databasecolor}{RGB}{144,238,144}
+
+% Style des titres
+\titleformat{\section}
+  {\normalfont\Large\bfseries\sffamily\color{primary}}
+  {\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{3.5ex plus 1ex minus 0.2ex}{2.3ex plus 0.2ex}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\sffamily\color{primary!80}}
+  {\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{2.8ex plus 0.8ex minus 0.2ex}{1.8ex plus 0.2ex}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\sffamily\color{primary!70}}
+  {\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{2.2ex plus 0.5ex}{1.5ex}
+
+% En-tête/pied
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape\color{primary!70} Rapport technique ICS}
+\fancyhead[R]{\small\thepage}
+\fancyfoot[C]{\small\color{primary!50} -- \thepage\ --}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+\fancyhead[L]{\small\itshape\color{primary!70} \leftmark}
+\fancyhead[R]{\small\thepage}
+
+% Tableaux
+\renewcommand{\arraystretch}{1.4}
+\setlength{\tabcolsep}{10pt}
+\captionsetup[table]{font=small, labelfont=bf, position=above, skip=6pt}
+
+% Figures
+\captionsetup[figure]{font=small, labelfont=bf, position=below, skip=8pt}
+
+% Commande pour forcer l'espace
+\newcommand{\forcereset}[1]{%
+    \needspace{#1\baselineskip}%
+}
+
+% Page de titre
+\title{
+    \vspace{2.5cm}
+    {\Huge\sffamily\bfseries\color{primary} Rapport technique} \\
+    \vspace{0.6cm}
+    {\Large\sffamily\color{primary!80} Développement d'un framework générique d'évaluation quantitative des risques ICS fondé sur les réseaux bayésiens} \\
+    \vspace{0.4cm}
+    {\large\itshape Modélisation, moteur d'inférence bayésienne, API REST, tableau de bord Web et planification du projet} \\
+    \vspace{1.2cm}
+    {\large Période de réalisation : 1er juillet 2026 -- 15 août 2026}
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+\tableofcontents
+\thispagestyle{empty}
+\newpage
+
+% ==========================================================================
+% RÉSUMÉ
+% ==========================================================================
+\section*{Résumé}
+\addcontentsline{toc}{section}{Résumé}
+\markboth{Résumé}{Résumé}
+\forcereset{8}
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Les ICS (Industrial Control Systems) pilotent des procédés physiques dont la compromission peut avoir des conséquences de sûreté, environnementales et économiques.
+    \item L'évaluation du risque cyber ne peut se limiter à une liste de vulnérabilités : elle doit intégrer la topologie réseau, les dépendances entre actifs, les contrôles de sécurité, l'incertitude et les observations terrain.
+    \item Le framework transforme une architecture ICS en réseau bayésien discret à deux états (compromis / sûr).
+    \item Il calcule des probabilités intrinsèques de compromission à partir des attributs de chaque actif (CVSS, exposition, correctifs, rôle, sensibilisation).
+    \item Les tables de probabilités conditionnelles (CPT) sont paramétrées automatiquement via un modèle Noisy-OR qui combine la probabilité de base avec les poids de propagation des relations entrantes.
+    \item L'inférence exacte par élimination de variables (pgmpy) tient compte des preuves saisies par l'utilisateur et classe les actifs par score de risque (probabilité postérieure $\times$ impact).
+    \item Un module de chemins d'attaque identifie les routes de propagation les plus critiques depuis les nœuds de preuve jusqu'aux actifs à forte conséquence.
+    \item L'application Web (React + TypeScript) permet d'importer une topologie (JSON, YAML, CSV), de sélectionner des preuves, d'exécuter l'analyse, d'inspecter le réseau bayésien et de télécharger un registre des risques (CSV) et un rapport PDF professionnel.
+    \item Le backend expose une API REST FastAPI avec limitation de débit, traçage par identifiant de requête, validation Pydantic, et journalisation centralisée.
+    \item 85 tests automatisés (pytest) valident l'ensemble de la chaîne de calcul avec zéro échec.
+\end{itemize}
+
+\newpage
+
+% ==========================================================================
+% INTRODUCTION GÉNÉRALE
+% ==========================================================================
+\section{Introduction générale}
+\markboth{Introduction générale}{Introduction générale}
+\forcereset{8}
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Un ICS regroupe automates (PLC), IHM, serveurs SCADA, capteurs, actionneurs, postes d'ingénierie, et réseaux de terrain (Modbus, Profinet, OPC-UA, DNP3).
+    \item Contrairement à un SI classique, une erreur de commande ou une indisponibilité affecte directement le monde physique : surpression dans une turbine, ouverture intempestive d'une vanne, arrêt de chaîne de fabrication.
+    \item Les exigences de disponibilité, sûreté et continuité d'exploitation sont primordiales et interdisent souvent l'installation d'agents de sécurité traditionnels.
+    \item Les méthodes classiques (matrice vraisemblance $\times$ impact) peinent à modéliser la propagation d'une compromission à travers le réseau, l'effet d'un pare-feu ou l'évolution d'un diagnostic à partir d'observations.
+    \item Les réseaux bayésiens répondent à cette limite : graphe orienté acyclique (DAG) où chaque nœud est une variable aléatoire discrète, et la mise à jour des probabilités se fait par inférence exacte à partir d'observations (preuves).
+    \item Le projet conçoit un framework générique, modulaire, testable et exploitable par un analyste de risque sans écrire de code Python.
+    \item Le chapitre 2 présente le besoin et les fonctionnalités livrées. Le chapitre 3 détaille l'architecture modulaire du backend et le workflow complet. Le chapitre 4 justifie les choix technologiques. Le chapitre 5 présente la modélisation UML. Le chapitre 6 décrit la planification du projet. La conclusion propose des perspectives d'évolution.
+\end{itemize}
+
+\newpage
+
+% ==========================================================================
+% PRÉSENTATION DU PROJET
+% ==========================================================================
+\section{Présentation du projet}
+\markboth{Présentation du projet}{Présentation du projet}
+
+\subsection{Problème et besoin}
+\forcereset{5}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Une topologie ICS contient des actifs hétérogènes (dispositifs techniques, humains, processus physiques) et des liens de nature variée (programmation, commande, supervision, connexion réseau).
+    \item Il faut convertir ces relations en un modèle probabiliste quantitatif pour répondre à des questions comme :
+        \begin{itemize}
+            \item « Quelle est la probabilité qu'un automate soit compromis si une IHM l'est ? »
+            \item « Quels actifs doivent être traités en priorité par l'équipe de cybersécurité ? »
+            \item « Quel est l'impact d'un nouveau pare-feu sur le risque global ? »
+        \end{itemize}
+    \item Le framework accepte une topologie structurée, valide ses actifs et relations, applique des pondérations configurables, puis produit un classement des risques et des chemins d'attaque.
+    \item Utilisateurs cibles : analystes cybersécurité ICS, ingénieurs OT, responsables de sûreté, encadrement décisionnel.
+    \item Le résultat doit être compréhensible sans manipulation directe de code Python.
+\end{itemize}
+
+\subsection{Fonctionnalités livrées}
+\forcereset{5}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Modélisation de trois types d'actifs : humains (opérateur, administrateur, invité), techniques (automates, IHM, serveurs, capteurs) et physiques (vannes, pompes, convoyeurs).
+    \item Import de topologies aux formats JSON, YAML ou CSV, avec quatre jeux de données prédéfinis (SWAT, Building Automation, Power Substation, Water Treatment).
+    \item Pondérations configurables des dépendances (par type de relation), des contrôles (pare-feu), des protocoles réseau (Modbus, OPC-UA, DNP3, etc.) et des niveaux de confiance.
+    \item Calcul automatique des probabilités intrinsèques de base, des tables de probabilités conditionnelles (Noisy-OR), des probabilités de propagation.
+    \item Inférence bayésienne exacte (élimination de variables) à partir de preuves saisies par l'utilisateur : état « Compromised » (1) ou « Safe » (0).
+    \item Calcul et classement des risques (probabilité $\times$ impact), identification des chemins d'attaque critiques par exploration en largeur pondérée.
+    \item Tableau de bord Web avec visualisation de graphe interactif (React Flow), graphiques de distribution (Recharts), inspection des tables CPT.
+    \item API REST documentée (Swagger / ReDoc) avec limitation de débit, traçage des requêtes, journalisation structurée.
+    \item Export d'un registre des risques (CSV) et d'un rapport PDF professionnel (reportlab) avec tableau et en-tête/pied de page.
+    \item 85 tests automatisés couvrant l'ensemble de la chaîne : probabilités, risque, construction du graphe, génération CPT, inférence, paramétrage, API, persistance, exports.
+\end{itemize}
+
+\newpage
+
+% ==========================================================================
+% ARCHITECTURE
+% ==========================================================================
+\section{Architecture du framework}
+\markboth{Architecture du framework}{Architecture du framework}
+\forcereset{5}
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Le framework suit une architecture en couches : interface utilisateur (frontend React) $\rightarrow$ API REST (FastAPI) $\rightarrow$ couche d'adaptation (api\_adapter) $\rightarrow$ moteur bayésien (modules spécialisés) $\rightarrow$ persistance (base de données SQLite).
+    \item Chaque module du moteur a une responsabilité unique et transmet son résultat au suivant selon une chaîne de traitement linéaire.
+\end{itemize}
+
+\subsection{Modules du backend}
+\forcereset{5}
+
+\begin{table}[H]
+\centering
+\caption{Modules du backend et leurs responsabilités}
+\label{tab:modules}
+\rowcolors{2}{lightgray}{white}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\textwidth}{l X}
+\toprule
+\textbf{Module} & \textbf{Fonction} \\
+\midrule
+config.py & Constantes et tables de correspondance (multiplicateurs CVSS, exposition, correctifs, protocoles, confiance, MITRE) \\
+settings.py & Paramètres modifiables à l'exécution (poids, multiplicateurs), thread-safe avec verrouillage \\
+assets.py & Chargement, normalisation et validation des topologies (JSON, YAML, CSV), détection de cycles \\
+probability.py & Calcul des probabilités intrinsèques par type d'actif (dispositif, humain, physique) à partir des attributs \\
+graph\_builder.py & Construction du squelette du réseau bayésien (DAG) via pgmpy, calcul des poids d'arête avec prise en compte des pare-feu, protocoles et niveau de confiance \\
+cpt\_generator.py & Génération des tables de probabilités conditionnelles (CPT) par modèle Noisy-OR pour chaque nœud, paramétrage du modèle \\
+inference.py & Inférence exacte par élimination de variables (VariableElimination de pgmpy) avec prise en compte des preuves \\
+risk.py & Construction du tableau des risques (probabilité $\times$ impact), classement, niveaux de risque (Critique $\ge$ 1,5, Haut $\ge$ 0,8, Modéré $\ge$ 0,3, Faible $<$ 0,3) \\
+attack\_paths.py & Exploration en largeur depuis les nœuds de preuve, identification des chemins de propagation les plus critiques avec score combiné \\
+outputs.py & Export des artéfacts (JSON pour le graphe et les CPT, CSV pour le registre des risques, TXT pour le résumé, PNG pour l'image du graphe) \\
+pdf\_reports.py & Génération du rapport PDF professionnel via reportlab (tableaux, en-tête/pied, numéros de page) \\
+cli.py & Point d'entrée en ligne de commande, orchestration de la chaîne complète et persistance en base \\
+api\_adapter.py & Traduction des entrées HTTP (JSON) vers le format attendu par le moteur \\
+api.py & Application FastAPI avec points de terminaison REST, limitation de débit (slowapi), traçage par identifiant, journalisation structurée \\
+schemas.py & Modèles Pydantic pour la validation des requêtes et réponses (EvidenceEntry, AnalyzeRequest, SettingsUpdateRequest, ErrorResponse, etc.) \\
+logging\_config.py & Configuration centralisée de la journalisation avec format JSON structuré et niveau configurable \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\newpage
+\subsection{Couche de persistance --- base de données}
+\forcereset{5}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item \textbf{Moteur} : SQLite (développement) / PostgreSQL (production via Docker Compose).
+    \item \textbf{Fichier} : La base SQLite est enregistrée dans \texttt{backend/data/ICSRiskFramework.db}. Ce chemin est le défaut dans \texttt{backend/database/config.py} :
+    \begin{verbatim}
+    DB_DIR = Path(__file__).resolve().parents[2] / "backend" / "data"
+    DEFAULT_DB_URL = os.getenv("ICS_DB_URL",
+        f"sqlite:///{(DB_DIR / 'ICSRiskFramework.db').as_posix()}")
+    \end{verbatim}
+    \item \textbf{URL configurable} : La variable d'environnement \texttt{ICS\_DB_URL} permet de changer la cible (ex : \texttt{postgresql://user:pass@localhost:5432/ics\_risk}).
+    \item \textbf{ORM} : SQLAlchemy 2.0 avec déclaration par type (Mapped + mapped\_column).
+    \item \textbf{Migrations} : Alembic (fichier \texttt{alembic/versions/3f1fade8e943\_initial\_schema.py}).
+\end{itemize}
+
+\textbf{Schéma de la base de données (8 tables)} :
+\begin{table}[H]
+\centering
+\caption{Tables de la base de données}
+\label{tab:db_schema}
+\rowcolors{2}{lightgray}{white}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\textwidth}{l l X}
+\toprule
+\textbf{Table} & \textbf{Clé primaire} & \textbf{Rôle} \\
+\midrule
+projects & id & Projets d'analyse (nom, description, secteur, dates) \\
+assets & id, project\_id (FK) & Actifs d'un projet (nom, type, zone, fournisseur, CVSS, exposition, correctifs, probabilité intrinsèque) \\
+connections & id, project\_id (FK) & Relations entre actifs (source, destination, type, poids de propagation) \\
+bayesian\_nodes & id, project\_id (FK) & Nœuds du réseau bayésien (nom, type, métadonnées) \\
+cpts & id, project\_id (FK) & Tables de probabilités conditionnelles sérialisées en JSON \\
+inference\_results & id, project\_id (FK) & Résultats d'inférence (actif, probabilité postérieure, horodatage) \\
+risk\_results & id, project\_id (FK) & Scores de risque (vraisemblance, impact, score, niveau) \\
+reports & id, project\_id (FK) & Chemins des fichiers exportés (CSV, PDF) \\
+application\_settings & id, project\_id (FK) & Paramètres clé-valeur (poids, multiplicateurs, thème, langue) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\textbf{Accès à la base} :
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item \textbf{Par l'application} : via le service \texttt{AssessmentPersistenceService} du module \texttt{backend/database/services.py} qui orchestre les repositories.
+    \item \textbf{Direct (SQLite)} : avec un client SQLite, ouvrir le fichier \texttt{backend/data/ICSRiskFramework.db} :
+    \begin{verbatim}
+    sqlite3 backend/data/ICSRiskFramework.db
+    sqlite> .tables
+    sqlite> SELECT * FROM projects;
+    \end{verbatim}
+    \item \textbf{Direct (PostgreSQL)} : via n'importe quel client PostgreSQL (pgAdmin, psql, DBeaver) sur l'URL configurée.
+    \item \textbf{Par l'API} : GET /settings, GET /results, GET /datasets.
+    \item \textbf{Initialisation automatique} : la base est créée et les tables sont générées au premier appel à \texttt{initialize\_database()} (protégé par un indicateur \_initialized pour éviter les doublons).
+\end{itemize}
+
+\newpage
+\subsection{Organisation des fichiers}
+\forcereset{5}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Tous les modules Python résident dans le paquet \texttt{backend/} avec une structure plate (pas de sous-paquets superflus).
+    \item Les jeux de données prédéfinis se trouvent dans \texttt{data/} (format JSON natif du framework).
+    \item Les tests sont regroupés dans \texttt{tests/} (11 fichiers, 85 tests).
+    \item Le frontend est dans \texttt{frontend/src/} et suit l'architecture standard React + Vite.
+    \item Des fichiers de configuration DevOps accompagnent le projet : Dockerfile multi-étapes, docker-compose.yml, .pre-commit-config.yaml, .github/workflows/ci.yml.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    folder/.style={rectangle, draw, rounded corners=2pt, minimum width=3cm, minimum height=0.8cm, align=center, fill=primary!10, inner sep=4pt, font=\small\ttfamily},
+    file/.style={rectangle, draw, rounded corners=2pt, minimum width=3.8cm, minimum height=0.6cm, align=center, fill=lightgray!40, inner sep=3pt, font=\small\ttfamily},
+    module/.style={rectangle, draw, rounded corners=2pt, minimum width=3.2cm, minimum height=0.6cm, align=center, fill=classblue!15, inner sep=3pt, font=\small\ttfamily},
+    arrow/.style={-{Stealth[scale=1.2]}, line width=1pt, draw=primary!60}
+]
+\node[folder, minimum width=4.5cm] (root) at (0,2) {ICS\_Bayesian\_Risk\_Framework/};
+\node[folder] (back) at (-3,0.2) {backend/};
+\node[folder] (tests) at (3,0.2) {tests/};
+\node[folder] (data) at (0,-1.5) {data/};
+\node[folder] (front) at (0,-3.2) {frontend/src/};
+\node[file] (conf) at (0,-5) {\{Dockerfile, docker-compose, .pre-commit, .github\}};
+
+\node[module] (m1) at (-3,-1) {cli.py};
+\node[module] (m2) at (-3,-2) {assets.py};
+\node[module] (m3) at (-3,-3) {probability.py};
+\node[module] (m4) at (-3,-4) {graph\_builder.py};
+\node[module] (m5) at (-3,-5) {cpt\_generator.py};
+\node[module] (m6) at (-3,-6) {inference.py};
+\node[module] (m7) at (-3,-7) {risk.py};
+\node[module] (m8) at (-3,-8) {attack\_paths.py};
+\node[module] (m9) at (-3,-9) {outputs.py};
+\node[module] (m10) at (3,-1) {api.py};
+\node[module] (m11) at (3,-2) {api\_adapter.py};
+\node[module] (m12) at (3,-3) {pdf\_reports.py};
+\node[module] (m13) at (3,-4) {schemas.py};
+\node[module] (m14) at (3,-5) {settings.py};
+\node[module] (m15) at (3,-6) {logging\_config.py};
+\node[folder] (db) at (3,-7.5) {database/};
+\node[module, minimum width=4cm] (db1) at (3,-9) {\{config, models, repositories, services\}};
+
+\draw[arrow] (root) -- (back);
+\draw[arrow] (root) -- (tests);
+\draw[arrow] (root) -- (data);
+\draw[arrow] (root) -- (front);
+\draw[arrow] (root) -- (conf);
+
+\draw (back.south) -- (-3,-0.5);
+\end{tikzpicture}%
+}
+\caption{Structure simplifiée du dépôt}
+\label{fig:structure}
+\end{figure}
+
+\newpage
+
+\subsection{Chaîne de calcul du moteur bayésien}
+\forcereset{5}
+
+Le cœur du framework est une chaîne de calcul séquentielle où chaque module transforme la sortie du précédent :
+
+\begin{enumerate}[leftmargin=1.5cm, itemsep=0.3\baselineskip]
+    \item \textbf{Chargement de la topologie} (\texttt{assets.py}) : normalisation et validation des entrées (vérification du DAG, champs obligatoires par type d'actif).
+    \item \textbf{Construction du graphe} (\texttt{graph\_builder.py}) : création du modèle pgmpy avec nœuds et arêtes, calcul des poids de propagation pour chaque relation en fonction du type, du pare-feu, du protocole et du niveau de confiance.
+    \item \textbf{Probabilités intrinsèques} (\texttt{probability.py}) : pour chaque actif, calcul de la probabilité de base $P_{\text{base}}(\text{compromis})$ selon son type :
+    \begin{itemize}
+        \item Dispositif : $P_{\text{base}} = \frac{CVSS}{10} \times w_{\text{cvss}} \times M_{\text{expo}}^{w_{\text{expo}}} \times M_{\text{patch}}^{w_{\text{patch}}}$
+        \item Humain : $P_{\text{base}} = R_{\text{phishing}} \times (1 - \text{sensibilisation}) \times M_{\text{privilège}}$
+        \item Physique : $P_{\text{base}} = \text{paramètre de remplacement ou } 0$
+    \end{itemize}
+    \item \textbf{Génération des CPT} (\texttt{cpt\_generator.py}) : pour chaque nœud, construction de la table de probabilités conditionnelles via le modèle Noisy-OR. La probabilité que le nœud soit compromis sachant l'état de ses parents est :
+    $$P(\text{enfant}=1 \mid \text{parents}) = 1 - (1 - P_{\text{base}}) \times \prod_{p \in \text{parents actifs}} (1 - w_{p \to \text{enfant}})$$
+    où $w_{p \to e}$ est le poids de propagation de l'arête entrante.
+    \item \textbf{Inférence} (\texttt{inference.py}) : exécution de l'algorithme d'élimination de variables (VariableElimination de pgmpy) avec les preuves utilisateur pour obtenir les probabilités postérieures $P(\text{actif}=1 \mid \text{preuves})$.
+    \item \textbf{Calcul des risques} (\texttt{risk.py}) : pour chaque actif, score de risque $R = P(\text{compromis} \mid \text{preuves}) \times \text{impact}$, où $\text{impact} = \text{sévérité} \times \text{multiplicateur de périmètre} \times w_{\text{impact}}$.
+    \item \textbf{Chemins d'attaque} (\texttt{attack\_paths.py}) : exploration en largeur depuis les nœuds de preuve (ou les sources) jusqu'aux actifs à forte conséquence, avec calcul d'un score de qualité de propagation et classement par risque cumulé.
+\end{enumerate}
+
+\newpage
+\subsection{Flux utilisateur complet}
+\forcereset{5}
+
+L'interface Web guide l'utilisateur à travers six étapes séquentielles, de l'import de la topologie à l'export des livrables.
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item \textbf{Étape 1 -- Chargement} : choix d'un jeu de données prédéfini (GET /datasets/\{nom\}) ou import d'un fichier (POST /upload-topology-file). Le backend valide et normalise la topologie.
+    \item \textbf{Étape 2 -- Configuration} : réglage des pondérations via un panneau de paramètres persistant (GET/PUT /settings). Ajustement des poids CVSS, exposition, correctif, impact, propagation et multiplicateurs pare-feu.
+    \item \textbf{Étape 3 -- Preuves} : pour chaque actif, sélection d'un état parmi Unknown, Compromised ou Safe. Boutons radio conservés côté client.
+    \item \textbf{Étape 4 -- Exécution} : envoi de la topologie et des preuves (hors Unknown) à POST /analyze. Le backend exécute la chaîne complète (étapes 2 à 7 de la section 3.3) et retourne un résultat JSON structuré.
+    \item \textbf{Étape 5 -- Exploration} : visualisation interactive du réseau bayésien (React Flow) avec coloration par probabilité ou type, sélection de nœud pour inspection détaillée, tableau de bord synthétique, graphiques de distribution, tables CPT consultables.
+    \item \textbf{Étape 6 -- Export} : téléchargement du registre des risques (CSV) et du rapport PDF de synthèse via GET /reports/\{fichier\}.
+\end{itemize}
+
+\newpage
+
+% ==========================================================================
+% CHOIX TECHNOLOGIQUES
+% ==========================================================================
+\section{Choix technologiques}
+\markboth{Choix technologiques}{Choix technologiques}
+
+\subsection{Frontend}
+\forcereset{4}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item React 18 : structure en composants, mise à jour réactive du tableau de bord.
+    \item TypeScript : typage statique des structures de données (TopologyPayload, ResultPayload, CoreSettings) garantissant la cohérence du contrat avec l'API.
+    \item Vite 5 : serveur de développement HMR rapide, build optimisé.
+    \item Tailwind CSS 3 : classes utilitaires pour une interface responsive cohérente avec le thème sombre.
+    \item React Flow (xyflow) : graphe interactif avec zoom, déplacement, sélection, minimap, contrôles.
+    \item Recharts : diagrammes en barres et en secteurs avec rendu responsive.
+    \item Appels HTTP natifs fetch : pas de dépendance externe pour les requêtes API.
+\end{itemize}
+
+\subsection{Backend et moteur}
+\forcereset{4}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Python 3.11+ : écosystème scientifique mature, syntaxe moderne, typage progressif.
+    \item FastAPI : framework REST asynchrone avec validation Pydantic intégrée, documentation automatique OpenAPI.
+    \item Uvicorn : serveur ASGI haute performance.
+    \item Pydantic v2 : validation déclarative des corps de requête et modèles de réponse.
+    \item pgmpy : bibliothèque de référence pour les modèles graphiques probabilistes (BayesianModel, TabularCPD, VariableElimination).
+    \item NetworkX : manipulation du graphe pour l'export JSON et la visualisation Matplotlib.
+    \item Matplotlib : rendu de l'image PNG du graphe (sans dépendance à Graphviz).
+    \item Pandas : construction et export du registre des risques au format CSV.
+    \item SQLAlchemy 2.0 : ORM pour la persistance en base de données (SQLite en développement, PostgreSQL en production).
+    \item Alembic : gestion des migrations de schéma.
+    \item slowapi : limitation de débit par point de terminaison.
+    \item reportlab : génération professionnelle de rapports PDF (tableaux, en-tête/pied de page).
+\end{itemize}
+
+\subsection{Exports et déploiement}
+\forcereset{5}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item CSV : registre des risques ouvrable et triable dans tout tableur.
+    \item JSON : format d'audit pour le graphe, les CPT et les probabilités postérieures.
+    \item PDF : rapport de synthèse professionnel destiné aux décideurs.
+    \item Docker : image multi-étapes (build + production) pour le backend, image nginx pour le frontend.
+    \item Docker Compose : orchestration API + base de données (PostgreSQL) + frontend.
+    \item Git + GitHub : versionnement et intégration continue (GitHub Actions).
+    \item Pre-commit : hooks de validation (ruff, formatage, pytest).
+\end{itemize}
+
+% Tableau comparatif
+\begin{table}[H]
+\centering
+\caption{Tableau comparatif des technologies}
+\label{tab:technologies}
+\rowcolors{2}{lightgray}{white}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\textwidth}{X X X X}
+\toprule
+\textbf{Technologie} & \textbf{Pourquoi} & \textbf{Alternative} & \textbf{Motif du choix} \\
+\midrule
+React + TypeScript & UI interactive et contrat de données typé & Vue, Angular & Écosystème mature, React Flow compatible \\
+Vite & Build et HMR rapides & Webpack & Configuration plus légère, natif TypeScript \\
+FastAPI + Pydantic & API REST typée avec validation automatique & Flask, Django Ninja & Performance asynchrone, documentation auto \\
+pgmpy & CPD et inférence bayésienne exacte & Implémentation maison & Algorithme d'élimination de variables éprouvé \\
+NetworkX + Matplotlib & Graphe et export PNG Python natif & Graphviz & Aucun binaire externe requis \\
+Pandas & Tableau de risques et export CSV & Module csv, polars & Tri, formatage et robustesse \\
+SQLAlchemy + Alembic & ORM complet avec migrations & SQLite seul, Django ORM & Modèle Repository, migrations versionnées \\
+slowapi & Limitation de débit API & Middleware maison & Configuration déclarative, prêt à l'emploi \\
+reportlab & PDF professionnel & FPDF, raw PDF assembly & Tableaux, styles, en-tête/pied natifs \\
+Docker Compose & Environnement reproductible & Déploiement manuel & Isolation des services, configuration unique \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\newpage
+
+% ==========================================================================
+% MODÉLISATION UML
+% ==========================================================================
+\section{Modélisation UML}
+\markboth{Modélisation UML}{Modélisation UML}
+\forcereset{5}
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Trois diagrammes formalisent les interactions fonctionnelles, la structure statique du moteur et la chronologie des échanges entre les couches.
+\end{itemize}
+
+\subsection{Diagramme de cas d'utilisation}
+\forcereset{6}
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Acteur unique : l'analyste de risque.
+    \item Cas d'utilisation principaux : chargement de la topologie (preset ou fichier), sélection des preuves, réglage des paramètres, lancement de l'évaluation, exploration du graphe, consultation du tableau de bord, export des livrables.
+    \item L'exploration du graphe et la consultation du tableau de bord incluent l'exécution préalable d'une évaluation (relation \texttt{<<include>>}).
+    \item L'export des livrables n'est possible qu'après une évaluation réussie.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\resizebox{0.92\textwidth}{!}{%
+\begin{tikzpicture}[
+    actor/.style={rectangle, draw, minimum width=3cm, minimum height=1.2cm, align=center, fill=actorcolor!25, rounded corners, drop shadow, thick, font=\normalsize\sffamily},
+    usecase/.style={ellipse, draw, minimum width=3.6cm, minimum height=1.2cm, align=center, fill=ucblue!12, rounded corners, drop shadow, thick, font=\normalsize\sffamily},
+    arrow/.style={-{Stealth[scale=1.5]}, line width=1.2pt, draw=primary!70},
+    include/.style={-{Stealth[scale=1.5]}, line width=1pt, dashed, draw=red!70}
+]
+% Acteur
+\node[actor] (analyst) at (0,0) {Analyste\\de risque};
+
+% Cas d'utilisation
+\node[usecase] (load) at (5,5) {Charger une\\topologie};
+\node[usecase] (evidence) at (10,5) {Sélectionner\\des preuves};
+\node[usecase] (settings) at (5,2) {Configurer les\\paramètres};
+\node[usecase] (evaluate) at (10,2) {Lancer\\l'évaluation};
+\node[usecase] (explore) at (15,2) {Explorer le\\graphe};
+\node[usecase] (dashboard) at (15,5) {Consulter le\\tableau de bord};
+\node[usecase] (export) at (5,-2.5) {Exporter les\\livrables};
+
+% Flèches acteur
+\draw[arrow] (analyst) -- (load);
+\draw[arrow] (analyst) -- (evidence);
+\draw[arrow] (analyst) -- (settings);
+\draw[arrow] (analyst) -- (evaluate);
+\draw[arrow] (analyst) -- (explore);
+\draw[arrow] (analyst) -- (dashboard);
+\draw[arrow] (analyst) -- (export);
+
+% Dépendances <<include>>
+\draw[include] (evaluate) -- (explore) node[midway, above, sloped, font=\small\itshape] {<<include>>};
+\draw[include] (evaluate) -- (dashboard) node[midway, above, sloped, font=\small\itshape] {<<include>>};
+\draw[include, bend left=20] (evaluate) edge (export) node[midway, right, font=\small\itshape] {<<include>>};
+\end{tikzpicture}%
+}
+\caption{Diagramme de cas d'utilisation de l'application}
+\label{fig:usecase}
+\end{figure}
+
+\newpage
+\subsection{Diagramme de classes}
+\forcereset{8}
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Entités de données : Asset, Relationship, Evidence, Settings, AnalysisResult.
+    \item Moteur de calcul découpé en modules spécialisés à responsabilité unique, chacun recevant les données précédentes et produisant un résultat pour l'étape suivante.
+    \item AttackPathFinder exploite les scores de risque produits par RiskCalculator pour identifier les chemins de propagation les plus critiques.
+    \item AnalysisResult agrège l'ensemble des sorties : probabilités postérieures, CPT, scores de risque, chemins d'attaque et métadonnées.
+    \item La couche API (api.py, schemas.py, api\_adapter.py) fait le pont entre le monde HTTP et le moteur.
+    \item La persistance est assurée par le module database/ (modèles SQLAlchemy, repositories, AssessmentPersistenceService).
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\resizebox{0.95\textwidth}{!}{%
+\begin{tikzpicture}[
+    class/.style={rectangle, draw, minimum width=3.4cm, minimum height=1.2cm, align=center, fill=classblue!12, rounded corners, drop shadow, thick, font=\small\sffamily, inner sep=6pt},
+    dataclass/.style={rectangle, draw, minimum width=3cm, minimum height=1cm, align=center, fill=lightgray!50, rounded corners, thick, font=\small\sffamily},
+    relation/.style={-{Stealth[scale=1.3]}, line width=1.1pt, draw=primary!70},
+    dataflow/.style={-{Stealth[scale=1.3]}, line width=0.8pt, draw=secondary!60, dashed}
+]
+% Entités de données
+\node[dataclass] (asset) at (-7,5) {Asset\\- id, kind, attributes};
+\node[dataclass] (rel) at (-7,2) {Relationship\\- source, target\\- type, firewalled};
+\node[dataclass] (evidence) at (-7,-1) {Evidence\\- asset, state (0/1)};
+\node[dataclass] (settings) at (-7,-4) {Settings\\- weights, multipliers};
+
+% Modules du moteur
+\node[class] (graphbuilder) at (-1.5,5) {GraphBuilder\\+ build\_graph\_skeleton()\\+ graph\_to\_dict()};
+\node[class] (probaengine) at (-1.5,2) {ProbabilityEngine\\+ compute\_base\_probs()};
+
+\node[class] (cptgen) at (3.5,3.5) {CPTGenerator\\+ noisy\_or\_cpt()\\+ parameterize()\\+ cpts\_to\_dict()};
+
+\node[class] (inference) at (8.5,5) {InferenceEngine\\+ compute\_posteriors\_\\with\_evidence()};
+
+\node[class] (riskcalc) at (8.5,1.5) {RiskCalculator\\+ build\_risk\_table()\\+ risk\_level\_for()};
+
+\node[class] (attackpath) at (13.5,3.5) {AttackPathFinder\\+ compute\_attack\_paths()};
+
+% Entité résultat
+\node[dataclass] (result) at (13.5,7) {AnalysisResult\\- posteriors\\- cpts, risk\_scores\\- attack\_paths\\- timings, summary};
+
+% Couche API et persistence
+\node[class, fill=lightgray!50] (api) at (1.5,-2.5) {API Layer\\api.py, schemas.py,\\api\_adapter.py};
+\node[class, fill=lightgray!50] (persist) at (1.5,-5) {Persistence\\database/ (SQLAlchemy,\\repositories, services)};
+
+% Flux de données
+\draw[dataflow] (asset) -- (graphbuilder);
+\draw[dataflow] (rel) -- (graphbuilder);
+\draw[dataflow] (asset) -- (probaengine);
+\draw[dataflow] (graphbuilder) -- (cptgen);
+\draw[dataflow] (probaengine) -- (cptgen);
+\draw[dataflow] (settings) -- (cptgen);
+\draw[dataflow] (cptgen) -- (inference);
+\draw[dataflow] (evidence) -- (inference);
+\draw[dataflow] (inference) -- (riskcalc);
+\draw[dataflow] (riskcalc) -- (result);
+\draw[dataflow] (riskcalc) -- (attackpath);
+\draw[dataflow] (attackpath) -- (result);
+
+% Liens API/Persistence
+\draw[relation] (api) -- (graphbuilder);
+\draw[relation] (api) -- (probaengine);
+\draw[relation] (api) -- (inference);
+\draw[relation] (api) -- (result);
+\draw[relation] (persist) -- (result);
+\end{tikzpicture}%
+}
+\caption{Diagramme de classes du modèle de données et du moteur}
+\label{fig:classes}
+\end{figure}
+
+\newpage
+\subsection{Diagramme de séquence}
+\forcereset{10}
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Scénario nominal complet d'une session d'évaluation :
+        \begin{enumerate}
+            \item L'utilisateur charge une topologie (preset ou fichier) via le frontend.
+            \item Le frontend transmet la topologie à l'API (POST /upload-topology-file).
+            \item L'API valide et normalise les données, retourne un accusé de réception.
+            \item L'utilisateur marque des preuves (Compromised / Safe) pour certains actifs.
+            \item L'utilisateur lance l'évaluation : le frontend envoie topologie + preuves à POST /analyze.
+            \item L'API délègue au moteur bayésien qui exécute la chaîne complète (construction du graphe, probabilités, CPT, inférence, risques, chemins).
+            \item Le résultat JSON structuré est retourné au frontend.
+            \item Le frontend met à jour toutes les vues synchronisées (graphe, tableau de bord, graphiques, CPT).
+            \item L'utilisateur explore les résultats et peut exporter le registre CSV et le rapport PDF.
+        \end{enumerate}
+    \item Le backend orchestre l'ensemble du moteur de manière synchrone et renvoie une réponse JSON unique.
+    \item La persistance en base de données est effectuée automatiquement après chaque évaluation.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    actor/.style={rectangle, draw, minimum width=2.8cm, minimum height=0.9cm, align=center, fill=actorcolor!25, rounded corners, drop shadow, thick, font=\small\sffamily},
+    box/.style={rectangle, draw, minimum width=2.8cm, minimum height=0.9cm, align=center, fill=sequenceblue!15, rounded corners, drop shadow, thick, font=\small\sffamily},
+    arrow/.style={-{Stealth[scale=1.3]}, line width=1.1pt, draw=primary!70},
+    returnarrow/.style={-{Stealth[scale=1.3]}, line width=1pt, dashed, draw=red!60},
+    lifeline/.style={dashed, draw=gray!30, line width=0.7pt},
+    msg/.style={font=\footnotesize\sffamily}
+]
+
+\def\xuser{0}
+\def\xfront{6.5}
+\def\xapi{13}
+\def\xengine{19.5}
+\def\ytop{0}
+\def\ybottom{-17}
+
+\node[actor] (user) at (\xuser,\ytop) {Utilisateur};
+\node[box] (frontend) at (\xfront,\ytop) {Frontend React\\+ TypeScript};
+\node[box] (api) at (\xapi,\ytop) {API FastAPI\\+ Uvicorn};
+\node[box] (engine) at (\xengine,\ytop) {Moteur\\Bayésien};
+
+\draw[lifeline] (\xuser,\ytop-0.5) -- (\xuser,\ybottom);
+\draw[lifeline] (\xfront,\ytop-0.5) -- (\xfront,\ybottom);
+\draw[lifeline] (\xapi,\ytop-0.5) -- (\xapi,\ybottom);
+\draw[lifeline] (\xengine,\ytop-0.5) -- (\xengine,\ybottom);
+
+\draw[arrow] (\xuser,-1.5) -- (\xfront,-1.5) node[midway, above, msg] {1. Charger topologie (preset/fichier)};
+\draw[arrow] (\xfront,-3) -- (\xapi,-3) node[midway, above, msg] {2. POST /upload-topology(-file)};
+\draw[returnarrow] (\xapi,-4.2) -- (\xfront,-4.2) node[midway, below, msg] {3. 200 OK (topologie active)};
+\draw[arrow] (\xuser,-5.6) -- (\xfront,-5.6) node[midway, above, msg] {4. Marquer les preuves par actif};
+\draw[arrow] (\xfront,-7) -- (\xapi,-7) node[midway, above, msg] {5. POST /analyze\\ (topologie + preuves)};
+\draw[arrow] (\xapi,-8.5) -- (\xengine,-8.5) node[midway, above, msg] {6. Exécuter la chaîne :\\graph $\to$ probs $\to$ CPT $\to$\\inférence $\to$ risque $\to$ chemins};
+\draw[returnarrow] (\xengine,-10) -- (\xapi,-10) node[midway, below, msg] {7. AnalysisResult\\ (posteriors, CPT, risques,\\ chemins, métriques)};
+\draw[returnarrow] (\xapi,-11.5) -- (\xfront,-11.5) node[midway, below, msg] {8. Réponse JSON\\ (AnalysisResult structuré)};
+\draw[arrow] (\xuser,-13) -- (\xfront,-13) node[midway, above, msg] {9. Consulter graphe /\\tableau de bord / CPT};
+\draw[arrow] (\xfront,-14.5) -- (\xapi,-14.5) node[midway, above, msg] {10. GET /reports/risk\_table.csv\\ GET /reports/assessment.pdf};
+\draw[returnarrow] (\xapi,-16) -- (\xfront,-16) node[midway, below, msg] {11. Fichier CSV / PDF};
+\end{tikzpicture}%
+}
+\caption{Diagramme de séquence du parcours d'évaluation complet}
+\label{fig:sequence}
+\end{figure}
+
+\newpage
+
+% ==========================================================================
+% PLANIFICATION (GANTT)
+% ==========================================================================
+\section{Planification du projet --- diagramme de Gantt}
+\markboth{Planification du projet}{Planification du projet}
+\forcereset{6}
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Projet planifié sur 6,5 semaines (1er juillet – 15 août 2026).
+    \item Le développement du backend et du frontend se chevauche partiellement : le contrat d'interface (API) est défini en phase 3, permettant au frontend de démarrer en phase 4.
+    \item Les tests sont répartis sur l'ensemble du cycle : tests unitaires pendant le développement, tests d'intégration en phase 7, validation finale en continu.
+    \item Chaque phase produit des livrables tangibles : modules fonctionnels, API documentée, interface utilisateur, rapports.
+\end{itemize}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    every node/.style={font=\small\sffamily},
+    bar/.style={rectangle, draw, minimum height=1.6cm, align=center, fill=primary!30, rounded corners=4pt, drop shadow, thick, font=\small\sffamily, inner sep=4pt},
+    grid/.style={dashed, draw=gray!18}
+]
+\draw[->, thick, draw=primary!60] (0,0) -- (20,0) node[right] {Semaines};
+\foreach \x in {1,...,19} {
+    \draw[grid] (\x,0.4) -- (\x,16);
+}
+
+\node[bar, minimum width=1.8cm, fill=primary!40] at (0.9,1.4) {Phase 1\\Analyse};
+\node[bar, minimum width=2.0cm, fill=primary!40] at (2.5,3.2) {Phase 2\\Conception\\architecture};
+\node[bar, minimum width=3.6cm, fill=primary!50] at (4.7,5.0) {Phase 3\\Moteur backend\\+ API};
+\node[bar, minimum width=3.2cm, fill=primary!35] at (5.6,6.8) {Phase 4\\Frontend\\React};
+\node[bar, minimum width=2.0cm, fill=secondary!30] at (7.2,8.6) {Phase 5\\Tests\\unitaires};
+\node[bar, minimum width=2.4cm, fill=secondary!40] at (9.4,10.4) {Phase 6\\Intégration\\+ tests};
+\node[bar, minimum width=2.0cm, fill=secondary!50] at (11.2,12.2) {Phase 7\\Durcissement\\production};
+\node[bar, minimum width=2.0cm, fill=gray!40] at (12.8,14.0) {Phase 8\\Rapport\\+ doc};
+
+\draw[-, line width=0.8pt, draw=primary!80] (3.5,1.4) -- (3.5,15);
+
+\node[left, font=\footnotesize\sffamily] at (-0.3,1.4) {01-05/07};
+\node[left, font=\footnotesize\sffamily] at (-0.3,3.2) {06-12/07};
+\node[left, font=\footnotesize\sffamily] at (-0.3,5.0) {13-27/07};
+\node[left, font=\footnotesize\sffamily] at (-0.3,6.8) {20/07-03/08};
+\node[left, font=\footnotesize\sffamily] at (-0.3,8.6) {27/07-07/08};
+\node[left, font=\footnotesize\sffamily] at (-0.3,10.4) {08-14/08};
+\node[left, font=\footnotesize\sffamily] at (-0.3,12.2) {10-14/08};
+\node[left, font=\footnotesize\sffamily] at (-0.3,14.0) {12-15/08};
+
+\foreach \x in {1,...,19} {
+    \node[below, font=\tiny\sffamily] at (\x,-0.3) {\x};
+}
+\end{tikzpicture}%
+}
+\caption{Diagramme de Gantt du projet (1er juillet – 15 août 2026)}
+\label{fig:gantt}
+\end{figure}
+
+% Tableau planning détaillé
+\begin{table}[H]
+\centering
+\caption{Planning détaillé du projet}
+\label{tab:planning}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\textwidth}{X c c c X}
+\toprule
+\textbf{Phase} & \textbf{Début} & \textbf{Fin} & \textbf{Durée} & \textbf{Livrable} \\
+\midrule
+Analyse des besoins et spécifications & 01/07 & 05/07 & 5 j & Cahier des charges, jeux de données de référence \\
+Conception de l'architecture & 06/07 & 12/07 & 7 j & Schéma d'architecture, modèle de données, spécification API \\
+Développement du moteur backend & 13/07 & 27/07 & 15 j & Modules probabilité, graphe, CPT, inférence, risque, chemins d'attaque \\
+Développement de l'API FastAPI & 20/07 & 29/07 & 10 j & Routes REST, validation Pydantic, limitation de débit, journalisation \\
+Développement du frontend React & 27/07 & 07/08 & 12 j & Tableau de bord, graphe React Flow, graphiques Recharts \\
+Tests unitaires (backend) & 03/08 & 07/08 & 5 j & 85 tests automatisés (pytest) \\
+Intégration et tests & 08/08 & 14/08 & 7 j & Tests d'API, validation des workflows complets \\
+Durcissement production & 10/08 & 14/08 & 5 j & Docker, CI/CD, pre-commit, rapports PDF reportlab \\
+Rédaction du rapport technique & 12/08 & 15/08 & 4 j & Rapport technique, documentation utilisateur \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item \textbf{Phase 1 (Analyse)} : cadrage du périmètre fonctionnel, étude des besoins utilisateurs, sélection des jeux de données de référence.
+    \item \textbf{Phase 2 (Conception)} : définition du schéma de topologie (actifs, relations, attributs), conception de la chaîne de calcul bayésienne, spécification de l'API REST.
+    \item \textbf{Phase 3 (Moteur + API)} : implémentation de la chaîne complète (assets $\rightarrow$ probability $\rightarrow$ graph $\rightarrow$ CPT $\rightarrow$ inference $\rightarrow$ risk $\rightarrow$ attack\_paths) et exposition via FastAPI.
+    \item \textbf{Phase 4 (Frontend)} : construction de l'interface React avec les composants de visualisation (React Flow, Recharts).
+    \item \textbf{Phase 5 (Tests unitaires)} : rédaction des tests pytest pour chaque module (85 tests au total).
+    \item \textbf{Phase 6 (Intégration)} : branchement frontend/backend, validation des scénarios de bout en bout.
+    \item \textbf{Phase 7 (Durcissement)} : ajout des fonctionnalités de production (rate limiting, logging, Docker, CI/CD, rapports PDF professionnels).
+    \item \textbf{Phase 8 (Rapport)} : finalisation du rapport technique et de la documentation.
+\end{itemize}
+
+\newpage
+
+% ==========================================================================
+% PERSPECTIVES
+% ==========================================================================
+\section{Perspectives et travaux futurs}
+\markboth{Perspectives}{Perspectives}
+\forcereset{7}
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Le framework démontre qu'une topologie ICS peut être transformée en un réseau bayésien opérationnel, avec une chaîne de calcul complète, modulaire et testable.
+    \item Les perspectives d'évolution incluent :
+        \begin{itemize}
+            \item \textbf{Décomposition du frontend} : scinder le composant monolithique App.tsx (900+ lignes) en composants spécialisés (SettingsPanel, TopologySection, EvidenceSelector, NetworkViewer, ResultsDashboard, ProbabilityChart, CptViewer, ReportsSection) pour améliorer la maintenabilité et la testabilité.
+            \item \textbf{Enrichissement des jeux de données} : ajout de topologies issues de secteurs industriels variés (énergie, fabrication, transport, pétrochimie).
+            \item \textbf{Validation terrain} : confrontation du modèle à des données de vulnérabilité réelles et à des retours d'experts ICS.
+            \item \textbf{Authentification et autorisation} : ajout d'un système de gestion des utilisateurs et des rôles pour un déploiement en environnement multi-utilisateurs.
+            \item \textbf{Migrations automatiques Alembic} : intégration des migrations au démarrage de l'application pour simplifier le déploiement.
+            \item \textbf{Surveillance et métriques} : exposition de métriques Prometheus pour le suivi en production.
+            \item \textbf{Passage à l'échelle} : support de topologies de grande taille via des algorithmes d'inférence approchée (échantillonnage, propagation de croyances).
+        \end{itemize}
+\end{itemize}
+
+\newpage
+
+% ==========================================================================
+% CONCLUSION
+% ==========================================================================
+\section{Conclusion}
+\markboth{Conclusion}{Conclusion}
+\forcereset{7}
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Le framework remplit l'objectif fixé : transformer une architecture ICS en un réseau bayésien discret exploitable pour l'évaluation quantitative des risques.
+    \item Il permet le calcul des probabilités intrinsèques de compromission, le paramétrage automatique des tables CPT par Noisy-OR, l'inférence exacte avec preuves, le classement des actifs par risque et l'identification de chemins d'attaque critiques.
+    \item L'application Web (React + TypeScript) rend cette chaîne de calcul accessible sans écrire de code, avec :
+        \begin{itemize}
+            \item Visualisation interactive du réseau bayésien.
+            \item Sélection intuitive des preuves par actif.
+            \item Paramètres de pondération ajustables et persistants.
+            \item Tables de probabilités conditionnelles consultables.
+            \item Export de livrables décisionnels (CSV, PDF).
+        \end{itemize}
+    \item Les choix technologiques (FastAPI + pgmpy + Pydantic côté serveur, React + TypeScript + React Flow côté client) offrent une base modulaire, extensible et testable.
+    \item La qualité du projet est attestée par 85 tests automatisés avec zéro échec, une architecture en couches respectant le principe de responsabilité unique, et des fonctionnalités de niveau production (limitation de débit, journalisation structurée, traçage des requêtes, conteneurisation Docker, intégration continue).
+    \item L'application est prête pour une démonstration à des parties prenantes, une revue technique par des pairs et un déploiement en environnement contrôlé.
+\end{itemize}
+
+\vspace{1cm}
+\begin{center}
+\rule{0.5\textwidth}{0.5pt}
+\vspace{0.5cm}
+{\small\itshape\color{primary!70} Rapport réalisé dans le cadre du projet de développement du framework d'évaluation quantitative des risques ICS.}
+\end{center}
+
+\end{document}
+

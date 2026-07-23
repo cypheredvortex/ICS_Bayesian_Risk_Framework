@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ics-risk-framework"
+version = "1.0.0"
+description = "A Generic Bayesian Network-Based Framework for Quantitative Risk Assessment of Industrial Control Systems (ICS)"
+readme = "README.md"
+authors = [
+    { name = "ICS Bayesian Risk Framework Team" },
+]
+license = { text = "MIT" }
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Manufacturing",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Security",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "pgmpy>=1.0",
+    "pandas>=2.0",
+    "matplotlib>=3.8",
+    "networkx>=3.0",
+    "fastapi>=0.111",
+    "uvicorn>=0.30",
+    "python-multipart>=0.0.9",
+    "pyyaml>=6.0",
+    "openpyxl>=3.1",
+    "SQLAlchemy>=2.0.37",
+    "alembic>=1.14.0",
+    "reportlab>=4.0",
+    "slowapi>=0.1.9",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-org/ics-risk-framework"
+Repository = "https://github.com/your-org/ics-risk-framework"
+Documentation = "https://github.com/your-org/ics-risk-framework/docs"
+
+[project.scripts]
+ics-risk = "backend.cli:main"
+ics-risk-api = "backend.api:run_api"
+
+[tool.setuptools.packages.find]
+include = ["backend", "backend.*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+
+[tool.coverage.run]
+source = ["backend"]
+omit = ["*/tests/*", "*/migrations/*"]
+
