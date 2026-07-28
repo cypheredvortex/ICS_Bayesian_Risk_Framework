@@ -1,13 +1,11 @@
 {
   "evidence": {},
   "posteriors": {
-    "vendor_remote_access": 0.52,
-    "engineering_workstation": 0.963,
-    "scada_server": 0.768072,
-    "operator": 0.175,
-    "plc_dosing": 0.419248,
-    "chlorine_pump": 0.332382,
-    "water_supply": 0.207435,
-    "historian": 0.698264
+    "cloud_bms_portal": 0.702,
+    "building_mgmt_system": 0.973115,
+    "facility_manager": 0.245,
+    "hvac_controller": 0.811386,
+    "fire_suppression_controller": 0.44049,
+    "building_climate": 0.502227
   }
 }

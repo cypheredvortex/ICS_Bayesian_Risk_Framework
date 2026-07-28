@@ -1,150 +1,112 @@
 {
-  "vendor_remote_access": {
+  "cloud_bms_portal": {
     "parents": [],
     "rows": [
       {
         "parent_state": {},
-        "p_compromised": 0.52
+        "p_compromised": 0.702
       }
     ]
   },
-  "engineering_workstation": {
+  "building_mgmt_system": {
     "parents": [
-      "vendor_remote_access"
+      "cloud_bms_portal",
+      "facility_manager"
     ],
     "rows": [
       {
         "parent_state": {
-          "vendor_remote_access": 0
+          "cloud_bms_portal": 0,
+          "facility_manager": 0
         },
         "p_compromised": 0.95
       },
       {
         "parent_state": {
-          "vendor_remote_access": 1
+          "cloud_bms_portal": 0,
+          "facility_manager": 1
+        },
+        "p_compromised": 0.985
+      },
+      {
+        "parent_state": {
+          "cloud_bms_portal": 1,
+          "facility_manager": 0
         },
         "p_compromised": 0.975
+      },
+      {
+        "parent_state": {
+          "cloud_bms_portal": 1,
+          "facility_manager": 1
+        },
+        "p_compromised": 0.9925
       }
     ]
   },
-  "scada_server": {
-    "parents": [
-      "engineering_workstation",
-      "operator"
-    ],
-    "rows": [
-      {
-        "parent_state": {
-          "engineering_workstation": 0,
-          "operator": 0
-        },
-        "p_compromised": 0.189
-      },
-      {
-        "parent_state": {
-          "engineering_workstation": 0,
-          "operator": 1
-        },
-        "p_compromised": 0.7567
-      },
-      {
-        "parent_state": {
-          "engineering_workstation": 1,
-          "operator": 0
-        },
-        "p_compromised": 0.7567
-      },
-      {
-        "parent_state": {
-          "engineering_workstation": 1,
-          "operator": 1
-        },
-        "p_compromised": 0.92701
-      }
-    ]
-  },
-  "operator": {
+  "facility_manager": {
     "parents": [],
     "rows": [
       {
         "parent_state": {},
-        "p_compromised": 0.175
+        "p_compromised": 0.245
       }
     ]
   },
-  "plc_dosing": {
+  "hvac_controller": {
     "parents": [
-      "scada_server"
+      "building_mgmt_system"
     ],
     "rows": [
       {
         "parent_state": {
-          "scada_server": 0
+          "building_mgmt_system": 0
         },
-        "p_compromised": 0.288
+        "p_compromised": 0.1485
       },
       {
         "parent_state": {
-          "scada_server": 1
+          "building_mgmt_system": 1
         },
-        "p_compromised": 0.45888
+        "p_compromised": 0.8297
       }
     ]
   },
-  "chlorine_pump": {
+  "fire_suppression_controller": {
     "parents": [
-      "plc_dosing"
+      "building_mgmt_system"
     ],
     "rows": [
       {
         "parent_state": {
-          "plc_dosing": 0
+          "building_mgmt_system": 0
         },
-        "p_compromised": 0.108
+        "p_compromised": 0.27
       },
       {
         "parent_state": {
-          "plc_dosing": 1
+          "building_mgmt_system": 1
         },
-        "p_compromised": 0.6432
+        "p_compromised": 0.4452
       }
     ]
   },
-  "water_supply": {
+  "building_climate": {
     "parents": [
-      "chlorine_pump"
+      "hvac_controller"
     ],
     "rows": [
       {
         "parent_state": {
-          "chlorine_pump": 0
+          "hvac_controller": 0
         },
-        "p_compromised": 0.01
+        "p_compromised": 0.03
       },
       {
         "parent_state": {
-          "chlorine_pump": 1
+          "hvac_controller": 1
         },
-        "p_compromised": 0.604
-      }
-    ]
-  },
-  "historian": {
-    "parents": [
-      "scada_server"
-    ],
-    "rows": [
-      {
-        "parent_state": {
-          "scada_server": 0
-        },
-        "p_compromised": 0.6435
-      },
-      {
-        "parent_state": {
-          "scada_server": 1
-        },
-        "p_compromised": 0.7148
+        "p_compromised": 0.612
       }
     ]
   }
