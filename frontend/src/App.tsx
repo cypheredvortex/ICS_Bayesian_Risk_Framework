@@ -12,9 +12,11 @@ import {
   defaultCoreSettings,
 } from './constants'
 import { parseErrorDetail } from './utils'
+import { useAuth } from './authStore'
+import { setAuthHeader } from './services/grc'
 import Toasts from './components/Toasts'
 import ConfirmDialog from './components/ConfirmDialog'
-import Header from './components/Header'
+import Layout from './components/Layout'
 import SettingsPanel from './components/SettingsPanel'
 import TopologySection from './components/TopologySection'
 import EvidencePanel from './components/EvidencePanel'
@@ -26,8 +28,62 @@ import RiskPieChart from './components/RiskPieChart'
 import BayesianResults from './components/BayesianResults'
 import CptSection from './components/CptSection'
 import ReportsSection from './components/ReportsSection'
+import LoginPage from './pages/LoginPage'
+import DashboardPage from './pages/DashboardPage'
+import AssetsPage from './pages/AssetsPage'
+import ThreatsPage from './pages/ThreatsPage'
+import ControlsPage from './pages/ControlsPage'
+import RiskPage from './pages/RiskPage'
+import CompliancePage from './pages/CompliancePage'
+import AuditPage from './pages/AuditPage'
+import CapaPage from './pages/CapaPage'
+import AdminPage from './pages/AdminPage'
 
-export default function App() {
+// ═══════════════════════════════════════════════════════════════
+// Auth guard wrapper (default export).
+//
+// This component only handles authentication state and keeps the
+// React hooks rules happy: every hook it uses (useAuth/useEffect) is
+// called unconditionally before any early return. Once a user is
+// resolved it renders <AuthenticatedApp />, which owns all the
+// assessment/GRC state hooks.
+// ═══════════════════════════════════════════════════════════════
+function AppContent() {
+  const { user, loading: authLoading, authHeader } = useAuth()
+
+  // Sync the JWT auth header into the grc.ts API client singleton.
+  useEffect(() => {
+    setAuthHeader(authHeader)
+  }, [authHeader])
+
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-950">
+        <div className="text-center">
+          <div className="mb-4 animate-pulse text-4xl">🛡️</div>
+          <p className="text-slate-400">Loading…</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return <LoginPage />
+  }
+
+  return <AuthenticatedApp />
+}
+
+export default AppContent
+
+// ═══════════════════════════════════════════════════════════════
+// Authenticated application (owns all component state).
+// ═══════════════════════════════════════════════════════════════
+function AuthenticatedApp() {
+  // ── GRC module navigation ──────────────────────────────────────
+  const [activeModule, setActiveModule] = useState('dashboard')
+
+  // ── Bayesian assessment state ──────────────────────────────────
   const [topology, setTopology] = useState<TopologyPayload>(defaultTopology)
   const [evidence, setEvidence] = useState<Record<string, AssetState>>({})
   const [result, setResult] = useState<ResultPayload | null>(null)
@@ -118,6 +174,7 @@ export default function App() {
 
   // keyboard shortcuts: "/" focuses node search, "r" runs the assessment
   useEffect(() => {
+    if (activeModule !== 'bayesian') return
     const handler = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement
       const typing =
@@ -136,7 +193,7 @@ export default function App() {
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [topology, evidence])
+  }, [activeModule, topology, evidence])
 
   const assets = useMemo(
     () => Object.entries(topology.assets),
@@ -554,125 +611,162 @@ export default function App() {
         onConfirm={() => void loadPresetTopology(pendingDataset!)}
       />
 
-      <Header
-        settingsButton={
-          <button
-            onClick={() => setSettingsOpen((open) => !open)}
-            className="rounded-full border border-slate-700 bg-slate-950 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
-            aria-expanded={settingsOpen}
-          >
-            Settings {settingsDirty ? '•' : ''}
-          </button>
-        }
-        apiIndicator={
-          <div className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-200">
-            Backend API: {API_BASE_URL}
-          </div>
-        }
-      >
-        {settingsOpen ? (
-          <SettingsPanel
-            draftSettings={draftSettings}
-            settingsDirty={settingsDirty}
-            settingsLoading={settingsLoading}
-            onUpdate={(updater) =>
-              setDraftSettings((current) => updater(current))
-            }
-            onSave={() => void saveSettings()}
-            onReset={() => void resetSettings()}
-          />
-        ) : null}
-      </Header>
+      <Layout active={activeModule} onNavigate={setActiveModule}>
+        {activeModule === 'dashboard' ? <DashboardPage /> : null}
 
-      <main className="mx-auto max-w-7xl space-y-6 p-6">
-        <TopologySection
-          selectedDataset={selectedDataset}
-          uploadedFileName={uploadedFileName}
-          assetCount={Object.keys(topology.assets).length}
-          relationshipCount={topology.relationships.length}
-          loading={loading}
-          hasAssets={Object.keys(topology.assets).length > 0}
-          onDatasetChange={requestPresetChange}
-          onFileUpload={handleFileUpload}
-          onRunAssessment={() => void runAssessment()}
-        />
-
-        <EvidencePanel
-          assets={assets}
-          evidence={evidence}
-          onUpdateEvidence={updateEvidence}
-        />
-
-        <section className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
-          <NetworkViewer
-            ref={searchInputRef}
-            nodeIds={nodeIds}
-            nodeKindMap={nodeKindMap}
-            edgeList={edgeList}
-            combinedProbabilities={combinedProbabilities}
-            isEvidenceNode={isEvidenceNode}
-            selectedNode={selectedNode}
-            colorMode={colorMode}
-            matchingNodes={matchingNodes}
-            neighborSet={neighborSet}
-            attackPathNodes={attackPathNodes}
-            showAttackPath={showAttackPath}
-            attackPathEdgeKeys={attackPathEdgeKeys}
-            setSelectedNode={setSelectedNode}
-            onSearchChange={setNodeQuery}
-            onColorModeChange={setColorMode}
-            onAttackPathToggle={() => setShowAttackPath((v) => !v)}
-          />
-
-          <NodeDetails
-            selectedNode={selectedNode}
-            nodeKindMap={nodeKindMap}
-            combinedProbabilities={combinedProbabilities}
-            isEvidenceNode={isEvidenceNode}
-            result={result}
-            riskRanking={riskRanking}
-            attackPathNodes={attackPathNodes}
-          />
-        </section>
-
-        <section className="grid gap-6 xl:grid-cols-2">
-          {result ? (
-            <ResultsDashboard
-              result={result}
-              chartData={chartData}
-              riskRanking={riskRanking}
-              setSelectedNode={setSelectedNode}
-            />
-          ) : (
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-xl font-semibold">Results Dashboard</h2>
-              <p className="mt-4 text-slate-400">
-                No assessment results yet. Load a topology, optionally mark
-                evidence, then run the assessment.
-              </p>
+        {activeModule === 'bayesian' ? (
+          <div className="space-y-6">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-semibold text-slate-100">
+                  Bayesian Analysis
+                </h2>
+                <p className="mt-1 max-w-2xl text-sm text-slate-400">
+                  Quantify ICS compromise probability with the Bayesian network
+                  engine, evidence, and attack-path analysis.
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <SettingsModalButton
+                  settingsOpen={settingsOpen}
+                  settingsDirty={settingsDirty}
+                  onToggle={() => setSettingsOpen((open) => !open)}
+                />
+              </div>
             </div>
-          )}
 
-          <ProbabilityChart
-            chartData={chartData}
-            setSelectedNode={setSelectedNode}
-          />
-        </section>
+            {settingsOpen ? (
+              <SettingsPanel
+                draftSettings={draftSettings}
+                settingsDirty={settingsDirty}
+                settingsLoading={settingsLoading}
+                onUpdate={(updater) =>
+                  setDraftSettings((current) => updater(current))
+                }
+                onSave={() => void saveSettings()}
+                onReset={() => void resetSettings()}
+              />
+            ) : null}
 
-        <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-          <RiskPieChart pieData={pieData} />
-          <BayesianResults result={result} />
-        </section>
+            <TopologySection
+              selectedDataset={selectedDataset}
+              uploadedFileName={uploadedFileName}
+              assetCount={Object.keys(topology.assets).length}
+              relationshipCount={topology.relationships.length}
+              loading={loading}
+              hasAssets={Object.keys(topology.assets).length > 0}
+              onDatasetChange={requestPresetChange}
+              onFileUpload={handleFileUpload}
+              onRunAssessment={() => void runAssessment()}
+            />
 
-        <CptSection
-          result={result}
-          cptQuery={cptQuery}
-          onCptQueryChange={setCptQuery}
-        />
+            <EvidencePanel
+              assets={assets}
+              evidence={evidence}
+              onUpdateEvidence={updateEvidence}
+            />
 
-        <ReportsSection />
-      </main>
+            <section className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
+              <NetworkViewer
+                ref={searchInputRef}
+                nodeIds={nodeIds}
+                nodeKindMap={nodeKindMap}
+                edgeList={edgeList}
+                combinedProbabilities={combinedProbabilities}
+                isEvidenceNode={isEvidenceNode}
+                selectedNode={selectedNode}
+                colorMode={colorMode}
+                matchingNodes={matchingNodes}
+                neighborSet={neighborSet}
+                attackPathNodes={attackPathNodes}
+                showAttackPath={showAttackPath}
+                attackPathEdgeKeys={attackPathEdgeKeys}
+                setSelectedNode={setSelectedNode}
+                onSearchChange={setNodeQuery}
+                onColorModeChange={setColorMode}
+                onAttackPathToggle={() => setShowAttackPath((v) => !v)}
+              />
+
+              <NodeDetails
+                selectedNode={selectedNode}
+                nodeKindMap={nodeKindMap}
+                combinedProbabilities={combinedProbabilities}
+                isEvidenceNode={isEvidenceNode}
+                result={result}
+                riskRanking={riskRanking}
+                attackPathNodes={attackPathNodes}
+              />
+            </section>
+
+            <section className="grid gap-6 xl:grid-cols-2">
+              {result ? (
+                <ResultsDashboard
+                  result={result}
+                  chartData={chartData}
+                  riskRanking={riskRanking}
+                  setSelectedNode={setSelectedNode}
+                />
+              ) : (
+                <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+                  <h2 className="text-xl font-semibold">Results Dashboard</h2>
+                  <p className="mt-4 text-slate-400">
+                    No assessment results yet. Load a topology, optionally mark
+                    evidence, then run the assessment.
+                  </p>
+                </div>
+              )}
+
+              <ProbabilityChart
+                chartData={chartData}
+                setSelectedNode={setSelectedNode}
+              />
+            </section>
+
+            <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+              <RiskPieChart pieData={pieData} />
+              <BayesianResults result={result} />
+            </section>
+
+            <CptSection
+              result={result}
+              cptQuery={cptQuery}
+              onCptQueryChange={setCptQuery}
+            />
+
+            <ReportsSection />
+          </div>
+        ) : null}
+
+        {activeModule === 'assets' ? <AssetsPage /> : null}
+        {activeModule === 'threats' ? <ThreatsPage /> : null}
+        {activeModule === 'controls' ? <ControlsPage /> : null}
+        {activeModule === 'risk' ? <RiskPage /> : null}
+        {activeModule === 'compliance' ? <CompliancePage /> : null}
+        {activeModule === 'audit' ? <AuditPage /> : null}
+        {activeModule === 'capa' ? <CapaPage /> : null}
+        {activeModule === 'admin' ? <AdminPage /> : null}
+      </Layout>
     </div>
+  )
+}
+
+function SettingsModalButton({
+  settingsOpen,
+  settingsDirty,
+  onToggle,
+}: {
+  settingsOpen: boolean
+  settingsDirty: boolean
+  onToggle: () => void
+}) {
+  return (
+    <button
+      onClick={onToggle}
+      className="rounded-full border border-slate-700 bg-slate-950 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+      aria-expanded={settingsOpen}
+    >
+      Settings {settingsDirty ? '•' : ''}
+    </button>
   )
 }
 

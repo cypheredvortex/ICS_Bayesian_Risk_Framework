@@ -1,59 +1,76 @@
 {
   "nodes": [
     {
-      "id": "cloud_bms_portal"
+      "id": "protection_engineer"
     },
     {
-      "id": "building_mgmt_system"
+      "id": "utility_scada"
     },
     {
-      "id": "facility_manager"
+      "id": "substation_lan"
     },
     {
-      "id": "hvac_controller"
+      "id": "rtu_primary"
     },
     {
-      "id": "fire_suppression_controller"
+      "id": "rtu_backup"
     },
     {
-      "id": "building_climate"
+      "id": "ied_relay"
+    },
+    {
+      "id": "circuit_breaker"
     }
   ],
   "edges": [
     {
-      "source": "cloud_bms_portal",
-      "target": "building_mgmt_system",
-      "rel_type": "connects-to",
-      "firewalled": false,
-      "weight": 0.5
-    },
-    {
-      "source": "facility_manager",
-      "target": "building_mgmt_system",
+      "source": "protection_engineer",
+      "target": "utility_scada",
       "rel_type": "controls",
       "firewalled": false,
       "weight": 0.7
     },
     {
-      "source": "building_mgmt_system",
-      "target": "hvac_controller",
-      "rel_type": "programs / operates",
+      "source": "utility_scada",
+      "target": "substation_lan",
+      "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.8
+      "weight": 0.13
     },
     {
-      "source": "building_mgmt_system",
-      "target": "fire_suppression_controller",
+      "source": "substation_lan",
+      "target": "rtu_primary",
       "rel_type": "programs / operates",
       "firewalled": true,
       "weight": 0.24
     },
     {
-      "source": "hvac_controller",
-      "target": "building_climate",
+      "source": "substation_lan",
+      "target": "rtu_backup",
+      "rel_type": "programs / operates",
+      "firewalled": true,
+      "weight": 0.24
+    },
+    {
+      "source": "rtu_primary",
+      "target": "ied_relay",
       "rel_type": "actuates",
       "firewalled": false,
-      "weight": 0.6
+      "weight": 0.84
+    },
+    {
+      "source": "rtu_backup",
+      "target": "ied_relay",
+      "rel_type": "actuates",
+      "firewalled": false,
+      "weight": 0.84
+    },
+    {
+      "source": "ied_relay",
+      "target": "circuit_breaker",
+      "rel_type": "actuates",
+      "firewalled": false,
+      "weight": 0.84
     }
   ]
 }

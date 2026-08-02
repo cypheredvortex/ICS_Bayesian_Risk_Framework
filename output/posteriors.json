@@ -1,11 +1,12 @@
 {
   "evidence": {},
   "posteriors": {
-    "cloud_bms_portal": 0.702,
-    "building_mgmt_system": 0.973115,
-    "facility_manager": 0.245,
-    "hvac_controller": 0.811386,
-    "fire_suppression_controller": 0.44049,
-    "building_climate": 0.502227
+    "protection_engineer": 0.09,
+    "utility_scada": 0.775589,
+    "substation_lan": 0.222215,
+    "rtu_primary": 0.343012,
+    "rtu_backup": 0.270592,
+    "ied_relay": 0.550852,
+    "circuit_breaker": 0.468089
   }
 }

@@ -1,17 +1,17 @@
 ICS Risk Pipeline -- Run Summary
 ========================================
 Topology file : inline-topology
-Assets        : 6
-Relationships : 5
+Assets        : 7
+Relationships : 7
 Evidence used : (none provided)
 
 Top 5 assets by risk:
 ----------------------------------------
-  hvac_controller          risk=5.842  P(compromised)=0.811  severity=6.0
-  fire_suppression_controller risk=5.550  P(compromised)=0.440  severity=9.0
-  building_mgmt_system     risk=4.866  P(compromised)=0.973  severity=5.0
-  building_climate         risk=4.219  P(compromised)=0.502  severity=7.0
-  cloud_bms_portal         risk=2.106  P(compromised)=0.702  severity=3.0
+  ied_relay                risk=6.941  P(compromised)=0.551  severity=9.0
+  circuit_breaker          risk=6.553  P(compromised)=0.468  severity=10.0
+  utility_scada            risk=4.654  P(compromised)=0.776  severity=6.0
+  rtu_primary              risk=3.567  P(compromised)=0.343  severity=8.0
+  rtu_backup               risk=2.814  P(compromised)=0.271  severity=8.0
 
 Files written this run:
   output/graph.json        - node list + edges + weights

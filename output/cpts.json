@@ -1,112 +1,141 @@
 {
-  "cloud_bms_portal": {
+  "protection_engineer": {
     "parents": [],
     "rows": [
       {
         "parent_state": {},
-        "p_compromised": 0.702
+        "p_compromised": 0.09
       }
     ]
   },
-  "building_mgmt_system": {
+  "utility_scada": {
     "parents": [
-      "cloud_bms_portal",
-      "facility_manager"
+      "protection_engineer"
     ],
     "rows": [
       {
         "parent_state": {
-          "cloud_bms_portal": 0,
-          "facility_manager": 0
+          "protection_engineer": 0
         },
-        "p_compromised": 0.95
+        "p_compromised": 0.7605
       },
       {
         "parent_state": {
-          "cloud_bms_portal": 0,
-          "facility_manager": 1
+          "protection_engineer": 1
         },
-        "p_compromised": 0.985
-      },
-      {
-        "parent_state": {
-          "cloud_bms_portal": 1,
-          "facility_manager": 0
-        },
-        "p_compromised": 0.975
-      },
-      {
-        "parent_state": {
-          "cloud_bms_portal": 1,
-          "facility_manager": 1
-        },
-        "p_compromised": 0.9925
+        "p_compromised": 0.92815
       }
     ]
   },
-  "facility_manager": {
-    "parents": [],
-    "rows": [
-      {
-        "parent_state": {},
-        "p_compromised": 0.245
-      }
-    ]
-  },
-  "hvac_controller": {
+  "substation_lan": {
     "parents": [
-      "building_mgmt_system"
+      "utility_scada"
     ],
     "rows": [
       {
         "parent_state": {
-          "building_mgmt_system": 0
+          "utility_scada": 0
         },
-        "p_compromised": 0.1485
+        "p_compromised": 0.135
       },
       {
         "parent_state": {
-          "building_mgmt_system": 1
+          "utility_scada": 1
         },
-        "p_compromised": 0.8297
+        "p_compromised": 0.24745
       }
     ]
   },
-  "fire_suppression_controller": {
+  "rtu_primary": {
     "parents": [
-      "building_mgmt_system"
+      "substation_lan"
     ],
     "rows": [
       {
         "parent_state": {
-          "building_mgmt_system": 0
+          "substation_lan": 0
         },
-        "p_compromised": 0.27
+        "p_compromised": 0.306
       },
       {
         "parent_state": {
-          "building_mgmt_system": 1
+          "substation_lan": 1
         },
-        "p_compromised": 0.4452
+        "p_compromised": 0.47256
       }
     ]
   },
-  "building_climate": {
+  "rtu_backup": {
     "parents": [
-      "hvac_controller"
+      "substation_lan"
     ],
     "rows": [
       {
         "parent_state": {
-          "hvac_controller": 0
+          "substation_lan": 0
         },
-        "p_compromised": 0.03
+        "p_compromised": 0.2295
       },
       {
         "parent_state": {
-          "hvac_controller": 1
+          "substation_lan": 1
         },
-        "p_compromised": 0.612
+        "p_compromised": 0.41442
+      }
+    ]
+  },
+  "ied_relay": {
+    "parents": [
+      "rtu_primary",
+      "rtu_backup"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "rtu_primary": 0,
+          "rtu_backup": 0
+        },
+        "p_compromised": 0.189
+      },
+      {
+        "parent_state": {
+          "rtu_primary": 0,
+          "rtu_backup": 1
+        },
+        "p_compromised": 0.87024
+      },
+      {
+        "parent_state": {
+          "rtu_primary": 1,
+          "rtu_backup": 0
+        },
+        "p_compromised": 0.87024
+      },
+      {
+        "parent_state": {
+          "rtu_primary": 1,
+          "rtu_backup": 1
+        },
+        "p_compromised": 0.979238
+      }
+    ]
+  },
+  "circuit_breaker": {
+    "parents": [
+      "ied_relay"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "ied_relay": 0
+        },
+        "p_compromised": 0.01
+      },
+      {
+        "parent_state": {
+          "ied_relay": 1
+        },
+        "p_compromised": 0.8416
       }
     ]
   }

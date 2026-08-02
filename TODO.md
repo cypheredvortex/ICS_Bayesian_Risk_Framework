@@ -1,40 +1,38 @@
-# Final Production Hardening - Implementation Progress
+# Production Readiness Implementation Progress
 
-## Phase 7.1: PDF Generation with reportlab ✅
-- [x] Replace raw PDF assembly with reportlab-based generation (`backend/pdf_reports.py`)
-- [x] Use reportlab platypus for proper paragraph layout, tables, styling
-- [x] Professional header/footer with page numbers
-- [x] Risk register table with alternating row colors
-- [x] Attack path analysis section
+## Step 1: Fix Auth Router Issues
+- [x] Fix `require_permission("admin:*")` → use `require_admin` dependency
+- [x] Add `expires_in` to LoginResponse
+- [x] Update `/me` to return `UserMeResponse` with role_name and permissions
+- [x] Fix `change_password` to use `PasswordChangeRequest` schema
+- [x] Add `/users/me/change-password` for self-service
 
-## Phase 7.2: Centralized Logging ✅
-- [x] Create `backend/logging_config.py` with structured JSON-logging support
-- [x] Request ID middleware for log correlation
-- [x] Configurable log levels and formats via LOG_LEVEL and LOG_FORMAT env vars
-- [x] Automatic silencing of noisy third-party loggers
+## Step 2: Add RBAC to All GRC Routers
+- [x] compliance.py — `require_module_access("compliance")` on all endpoints
+- [x] capa.py — `require_module_access("capa")` on all endpoints
+- [x] controls.py — `require_module_access("controls")` on all endpoints
+- [x] risk.py — `require_module_access("risk")` on all endpoints
+- [x] audit_management.py — `require_module_access("audit")` on all endpoints
+- [x] assets.py — `require_module_access("assets")` on all endpoints
+- [x] threats.py — `require_module_access("threats")` on all endpoints (incl. actor endpoints restored)
+- [x] vulnerabilities.py — `require_module_access("vulnerabilities")` on all endpoints
+- [x] zones.py — `require_module_access("zones")` on all endpoints
+- [x] organizations.py — `require_module_access("organizations")` on all endpoints
+- [x] security.py — added `zones` module to MODULE_ACTIONS + `require_admin` helper
 
-## Phase 7.3: API Hardening ✅
-- [x] Comprehensive Pydantic response models for all endpoints
-- [x] Custom exception handlers with structured error responses (ErrorResponse model)
-- [x] Rate limiting with slowapi (configurable via RATE_LIMIT_PER_MINUTE)
-- [x] Dataset/report name sanitization to prevent path traversal
-- [x] Request ID middleware (X-Request-ID header)
-- [x] Input validation for evidence states
-- [x] Tagged OpenAPI endpoints
+## Step 3: Frontend Auth Integration
+- [x] Create authStore.tsx — JWT persistence, login/logout, /me profile, authHeader
+- [x] Update grc.ts API client with auth headers (setAuthHeader)
+- [x] Create LoginPage.tsx
+- [x] Update App.tsx — auth guard wrapper + authenticated app component (fixes Rules of Hooks)
+- [x] Update main.tsx — wrap App in AuthProvider
+- [x] Update Layout.tsx — user footer with role display + sign out
 
-## Phase 7.4: DevOps & CI/CD ✅
-- [x] Create `.pre-commit-config.yaml` with ruff, mypy, pre-commit hooks, pytest
-- [x] Create `.github/workflows/ci.yml` for automated testing (Python 3.11 & 3.12)
-- [x] Create `docker-compose.yml` with API, PostgreSQL, and frontend services
-- [x] Create production multi-stage Dockerfile
-- [x] Create frontend Dockerfile with nginx
+## Step 4: Tests
+- [x] Auth tests — login, /me, self-service password change, wrong password
+- [x] RBAC tests — read allowed / write denied per role across modules
 
-## Phase 7.5: Updated pyproject.toml & Dependencies ✅
-- [x] Add slowapi dependency
-- [x] Update Development Status to "5 - Production/Stable"
-- [x] Python 3.12 classifier added
-
-## Phase 7.6: Final Validation ✅
-- [x] All 85 tests pass (0 failures)
-- [x] Updated ENGINEERING_AUDIT_REPORT.md with final 100/100 score
+## Step 5: Verification
+- [x] Run tests — **103 passed** (18 new auth/RBAC tests + 85 existing)
+- [x] Build frontend — `npm run build` succeeded (tsc -b && vite build)
 

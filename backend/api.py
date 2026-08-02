@@ -31,6 +31,20 @@ from backend.api_adapter import analyze, OUTPUT_DIR
 from backend.database.config import initialize_database, get_db_url, get_session_factory
 from backend.logging_config import configure_logging, get_request_id, set_request_id
 from backend.pdf_reports import generate_pdf_report
+from backend.routers import (
+    organizations,
+    auth,
+    zones,
+    assets as asset_router,
+    audit,
+    threats,
+    vulnerabilities,
+    controls,
+    risk,
+    compliance,
+    capa,
+    audit_management,
+)
 from backend.schemas import (
     AnalyzeRequest,
     DatasetInfo,
@@ -136,6 +150,20 @@ app = FastAPI(
         {"name": "System", "description": "Health check and system information"},
     ],
 )
+
+# ---- Register Routers ----
+app.include_router(organizations.router)
+app.include_router(auth.router)
+app.include_router(zones.router)
+app.include_router(asset_router.router)
+app.include_router(audit.router)
+app.include_router(threats.router)
+app.include_router(vulnerabilities.router)
+app.include_router(controls.router)
+app.include_router(risk.router)
+app.include_router(compliance.router)
+app.include_router(capa.router)
+app.include_router(audit_management.router)
 
 # ---- Middleware ----
 app.add_middleware(
