@@ -2,6 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import GrcTable from '../components/grc/GrcTable'
 import type { Column } from '../components/grc/GrcTable'
 import PageHeader from '../components/grc/PageHeader'
+import { Modal } from '../components/grc/Modal'
+import { GrcForm, GrcFormActions, GrcFormSection } from '../components/grc/GrcForm'
+import type { FormFieldConfig } from '../components/grc/GrcForm'
+import { useCrud } from '../hooks/useCrud'
 import { riskApi } from '../services/grc'
 import type {
   RiskAcceptance,
@@ -43,6 +47,60 @@ function riskTone(value?: string | null): 'green' | 'amber' | 'rose' | 'slate' |
   return 'slate'
 }
 
+const RISK_FIELDS: FormFieldConfig[] = [
+  { name: 'title', label: 'Risk Title', type: 'text', required: true },
+  { name: 'risk_id', label: 'Risk ID', type: 'text', placeholder: 'e.g., RISK-2024-0001' },
+  { name: 'risk_type', label: 'Risk Type', type: 'select', options: [
+    { value: 'strategic', label: 'Strategic' },
+    { value: 'operational', label: 'Operational' },
+    { value: 'financial', label: 'Financial' },
+    { value: 'compliance', label: 'Compliance' },
+    { value: 'security', label: 'Security' },
+  ]},
+  { name: 'risk_category', label: 'Risk Category', type: 'text' },
+  { name: 'inherent_likelihood', label: 'Inherent Likelihood', type: 'number', min: 0, max: 10, step: 0.1 },
+  { name: 'inherent_impact', label: 'Inherent Impact', type: 'number', min: 0, max: 10, step: 0.1 },
+  { name: 'residual_likelihood', label: 'Residual Likelihood', type: 'number', min: 0, max: 10, step: 0.1 },
+  { name: 'residual_impact', label: 'Residual Impact', type: 'number', min: 0, max: 10, step: 0.1 },
+  { name: 'treatment_strategy', label: 'Treatment Strategy', type: 'select', options: [
+    { value: 'mitigate', label: 'Mitigate' },
+    { value: 'transfer', label: 'Transfer' },
+    { value: 'accept', label: 'Accept' },
+    { value: 'avoid', label: 'Avoid' },
+  ]},
+  { name: 'status', label: 'Status', type: 'select', options: [
+    { value: 'identified', label: 'Identified' },
+    { value: 'assessed', label: 'Assessed' },
+    { value: 'treatment_planned', label: 'Treatment Planned' },
+    { value: 'in_progress', label: 'In Progress' },
+    { value: 'closed', label: 'Closed' },
+  ]},
+  { name: 'description', label: 'Description', type: 'textarea' },
+  { name: 'scenario', label: 'Scenario', type: 'textarea' },
+  { name: 'root_cause', label: 'Root Cause', type: 'textarea' },
+  { name: 'consequence', label: 'Consequence', type: 'textarea' },
+]
+
+const TREATMENT_FIELDS: FormFieldConfig[] = [
+  { name: 'title', label: 'Plan Title', type: 'text', required: true },
+  { name: 'treatment_option', label: 'Treatment Option', type: 'select', options: [
+    { value: 'mitigate', label: 'Mitigate' },
+    { value: 'transfer', label: 'Transfer' },
+    { value: 'accept', label: 'Accept' },
+    { value: 'avoid', label: 'Avoid' },
+  ]},
+  { name: 'target_date', label: 'Target Date', type: 'date' },
+  { name: 'cost_estimate', label: 'Cost Estimate', type: 'number', min: 0, step: 0.01 },
+  { name: 'status', label: 'Status', type: 'select', options: [
+    { value: 'draft', label: 'Draft' },
+    { value: 'approved', label: 'Approved' },
+    { value: 'in_progress', label: 'In Progress' },
+    { value: 'completed', label: 'Completed' },
+    { value: 'cancelled', label: 'Cancelled' },
+  ]},
+  { name: 'description', label: 'Description', type: 'textarea' },
+]
+
 export default function RiskPage() {
   const [items, setItems] = useState<RiskItem[]>([])
   const [scenarios, setScenarios] = useState<RiskScenario[]>([])
@@ -52,6 +110,9 @@ export default function RiskPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [formValues, setFormValues] = useState<Record<string, unknown>>({})
+  const [formMode, setFormMode] = useState<'risk' | 'treatment'>('risk')
+  const crud = useCrud<RiskItem | RiskTreatmentPlan>()
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -99,17 +160,94 @@ export default function RiskPage() {
     setHistory(historyList)
   }
 
+  const handleCreateRisk = () => {
+    setFormValues({ status: 'identified' })
+    setFormMode('risk')
+    crud.openCreate()
+  }
+
+  const handleCreateTreatment = () => {
+    setFormValues({ status: 'draft', treatment_option: 'mitigate', cost_currency: 'USD' })
+    setFormMode('treatment')
+    crud.openCreate()
+  }
+
+  const handleEditRisk = (item: RiskItem) => {
+    setFormMode('risk')
+    setFormValues({ ...(item as unknown as Record<string, unknown>) })
+    crud.openEdit(item)
+  }
+
+  const handleEditTreatment = (plan: RiskTreatmentPlan) => {
+    setFormMode('treatment')
+    setFormValues({ ...(plan as unknown as Record<string, unknown>) })
+    crud.openEdit(plan)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    crud.setSubmitting(true)
+    crud.setError('')
+    try {
+      if (formMode === 'risk') {
+        if (crud.mode === 'create') {
+          await riskApi.create(formValues as Partial<RiskItem>)
+        } else if (crud.selected) {
+          await riskApi.update(crud.selected.id, formValues as Partial<RiskItem>)
+        }
+      } else {
+        if (crud.mode === 'create') {
+          await riskApi.createTreatmentPlan(formValues as Partial<RiskTreatmentPlan>)
+        } else if (crud.selected) {
+          await riskApi.updateTreatmentPlan(crud.selected.id, formValues as Partial<RiskTreatmentPlan>)
+        }
+      }
+      crud.close()
+      await load()
+    } catch (caught) {
+      crud.setError(caught instanceof Error ? caught.message : 'Failed to save.')
+    } finally {
+      crud.setSubmitting(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!crud.selected) return
+    crud.setSubmitting(true)
+    try {
+      if (formMode === 'risk') {
+        await riskApi.remove(crud.selected.id)
+      } else {
+        await riskApi.removeTreatmentPlan(crud.selected.id)
+      }
+      crud.close()
+      await load()
+    } catch (caught) {
+      crud.setError(caught instanceof Error ? caught.message : 'Failed to delete.')
+    } finally {
+      crud.setSubmitting(false)
+    }
+  }
+
   const columns: Column<RiskItem>[] = [
     {
       key: 'title',
       header: 'Risk',
       render: (r) => (
-        <button
-          onClick={() => void loadDetail(r.id)}
-          className="text-left font-medium text-cyan-200 hover:underline"
-        >
-          {r.title}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => void loadDetail(r.id)}
+            className="text-left font-medium text-cyan-200 hover:underline"
+          >
+            {r.title}
+          </button>
+          <button
+            onClick={() => handleEditRisk(r)}
+            className="text-xs text-cyan-400 hover:text-cyan-200 hover:underline"
+          >
+            Edit
+          </button>
+        </div>
       ),
     },
     {
@@ -181,12 +319,28 @@ export default function RiskPage() {
         title="Risk Register"
         description="Risk items with inherent/residual/Bayesian risk levels, treatment plans, acceptances, and history."
         action={
-          <button
-            onClick={() => void load()}
-            className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
-          >
-            Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleCreateRisk}
+              className="rounded-full bg-cyan-600 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-500"
+            >
+              + Risk Item
+            </button>
+            {selectedId && (
+              <button
+                onClick={handleCreateTreatment}
+                className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+              >
+                + Treatment Plan
+              </button>
+            )}
+            <button
+              onClick={() => void load()}
+              className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+            >
+              Refresh
+            </button>
+          </div>
         }
       />
 
@@ -226,7 +380,21 @@ export default function RiskPage() {
                 <h3 className="mb-3 text-lg font-semibold">Treatment Plans</h3>
                 <GrcTable
                   columns={[
-                    { key: 'title', header: 'Plan', render: (p) => <span className="font-medium">{p.title}</span> },
+                    {
+                      key: 'title',
+                      header: 'Plan',
+                      render: (p) => (
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium">{p.title}</span>
+                          <button
+                            onClick={() => handleEditTreatment(p)}
+                            className="text-xs text-cyan-400 hover:text-cyan-200 hover:underline"
+                          >
+                            Edit
+                          </button>
+                        </div>
+                      ),
+                    },
                     {
                       key: 'treatment_option',
                       header: 'Option',
@@ -277,6 +445,39 @@ export default function RiskPage() {
           )}
         </div>
       )}
+
+      {/* Create/Edit Modal */}
+      <Modal
+        open={crud.open}
+        onClose={crud.close}
+        title={formMode === 'risk'
+          ? `${crud.mode === 'create' ? 'Create' : 'Edit'} Risk Item`
+          : `${crud.mode === 'create' ? 'Create' : 'Edit'} Treatment Plan`}
+      >
+        <form onSubmit={handleSubmit}>
+          <GrcFormSection title={formMode === 'risk' ? 'Risk Details' : 'Treatment Plan Details'}>
+            <GrcForm
+              fields={formMode === 'risk' ? RISK_FIELDS : TREATMENT_FIELDS}
+              values={formValues}
+              onChange={(name, value) => setFormValues((prev) => ({ ...prev, [name]: value }))}
+            />
+          </GrcFormSection>
+
+          {crud.error ? (
+            <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">
+              {crud.error}
+            </div>
+          ) : null}
+
+          <GrcFormActions
+            onCancel={crud.close}
+            submitting={crud.submitting}
+            submitLabel={crud.mode === 'create' ? 'Create' : 'Save Changes'}
+            onDelete={crud.mode === 'edit' ? handleDelete : undefined}
+            deleteLabel="Delete"
+          />
+        </form>
+      </Modal>
     </div>
   )
 }

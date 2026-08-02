@@ -2,6 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import GrcTable from '../components/grc/GrcTable'
 import type { Column } from '../components/grc/GrcTable'
 import PageHeader from '../components/grc/PageHeader'
+import { Modal } from '../components/grc/Modal'
+import { GrcForm, GrcFormActions, GrcFormSection } from '../components/grc/GrcForm'
+import type { FormFieldConfig } from '../components/grc/GrcForm'
+import { useCrud } from '../hooks/useCrud'
 import { auditApi } from '../services/grc'
 import type {
   AuditEvidence,
@@ -45,6 +49,114 @@ function statusTone(value: string): 'green' | 'amber' | 'rose' | 'slate' | 'cyan
   return 'slate'
 }
 
+const PROGRAM_FIELDS: FormFieldConfig[] = [
+  { name: 'name', label: 'Program Name', type: 'text', required: true },
+  { name: 'program_type', label: 'Program Type', type: 'select', options: [
+    { value: 'annual', label: 'Annual' },
+    { value: 'quarterly', label: 'Quarterly' },
+    { value: 'continuous', label: 'Continuous' },
+    { value: 'ad_hoc', label: 'Ad-hoc' },
+  ]},
+  { name: 'status', label: 'Status', type: 'select', options: [
+    { value: 'draft', label: 'Draft' },
+    { value: 'active', label: 'Active' },
+    { value: 'completed', label: 'Completed' },
+    { value: 'archived', label: 'Archived' },
+  ]},
+  { name: 'start_date', label: 'Start Date', type: 'date' },
+  { name: 'end_date', label: 'End Date', type: 'date' },
+  { name: 'program_manager_id', label: 'Program Manager ID', type: 'number' },
+  { name: 'description', label: 'Description', type: 'textarea' },
+]
+
+const PLAN_FIELDS: FormFieldConfig[] = [
+  { name: 'title', label: 'Plan Title', type: 'text', required: true },
+  { name: 'audit_type', label: 'Audit Type', type: 'select', options: [
+    { value: 'internal', label: 'Internal' },
+    { value: 'external', label: 'External' },
+    { value: 'compliance', label: 'Compliance' },
+    { value: 'ics_security', label: 'ICS Security' },
+    { value: 'regulatory', label: 'Regulatory' },
+  ]},
+  { name: 'status', label: 'Status', type: 'select', options: [
+    { value: 'draft', label: 'Draft' },
+    { value: 'planned', label: 'Planned' },
+    { value: 'scheduled', label: 'Scheduled' },
+    { value: 'in_progress', label: 'In Progress' },
+    { value: 'completed', label: 'Completed' },
+    { value: 'cancelled', label: 'Cancelled' },
+  ]},
+  { name: 'start_date', label: 'Start Date', type: 'date' },
+  { name: 'end_date', label: 'End Date', type: 'date' },
+  { name: 'estimated_hours', label: 'Est. Hours', type: 'number', min: 0, step: 0.5 },
+  { name: 'lead_auditor_id', label: 'Lead Auditor ID', type: 'number' },
+  { name: 'audit_program_id', label: 'Audit Program ID', type: 'number' },
+  { name: 'description', label: 'Description', type: 'textarea' },
+  { name: 'scope', label: 'Scope', type: 'textarea' },
+  { name: 'objectives', label: 'Objectives', type: 'textarea' },
+  { name: 'criteria', label: 'Criteria', type: 'textarea' },
+]
+
+const FINDING_FIELDS: FormFieldConfig[] = [
+  { name: 'audit_plan_id', label: 'Audit Plan ID', type: 'number', required: true },
+  { name: 'title', label: 'Finding Title', type: 'text', required: true },
+  { name: 'finding_id', label: 'Finding ID', type: 'text', placeholder: 'e.g., AUDIT-F-2024-0001' },
+  { name: 'finding_type', label: 'Finding Type', type: 'select', options: [
+    { value: 'non_conformity', label: 'Non-Conformity' },
+    { value: 'observation', label: 'Observation' },
+    { value: 'opportunity_for_improvement', label: 'Opportunity for Improvement' },
+  ]},
+  { name: 'severity', label: 'Severity', type: 'select', options: [
+    { value: 'critical', label: 'Critical' },
+    { value: 'high', label: 'High' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'low', label: 'Low' },
+    { value: 'informational', label: 'Informational' },
+  ]},
+  { name: 'status', label: 'Status', type: 'select', options: [
+    { value: 'open', label: 'Open' },
+    { value: 'acknowledged', label: 'Acknowledged' },
+    { value: 'action_planned', label: 'Action Planned' },
+    { value: 'verified', label: 'Verified' },
+    { value: 'closed', label: 'Closed' },
+  ]},
+  { name: 'description', label: 'Description', type: 'textarea', required: true },
+  { name: 'recommendation', label: 'Recommendation', type: 'textarea' },
+  { name: 'root_cause', label: 'Root Cause', type: 'textarea' },
+  { name: 'impact', label: 'Impact', type: 'textarea' },
+  { name: 'criteria_reference', label: 'Criteria Reference', type: 'text' },
+]
+
+const EVIDENCE_FIELDS: FormFieldConfig[] = [
+  { name: 'audit_plan_id', label: 'Audit Plan ID', type: 'number', required: true },
+  { name: 'evidence_title', label: 'Evidence Title', type: 'text', required: true },
+  { name: 'evidence_type', label: 'Evidence Type', type: 'select', options: [
+    { value: 'document', label: 'Document' },
+    { value: 'screenshot', label: 'Screenshot' },
+    { value: 'log', label: 'Log' },
+    { value: 'interview_notes', label: 'Interview Notes' },
+    { value: 'config', label: 'Configuration' },
+  ]},
+  { name: 'filename', label: 'Filename', type: 'text' },
+  { name: 'file_path', label: 'File Path', type: 'text' },
+  { name: 'collected_by_id', label: 'Collected By ID', type: 'number' },
+  { name: 'is_confidential', label: 'Confidential', type: 'checkbox' },
+  { name: 'description', label: 'Description', type: 'textarea' },
+]
+
+const INTERVIEW_FIELDS: FormFieldConfig[] = [
+  { name: 'audit_plan_id', label: 'Audit Plan ID', type: 'number', required: true },
+  { name: 'interviewee_name', label: 'Interviewee Name', type: 'text', required: true },
+  { name: 'interviewee_title', label: 'Interviewee Title', type: 'text' },
+  { name: 'interviewee_department', label: 'Department', type: 'text' },
+  { name: 'interviewer_id', label: 'Interviewer ID', type: 'number' },
+  { name: 'interview_date', label: 'Interview Date', type: 'date' },
+  { name: 'duration_minutes', label: 'Duration (min)', type: 'number', min: 0 },
+  { name: 'topics_covered', label: 'Topics Covered', type: 'textarea' },
+  { name: 'key_findings', label: 'Key Findings', type: 'textarea' },
+  { name: 'notes', label: 'Notes', type: 'textarea' },
+]
+
 export default function AuditPage() {
   const [programs, setPrograms] = useState<AuditProgram[]>([])
   const [plans, setPlans] = useState<AuditPlan[]>([])
@@ -55,6 +167,9 @@ export default function AuditPage() {
   const [selectedPlanId, setSelectedPlanId] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [formValues, setFormValues] = useState<Record<string, unknown>>({})
+  const [formMode, setFormMode] = useState<'program' | 'plan' | 'finding' | 'evidence' | 'interview'>('program')
+  const crud = useCrud<AuditProgram | AuditPlan | AuditFinding | AuditEvidence | AuditInterview>()
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -96,17 +211,138 @@ export default function AuditPage() {
     setProcedures(procList)
   }
 
+  const handleCreateProgram = () => {
+    setFormValues({ status: 'draft' })
+    setFormMode('program')
+    crud.openCreate()
+  }
+
+  const handleCreatePlan = () => {
+    setFormValues({ status: 'draft' })
+    setFormMode('plan')
+    crud.openCreate()
+  }
+
+  const handleCreateFinding = () => {
+    setFormValues({ status: 'open', severity: 'medium', audit_plan_id: selectedPlanId })
+    setFormMode('finding')
+    crud.openCreate()
+  }
+
+  const handleCreateEvidence = () => {
+    setFormValues({ is_confidential: false, audit_plan_id: selectedPlanId })
+    setFormMode('evidence')
+    crud.openCreate()
+  }
+
+  const handleCreateInterview = () => {
+    setFormValues({ audit_plan_id: selectedPlanId })
+    setFormMode('interview')
+    crud.openCreate()
+  }
+
+  const handleEditProgram = (item: AuditProgram) => {
+    setFormMode('program')
+    setFormValues({ ...(item as unknown as Record<string, unknown>) })
+    crud.openEdit(item)
+  }
+
+  const handleEditPlan = (item: AuditPlan) => {
+    setFormMode('plan')
+    setFormValues({ ...(item as unknown as Record<string, unknown>) })
+    crud.openEdit(item)
+  }
+
+  const handleEditFinding = (item: AuditFinding) => {
+    setFormMode('finding')
+    setFormValues({ ...(item as unknown as Record<string, unknown>) })
+    crud.openEdit(item)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    crud.setSubmitting(true)
+    crud.setError('')
+    try {
+      if (formMode === 'program') {
+        if (crud.mode === 'create') {
+          await auditApi.createProgram(formValues as Partial<AuditProgram>)
+        } else if (crud.selected) {
+          await auditApi.updateProgram(crud.selected.id, formValues as Partial<AuditProgram>)
+        }
+      } else if (formMode === 'plan') {
+        if (crud.mode === 'create') {
+          await auditApi.createPlan(formValues as Partial<AuditPlan>)
+        } else if (crud.selected) {
+          await auditApi.updatePlan(crud.selected.id, formValues as Partial<AuditPlan>)
+        }
+      } else if (formMode === 'finding') {
+        if (crud.mode === 'create') {
+          await auditApi.createFinding(formValues as Partial<AuditFinding>)
+        } else if (crud.selected) {
+          await auditApi.updateFinding(crud.selected.id, formValues as Partial<AuditFinding>)
+        }
+      } else if (formMode === 'evidence') {
+        if (crud.mode === 'create') {
+          await auditApi.createEvidence(formValues as Partial<AuditEvidence>)
+        }
+      } else {
+        if (crud.mode === 'create') {
+          await auditApi.createInterview(formValues as Partial<AuditInterview>)
+        }
+      }
+      crud.close()
+      await load()
+    } catch (caught) {
+      crud.setError(caught instanceof Error ? caught.message : 'Failed to save.')
+    } finally {
+      crud.setSubmitting(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!crud.selected) return
+    crud.setSubmitting(true)
+    try {
+      if (formMode === 'program') {
+        await auditApi.removeProgram(crud.selected.id)
+      } else if (formMode === 'plan') {
+        await auditApi.removePlan(crud.selected.id)
+      } else if (formMode === 'finding') {
+        await auditApi.removeFinding(crud.selected.id)
+      } else if (formMode === 'evidence') {
+        await auditApi.removeEvidence(crud.selected.id)
+      } else {
+        await auditApi.removeInterview(crud.selected.id)
+      }
+      crud.close()
+      await load()
+    } catch (caught) {
+      crud.setError(caught instanceof Error ? caught.message : 'Failed to delete.')
+    } finally {
+      crud.setSubmitting(false)
+    }
+  }
+
   const planColumns: Column<AuditPlan>[] = [
     {
       key: 'title',
       header: 'Audit Plan',
       render: (p) => (
-        <button
-          onClick={() => void loadPlanDetail(p.id)}
-          className="text-left font-medium text-cyan-200 hover:underline"
-        >
-          {p.title}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => void loadPlanDetail(p.id)}
+            className="text-left font-medium text-cyan-200 hover:underline"
+          >
+            {p.title}
+          </button>
+          <button
+            onClick={() => handleEditPlan(p)}
+            className="text-xs text-cyan-400 hover:text-cyan-200 hover:underline"
+          >
+            Edit
+          </button>
+        </div>
       ),
     },
     { key: 'audit_type', header: 'Type', render: (p) => p.audit_type ?? '—' },
@@ -121,7 +357,21 @@ export default function AuditPage() {
   ]
 
   const findingColumns: Column<AuditFinding>[] = [
-    { key: 'finding_id', header: 'Finding ID', render: (f) => (f.finding_id ? <Badge value={f.finding_id} tone="cyan" /> : '—') },
+    {
+      key: 'finding_id',
+      header: 'Finding ID',
+      render: (f) => (
+        <div className="flex items-center gap-2">
+          {f.finding_id ? <Badge value={f.finding_id} tone="cyan" /> : '—'}
+          <button
+            onClick={() => handleEditFinding(f)}
+            className="text-xs text-cyan-400 hover:text-cyan-200 hover:underline"
+          >
+            Edit
+          </button>
+        </div>
+      ),
+    },
     { key: 'title', header: 'Finding', render: (f) => <span className="font-medium">{f.title}</span> },
     {
       key: 'severity',
@@ -138,7 +388,21 @@ export default function AuditPage() {
   ]
 
   const programColumns: Column<AuditProgram>[] = [
-    { key: 'name', header: 'Program', render: (p) => <span className="font-medium">{p.name}</span> },
+    {
+      key: 'name',
+      header: 'Program',
+      render: (p) => (
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{p.name}</span>
+          <button
+            onClick={() => handleEditProgram(p)}
+            className="text-xs text-cyan-400 hover:text-cyan-200 hover:underline"
+          >
+            Edit
+          </button>
+        </div>
+      ),
+    },
     { key: 'program_type', header: 'Type', render: (p) => p.program_type ?? '—' },
     {
       key: 'status',
@@ -155,12 +419,48 @@ export default function AuditPage() {
         title="Audit Management"
         description="Audit programs, plans, procedures, findings, evidence, and interview records."
         action={
-          <button
-            onClick={() => void load()}
-            className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
-          >
-            Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleCreateProgram}
+              className="rounded-full bg-cyan-600 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-500"
+            >
+              + Program
+            </button>
+            <button
+              onClick={handleCreatePlan}
+              className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+            >
+              + Plan
+            </button>
+            {selectedPlanId && (
+              <>
+                <button
+                  onClick={handleCreateFinding}
+                  className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+                >
+                  + Finding
+                </button>
+                <button
+                  onClick={handleCreateEvidence}
+                  className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+                >
+                  + Evidence
+                </button>
+                <button
+                  onClick={handleCreateInterview}
+                  className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+                >
+                  + Interview
+                </button>
+              </>
+            )}
+            <button
+              onClick={() => void load()}
+              className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+            >
+              Refresh
+            </button>
+          </div>
         }
       />
 
@@ -265,6 +565,69 @@ export default function AuditPage() {
           </div>
         </div>
       )}
+
+      {/* Create/Edit Modal */}
+      <Modal
+        open={crud.open}
+        onClose={crud.close}
+        title={
+          formMode === 'program'
+            ? `${crud.mode === 'create' ? 'Create' : 'Edit'} Audit Program`
+            : formMode === 'plan'
+              ? `${crud.mode === 'create' ? 'Create' : 'Edit'} Audit Plan`
+              : formMode === 'finding'
+                ? `${crud.mode === 'create' ? 'Create' : 'Edit'} Audit Finding`
+                : formMode === 'evidence'
+                  ? 'Create Evidence'
+                  : 'Create Interview'
+        }
+      >
+        <form onSubmit={handleSubmit}>
+          <GrcFormSection
+            title={
+              formMode === 'program'
+                ? 'Program Details'
+                : formMode === 'plan'
+                  ? 'Plan Details'
+                  : formMode === 'finding'
+                    ? 'Finding Details'
+                    : formMode === 'evidence'
+                      ? 'Evidence Details'
+                      : 'Interview Details'
+            }
+          >
+            <GrcForm
+              fields={
+                formMode === 'program'
+                  ? PROGRAM_FIELDS
+                  : formMode === 'plan'
+                    ? PLAN_FIELDS
+                    : formMode === 'finding'
+                      ? FINDING_FIELDS
+                      : formMode === 'evidence'
+                        ? EVIDENCE_FIELDS
+                        : INTERVIEW_FIELDS
+              }
+              values={formValues}
+              onChange={(name, value) => setFormValues((prev) => ({ ...prev, [name]: value }))}
+            />
+          </GrcFormSection>
+
+          {crud.error ? (
+            <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">
+              {crud.error}
+            </div>
+          ) : null}
+
+          <GrcFormActions
+            onCancel={crud.close}
+            submitting={crud.submitting}
+            submitLabel={crud.mode === 'create' ? 'Create' : 'Save Changes'}
+            onDelete={crud.mode === 'edit' ? handleDelete : undefined}
+            deleteLabel="Delete"
+          />
+        </form>
+      </Modal>
     </div>
   )
 }

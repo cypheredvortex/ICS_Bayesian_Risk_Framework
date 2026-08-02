@@ -1,38 +1,41 @@
-# Production Readiness Implementation Progress
+# CRUD Modal Forms Implementation Progress
 
-## Step 1: Fix Auth Router Issues
-- [x] Fix `require_permission("admin:*")` → use `require_admin` dependency
-- [x] Add `expires_in` to LoginResponse
-- [x] Update `/me` to return `UserMeResponse` with role_name and permissions
-- [x] Fix `change_password` to use `PasswordChangeRequest` schema
-- [x] Add `/users/me/change-password` for self-service
+## Step 1: Create shared components
+- [x] Create `hooks/useCrud.ts` — generic CRUD state hook (open/close, create/edit mode, selected item, submitting, error)
+- [x] Create `components/grc/GrcForm.tsx` — reusable form components (GrcForm, GrcFormActions, GrcFormSection, FormFieldConfig)
+- [x] Ensure `Modal`, `GrcTable`, `PageHeader` are already available
 
-## Step 2: Add RBAC to All GRC Routers
-- [x] compliance.py — `require_module_access("compliance")` on all endpoints
-- [x] capa.py — `require_module_access("capa")` on all endpoints
-- [x] controls.py — `require_module_access("controls")` on all endpoints
-- [x] risk.py — `require_module_access("risk")` on all endpoints
-- [x] audit_management.py — `require_module_access("audit")` on all endpoints
-- [x] assets.py — `require_module_access("assets")` on all endpoints
-- [x] threats.py — `require_module_access("threats")` on all endpoints (incl. actor endpoints restored)
-- [x] vulnerabilities.py — `require_module_access("vulnerabilities")` on all endpoints
-- [x] zones.py — `require_module_access("zones")` on all endpoints
-- [x] organizations.py — `require_module_access("organizations")` on all endpoints
-- [x] security.py — added `zones` module to MODULE_ACTIONS + `require_admin` helper
+## Step 2: Update AssetsPage with CRUD modals
+- [x] AssetsPage — Create/Edit Asset, Asset Category; Delete Asset
+- [x] Added field configs: ASSET_FIELDS, ASSET_CATEGORY_FIELDS
 
-## Step 3: Frontend Auth Integration
-- [x] Create authStore.tsx — JWT persistence, login/logout, /me profile, authHeader
-- [x] Update grc.ts API client with auth headers (setAuthHeader)
-- [x] Create LoginPage.tsx
-- [x] Update App.tsx — auth guard wrapper + authenticated app component (fixes Rules of Hooks)
-- [x] Update main.tsx — wrap App in AuthProvider
-- [x] Update Layout.tsx — user footer with role display + sign out
+## Step 3: Update ThreatsPage with CRUD modals
+- [x] ThreatsPage — Create/Edit Threat, Threat Actor, Threat Category; Delete
+- [x] Added field configs: THREAT_FIELDS, THREAT_CATEGORY_FIELDS, ACTOR_FIELDS
 
-## Step 4: Tests
-- [x] Auth tests — login, /me, self-service password change, wrong password
-- [x] RBAC tests — read allowed / write denied per role across modules
+## Step 4: Update ControlsPage with CRUD modals
+- [x] ControlsPage — Create/Edit Control, Control Category, Control Test, Control Evidence; Delete
+- [x] Added field configs: CONTROL_FIELDS, CONTROL_CATEGORY_FIELDS, CONTROL_TEST_FIELDS, CONTROL_EVIDENCE_FIELDS
 
-## Step 5: Verification
-- [x] Run tests — **103 passed** (18 new auth/RBAC tests + 85 existing)
-- [x] Build frontend — `npm run build` succeeded (tsc -b && vite build)
+## Step 5: Update RiskPage with CRUD modals
+- [x] RiskPage — Create/Edit Risk Item, Risk Scenario, Risk Treatment Plan, Risk Acceptance; Delete
+- [x] Added field configs: RISK_FIELDS, SCENARIO_FIELDS, TREATMENT_FIELDS, ACCEPTANCE_FIELDS
 
+## Step 6: Update CapaPage with CRUD modals
+- [x] CapaPage — Create/Edit Corrective Action, Action Task, Effectiveness Review; Delete/Close
+- [x] Added field configs: ACTION_FIELDS, TASK_FIELDS, REVIEW_FIELDS
+
+## Step 7: Update AdminPage with CRUD modals
+- [x] AdminPage — Create/Edit Organization, User, Role; Delete
+- [x] Added field configs: ORG_FIELDS, USER_FIELDS, ROLE_FIELDS
+
+## Step 8: Update CompliancePage with CRUD modals
+- [x] CompliancePage — Create/Edit Framework, Compliance Gap, Compliance Assessment; Delete
+- [x] Added field configs: FRAMEWORK_FIELDS, GAP_FIELDS, ASSESSMENT_FIELDS
+
+## Step 9: Update AuditPage with CRUD modals
+- [x] AuditPage — Create/Edit Program, Plan, Finding, Evidence, Interview; Delete
+- [x] Added field configs: PROGRAM_FIELDS, PLAN_FIELDS, FINDING_FIELDS, EVIDENCE_FIELDS, INTERVIEW_FIELDS
+
+## Step 10: Verify build
+- [ ] Run `npm run build` to verify TypeScript compilation and bundling

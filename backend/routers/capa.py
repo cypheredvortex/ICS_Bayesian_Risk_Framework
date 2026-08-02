@@ -11,7 +11,6 @@ from backend.database.repositories import (
 )
 from backend.routers.common import get_db, prepare_create_data, prepare_update_data
 from backend.security import get_current_user, require_module_access
-from backend.security import get_current_user, require_module_access
 from backend.schemas import (
     ActionTaskCreate, ActionTaskResponse, ActionTaskUpdate,
     CorrectiveActionCreate, CorrectiveActionResponse,

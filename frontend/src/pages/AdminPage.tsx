@@ -2,6 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import GrcTable from '../components/grc/GrcTable'
 import type { Column } from '../components/grc/GrcTable'
 import PageHeader from '../components/grc/PageHeader'
+import { Modal } from '../components/grc/Modal'
+import { GrcForm, GrcFormActions, GrcFormSection } from '../components/grc/GrcForm'
+import type { FormFieldConfig } from '../components/grc/GrcForm'
+import { useCrud } from '../hooks/useCrud'
 import { adminApi, organizationApi } from '../services/grc'
 import type { AuditLogEntry, Organization, Role, User } from '../types/grc'
 
@@ -28,11 +32,39 @@ function Badge({
   )
 }
 
-function activeTone(value?: boolean): 'green' | 'rose' | 'slate' {
-  if (value === true) return 'green'
-  if (value === false) return 'rose'
-  return 'slate'
-}
+const ORG_FIELDS: FormFieldConfig[] = [
+  { name: 'name', label: 'Organization Name', type: 'text', required: true },
+  { name: 'legal_name', label: 'Legal Name', type: 'text' },
+  { name: 'registration_number', label: 'Registration Number', type: 'text' },
+  { name: 'tax_id', label: 'Tax ID', type: 'text' },
+  { name: 'industry_sector', label: 'Industry Sector', type: 'text' },
+  { name: 'address_line1', label: 'Address', type: 'text' },
+  { name: 'city', label: 'City', type: 'text' },
+  { name: 'state', label: 'State/Province', type: 'text' },
+  { name: 'postal_code', label: 'Postal Code', type: 'text' },
+  { name: 'country', label: 'Country', type: 'text' },
+  { name: 'website', label: 'Website', type: 'text' },
+  { name: 'phone', label: 'Phone', type: 'text' },
+  { name: 'email', label: 'Email', type: 'text' },
+]
+
+const USER_FIELDS: FormFieldConfig[] = [
+  { name: 'username', label: 'Username', type: 'text', required: true },
+  { name: 'email', label: 'Email', type: 'text', required: true },
+  { name: 'password', label: 'Password', type: 'text', required: true, hint: 'Minimum 8 characters' },
+  { name: 'first_name', label: 'First Name', type: 'text' },
+  { name: 'last_name', label: 'Last Name', type: 'text' },
+  { name: 'job_title', label: 'Job Title', type: 'text' },
+  { name: 'phone', label: 'Phone', type: 'text' },
+  { name: 'role_id', label: 'Role ID', type: 'number' },
+  { name: 'organization_id', label: 'Organization ID', type: 'number' },
+]
+
+const ROLE_FIELDS: FormFieldConfig[] = [
+  { name: 'name', label: 'Role Name', type: 'text', required: true },
+  { name: 'description', label: 'Description', type: 'textarea' },
+  { name: 'is_system_role', label: 'System Role', type: 'checkbox' },
+]
 
 export default function AdminPage() {
   const [organizations, setOrganizations] = useState<Organization[]>([])
@@ -41,6 +73,9 @@ export default function AdminPage() {
   const [logs, setLogs] = useState<AuditLogEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [formValues, setFormValues] = useState<Record<string, unknown>>({})
+  const [formMode, setFormMode] = useState<'org' | 'user' | 'role'>('org')
+  const crud = useCrud<Organization | User | Role>()
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -66,8 +101,108 @@ export default function AdminPage() {
     void load()
   }, [load])
 
+  const handleCreateOrg = () => {
+    setFormValues({})
+    setFormMode('org')
+    crud.openCreate()
+  }
+
+  const handleCreateUser = () => {
+    setFormValues({})
+    setFormMode('user')
+    crud.openCreate()
+  }
+
+  const handleCreateRole = () => {
+    setFormValues({ is_system_role: false })
+    setFormMode('role')
+    crud.openCreate()
+  }
+
+  const handleEditOrg = (item: Organization) => {
+    setFormMode('org')
+    setFormValues({ ...(item as unknown as Record<string, unknown>) })
+    crud.openEdit(item)
+  }
+
+  const handleEditUser = (item: User) => {
+    setFormMode('user')
+    const { password, ...rest } = item as unknown as Record<string, unknown>
+    setFormValues(rest)
+    crud.openEdit(item)
+  }
+
+  const handleEditRole = (item: Role) => {
+    setFormMode('role')
+    setFormValues({ ...(item as unknown as Record<string, unknown>) })
+    crud.openEdit(item)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    crud.setSubmitting(true)
+    crud.setError('')
+    try {
+      if (formMode === 'org') {
+        if (crud.mode === 'create') {
+          await organizationApi.create(formValues as Partial<Organization>)
+        } else if (crud.selected) {
+          await organizationApi.update(crud.selected.id, formValues as Partial<Organization>)
+        }
+      } else if (formMode === 'user') {
+        if (crud.mode === 'create') {
+          await adminApi.createUser(formValues as Partial<User> & { password: string })
+        } else if (crud.selected) {
+          await adminApi.updateUser(crud.selected.id, formValues as Partial<User>)
+        }
+      } else {
+        if (crud.mode === 'create') {
+          await adminApi.createRole(formValues as Partial<Role>)
+        }
+      }
+      crud.close()
+      await load()
+    } catch (caught) {
+      crud.setError(caught instanceof Error ? caught.message : 'Failed to save.')
+    } finally {
+      crud.setSubmitting(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!crud.selected) return
+    crud.setSubmitting(true)
+    try {
+      if (formMode === 'org') {
+        await organizationApi.remove(crud.selected.id)
+      } else if (formMode === 'user') {
+        await adminApi.updateUser(crud.selected.id, { is_active: false } as Partial<User>)
+      }
+      crud.close()
+      await load()
+    } catch (caught) {
+      crud.setError(caught instanceof Error ? caught.message : 'Failed to delete.')
+    } finally {
+      crud.setSubmitting(false)
+    }
+  }
+
   const orgColumns: Column<Organization>[] = [
-    { key: 'name', header: 'Organization', render: (o) => <span className="font-medium">{o.name}</span> },
+    {
+      key: 'name',
+      header: 'Organization',
+      render: (o) => (
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{o.name}</span>
+          <button
+            onClick={() => handleEditOrg(o)}
+            className="text-xs text-cyan-400 hover:text-cyan-200 hover:underline"
+          >
+            Edit
+          </button>
+        </div>
+      ),
+    },
     { key: 'industry_sector', header: 'Industry', render: (o) => o.industry_sector ?? '—' },
     { key: 'country', header: 'Country', render: (o) => o.country ?? '—' },
     {
@@ -82,7 +217,17 @@ export default function AdminPage() {
     {
       key: 'username',
       header: 'User',
-      render: (u) => <span className="font-medium">{u.username}</span>,
+      render: (u) => (
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{u.username}</span>
+          <button
+            onClick={() => handleEditUser(u)}
+            className="text-xs text-cyan-400 hover:text-cyan-200 hover:underline"
+          >
+            Edit
+          </button>
+        </div>
+      ),
     },
     { key: 'email', header: 'Email', render: (u) => u.email },
     { key: 'job_title', header: 'Title', render: (u) => u.job_title ?? '—' },
@@ -135,12 +280,32 @@ export default function AdminPage() {
         title="Administration"
         description="Organizations, users, roles, and the audit trail."
         action={
-          <button
-            onClick={() => void load()}
-            className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
-          >
-            Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleCreateOrg}
+              className="rounded-full bg-cyan-600 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-500"
+            >
+              + Organization
+            </button>
+            <button
+              onClick={handleCreateUser}
+              className="rounded-full bg-cyan-600 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-500"
+            >
+              + User
+            </button>
+            <button
+              onClick={handleCreateRole}
+              className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+            >
+              + Role
+            </button>
+            <button
+              onClick={() => void load()}
+              className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+            >
+              Refresh
+            </button>
+          </div>
         }
       />
 
@@ -212,6 +377,57 @@ export default function AdminPage() {
           </section>
         </div>
       )}
+
+      {/* Create/Edit Modal */}
+      <Modal
+        open={crud.open}
+        onClose={crud.close}
+        title={
+          formMode === 'org'
+            ? `${crud.mode === 'create' ? 'Create' : 'Edit'} Organization`
+            : formMode === 'user'
+              ? `${crud.mode === 'create' ? 'Create' : 'Edit'} User`
+              : `${crud.mode === 'create' ? 'Create' : 'Edit'} Role`
+        }
+      >
+        <form onSubmit={handleSubmit}>
+          <GrcFormSection
+            title={
+              formMode === 'org'
+                ? 'Organization Details'
+                : formMode === 'user'
+                  ? 'User Details'
+                  : 'Role Details'
+            }
+          >
+            <GrcForm
+              fields={
+                formMode === 'org'
+                  ? ORG_FIELDS
+                  : formMode === 'user'
+                    ? USER_FIELDS
+                    : ROLE_FIELDS
+              }
+              values={formValues}
+              onChange={(name, value) => setFormValues((prev) => ({ ...prev, [name]: value }))}
+            />
+          </GrcFormSection>
+
+          {crud.error ? (
+            <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">
+              {crud.error}
+            </div>
+          ) : null}
+
+          <GrcFormActions
+            onCancel={crud.close}
+            submitting={crud.submitting}
+            submitLabel={crud.mode === 'create' ? 'Create' : 'Save Changes'}
+            onDelete={crud.mode === 'edit' ? handleDelete : undefined}
+            deleteLabel="Delete"
+          />
+        </form>
+      </Modal>
     </div>
   )
 }

@@ -2,6 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import GrcTable from '../components/grc/GrcTable'
 import type { Column } from '../components/grc/GrcTable'
 import PageHeader from '../components/grc/PageHeader'
+import { Modal } from '../components/grc/Modal'
+import { GrcForm, GrcFormActions, GrcFormSection } from '../components/grc/GrcForm'
+import type { FormFieldConfig } from '../components/grc/GrcForm'
+import { useCrud } from '../hooks/useCrud'
 import { assetApi, vulnerabilityApi, organizationApi } from '../services/grc'
 import type {
   Asset,
@@ -32,6 +36,46 @@ function Badge({
   )
 }
 
+const ASSET_FIELDS: FormFieldConfig[] = [
+  { name: 'name', label: 'Asset Name', type: 'text', required: true },
+  { name: 'asset_tag', label: 'Asset Tag', type: 'text', placeholder: 'e.g., ASSET-001' },
+  { name: 'asset_type', label: 'Asset Type', type: 'select', options: [
+    { value: 'plc', label: 'PLC' },
+    { value: 'rtu', label: 'RTU' },
+    { value: 'hmi', label: 'HMI' },
+    { value: 'scada_server', label: 'SCADA Server' },
+    { value: 'engineering_workstation', label: 'Engineering Workstation' },
+    { value: 'network_switch', label: 'Network Switch' },
+    { value: 'firewall', label: 'Firewall' },
+    { value: 'sensor', label: 'Sensor' },
+    { value: 'actuator', label: 'Actuator' },
+    { value: 'server', label: 'Server' },
+    { value: 'workstation', label: 'Workstation' },
+    { value: 'other', label: 'Other' },
+  ]},
+  { name: 'serial_number', label: 'Serial Number', type: 'text' },
+  { name: 'criticality', label: 'Criticality', type: 'select', options: [
+    { value: 'critical', label: 'Critical' },
+    { value: 'high', label: 'High' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'low', label: 'Low' },
+  ]},
+  { name: 'operational_status', label: 'Operational Status', type: 'select', options: [
+    { value: 'operational', label: 'Operational' },
+    { value: 'standby', label: 'Standby' },
+    { value: 'maintenance', label: 'Maintenance' },
+    { value: 'retired', label: 'Retired' },
+  ]},
+  { name: 'vendor', label: 'Vendor', type: 'text' },
+  { name: 'model', label: 'Model', type: 'text' },
+  { name: 'firmware_version', label: 'Firmware Version', type: 'text' },
+  { name: 'ip_address', label: 'IP Address', type: 'text', placeholder: 'e.g., 192.168.1.100' },
+  { name: 'mac_address', label: 'MAC Address', type: 'text', placeholder: 'e.g., AA:BB:CC:DD:EE:FF' },
+  { name: 'location_building', label: 'Building', type: 'text' },
+  { name: 'location_room', label: 'Room', type: 'text' },
+  { name: 'asset_owner_id', label: 'Asset Owner ID', type: 'number', hint: 'User ID of the asset owner' },
+]
+
 export default function AssetsPage() {
   const [assets, setAssets] = useState<Asset[]>([])
   const [categories, setCategories] = useState<AssetCategory[]>([])
@@ -39,6 +83,8 @@ export default function AssetsPage() {
   const [organizations, setOrganizations] = useState<Organization[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [formValues, setFormValues] = useState<Record<string, unknown>>({})
+  const crud = useCrud<Asset>()
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -66,8 +112,80 @@ export default function AssetsPage() {
     void load()
   }, [load])
 
+  const handleCreate = () => {
+    setFormValues({})
+    crud.openCreate()
+  }
+
+  const handleEdit = (asset: Asset) => {
+    setFormValues({
+      name: asset.name ?? '',
+      asset_tag: asset.asset_tag ?? '',
+      asset_type: asset.asset_type ?? '',
+      serial_number: asset.serial_number ?? '',
+      criticality: asset.criticality ?? '',
+      operational_status: asset.operational_status ?? '',
+      vendor: asset.vendor ?? '',
+      model: asset.model ?? '',
+      firmware_version: asset.firmware_version ?? '',
+      ip_address: asset.ip_address ?? '',
+      mac_address: asset.mac_address ?? '',
+      location_building: asset.location_building ?? '',
+      location_room: asset.location_room ?? '',
+      asset_owner_id: asset.asset_owner_id ?? null,
+    })
+    crud.openEdit(asset)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    crud.setSubmitting(true)
+    crud.setError('')
+    try {
+      if (crud.mode === 'create') {
+        await assetApi.create(formValues as Partial<Asset>)
+      } else if (crud.selected) {
+        await assetApi.update(crud.selected.id, formValues as Partial<Asset>)
+      }
+      crud.close()
+      await load()
+    } catch (caught) {
+      crud.setError(caught instanceof Error ? caught.message : 'Failed to save asset.')
+    } finally {
+      crud.setSubmitting(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!crud.selected) return
+    crud.setSubmitting(true)
+    try {
+      await assetApi.remove(crud.selected.id)
+      crud.close()
+      await load()
+    } catch (caught) {
+      crud.setError(caught instanceof Error ? caught.message : 'Failed to delete asset.')
+    } finally {
+      crud.setSubmitting(false)
+    }
+  }
+
   const columns: Column<Asset>[] = [
-    { key: 'name', header: 'Asset', render: (a) => <span className="font-medium">{a.name}</span> },
+    {
+      key: 'name',
+      header: 'Asset',
+      render: (a) => (
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{a.name}</span>
+          <button
+            onClick={() => handleEdit(a)}
+            className="text-xs text-cyan-400 hover:text-cyan-200 hover:underline"
+          >
+            Edit
+          </button>
+        </div>
+      ),
+    },
     {
       key: 'asset_type',
       header: 'Type',
@@ -117,12 +235,20 @@ export default function AssetsPage() {
         title="Asset Register"
         description="ICS asset register with classification, ownership, and vulnerability linkage."
         action={
-          <button
-            onClick={() => void load()}
-            className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
-          >
-            Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleCreate}
+              className="rounded-full bg-cyan-600 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-500"
+            >
+              + Create Asset
+            </button>
+            <button
+              onClick={() => void load()}
+              className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+            >
+              Refresh
+            </button>
+          </div>
         }
       />
 
@@ -202,6 +328,37 @@ export default function AssetsPage() {
           ) : null}
         </div>
       )}
+
+      {/* Create/Edit Modal */}
+      <Modal
+        open={crud.open}
+        onClose={crud.close}
+        title={crud.mode === 'create' ? 'Create Asset' : 'Edit Asset'}
+      >
+        <form onSubmit={handleSubmit}>
+          <GrcFormSection title="Asset Details">
+            <GrcForm
+              fields={ASSET_FIELDS}
+              values={formValues}
+              onChange={(name, value) => setFormValues((prev) => ({ ...prev, [name]: value }))}
+            />
+          </GrcFormSection>
+
+          {crud.error ? (
+            <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">
+              {crud.error}
+            </div>
+          ) : null}
+
+          <GrcFormActions
+            onCancel={crud.close}
+            submitting={crud.submitting}
+            submitLabel={crud.mode === 'create' ? 'Create Asset' : 'Save Changes'}
+            onDelete={crud.mode === 'edit' ? handleDelete : undefined}
+            deleteLabel="Delete Asset"
+          />
+        </form>
+      </Modal>
     </div>
   )
 }

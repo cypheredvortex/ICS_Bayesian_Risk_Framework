@@ -2,6 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import GrcTable from '../components/grc/GrcTable'
 import type { Column } from '../components/grc/GrcTable'
 import PageHeader from '../components/grc/PageHeader'
+import { Modal } from '../components/grc/Modal'
+import { GrcForm, GrcFormActions, GrcFormSection } from '../components/grc/GrcForm'
+import type { FormFieldConfig } from '../components/grc/GrcForm'
+import { useCrud } from '../hooks/useCrud'
 import { capaApi } from '../services/grc'
 import type { ActionTask, CorrectiveAction, EffectivenessReview } from '../types/grc'
 
@@ -41,6 +45,65 @@ function statusTone(value: string): 'green' | 'amber' | 'rose' | 'slate' | 'cyan
   return 'slate'
 }
 
+const CAPA_FIELDS: FormFieldConfig[] = [
+  { name: 'title', label: 'Action Title', type: 'text', required: true },
+  { name: 'action_id', label: 'Action ID', type: 'text', placeholder: 'e.g., CAPA-2024-0001' },
+  { name: 'action_type', label: 'Action Type', type: 'select', options: [
+    { value: 'corrective', label: 'Corrective' },
+    { value: 'preventive', label: 'Preventive' },
+    { value: 'improvement', label: 'Improvement' },
+  ]},
+  { name: 'priority', label: 'Priority', type: 'select', options: [
+    { value: 'critical', label: 'Critical' },
+    { value: 'high', label: 'High' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'low', label: 'Low' },
+  ]},
+  { name: 'root_cause_type', label: 'Root Cause Type', type: 'select', options: [
+    { value: 'process', label: 'Process' },
+    { value: 'technical', label: 'Technical' },
+    { value: 'human', label: 'Human' },
+    { value: 'organizational', label: 'Organizational' },
+  ]},
+  { name: 'status', label: 'Status', type: 'select', options: [
+    { value: 'open', label: 'Open' },
+    { value: 'in_progress', label: 'In Progress' },
+    { value: 'implemented', label: 'Implemented' },
+    { value: 'verified', label: 'Verified' },
+    { value: 'closed', label: 'Closed' },
+  ]},
+  { name: 'assigned_to_id', label: 'Assigned To ID', type: 'number' },
+  { name: 'target_date', label: 'Target Date', type: 'date' },
+  { name: 'description', label: 'Description', type: 'textarea' },
+  { name: 'root_cause_description', label: 'Root Cause Description', type: 'textarea' },
+  { name: 'impact_assessment', label: 'Impact Assessment', type: 'textarea' },
+]
+
+const TASK_FIELDS: FormFieldConfig[] = [
+  { name: 'title', label: 'Task Title', type: 'text', required: true },
+  { name: 'status', label: 'Status', type: 'select', options: [
+    { value: 'pending', label: 'Pending' },
+    { value: 'in_progress', label: 'In Progress' },
+    { value: 'completed', label: 'Completed' },
+  ]},
+  { name: 'assigned_to_id', label: 'Assigned To ID', type: 'number' },
+  { name: 'due_date', label: 'Due Date', type: 'date' },
+  { name: 'description', label: 'Description', type: 'textarea' },
+]
+
+const REVIEW_FIELDS: FormFieldConfig[] = [
+  { name: 'result', label: 'Result', type: 'select', options: [
+    { value: 'effective', label: 'Effective' },
+    { value: 'partially_effective', label: 'Partially Effective' },
+    { value: 'not_effective', label: 'Not Effective' },
+  ]},
+  { name: 'review_date', label: 'Review Date', type: 'date' },
+  { name: 'follow_up_required', label: 'Follow-up Required', type: 'checkbox' },
+  { name: 'criteria', label: 'Review Criteria', type: 'textarea' },
+  { name: 'findings', label: 'Findings', type: 'textarea' },
+  { name: 'follow_up_action', label: 'Follow-up Action', type: 'textarea' },
+]
+
 export default function CapaPage() {
   const [actions, setActions] = useState<CorrectiveAction[]>([])
   const [tasks, setTasks] = useState<ActionTask[]>([])
@@ -48,6 +111,9 @@ export default function CapaPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [formValues, setFormValues] = useState<Record<string, unknown>>({})
+  const [formMode, setFormMode] = useState<'capa' | 'task' | 'review'>('capa')
+  const crud = useCrud<CorrectiveAction | ActionTask | EffectivenessReview>()
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -80,17 +146,110 @@ export default function CapaPage() {
     setReviews(reviewList)
   }
 
+  const handleCreate = () => {
+    setFormValues({ status: 'open', action_type: 'corrective' })
+    setFormMode('capa')
+    crud.openCreate()
+  }
+
+  const handleCreateTask = () => {
+    setFormValues({ status: 'pending', corrective_action_id: selectedId })
+    setFormMode('task')
+    crud.openCreate()
+  }
+
+  const handleCreateReview = () => {
+    setFormValues({ follow_up_required: false, corrective_action_id: selectedId })
+    setFormMode('review')
+    crud.openCreate()
+  }
+
+  const handleEdit = (item: CorrectiveAction) => {
+    setFormMode('capa')
+    setFormValues({ ...(item as unknown as Record<string, unknown>) })
+    crud.openEdit(item)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    crud.setSubmitting(true)
+    crud.setError('')
+    try {
+      if (formMode === 'capa') {
+        if (crud.mode === 'create') {
+          await capaApi.create(formValues as Partial<CorrectiveAction>)
+        } else if (crud.selected) {
+          await capaApi.update(crud.selected.id, formValues as Partial<CorrectiveAction>)
+        }
+      } else if (formMode === 'task') {
+        if (crud.mode === 'create') {
+          await capaApi.createTask(formValues as Partial<ActionTask>)
+        }
+      } else {
+        if (crud.mode === 'create') {
+          await capaApi.createReview(formValues as Partial<EffectivenessReview>)
+        }
+      }
+      crud.close()
+      if (selectedId) await loadDetail(selectedId)
+      await load()
+    } catch (caught) {
+      crud.setError(caught instanceof Error ? caught.message : 'Failed to save.')
+    } finally {
+      crud.setSubmitting(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!crud.selected) return
+    crud.setSubmitting(true)
+    try {
+      await capaApi.update(crud.selected.id, { is_active: false } as Partial<CorrectiveAction>)
+      crud.close()
+      await load()
+    } catch (caught) {
+      crud.setError(caught instanceof Error ? caught.message : 'Failed to delete.')
+    } finally {
+      crud.setSubmitting(false)
+    }
+  }
+
+  const handleClose = async (actionId: number) => {
+    try {
+      await capaApi.close(actionId)
+      await load()
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : 'Failed to close action.')
+    }
+  }
+
   const columns: Column<CorrectiveAction>[] = [
     {
       key: 'title',
       header: 'Action',
       render: (a) => (
-        <button
-          onClick={() => void loadDetail(a.id)}
-          className="text-left font-medium text-cyan-200 hover:underline"
-        >
-          {a.title}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => void loadDetail(a.id)}
+            className="text-left font-medium text-cyan-200 hover:underline"
+          >
+            {a.title}
+          </button>
+          <button
+            onClick={() => handleEdit(a)}
+            className="text-xs text-cyan-400 hover:text-cyan-200 hover:underline"
+          >
+            Edit
+          </button>
+          {!a.is_closed && (
+            <button
+              onClick={() => handleClose(a.id)}
+              className="text-xs text-emerald-400 hover:text-emerald-200 hover:underline"
+            >
+              Close
+            </button>
+          )}
+        </div>
       ),
     },
     { key: 'action_id', header: 'Action ID', render: (a) => (a.action_id ? <Badge value={a.action_id} tone="cyan" /> : '—') },
@@ -125,12 +284,36 @@ export default function CapaPage() {
         title="Corrective Actions (CAPA)"
         description="Corrective and preventive action workflow with tasks and effectiveness reviews."
         action={
-          <button
-            onClick={() => void load()}
-            className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
-          >
-            Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleCreate}
+              className="rounded-full bg-cyan-600 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-500"
+            >
+              + Action
+            </button>
+            {selectedId && (
+              <>
+                <button
+                  onClick={handleCreateTask}
+                  className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+                >
+                  + Task
+                </button>
+                <button
+                  onClick={handleCreateReview}
+                  className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+                >
+                  + Review
+                </button>
+              </>
+            )}
+            <button
+              onClick={() => void load()}
+              className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+            >
+              Refresh
+            </button>
+          </div>
         }
       />
 
@@ -192,6 +375,57 @@ export default function CapaPage() {
           </div>
         </div>
       )}
+
+      {/* Create/Edit Modal */}
+      <Modal
+        open={crud.open}
+        onClose={crud.close}
+        title={
+          formMode === 'capa'
+            ? `${crud.mode === 'create' ? 'Create' : 'Edit'} Corrective Action`
+            : formMode === 'task'
+              ? 'Create Task'
+              : 'Create Review'
+        }
+      >
+        <form onSubmit={handleSubmit}>
+          <GrcFormSection
+            title={
+              formMode === 'capa'
+                ? 'Action Details'
+                : formMode === 'task'
+                  ? 'Task Details'
+                  : 'Review Details'
+            }
+          >
+            <GrcForm
+              fields={
+                formMode === 'capa'
+                  ? CAPA_FIELDS
+                  : formMode === 'task'
+                    ? TASK_FIELDS
+                    : REVIEW_FIELDS
+              }
+              values={formValues}
+              onChange={(name, value) => setFormValues((prev) => ({ ...prev, [name]: value }))}
+            />
+          </GrcFormSection>
+
+          {crud.error ? (
+            <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">
+              {crud.error}
+            </div>
+          ) : null}
+
+          <GrcFormActions
+            onCancel={crud.close}
+            submitting={crud.submitting}
+            submitLabel={crud.mode === 'create' ? 'Create' : 'Save Changes'}
+            onDelete={crud.mode === 'edit' && formMode === 'capa' ? handleDelete : undefined}
+            deleteLabel="Delete"
+          />
+        </form>
+      </Modal>
     </div>
   )
 }

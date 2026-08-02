@@ -2,7 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import GrcTable from '../components/grc/GrcTable'
 import type { Column } from '../components/grc/GrcTable'
 import PageHeader from '../components/grc/PageHeader'
-import { complianceApi, controlApi } from '../services/grc'
+import { Modal } from '../components/grc/Modal'
+import { GrcForm, GrcFormActions, GrcFormSection } from '../components/grc/GrcForm'
+import type { FormFieldConfig } from '../components/grc/GrcForm'
+import { useCrud } from '../hooks/useCrud'
+import { complianceApi } from '../services/grc'
 import type {
   ComplianceAssessment,
   ComplianceFramework,
@@ -42,6 +46,53 @@ function statusTone(value: string): 'green' | 'amber' | 'rose' | 'slate' | 'cyan
   return 'slate'
 }
 
+const FRAMEWORK_FIELDS: FormFieldConfig[] = [
+  { name: 'name', label: 'Framework Name', type: 'text', required: true, placeholder: 'e.g., ISO 27001, NIST CSF, IEC 62443' },
+  { name: 'version', label: 'Version', type: 'text', required: true },
+  { name: 'publisher', label: 'Publisher', type: 'text' },
+  { name: 'domain', label: 'Domain', type: 'select', options: [
+    { value: 'information_security', label: 'Information Security' },
+    { value: 'ics_security', label: 'ICS Security' },
+    { value: 'privacy', label: 'Privacy' },
+  ]},
+  { name: 'description', label: 'Description', type: 'textarea' },
+]
+
+const GAP_FIELDS: FormFieldConfig[] = [
+  { name: 'requirement_id', label: 'Requirement ID', type: 'number', required: true },
+  { name: 'gap_description', label: 'Gap Description', type: 'textarea', required: true },
+  { name: 'severity', label: 'Severity', type: 'select', options: [
+    { value: 'critical', label: 'Critical' },
+    { value: 'high', label: 'High' },
+    { value: 'medium', label: 'Medium' },
+    { value: 'low', label: 'Low' },
+  ]},
+  { name: 'status', label: 'Status', type: 'select', options: [
+    { value: 'open', label: 'Open' },
+    { value: 'planned', label: 'Planned' },
+    { value: 'remediated', label: 'Remediated' },
+    { value: 'accepted', label: 'Accepted' },
+  ]},
+  { name: 'target_closure_date', label: 'Target Closure Date', type: 'date' },
+  { name: 'remediation_plan', label: 'Remediation Plan', type: 'textarea' },
+]
+
+const ASSESSMENT_FIELDS: FormFieldConfig[] = [
+  { name: 'framework_id', label: 'Framework ID', type: 'number', required: true },
+  { name: 'organization_id', label: 'Organization ID', type: 'number' },
+  { name: 'plant_id', label: 'Plant ID', type: 'number' },
+  { name: 'assessment_date', label: 'Assessment Date', type: 'date' },
+  { name: 'assessor_id', label: 'Assessor ID', type: 'number' },
+  { name: 'overall_status', label: 'Status', type: 'select', options: [
+    { value: 'compliant', label: 'Compliant' },
+    { value: 'partially_compliant', label: 'Partially Compliant' },
+    { value: 'non_compliant', label: 'Non-Compliant' },
+    { value: 'not_assessed', label: 'Not Assessed' },
+  ]},
+  { name: 'compliance_percentage', label: 'Compliance %', type: 'number', min: 0, max: 100, step: 0.1 },
+  { name: 'findings_summary', label: 'Findings Summary', type: 'textarea' },
+]
+
 export default function CompliancePage() {
   const [frameworks, setFrameworks] = useState<ComplianceFramework[]>([])
   const [requirements, setRequirements] = useState<FrameworkRequirement[]>([])
@@ -51,6 +102,9 @@ export default function CompliancePage() {
   const [selectedName, setSelectedName] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [formValues, setFormValues] = useState<Record<string, unknown>>({})
+  const [formMode, setFormMode] = useState<'framework' | 'gap' | 'assessment'>('framework')
+  const crud = useCrud<ComplianceFramework | ComplianceGap | ComplianceAssessment>()
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -94,17 +148,102 @@ export default function CompliancePage() {
     setRequirements(reqs)
   }
 
+  const handleCreateFramework = () => {
+    setFormValues({})
+    setFormMode('framework')
+    crud.openCreate()
+  }
+
+  const handleCreateGap = () => {
+    setFormValues({ status: 'open' })
+    setFormMode('gap')
+    crud.openCreate()
+  }
+
+  const handleCreateAssessment = () => {
+    setFormValues({ overall_status: 'not_assessed' })
+    setFormMode('assessment')
+    crud.openCreate()
+  }
+
+  const handleEditFramework = (item: ComplianceFramework) => {
+    setFormMode('framework')
+    setFormValues({ ...(item as unknown as Record<string, unknown>) })
+    crud.openEdit(item)
+  }
+
+  const handleEditGap = (item: ComplianceGap) => {
+    setFormMode('gap')
+    setFormValues({ ...(item as unknown as Record<string, unknown>) })
+    crud.openEdit(item)
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    crud.setSubmitting(true)
+    crud.setError('')
+    try {
+      if (formMode === 'framework') {
+        if (crud.mode === 'create') {
+          await complianceApi.createFramework(formValues as Partial<ComplianceFramework>)
+        }
+      } else if (formMode === 'gap') {
+        if (crud.mode === 'create') {
+          await complianceApi.createGap(formValues as Partial<ComplianceGap>)
+        } else if (crud.selected) {
+          await complianceApi.updateGap(crud.selected.id, formValues as Partial<ComplianceGap>)
+        }
+      } else {
+        if (crud.mode === 'create') {
+          await complianceApi.createAssessment(formValues as Partial<ComplianceAssessment>)
+        }
+      }
+      crud.close()
+      await load()
+    } catch (caught) {
+      crud.setError(caught instanceof Error ? caught.message : 'Failed to save.')
+    } finally {
+      crud.setSubmitting(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    if (!crud.selected) return
+    crud.setSubmitting(true)
+    try {
+      if (formMode === 'framework') {
+        await complianceApi.removeFramework(crud.selected.id)
+      } else if (formMode === 'gap') {
+        await complianceApi.removeGap(crud.selected.id)
+      }
+      crud.close()
+      await load()
+    } catch (caught) {
+      crud.setError(caught instanceof Error ? caught.message : 'Failed to delete.')
+    } finally {
+      crud.setSubmitting(false)
+    }
+  }
+
   const frameworkColumns: Column<ComplianceFramework>[] = [
     {
       key: 'name',
       header: 'Framework',
       render: (f) => (
-        <button
-          onClick={() => void loadFramework(f.id, f.name)}
-          className="text-left font-medium text-cyan-200 hover:underline"
-        >
-          {f.name}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => void loadFramework(f.id, f.name)}
+            className="text-left font-medium text-cyan-200 hover:underline"
+          >
+            {f.name}
+          </button>
+          <button
+            onClick={() => handleEditFramework(f)}
+            className="text-xs text-cyan-400 hover:text-cyan-200 hover:underline"
+          >
+            Edit
+          </button>
+        </div>
       ),
     },
     { key: 'version', header: 'Version', render: (f) => f.version },
@@ -146,7 +285,17 @@ export default function CompliancePage() {
     {
       key: 'gap_description',
       header: 'Gap',
-      render: (g) => <span className="font-medium">{g.gap_description}</span>,
+      render: (g) => (
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{g.gap_description}</span>
+          <button
+            onClick={() => handleEditGap(g)}
+            className="text-xs text-cyan-400 hover:text-cyan-200 hover:underline"
+          >
+            Edit
+          </button>
+        </div>
+      ),
     },
     { key: 'requirement_id', header: 'Requirement ID', render: (g) => g.requirement_id },
     {
@@ -193,12 +342,32 @@ export default function CompliancePage() {
         title="Compliance"
         description="Compliance frameworks, requirements, control mappings, gap analysis, and assessments."
         action={
-          <button
-            onClick={() => void load()}
-            className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
-          >
-            Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleCreateFramework}
+              className="rounded-full bg-cyan-600 px-4 py-2 text-sm font-medium text-white hover:bg-cyan-500"
+            >
+              + Framework
+            </button>
+            <button
+              onClick={handleCreateGap}
+              className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+            >
+              + Gap
+            </button>
+            <button
+              onClick={handleCreateAssessment}
+              className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+            >
+              + Assessment
+            </button>
+            <button
+              onClick={() => void load()}
+              className="rounded-full border border-slate-700 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+            >
+              Refresh
+            </button>
+          </div>
         }
       />
 
@@ -290,6 +459,57 @@ export default function CompliancePage() {
           ) : null}
         </div>
       )}
+
+      {/* Create/Edit Modal */}
+      <Modal
+        open={crud.open}
+        onClose={crud.close}
+        title={
+          formMode === 'framework'
+            ? `${crud.mode === 'create' ? 'Create' : 'Edit'} Compliance Framework`
+            : formMode === 'gap'
+              ? `${crud.mode === 'create' ? 'Create' : 'Edit'} Compliance Gap`
+              : 'Create Compliance Assessment'
+        }
+      >
+        <form onSubmit={handleSubmit}>
+          <GrcFormSection
+            title={
+              formMode === 'framework'
+                ? 'Framework Details'
+                : formMode === 'gap'
+                  ? 'Gap Details'
+                  : 'Assessment Details'
+            }
+          >
+            <GrcForm
+              fields={
+                formMode === 'framework'
+                  ? FRAMEWORK_FIELDS
+                  : formMode === 'gap'
+                    ? GAP_FIELDS
+                    : ASSESSMENT_FIELDS
+              }
+              values={formValues}
+              onChange={(name, value) => setFormValues((prev) => ({ ...prev, [name]: value }))}
+            />
+          </GrcFormSection>
+
+          {crud.error ? (
+            <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-sm text-rose-200">
+              {crud.error}
+            </div>
+          ) : null}
+
+          <GrcFormActions
+            onCancel={crud.close}
+            submitting={crud.submitting}
+            submitLabel={crud.mode === 'create' ? 'Create' : 'Save Changes'}
+            onDelete={crud.mode === 'edit' ? handleDelete : undefined}
+            deleteLabel="Delete"
+          />
+        </form>
+      </Modal>
     </div>
   )
 }
