@@ -1,79 +1,243 @@
 {
   "nodes": [
     {
-      "id": "vendor_remote_access"
+      "id": "Internet"
     },
     {
-      "id": "engineering_workstation"
+      "id": "Firewall"
     },
     {
-      "id": "scada_server"
+      "id": "DMZ"
     },
     {
-      "id": "operator"
+      "id": "VPN_Gateway"
     },
     {
-      "id": "plc_dosing"
+      "id": "Corporate_Network"
     },
     {
-      "id": "chlorine_pump"
+      "id": "Engineering_Workstation"
     },
     {
-      "id": "water_supply"
+      "id": "Domain_Controller"
     },
     {
-      "id": "historian"
+      "id": "Patch_Management_Server"
+    },
+    {
+      "id": "SCADA_Server"
+    },
+    {
+      "id": "Historian"
+    },
+    {
+      "id": "HMI"
+    },
+    {
+      "id": "OPC_Server"
+    },
+    {
+      "id": "PLC_1"
+    },
+    {
+      "id": "PLC_2"
+    },
+    {
+      "id": "Sensor"
+    },
+    {
+      "id": "Actuator"
+    },
+    {
+      "id": "RTU"
+    },
+    {
+      "id": "Remote_Site"
+    },
+    {
+      "id": "Safety_PLC"
+    },
+    {
+      "id": "Remote_Access_Server"
+    },
+    {
+      "id": "Level_3_Switch"
+    },
+    {
+      "id": "Level_2_Switch"
     }
   ],
   "edges": [
     {
-      "source": "vendor_remote_access",
-      "target": "engineering_workstation",
+      "source": "Internet",
+      "target": "Firewall",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5
+      "weight": 0.99,
+      "protocol": "http",
+      "trust": "low"
     },
     {
-      "source": "engineering_workstation",
-      "target": "scada_server",
-      "rel_type": "controls",
+      "source": "Firewall",
+      "target": "DMZ",
+      "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.7
+      "weight": 0.8625,
+      "protocol": "http",
+      "trust": "medium"
     },
     {
-      "source": "operator",
-      "target": "scada_server",
-      "rel_type": "controls",
+      "source": "DMZ",
+      "target": "VPN_Gateway",
+      "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.7
+      "weight": 0.69,
+      "protocol": "ipsec",
+      "trust": "medium"
     },
     {
-      "source": "scada_server",
-      "target": "plc_dosing",
-      "rel_type": "programs / operates",
-      "firewalled": true,
-      "weight": 0.24
-    },
-    {
-      "source": "plc_dosing",
-      "target": "chlorine_pump",
-      "rel_type": "actuates",
+      "source": "VPN_Gateway",
+      "target": "Corporate_Network",
+      "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.6
+      "weight": 0.483,
+      "protocol": "ipsec",
+      "trust": "high"
     },
     {
-      "source": "chlorine_pump",
-      "target": "water_supply",
-      "rel_type": "actuates",
+      "source": "Corporate_Network",
+      "target": "Engineering_Workstation",
+      "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.6
+      "weight": 0.483,
+      "protocol": "rdp",
+      "trust": "high"
     },
     {
-      "source": "scada_server",
-      "target": "historian",
-      "rel_type": "monitors",
+      "source": "Corporate_Network",
+      "target": "Domain_Controller",
+      "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.2
+      "weight": 0.483,
+      "protocol": "ldap",
+      "trust": "high"
+    },
+    {
+      "source": "Corporate_Network",
+      "target": "Patch_Management_Server",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.483,
+      "protocol": "wsman",
+      "trust": "high"
+    },
+    {
+      "source": "Corporate_Network",
+      "target": "SCADA_Server",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.6555,
+      "protocol": "opc-ua",
+      "trust": "medium"
+    },
+    {
+      "source": "SCADA_Server",
+      "target": "Historian",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.6555,
+      "protocol": "opc-ua",
+      "trust": "medium"
+    },
+    {
+      "source": "SCADA_Server",
+      "target": "HMI",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.6555,
+      "protocol": "opc-ua",
+      "trust": "medium"
+    },
+    {
+      "source": "SCADA_Server",
+      "target": "OPC_Server",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.6555,
+      "protocol": "opc-ua",
+      "trust": "medium"
+    },
+    {
+      "source": "OPC_Server",
+      "target": "PLC_1",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.99,
+      "protocol": "modbus",
+      "trust": "low"
+    },
+    {
+      "source": "OPC_Server",
+      "target": "PLC_2",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.978075,
+      "protocol": "profinet",
+      "trust": "low"
+    },
+    {
+      "source": "PLC_1",
+      "target": "Sensor",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.99,
+      "protocol": "modbus",
+      "trust": "low"
+    },
+    {
+      "source": "PLC_2",
+      "target": "Actuator",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.978075,
+      "protocol": "ethernet/ip",
+      "trust": "low"
+    },
+    {
+      "source": "PLC_1",
+      "target": "RTU",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.99,
+      "protocol": "dnp3",
+      "trust": "low"
+    },
+    {
+      "source": "RTU",
+      "target": "Remote_Site",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.99,
+      "protocol": "dnp3",
+      "trust": "low"
+    },
+    {
+      "source": "SCADA_Server",
+      "target": "Safety_PLC",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.7245,
+      "protocol": "profinet",
+      "trust": "medium"
+    },
+    {
+      "source": "Safety_PLC",
+      "target": "Sensor",
+      "rel_type": "connects-to",
+      "firewalled": false,
+      "weight": 0.99,
+      "protocol": "modbus",
+      "trust": "low"
     }
   ]
 }

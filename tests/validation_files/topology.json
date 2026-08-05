@@ -1,0 +1,271 @@
+{
+  "assets": [
+    {
+      "id": "Internet",
+      "name": "Internet",
+      "type": "device",
+      "zone": "Internet"
+    },
+    {
+      "id": "Corporate_Network",
+      "name": "Corporate Network",
+      "type": "device",
+      "zone": "Corporate"
+    },
+    {
+      "id": "DMZ",
+      "name": "DMZ",
+      "type": "device",
+      "zone": "DMZ"
+    },
+    {
+      "id": "Firewall",
+      "name": "Firewall",
+      "type": "device",
+      "zone": "DMZ"
+    },
+    {
+      "id": "VPN_Gateway",
+      "name": "VPN Gateway",
+      "type": "device",
+      "zone": "Corporate"
+    },
+    {
+      "id": "Remote_Access_Server",
+      "name": "Remote Access Server",
+      "type": "device",
+      "zone": "Corporate"
+    },
+    {
+      "id": "Engineering_Workstation",
+      "name": "Engineering Workstation",
+      "type": "device",
+      "zone": "Corporate"
+    },
+    {
+      "id": "SCADA_Server",
+      "name": "SCADA Server",
+      "type": "device",
+      "zone": "Level 3"
+    },
+    {
+      "id": "Historian",
+      "name": "Historian",
+      "type": "device",
+      "zone": "Level 3"
+    },
+    {
+      "id": "HMI",
+      "name": "HMI",
+      "type": "device",
+      "zone": "Level 2"
+    },
+    {
+      "id": "Domain_Controller",
+      "name": "Domain Controller",
+      "type": "device",
+      "zone": "Corporate"
+    },
+    {
+      "id": "Patch_Management_Server",
+      "name": "Patch Management Server",
+      "type": "device",
+      "zone": "Corporate"
+    },
+    {
+      "id": "OPC_Server",
+      "name": "OPC Server",
+      "type": "device",
+      "zone": "Level 2"
+    },
+    {
+      "id": "PLC_1",
+      "name": "PLC 1",
+      "type": "device",
+      "zone": "Level 1"
+    },
+    {
+      "id": "PLC_2",
+      "name": "PLC 2",
+      "type": "device",
+      "zone": "Level 1"
+    },
+    {
+      "id": "RTU",
+      "name": "RTU",
+      "type": "device",
+      "zone": "Level 1"
+    },
+    {
+      "id": "Remote_Site",
+      "name": "Remote Site",
+      "type": "device",
+      "zone": "Remote"
+    },
+    {
+      "id": "Level_3_Switch",
+      "name": "Level 3 Switch",
+      "type": "device",
+      "zone": "Level 3"
+    },
+    {
+      "id": "Level_2_Switch",
+      "name": "Level 2 Switch",
+      "type": "device",
+      "zone": "Level 2"
+    },
+    {
+      "id": "Sensor",
+      "name": "Sensor",
+      "type": "physical",
+      "zone": "Level 0"
+    },
+    {
+      "id": "Actuator",
+      "name": "Actuator",
+      "type": "physical",
+      "zone": "Level 0"
+    },
+    {
+      "id": "Safety_PLC",
+      "name": "Safety PLC",
+      "type": "device",
+      "zone": "Level 1"
+    }
+  ],
+  "relationships": [
+    {
+      "source": "Internet",
+      "target": "Firewall",
+      "type": "connects-to",
+      "protocol": "http",
+      "trust_level": "low"
+    },
+    {
+      "source": "Firewall",
+      "target": "DMZ",
+      "type": "connects-to",
+      "protocol": "http",
+      "trust_level": "medium"
+    },
+    {
+      "source": "DMZ",
+      "target": "VPN_Gateway",
+      "type": "connects-to",
+      "protocol": "ipsec",
+      "trust_level": "medium"
+    },
+    {
+      "source": "VPN_Gateway",
+      "target": "Corporate_Network",
+      "type": "connects-to",
+      "protocol": "ipsec",
+      "trust_level": "high"
+    },
+    {
+      "source": "Corporate_Network",
+      "target": "Engineering_Workstation",
+      "type": "connects-to",
+      "protocol": "rdp",
+      "trust_level": "high"
+    },
+    {
+      "source": "Corporate_Network",
+      "target": "Domain_Controller",
+      "type": "connects-to",
+      "protocol": "ldap",
+      "trust_level": "high"
+    },
+    {
+      "source": "Corporate_Network",
+      "target": "Patch_Management_Server",
+      "type": "connects-to",
+      "protocol": "wsman",
+      "trust_level": "high"
+    },
+    {
+      "source": "Corporate_Network",
+      "target": "SCADA_Server",
+      "type": "connects-to",
+      "protocol": "opc-ua",
+      "trust_level": "medium"
+    },
+    {
+      "source": "SCADA_Server",
+      "target": "Historian",
+      "type": "connects-to",
+      "protocol": "opc-ua",
+      "trust_level": "medium"
+    },
+    {
+      "source": "SCADA_Server",
+      "target": "HMI",
+      "type": "connects-to",
+      "protocol": "opc-ua",
+      "trust_level": "medium"
+    },
+    {
+      "source": "SCADA_Server",
+      "target": "OPC_Server",
+      "type": "connects-to",
+      "protocol": "opc-ua",
+      "trust_level": "medium"
+    },
+    {
+      "source": "OPC_Server",
+      "target": "PLC_1",
+      "type": "connects-to",
+      "protocol": "modbus",
+      "trust_level": "low"
+    },
+    {
+      "source": "OPC_Server",
+      "target": "PLC_2",
+      "type": "connects-to",
+      "protocol": "profinet",
+      "trust_level": "low"
+    },
+    {
+      "source": "PLC_1",
+      "target": "Sensor",
+      "type": "connects-to",
+      "protocol": "modbus",
+      "trust_level": "low"
+    },
+    {
+      "source": "PLC_2",
+      "target": "Actuator",
+      "type": "connects-to",
+      "protocol": "ethernet/ip",
+      "trust_level": "low"
+    },
+    {
+      "source": "PLC_1",
+      "target": "RTU",
+      "type": "connects-to",
+      "protocol": "dnp3",
+      "trust_level": "low"
+    },
+    {
+      "source": "RTU",
+      "target": "Remote_Site",
+      "type": "connects-to",
+      "protocol": "dnp3",
+      "trust_level": "low"
+    },
+    {
+      "source": "SCADA_Server",
+      "target": "Safety_PLC",
+      "type": "connects-to",
+      "protocol": "profinet",
+      "trust_level": "medium"
+    },
+    {
+      "source": "Safety_PLC",
+      "target": "Sensor",
+      "type": "connects-to",
+      "protocol": "modbus",
+      "trust_level": "low"
+    }
+  ]
+}

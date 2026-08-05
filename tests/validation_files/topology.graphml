@@ -1,0 +1,216 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d5" for="edge" attr.name="trust_level" attr.type="string" />
+  <key id="d4" for="edge" attr.name="protocol" attr.type="string" />
+  <key id="d3" for="edge" attr.name="type" attr.type="string" />
+  <key id="d2" for="node" attr.name="zone" attr.type="string" />
+  <key id="d1" for="node" attr.name="type" attr.type="string" />
+  <key id="d0" for="node" attr.name="name" attr.type="string" />
+  <graph edgedefault="directed">
+    <node id="Internet">
+      <data key="d0">Internet</data>
+      <data key="d1">device</data>
+      <data key="d2">Internet</data>
+    </node>
+    <node id="Corporate_Network">
+      <data key="d0">Corporate Network</data>
+      <data key="d1">device</data>
+      <data key="d2">Corporate</data>
+    </node>
+    <node id="DMZ">
+      <data key="d0">DMZ</data>
+      <data key="d1">device</data>
+      <data key="d2">DMZ</data>
+    </node>
+    <node id="Firewall">
+      <data key="d0">Firewall</data>
+      <data key="d1">device</data>
+      <data key="d2">DMZ</data>
+    </node>
+    <node id="VPN_Gateway">
+      <data key="d0">VPN Gateway</data>
+      <data key="d1">device</data>
+      <data key="d2">Corporate</data>
+    </node>
+    <node id="Remote_Access_Server">
+      <data key="d0">Remote Access Server</data>
+      <data key="d1">device</data>
+      <data key="d2">Corporate</data>
+    </node>
+    <node id="Engineering_Workstation">
+      <data key="d0">Engineering Workstation</data>
+      <data key="d1">device</data>
+      <data key="d2">Corporate</data>
+    </node>
+    <node id="SCADA_Server">
+      <data key="d0">SCADA Server</data>
+      <data key="d1">device</data>
+      <data key="d2">Level 3</data>
+    </node>
+    <node id="Historian">
+      <data key="d0">Historian</data>
+      <data key="d1">device</data>
+      <data key="d2">Level 3</data>
+    </node>
+    <node id="HMI">
+      <data key="d0">HMI</data>
+      <data key="d1">device</data>
+      <data key="d2">Level 2</data>
+    </node>
+    <node id="Domain_Controller">
+      <data key="d0">Domain Controller</data>
+      <data key="d1">device</data>
+      <data key="d2">Corporate</data>
+    </node>
+    <node id="Patch_Management_Server">
+      <data key="d0">Patch Management Server</data>
+      <data key="d1">device</data>
+      <data key="d2">Corporate</data>
+    </node>
+    <node id="OPC_Server">
+      <data key="d0">OPC Server</data>
+      <data key="d1">device</data>
+      <data key="d2">Level 2</data>
+    </node>
+    <node id="PLC_1">
+      <data key="d0">PLC 1</data>
+      <data key="d1">device</data>
+      <data key="d2">Level 1</data>
+    </node>
+    <node id="PLC_2">
+      <data key="d0">PLC 2</data>
+      <data key="d1">device</data>
+      <data key="d2">Level 1</data>
+    </node>
+    <node id="RTU">
+      <data key="d0">RTU</data>
+      <data key="d1">device</data>
+      <data key="d2">Level 1</data>
+    </node>
+    <node id="Remote_Site">
+      <data key="d0">Remote Site</data>
+      <data key="d1">device</data>
+      <data key="d2">Remote</data>
+    </node>
+    <node id="Level_3_Switch">
+      <data key="d0">Level 3 Switch</data>
+      <data key="d1">device</data>
+      <data key="d2">Level 3</data>
+    </node>
+    <node id="Level_2_Switch">
+      <data key="d0">Level 2 Switch</data>
+      <data key="d1">device</data>
+      <data key="d2">Level 2</data>
+    </node>
+    <node id="Sensor">
+      <data key="d0">Sensor</data>
+      <data key="d1">physical</data>
+      <data key="d2">Level 0</data>
+    </node>
+    <node id="Actuator">
+      <data key="d0">Actuator</data>
+      <data key="d1">physical</data>
+      <data key="d2">Level 0</data>
+    </node>
+    <node id="Safety_PLC">
+      <data key="d0">Safety PLC</data>
+      <data key="d1">device</data>
+      <data key="d2">Level 1</data>
+    </node>
+    <edge source="Internet" target="Firewall">
+      <data key="d3">connects-to</data>
+      <data key="d4">http</data>
+      <data key="d5">low</data>
+    </edge>
+    <edge source="Corporate_Network" target="Engineering_Workstation">
+      <data key="d3">connects-to</data>
+      <data key="d4">rdp</data>
+      <data key="d5">high</data>
+    </edge>
+    <edge source="Corporate_Network" target="Domain_Controller">
+      <data key="d3">connects-to</data>
+      <data key="d4">ldap</data>
+      <data key="d5">high</data>
+    </edge>
+    <edge source="Corporate_Network" target="Patch_Management_Server">
+      <data key="d3">connects-to</data>
+      <data key="d4">wsman</data>
+      <data key="d5">high</data>
+    </edge>
+    <edge source="Corporate_Network" target="SCADA_Server">
+      <data key="d3">connects-to</data>
+      <data key="d4">opc-ua</data>
+      <data key="d5">medium</data>
+    </edge>
+    <edge source="DMZ" target="VPN_Gateway">
+      <data key="d3">connects-to</data>
+      <data key="d4">ipsec</data>
+      <data key="d5">medium</data>
+    </edge>
+    <edge source="Firewall" target="DMZ">
+      <data key="d3">connects-to</data>
+      <data key="d4">http</data>
+      <data key="d5">medium</data>
+    </edge>
+    <edge source="VPN_Gateway" target="Corporate_Network">
+      <data key="d3">connects-to</data>
+      <data key="d4">ipsec</data>
+      <data key="d5">high</data>
+    </edge>
+    <edge source="SCADA_Server" target="Historian">
+      <data key="d3">connects-to</data>
+      <data key="d4">opc-ua</data>
+      <data key="d5">medium</data>
+    </edge>
+    <edge source="SCADA_Server" target="HMI">
+      <data key="d3">connects-to</data>
+      <data key="d4">opc-ua</data>
+      <data key="d5">medium</data>
+    </edge>
+    <edge source="SCADA_Server" target="OPC_Server">
+      <data key="d3">connects-to</data>
+      <data key="d4">opc-ua</data>
+      <data key="d5">medium</data>
+    </edge>
+    <edge source="SCADA_Server" target="Safety_PLC">
+      <data key="d3">connects-to</data>
+      <data key="d4">profinet</data>
+      <data key="d5">medium</data>
+    </edge>
+    <edge source="OPC_Server" target="PLC_1">
+      <data key="d3">connects-to</data>
+      <data key="d4">modbus</data>
+      <data key="d5">low</data>
+    </edge>
+    <edge source="OPC_Server" target="PLC_2">
+      <data key="d3">connects-to</data>
+      <data key="d4">profinet</data>
+      <data key="d5">low</data>
+    </edge>
+    <edge source="PLC_1" target="Sensor">
+      <data key="d3">connects-to</data>
+      <data key="d4">modbus</data>
+      <data key="d5">low</data>
+    </edge>
+    <edge source="PLC_1" target="RTU">
+      <data key="d3">connects-to</data>
+      <data key="d4">dnp3</data>
+      <data key="d5">low</data>
+    </edge>
+    <edge source="PLC_2" target="Actuator">
+      <data key="d3">connects-to</data>
+      <data key="d4">ethernet/ip</data>
+      <data key="d5">low</data>
+    </edge>
+    <edge source="RTU" target="Remote_Site">
+      <data key="d3">connects-to</data>
+      <data key="d4">dnp3</data>
+      <data key="d5">low</data>
+    </edge>
+    <edge source="Safety_PLC" target="Sensor">
+      <data key="d3">connects-to</data>
+      <data key="d4">modbus</data>
+      <data key="d5">low</data>
+    </edge>
+  </graph>
+</graphml>

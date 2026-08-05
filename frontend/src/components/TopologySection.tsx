@@ -10,6 +10,7 @@ export default function TopologySection({
   onDatasetChange,
   onFileUpload,
   onRunAssessment,
+  accept=".json,.yaml,.yml,.csv,.xlsx,.vsdx"
 }: {
   selectedDataset: string
   uploadedFileName: string
@@ -20,6 +21,7 @@ export default function TopologySection({
   onDatasetChange: (value: string) => void
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
   onRunAssessment: () => void
+  accept?: string
 }) {
   return (
     <section className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl shadow-slate-950/30">
@@ -51,7 +53,7 @@ export default function TopologySection({
             Upload topology
             <input
               type="file"
-              accept=".json,.yaml,.yml,.csv,application/json,text/yaml,text/csv"
+              accept={accept}
               onChange={onFileUpload}
               className="sr-only"
               aria-label="Upload a topology file"
@@ -82,7 +84,7 @@ export default function TopologySection({
           </span>
         ) : (
           <span className="text-slate-400">
-            Select a preset or upload a .json, .yaml/.yml, or .csv topology file
+            Select a preset or upload a .json, .yaml/.yml, .csv, .pdf, .vsdx, or .png topology file
             to begin.
           </span>
         )}
@@ -90,4 +92,3 @@ export default function TopologySection({
     </section>
   )
 }
-

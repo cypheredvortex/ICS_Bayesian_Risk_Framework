@@ -158,6 +158,7 @@ Report Generation → Assessment Report (PDF)
 ## Key Features
 
 - **Multi-format topology import**: JSON, YAML, CSV
+       - **Visio (.vsdx)**: modern Visio files are supported only when asset shapes include readable shape text or custom shape properties (ID/Name). If your Visio export lacks these, export the diagram to GraphML, JSON, or CSV from Visio and re-upload. Legacy `.vsd` is not supported.
 - **Three asset types**: Device, Human, Physical
 - **Configurable risk weights**: CVSS, exposure, patch, impact
 - **Evidence-based analysis**: Mark assets as compromised/safe

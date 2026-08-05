@@ -13,6 +13,7 @@ from pathlib import Path
 
 from backend.assets import load_topology
 from backend.attack_paths import compute_attack_paths
+from backend.enrichment import enrich_graph
 from backend.graph_builder import build_graph_skeleton, graph_to_dict
 from backend.probability import compute_base_probs
 from backend.cpt_generator import cpts_to_dict, parameterize
@@ -43,6 +44,9 @@ def run(
         evidence = {}
 
     assets, relationships = load_topology(topology)
+    normalized = enrich_graph(assets, relationships)
+    assets = normalized["assets"]
+    relationships = normalized["relationships"]
 
     build_start = time.perf_counter()
     model, edge_weights = build_graph_skeleton(relationships, node_ids=assets.keys())

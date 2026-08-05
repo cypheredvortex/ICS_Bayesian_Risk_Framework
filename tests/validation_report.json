@@ -1,0 +1,6881 @@
+{
+  "uploads": {
+    "json": {
+      "path": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\tests\\validation_files\\topology.json",
+      "status_code": 200,
+      "response": {
+        "message": "Topology file 'topology.json' uploaded successfully",
+        "asset_count": 22,
+        "relationship_count": 19,
+        "topology": {
+          "assets": {
+            "Internet": {
+              "id": "Internet",
+              "name": "Internet",
+              "kind": "device",
+              "zone": "Internet"
+            },
+            "Corporate_Network": {
+              "id": "Corporate_Network",
+              "name": "Corporate Network",
+              "kind": "device",
+              "zone": "Corporate"
+            },
+            "DMZ": {
+              "id": "DMZ",
+              "name": "DMZ",
+              "kind": "device",
+              "zone": "DMZ"
+            },
+            "Firewall": {
+              "id": "Firewall",
+              "name": "Firewall",
+              "kind": "device",
+              "zone": "DMZ"
+            },
+            "VPN_Gateway": {
+              "id": "VPN_Gateway",
+              "name": "VPN Gateway",
+              "kind": "device",
+              "zone": "Corporate"
+            },
+            "Remote_Access_Server": {
+              "id": "Remote_Access_Server",
+              "name": "Remote Access Server",
+              "kind": "device",
+              "zone": "Corporate"
+            },
+            "Engineering_Workstation": {
+              "id": "Engineering_Workstation",
+              "name": "Engineering Workstation",
+              "kind": "device",
+              "zone": "Corporate"
+            },
+            "SCADA_Server": {
+              "id": "SCADA_Server",
+              "name": "SCADA Server",
+              "kind": "device",
+              "zone": "Level 3"
+            },
+            "Historian": {
+              "id": "Historian",
+              "name": "Historian",
+              "kind": "device",
+              "zone": "Level 3"
+            },
+            "HMI": {
+              "id": "HMI",
+              "name": "HMI",
+              "kind": "device",
+              "zone": "Level 2"
+            },
+            "Domain_Controller": {
+              "id": "Domain_Controller",
+              "name": "Domain Controller",
+              "kind": "device",
+              "zone": "Corporate"
+            },
+            "Patch_Management_Server": {
+              "id": "Patch_Management_Server",
+              "name": "Patch Management Server",
+              "kind": "device",
+              "zone": "Corporate"
+            },
+            "OPC_Server": {
+              "id": "OPC_Server",
+              "name": "OPC Server",
+              "kind": "device",
+              "zone": "Level 2"
+            },
+            "PLC_1": {
+              "id": "PLC_1",
+              "name": "PLC 1",
+              "kind": "device",
+              "zone": "Level 1"
+            },
+            "PLC_2": {
+              "id": "PLC_2",
+              "name": "PLC 2",
+              "kind": "device",
+              "zone": "Level 1"
+            },
+            "RTU": {
+              "id": "RTU",
+              "name": "RTU",
+              "kind": "device",
+              "zone": "Level 1"
+            },
+            "Remote_Site": {
+              "id": "Remote_Site",
+              "name": "Remote Site",
+              "kind": "device",
+              "zone": "Remote"
+            },
+            "Level_3_Switch": {
+              "id": "Level_3_Switch",
+              "name": "Level 3 Switch",
+              "kind": "device",
+              "zone": "Level 3"
+            },
+            "Level_2_Switch": {
+              "id": "Level_2_Switch",
+              "name": "Level 2 Switch",
+              "kind": "device",
+              "zone": "Level 2"
+            },
+            "Sensor": {
+              "id": "Sensor",
+              "name": "Sensor",
+              "kind": "physical",
+              "zone": "Level 0"
+            },
+            "Actuator": {
+              "id": "Actuator",
+              "name": "Actuator",
+              "kind": "physical",
+              "zone": "Level 0"
+            },
+            "Safety_PLC": {
+              "id": "Safety_PLC",
+              "name": "Safety PLC",
+              "kind": "device",
+              "zone": "Level 1"
+            }
+          },
+          "relationships": [
+            [
+              "Internet",
+              "Firewall",
+              "connects-to",
+              false,
+              {
+                "protocol": "http",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "Firewall",
+              "DMZ",
+              "connects-to",
+              false,
+              {
+                "protocol": "http",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "DMZ",
+              "VPN_Gateway",
+              "connects-to",
+              false,
+              {
+                "protocol": "ipsec",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "VPN_Gateway",
+              "Corporate_Network",
+              "connects-to",
+              false,
+              {
+                "protocol": "ipsec",
+                "trust_level": "high"
+              }
+            ],
+            [
+              "Corporate_Network",
+              "Engineering_Workstation",
+              "connects-to",
+              false,
+              {
+                "protocol": "rdp",
+                "trust_level": "high"
+              }
+            ],
+            [
+              "Corporate_Network",
+              "Domain_Controller",
+              "connects-to",
+              false,
+              {
+                "protocol": "ldap",
+                "trust_level": "high"
+              }
+            ],
+            [
+              "Corporate_Network",
+              "Patch_Management_Server",
+              "connects-to",
+              false,
+              {
+                "protocol": "wsman",
+                "trust_level": "high"
+              }
+            ],
+            [
+              "Corporate_Network",
+              "SCADA_Server",
+              "connects-to",
+              false,
+              {
+                "protocol": "opc-ua",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "SCADA_Server",
+              "Historian",
+              "connects-to",
+              false,
+              {
+                "protocol": "opc-ua",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "SCADA_Server",
+              "HMI",
+              "connects-to",
+              false,
+              {
+                "protocol": "opc-ua",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "SCADA_Server",
+              "OPC_Server",
+              "connects-to",
+              false,
+              {
+                "protocol": "opc-ua",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "OPC_Server",
+              "PLC_1",
+              "connects-to",
+              false,
+              {
+                "protocol": "modbus",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "OPC_Server",
+              "PLC_2",
+              "connects-to",
+              false,
+              {
+                "protocol": "profinet",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "PLC_1",
+              "Sensor",
+              "connects-to",
+              false,
+              {
+                "protocol": "modbus",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "PLC_2",
+              "Actuator",
+              "connects-to",
+              false,
+              {
+                "protocol": "ethernet/ip",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "PLC_1",
+              "RTU",
+              "connects-to",
+              false,
+              {
+                "protocol": "dnp3",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "RTU",
+              "Remote_Site",
+              "connects-to",
+              false,
+              {
+                "protocol": "dnp3",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "SCADA_Server",
+              "Safety_PLC",
+              "connects-to",
+              false,
+              {
+                "protocol": "profinet",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "Safety_PLC",
+              "Sensor",
+              "connects-to",
+              false,
+              {
+                "protocol": "modbus",
+                "trust_level": "low"
+              }
+            ]
+          ]
+        }
+      }
+    },
+    "csv": {
+      "path": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\tests\\validation_files\\topology.csv",
+      "status_code": 400,
+      "response": {
+        "detail": "topology.csv: topology contains assets but no relationships.",
+        "error_code": "HTTP_400",
+        "request_id": "2156d591-479a-4067-975b-701ab6b3c3dd"
+      }
+    },
+    "xlsx": {
+      "path": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\tests\\validation_files\\topology.xlsx",
+      "status_code": 400,
+      "response": {
+        "detail": "topology.xlsx: topology contains assets but no relationships.",
+        "error_code": "HTTP_400",
+        "request_id": "146ff629-e045-4d60-8d11-463d06b7b57c"
+      }
+    },
+    "graphml": {
+      "path": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\tests\\validation_files\\topology.graphml",
+      "status_code": 200,
+      "response": {
+        "message": "Topology file 'topology.graphml' uploaded successfully",
+        "asset_count": 22,
+        "relationship_count": 19,
+        "topology": {
+          "assets": {
+            "Internet": {
+              "id": "Internet",
+              "name": "Internet",
+              "kind": "device",
+              "zone": "Internet"
+            },
+            "Corporate_Network": {
+              "id": "Corporate_Network",
+              "name": "Corporate Network",
+              "kind": "device",
+              "zone": "Corporate"
+            },
+            "DMZ": {
+              "id": "DMZ",
+              "name": "DMZ",
+              "kind": "device",
+              "zone": "DMZ"
+            },
+            "Firewall": {
+              "id": "Firewall",
+              "name": "Firewall",
+              "kind": "device",
+              "zone": "DMZ"
+            },
+            "VPN_Gateway": {
+              "id": "VPN_Gateway",
+              "name": "VPN Gateway",
+              "kind": "device",
+              "zone": "Corporate"
+            },
+            "Remote_Access_Server": {
+              "id": "Remote_Access_Server",
+              "name": "Remote Access Server",
+              "kind": "device",
+              "zone": "Corporate"
+            },
+            "Engineering_Workstation": {
+              "id": "Engineering_Workstation",
+              "name": "Engineering Workstation",
+              "kind": "device",
+              "zone": "Corporate"
+            },
+            "SCADA_Server": {
+              "id": "SCADA_Server",
+              "name": "SCADA Server",
+              "kind": "device",
+              "zone": "Level 3"
+            },
+            "Historian": {
+              "id": "Historian",
+              "name": "Historian",
+              "kind": "device",
+              "zone": "Level 3"
+            },
+            "HMI": {
+              "id": "HMI",
+              "name": "HMI",
+              "kind": "device",
+              "zone": "Level 2"
+            },
+            "Domain_Controller": {
+              "id": "Domain_Controller",
+              "name": "Domain Controller",
+              "kind": "device",
+              "zone": "Corporate"
+            },
+            "Patch_Management_Server": {
+              "id": "Patch_Management_Server",
+              "name": "Patch Management Server",
+              "kind": "device",
+              "zone": "Corporate"
+            },
+            "OPC_Server": {
+              "id": "OPC_Server",
+              "name": "OPC Server",
+              "kind": "device",
+              "zone": "Level 2"
+            },
+            "PLC_1": {
+              "id": "PLC_1",
+              "name": "PLC 1",
+              "kind": "device",
+              "zone": "Level 1"
+            },
+            "PLC_2": {
+              "id": "PLC_2",
+              "name": "PLC 2",
+              "kind": "device",
+              "zone": "Level 1"
+            },
+            "RTU": {
+              "id": "RTU",
+              "name": "RTU",
+              "kind": "device",
+              "zone": "Level 1"
+            },
+            "Remote_Site": {
+              "id": "Remote_Site",
+              "name": "Remote Site",
+              "kind": "device",
+              "zone": "Remote"
+            },
+            "Level_3_Switch": {
+              "id": "Level_3_Switch",
+              "name": "Level 3 Switch",
+              "kind": "device",
+              "zone": "Level 3"
+            },
+            "Level_2_Switch": {
+              "id": "Level_2_Switch",
+              "name": "Level 2 Switch",
+              "kind": "device",
+              "zone": "Level 2"
+            },
+            "Sensor": {
+              "id": "Sensor",
+              "name": "Sensor",
+              "kind": "physical",
+              "zone": "Level 0"
+            },
+            "Actuator": {
+              "id": "Actuator",
+              "name": "Actuator",
+              "kind": "physical",
+              "zone": "Level 0"
+            },
+            "Safety_PLC": {
+              "id": "Safety_PLC",
+              "name": "Safety PLC",
+              "kind": "device",
+              "zone": "Level 1"
+            }
+          },
+          "relationships": [
+            [
+              "Internet",
+              "Firewall",
+              "connects-to",
+              false,
+              {
+                "protocol": "http",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "Corporate_Network",
+              "Engineering_Workstation",
+              "connects-to",
+              false,
+              {
+                "protocol": "rdp",
+                "trust_level": "high"
+              }
+            ],
+            [
+              "Corporate_Network",
+              "Domain_Controller",
+              "connects-to",
+              false,
+              {
+                "protocol": "ldap",
+                "trust_level": "high"
+              }
+            ],
+            [
+              "Corporate_Network",
+              "Patch_Management_Server",
+              "connects-to",
+              false,
+              {
+                "protocol": "wsman",
+                "trust_level": "high"
+              }
+            ],
+            [
+              "Corporate_Network",
+              "SCADA_Server",
+              "connects-to",
+              false,
+              {
+                "protocol": "opc-ua",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "DMZ",
+              "VPN_Gateway",
+              "connects-to",
+              false,
+              {
+                "protocol": "ipsec",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "Firewall",
+              "DMZ",
+              "connects-to",
+              false,
+              {
+                "protocol": "http",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "VPN_Gateway",
+              "Corporate_Network",
+              "connects-to",
+              false,
+              {
+                "protocol": "ipsec",
+                "trust_level": "high"
+              }
+            ],
+            [
+              "SCADA_Server",
+              "Historian",
+              "connects-to",
+              false,
+              {
+                "protocol": "opc-ua",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "SCADA_Server",
+              "HMI",
+              "connects-to",
+              false,
+              {
+                "protocol": "opc-ua",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "SCADA_Server",
+              "OPC_Server",
+              "connects-to",
+              false,
+              {
+                "protocol": "opc-ua",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "SCADA_Server",
+              "Safety_PLC",
+              "connects-to",
+              false,
+              {
+                "protocol": "profinet",
+                "trust_level": "medium"
+              }
+            ],
+            [
+              "OPC_Server",
+              "PLC_1",
+              "connects-to",
+              false,
+              {
+                "protocol": "modbus",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "OPC_Server",
+              "PLC_2",
+              "connects-to",
+              false,
+              {
+                "protocol": "profinet",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "PLC_1",
+              "Sensor",
+              "connects-to",
+              false,
+              {
+                "protocol": "modbus",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "PLC_1",
+              "RTU",
+              "connects-to",
+              false,
+              {
+                "protocol": "dnp3",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "PLC_2",
+              "Actuator",
+              "connects-to",
+              false,
+              {
+                "protocol": "ethernet/ip",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "RTU",
+              "Remote_Site",
+              "connects-to",
+              false,
+              {
+                "protocol": "dnp3",
+                "trust_level": "low"
+              }
+            ],
+            [
+              "Safety_PLC",
+              "Sensor",
+              "connects-to",
+              false,
+              {
+                "protocol": "modbus",
+                "trust_level": "low"
+              }
+            ]
+          ]
+        }
+      }
+    },
+    "xml": {
+      "path": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\tests\\validation_files\\topology.xml",
+      "status_code": 400,
+      "response": {
+        "detail": "Could not parse any assets from the AutomationML/XML document.",
+        "error_code": "HTTP_400",
+        "request_id": "c77f3be6-5e80-4bd5-8225-65dc8744e0ae"
+      }
+    },
+    "aml": {
+      "path": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\tests\\validation_files\\topology.aml",
+      "status_code": 200,
+      "response": {
+        "message": "Topology file 'topology.aml' uploaded successfully",
+        "asset_count": 22,
+        "relationship_count": 19,
+        "topology": {
+          "assets": {
+            "Internet": {
+              "id": "Internet",
+              "name": "Internet",
+              "kind": "device",
+              "zone": "Internet"
+            },
+            "Corporate_Network": {
+              "id": "Corporate_Network",
+              "name": "Corporate_Network",
+              "kind": "device",
+              "zone": "Corporate"
+            },
+            "DMZ": {
+              "id": "DMZ",
+              "name": "DMZ",
+              "kind": "device",
+              "zone": "DMZ"
+            },
+            "Firewall": {
+              "id": "Firewall",
+              "name": "Firewall",
+              "kind": "device"
+            },
+            "VPN_Gateway": {
+              "id": "VPN_Gateway",
+              "name": "VPN_Gateway",
+              "kind": "device"
+            },
+            "Remote_Access_Server": {
+              "id": "Remote_Access_Server",
+              "name": "Remote_Access_Server",
+              "kind": "device"
+            },
+            "Engineering_Workstation": {
+              "id": "Engineering_Workstation",
+              "name": "Engineering_Workstation",
+              "kind": "human",
+              "role": "guest"
+            },
+            "SCADA_Server": {
+              "id": "SCADA_Server",
+              "name": "SCADA_Server",
+              "kind": "device"
+            },
+            "Historian": {
+              "id": "Historian",
+              "name": "Historian",
+              "kind": "device"
+            },
+            "HMI": {
+              "id": "HMI",
+              "name": "HMI",
+              "kind": "device"
+            },
+            "Domain_Controller": {
+              "id": "Domain_Controller",
+              "name": "Domain_Controller",
+              "kind": "device",
+              "zone": "Control"
+            },
+            "Patch_Management_Server": {
+              "id": "Patch_Management_Server",
+              "name": "Patch_Management_Server",
+              "kind": "device"
+            },
+            "OPC_Server": {
+              "id": "OPC_Server",
+              "name": "OPC_Server",
+              "kind": "device"
+            },
+            "PLC_1": {
+              "id": "PLC_1",
+              "name": "PLC_1",
+              "kind": "device"
+            },
+            "PLC_2": {
+              "id": "PLC_2",
+              "name": "PLC_2",
+              "kind": "device"
+            },
+            "RTU": {
+              "id": "RTU",
+              "name": "RTU",
+              "kind": "device"
+            },
+            "Remote_Site": {
+              "id": "Remote_Site",
+              "name": "Remote_Site",
+              "kind": "device"
+            },
+            "Level_3_Switch": {
+              "id": "Level_3_Switch",
+              "name": "Level_3_Switch",
+              "kind": "device"
+            },
+            "Level_2_Switch": {
+              "id": "Level_2_Switch",
+              "name": "Level_2_Switch",
+              "kind": "device"
+            },
+            "Sensor": {
+              "id": "Sensor",
+              "name": "Sensor",
+              "kind": "physical"
+            },
+            "Actuator": {
+              "id": "Actuator",
+              "name": "Actuator",
+              "kind": "physical"
+            },
+            "Safety_PLC": {
+              "id": "Safety_PLC",
+              "name": "Safety_PLC",
+              "kind": "device"
+            }
+          },
+          "relationships": [
+            [
+              "Internet",
+              "Firewall",
+              "connects-to",
+              false,
+              {
+                "protocol": "http"
+              }
+            ],
+            [
+              "Firewall",
+              "DMZ",
+              "connects-to",
+              false,
+              {
+                "protocol": "http"
+              }
+            ],
+            [
+              "DMZ",
+              "VPN_Gateway",
+              "connects-to",
+              false,
+              {
+                "protocol": "ipsec"
+              }
+            ],
+            [
+              "VPN_Gateway",
+              "Corporate_Network",
+              "connects-to",
+              false,
+              {
+                "protocol": "ipsec"
+              }
+            ],
+            [
+              "Corporate_Network",
+              "Engineering_Workstation",
+              "connects-to",
+              false,
+              {
+                "protocol": "rdp"
+              }
+            ],
+            [
+              "Corporate_Network",
+              "Domain_Controller",
+              "connects-to",
+              false,
+              {
+                "protocol": "ldap"
+              }
+            ],
+            [
+              "Corporate_Network",
+              "Patch_Management_Server",
+              "connects-to",
+              false,
+              {
+                "protocol": "wsman"
+              }
+            ],
+            [
+              "Corporate_Network",
+              "SCADA_Server",
+              "connects-to",
+              false,
+              {
+                "protocol": "opc-ua"
+              }
+            ],
+            [
+              "SCADA_Server",
+              "Historian",
+              "connects-to",
+              false,
+              {
+                "protocol": "opc-ua"
+              }
+            ],
+            [
+              "SCADA_Server",
+              "HMI",
+              "connects-to",
+              false,
+              {
+                "protocol": "opc-ua"
+              }
+            ],
+            [
+              "SCADA_Server",
+              "OPC_Server",
+              "connects-to",
+              false,
+              {
+                "protocol": "opc-ua"
+              }
+            ],
+            [
+              "OPC_Server",
+              "PLC_1",
+              "connects-to",
+              false,
+              {
+                "protocol": "modbus"
+              }
+            ],
+            [
+              "OPC_Server",
+              "PLC_2",
+              "connects-to",
+              false,
+              {
+                "protocol": "profinet"
+              }
+            ],
+            [
+              "PLC_1",
+              "Sensor",
+              "connects-to",
+              false,
+              {
+                "protocol": "modbus"
+              }
+            ],
+            [
+              "PLC_2",
+              "Actuator",
+              "connects-to",
+              false,
+              {
+                "protocol": "ethernet/ip"
+              }
+            ],
+            [
+              "PLC_1",
+              "RTU",
+              "connects-to",
+              false,
+              {
+                "protocol": "dnp3"
+              }
+            ],
+            [
+              "RTU",
+              "Remote_Site",
+              "connects-to",
+              false,
+              {
+                "protocol": "dnp3"
+              }
+            ],
+            [
+              "SCADA_Server",
+              "Safety_PLC",
+              "connects-to",
+              false,
+              {
+                "protocol": "profinet"
+              }
+            ],
+            [
+              "Safety_PLC",
+              "Sensor",
+              "connects-to",
+              false,
+              {
+                "protocol": "modbus"
+              }
+            ]
+          ]
+        }
+      }
+    },
+    "vsdx": {
+      "path": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\tests\\validation_files\\topology.vsdx",
+      "status_code": 400,
+      "response": {
+        "detail": "No asset shapes found in .vsdx/.vsd. Add shape text or custom properties for each asset.",
+        "error_code": "HTTP_400",
+        "request_id": "4bf8e8f7-caca-4302-a7fa-ff333a4f1648"
+      }
+    },
+    "vsd": {
+      "path": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\tests\\validation_files\\topology.vsd",
+      "status_code": 500,
+      "response": {
+        "detail": "An internal error occurred. Please try again later.",
+        "error_code": "INTERNAL_ERROR",
+        "request_id": "b0a05b35-1f2e-4b1d-bffb-6461c168c344"
+      }
+    }
+  },
+  "analyses": {
+    "json": {
+      "status_code": 200,
+      "response": {
+        "graph": {
+          "nodes": [
+            {
+              "id": "Internet",
+              "kind": "device"
+            },
+            {
+              "id": "Firewall",
+              "kind": "device"
+            },
+            {
+              "id": "DMZ",
+              "kind": "device"
+            },
+            {
+              "id": "VPN_Gateway",
+              "kind": "device"
+            },
+            {
+              "id": "Corporate_Network",
+              "kind": "device"
+            },
+            {
+              "id": "Engineering_Workstation",
+              "kind": "device"
+            },
+            {
+              "id": "Domain_Controller",
+              "kind": "device"
+            },
+            {
+              "id": "Patch_Management_Server",
+              "kind": "device"
+            },
+            {
+              "id": "SCADA_Server",
+              "kind": "device"
+            },
+            {
+              "id": "Historian",
+              "kind": "device"
+            },
+            {
+              "id": "HMI",
+              "kind": "device"
+            },
+            {
+              "id": "OPC_Server",
+              "kind": "device"
+            },
+            {
+              "id": "PLC_1",
+              "kind": "device"
+            },
+            {
+              "id": "PLC_2",
+              "kind": "device"
+            },
+            {
+              "id": "Sensor",
+              "kind": "physical"
+            },
+            {
+              "id": "Actuator",
+              "kind": "physical"
+            },
+            {
+              "id": "RTU",
+              "kind": "device"
+            },
+            {
+              "id": "Remote_Site",
+              "kind": "device"
+            },
+            {
+              "id": "Safety_PLC",
+              "kind": "device"
+            },
+            {
+              "id": "Remote_Access_Server",
+              "kind": "device"
+            },
+            {
+              "id": "Level_3_Switch",
+              "kind": "device"
+            },
+            {
+              "id": "Level_2_Switch",
+              "kind": "device"
+            }
+          ],
+          "edges": [
+            {
+              "source": "Internet",
+              "target": "Firewall",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.99,
+              "protocol": "http",
+              "trust": "low"
+            },
+            {
+              "source": "Firewall",
+              "target": "DMZ",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.8625,
+              "protocol": "http",
+              "trust": "medium"
+            },
+            {
+              "source": "DMZ",
+              "target": "VPN_Gateway",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.69,
+              "protocol": "ipsec",
+              "trust": "medium"
+            },
+            {
+              "source": "VPN_Gateway",
+              "target": "Corporate_Network",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.483,
+              "protocol": "ipsec",
+              "trust": "high"
+            },
+            {
+              "source": "Corporate_Network",
+              "target": "Engineering_Workstation",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.483,
+              "protocol": "rdp",
+              "trust": "high"
+            },
+            {
+              "source": "Corporate_Network",
+              "target": "Domain_Controller",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.483,
+              "protocol": "ldap",
+              "trust": "high"
+            },
+            {
+              "source": "Corporate_Network",
+              "target": "Patch_Management_Server",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.483,
+              "protocol": "wsman",
+              "trust": "high"
+            },
+            {
+              "source": "Corporate_Network",
+              "target": "SCADA_Server",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.6555,
+              "protocol": "opc-ua",
+              "trust": "medium"
+            },
+            {
+              "source": "SCADA_Server",
+              "target": "Historian",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.6555,
+              "protocol": "opc-ua",
+              "trust": "medium"
+            },
+            {
+              "source": "SCADA_Server",
+              "target": "HMI",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.6555,
+              "protocol": "opc-ua",
+              "trust": "medium"
+            },
+            {
+              "source": "SCADA_Server",
+              "target": "OPC_Server",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.6555,
+              "protocol": "opc-ua",
+              "trust": "medium"
+            },
+            {
+              "source": "OPC_Server",
+              "target": "PLC_1",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.99,
+              "protocol": "modbus",
+              "trust": "low"
+            },
+            {
+              "source": "OPC_Server",
+              "target": "PLC_2",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.978075,
+              "protocol": "profinet",
+              "trust": "low"
+            },
+            {
+              "source": "PLC_1",
+              "target": "Sensor",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.99,
+              "protocol": "modbus",
+              "trust": "low"
+            },
+            {
+              "source": "PLC_2",
+              "target": "Actuator",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.978075,
+              "protocol": "ethernet/ip",
+              "trust": "low"
+            },
+            {
+              "source": "PLC_1",
+              "target": "RTU",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.99,
+              "protocol": "dnp3",
+              "trust": "low"
+            },
+            {
+              "source": "RTU",
+              "target": "Remote_Site",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.99,
+              "protocol": "dnp3",
+              "trust": "low"
+            },
+            {
+              "source": "SCADA_Server",
+              "target": "Safety_PLC",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.7245,
+              "protocol": "profinet",
+              "trust": "medium"
+            },
+            {
+              "source": "Safety_PLC",
+              "target": "Sensor",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.99,
+              "protocol": "modbus",
+              "trust": "low"
+            }
+          ]
+        },
+        "base_probabilities": {
+          "Internet": 0.78,
+          "Corporate_Network": 0.78,
+          "DMZ": 0.78,
+          "Firewall": 0.78,
+          "VPN_Gateway": 0.78,
+          "Remote_Access_Server": 0.78,
+          "Engineering_Workstation": 0.78,
+          "SCADA_Server": 0.78,
+          "Historian": 0.78,
+          "HMI": 0.78,
+          "Domain_Controller": 0.78,
+          "Patch_Management_Server": 0.78,
+          "OPC_Server": 0.78,
+          "PLC_1": 0.78,
+          "PLC_2": 0.78,
+          "RTU": 0.78,
+          "Remote_Site": 0.78,
+          "Level_3_Switch": 0.78,
+          "Level_2_Switch": 0.78,
+          "Sensor": 0.01,
+          "Actuator": 0.01,
+          "Safety_PLC": 0.78
+        },
+        "posteriors": {
+          "Internet": 0.78,
+          "Firewall": 0.9498840000000001,
+          "DMZ": 0.960240489,
+          "VPN_Gateway": 0.9257645062302,
+          "Corporate_Network": 0.8783717364320212,
+          "Engineering_Workstation": 0.8733357807132666,
+          "Domain_Controller": 0.8733357807132666,
+          "Patch_Management_Server": 0.8733357807132666,
+          "SCADA_Server": 0.9066699881108617,
+          "Historian": 0.9107508789854674,
+          "HMI": 0.9107508789854674,
+          "OPC_Server": 0.9107508789854674,
+          "PLC_1": 0.9783615414430348,
+          "PLC_2": 0.9759721865120164,
+          "Sensor": 0.9969531540784156,
+          "Actuator": 0.955028256359513,
+          "RTU": 0.993087143726293,
+          "Remote_Site": 0.9962943799035866,
+          "Safety_PLC": 0.9245141294049902,
+          "Remote_Access_Server": 0.78,
+          "Level_3_Switch": 0.78,
+          "Level_2_Switch": 0.78
+        },
+        "cpts": {
+          "Internet": {
+            "parents": [],
+            "rows": [
+              {
+                "parent_state": {},
+                "p_compromised": 0.78
+              }
+            ]
+          },
+          "Firewall": {
+            "parents": [
+              "Internet"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Internet": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Internet": 1
+                },
+                "p_compromised": 0.9978
+              }
+            ]
+          },
+          "DMZ": {
+            "parents": [
+              "Firewall"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Firewall": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Firewall": 1
+                },
+                "p_compromised": 0.96975
+              }
+            ]
+          },
+          "VPN_Gateway": {
+            "parents": [
+              "DMZ"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "DMZ": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "DMZ": 1
+                },
+                "p_compromised": 0.9318
+              }
+            ]
+          },
+          "Corporate_Network": {
+            "parents": [
+              "VPN_Gateway"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "VPN_Gateway": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "VPN_Gateway": 1
+                },
+                "p_compromised": 0.88626
+              }
+            ]
+          },
+          "Engineering_Workstation": {
+            "parents": [
+              "Corporate_Network"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Corporate_Network": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Corporate_Network": 1
+                },
+                "p_compromised": 0.88626
+              }
+            ]
+          },
+          "Domain_Controller": {
+            "parents": [
+              "Corporate_Network"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Corporate_Network": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Corporate_Network": 1
+                },
+                "p_compromised": 0.88626
+              }
+            ]
+          },
+          "Patch_Management_Server": {
+            "parents": [
+              "Corporate_Network"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Corporate_Network": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Corporate_Network": 1
+                },
+                "p_compromised": 0.88626
+              }
+            ]
+          },
+          "SCADA_Server": {
+            "parents": [
+              "Corporate_Network"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Corporate_Network": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Corporate_Network": 1
+                },
+                "p_compromised": 0.92421
+              }
+            ]
+          },
+          "Historian": {
+            "parents": [
+              "SCADA_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "SCADA_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "SCADA_Server": 1
+                },
+                "p_compromised": 0.92421
+              }
+            ]
+          },
+          "HMI": {
+            "parents": [
+              "SCADA_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "SCADA_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "SCADA_Server": 1
+                },
+                "p_compromised": 0.92421
+              }
+            ]
+          },
+          "OPC_Server": {
+            "parents": [
+              "SCADA_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "SCADA_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "SCADA_Server": 1
+                },
+                "p_compromised": 0.92421
+              }
+            ]
+          },
+          "PLC_1": {
+            "parents": [
+              "OPC_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "OPC_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "OPC_Server": 1
+                },
+                "p_compromised": 0.9978
+              }
+            ]
+          },
+          "PLC_2": {
+            "parents": [
+              "OPC_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "OPC_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "OPC_Server": 1
+                },
+                "p_compromised": 0.995177
+              }
+            ]
+          },
+          "Sensor": {
+            "parents": [
+              "PLC_1",
+              "Safety_PLC"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "PLC_1": 0,
+                  "Safety_PLC": 0
+                },
+                "p_compromised": 0.01
+              },
+              {
+                "parent_state": {
+                  "PLC_1": 0,
+                  "Safety_PLC": 1
+                },
+                "p_compromised": 0.9901
+              },
+              {
+                "parent_state": {
+                  "PLC_1": 1,
+                  "Safety_PLC": 0
+                },
+                "p_compromised": 0.9901
+              },
+              {
+                "parent_state": {
+                  "PLC_1": 1,
+                  "Safety_PLC": 1
+                },
+                "p_compromised": 0.999901
+              }
+            ]
+          },
+          "Actuator": {
+            "parents": [
+              "PLC_2"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "PLC_2": 0
+                },
+                "p_compromised": 0.01
+              },
+              {
+                "parent_state": {
+                  "PLC_2": 1
+                },
+                "p_compromised": 0.978294
+              }
+            ]
+          },
+          "RTU": {
+            "parents": [
+              "PLC_1"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "PLC_1": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "PLC_1": 1
+                },
+                "p_compromised": 0.9978
+              }
+            ]
+          },
+          "Remote_Site": {
+            "parents": [
+              "RTU"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "RTU": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "RTU": 1
+                },
+                "p_compromised": 0.9978
+              }
+            ]
+          },
+          "Safety_PLC": {
+            "parents": [
+              "SCADA_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "SCADA_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "SCADA_Server": 1
+                },
+                "p_compromised": 0.93939
+              }
+            ]
+          },
+          "Remote_Access_Server": {
+            "parents": [],
+            "rows": [
+              {
+                "parent_state": {},
+                "p_compromised": 0.78
+              }
+            ]
+          },
+          "Level_3_Switch": {
+            "parents": [],
+            "rows": [
+              {
+                "parent_state": {},
+                "p_compromised": 0.78
+              }
+            ]
+          },
+          "Level_2_Switch": {
+            "parents": [],
+            "rows": [
+              {
+                "parent_state": {},
+                "p_compromised": 0.78
+              }
+            ]
+          }
+        },
+        "risk_scores": [
+          {
+            "asset": "Remote_Site",
+            "P(compromised|evidence)": 0.996,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.996
+          },
+          {
+            "asset": "RTU",
+            "P(compromised|evidence)": 0.993,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.993
+          },
+          {
+            "asset": "PLC_1",
+            "P(compromised|evidence)": 0.978,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.978
+          },
+          {
+            "asset": "PLC_2",
+            "P(compromised|evidence)": 0.976,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.976
+          },
+          {
+            "asset": "DMZ",
+            "P(compromised|evidence)": 0.96,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.96
+          },
+          {
+            "asset": "Firewall",
+            "P(compromised|evidence)": 0.95,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.95
+          },
+          {
+            "asset": "VPN_Gateway",
+            "P(compromised|evidence)": 0.926,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.926
+          },
+          {
+            "asset": "Safety_PLC",
+            "P(compromised|evidence)": 0.925,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.925
+          },
+          {
+            "asset": "Historian",
+            "P(compromised|evidence)": 0.911,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.911
+          },
+          {
+            "asset": "HMI",
+            "P(compromised|evidence)": 0.911,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.911
+          },
+          {
+            "asset": "OPC_Server",
+            "P(compromised|evidence)": 0.911,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.911
+          },
+          {
+            "asset": "SCADA_Server",
+            "P(compromised|evidence)": 0.907,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.907
+          },
+          {
+            "asset": "Corporate_Network",
+            "P(compromised|evidence)": 0.878,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.878
+          },
+          {
+            "asset": "Engineering_Workstation",
+            "P(compromised|evidence)": 0.873,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.873
+          },
+          {
+            "asset": "Patch_Management_Server",
+            "P(compromised|evidence)": 0.873,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.873
+          },
+          {
+            "asset": "Domain_Controller",
+            "P(compromised|evidence)": 0.873,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.873
+          },
+          {
+            "asset": "Internet",
+            "P(compromised|evidence)": 0.78,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.78
+          },
+          {
+            "asset": "Remote_Access_Server",
+            "P(compromised|evidence)": 0.78,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.78
+          },
+          {
+            "asset": "Level_3_Switch",
+            "P(compromised|evidence)": 0.78,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.78
+          },
+          {
+            "asset": "Level_2_Switch",
+            "P(compromised|evidence)": 0.78,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.78
+          },
+          {
+            "asset": "Sensor",
+            "P(compromised|evidence)": 0.997,
+            "severity": 0.1,
+            "scope_mult": 1.0,
+            "impact": 0.1,
+            "risk": 0.1
+          },
+          {
+            "asset": "Actuator",
+            "P(compromised|evidence)": 0.955,
+            "severity": 0.1,
+            "scope_mult": 1.0,
+            "impact": 0.1,
+            "risk": 0.096
+          }
+        ],
+        "attack_paths": [
+          {
+            "path": [
+              "Internet",
+              "Firewall"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.9405,
+            "propagation_score": 0.99,
+            "target": "Firewall",
+            "target_risk": 0.95,
+            "source": "Internet",
+            "hops": 1
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.887091,
+            "propagation_score": 0.924054,
+            "target": "DMZ",
+            "target_risk": 0.96,
+            "source": "Internet",
+            "hops": 2
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_1",
+              "RTU",
+              "Remote_Site"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_1",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "PLC_1",
+                "target": "RTU",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "RTU",
+                "target": "Remote_Site",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.785954,
+            "propagation_score": 0.789111,
+            "target": "Remote_Site",
+            "target_risk": 0.996,
+            "source": "Internet",
+            "hops": 9
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.776293,
+            "propagation_score": 0.838329,
+            "target": "VPN_Gateway",
+            "target_risk": 0.926,
+            "source": "Internet",
+            "hops": 3
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_1",
+              "RTU"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_1",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "PLC_1",
+                "target": "RTU",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.761684,
+            "propagation_score": 0.767054,
+            "target": "RTU",
+            "target_risk": 0.993,
+            "source": "Internet",
+            "hops": 8
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_1"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_1",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.723327,
+            "propagation_score": 0.739598,
+            "target": "PLC_1",
+            "target_risk": 0.978,
+            "source": "Internet",
+            "hops": 7
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_2"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_2",
+                "weight": 0.978075,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.720599,
+            "propagation_score": 0.738319,
+            "target": "PLC_2",
+            "target_risk": 0.976,
+            "source": "Internet",
+            "hops": 7
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "Safety_PLC"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "Safety_PLC",
+                "weight": 0.7245,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.662636,
+            "propagation_score": 0.716364,
+            "target": "Safety_PLC",
+            "target_risk": 0.925,
+            "source": "Internet",
+            "hops": 6
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.648276,
+            "propagation_score": 0.714747,
+            "target": "SCADA_Server",
+            "target_risk": 0.907,
+            "source": "Internet",
+            "hops": 5
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "Historian"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "Historian",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.641812,
+            "propagation_score": 0.704513,
+            "target": "Historian",
+            "target_risk": 0.911,
+            "source": "Internet",
+            "hops": 6
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "HMI"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "HMI",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.641812,
+            "propagation_score": 0.704513,
+            "target": "HMI",
+            "target_risk": 0.911,
+            "source": "Internet",
+            "hops": 6
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.641812,
+            "propagation_score": 0.704513,
+            "target": "OPC_Server",
+            "target_risk": 0.911,
+            "source": "Internet",
+            "hops": 6
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.641272,
+            "propagation_score": 0.730378,
+            "target": "Corporate_Network",
+            "target_risk": 0.878,
+            "source": "Internet",
+            "hops": 4
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "Engineering_Workstation"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "Engineering_Workstation",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.587005,
+            "propagation_score": 0.6724,
+            "target": "Engineering_Workstation",
+            "target_risk": 0.873,
+            "source": "Internet",
+            "hops": 5
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "Domain_Controller"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "Domain_Controller",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.587005,
+            "propagation_score": 0.6724,
+            "target": "Domain_Controller",
+            "target_risk": 0.873,
+            "source": "Internet",
+            "hops": 5
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "Patch_Management_Server"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "Patch_Management_Server",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.587005,
+            "propagation_score": 0.6724,
+            "target": "Patch_Management_Server",
+            "target_risk": 0.873,
+            "source": "Internet",
+            "hops": 5
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_1",
+              "Sensor"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_1",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "PLC_1",
+                "target": "Sensor",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.076705,
+            "propagation_score": 0.767054,
+            "target": "Sensor",
+            "target_risk": 0.1,
+            "source": "Internet",
+            "hops": 8
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "Safety_PLC",
+              "Sensor"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "Safety_PLC",
+                "weight": 0.7245,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Safety_PLC",
+                "target": "Sensor",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.075025,
+            "propagation_score": 0.750249,
+            "target": "Sensor",
+            "target_risk": 0.1,
+            "source": "Internet",
+            "hops": 7
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_2",
+              "Actuator"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_2",
+                "weight": 0.978075,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "PLC_2",
+                "target": "Actuator",
+                "weight": 0.978075,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.073414,
+            "propagation_score": 0.764733,
+            "target": "Actuator",
+            "target_risk": 0.096,
+            "source": "Internet",
+            "hops": 8
+          }
+        ],
+        "summary": {
+          "topology": "inline-topology",
+          "asset_count": 22,
+          "relationship_count": 19,
+          "evidence_used": {},
+          "overall_risk": 0.9806,
+          "overall_risk_basis": "mean of top 5 highest-risk assets",
+          "risk_level": "high",
+          "highest_risk_assets": [
+            "Remote_Site",
+            "RTU",
+            "PLC_1",
+            "PLC_2",
+            "DMZ"
+          ],
+          "critical_attack_path": {
+            "path": [
+              "Internet",
+              "Firewall"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.9405,
+            "propagation_score": 0.99,
+            "target": "Firewall",
+            "target_risk": 0.95,
+            "source": "Internet",
+            "hops": 1
+          }
+        },
+        "evidence_used": {},
+        "timings": {
+          "build_time_seconds": 0.06868,
+          "inference_time_seconds": 0.013558,
+          "total_time_seconds": 0.082238
+        },
+        "artifacts": {
+          "graph": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\graph.json",
+          "graph_image": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\graph.png",
+          "cpts": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\cpts.json",
+          "posteriors": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\posteriors.json",
+          "risk_table": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\risk_table.csv",
+          "metrics": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\metrics.json",
+          "summary": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\summary.txt"
+        }
+      }
+    },
+    "graphml": {
+      "status_code": 200,
+      "response": {
+        "graph": {
+          "nodes": [
+            {
+              "id": "Internet",
+              "kind": "device"
+            },
+            {
+              "id": "Firewall",
+              "kind": "device"
+            },
+            {
+              "id": "Corporate_Network",
+              "kind": "device"
+            },
+            {
+              "id": "Engineering_Workstation",
+              "kind": "device"
+            },
+            {
+              "id": "Domain_Controller",
+              "kind": "device"
+            },
+            {
+              "id": "Patch_Management_Server",
+              "kind": "device"
+            },
+            {
+              "id": "SCADA_Server",
+              "kind": "device"
+            },
+            {
+              "id": "DMZ",
+              "kind": "device"
+            },
+            {
+              "id": "VPN_Gateway",
+              "kind": "device"
+            },
+            {
+              "id": "Historian",
+              "kind": "device"
+            },
+            {
+              "id": "HMI",
+              "kind": "device"
+            },
+            {
+              "id": "OPC_Server",
+              "kind": "device"
+            },
+            {
+              "id": "Safety_PLC",
+              "kind": "device"
+            },
+            {
+              "id": "PLC_1",
+              "kind": "device"
+            },
+            {
+              "id": "PLC_2",
+              "kind": "device"
+            },
+            {
+              "id": "Sensor",
+              "kind": "physical"
+            },
+            {
+              "id": "RTU",
+              "kind": "device"
+            },
+            {
+              "id": "Actuator",
+              "kind": "physical"
+            },
+            {
+              "id": "Remote_Site",
+              "kind": "device"
+            },
+            {
+              "id": "Remote_Access_Server",
+              "kind": "device"
+            },
+            {
+              "id": "Level_3_Switch",
+              "kind": "device"
+            },
+            {
+              "id": "Level_2_Switch",
+              "kind": "device"
+            }
+          ],
+          "edges": [
+            {
+              "source": "Internet",
+              "target": "Firewall",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.99,
+              "protocol": "http",
+              "trust": "low"
+            },
+            {
+              "source": "Corporate_Network",
+              "target": "Engineering_Workstation",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.483,
+              "protocol": "rdp",
+              "trust": "high"
+            },
+            {
+              "source": "Corporate_Network",
+              "target": "Domain_Controller",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.483,
+              "protocol": "ldap",
+              "trust": "high"
+            },
+            {
+              "source": "Corporate_Network",
+              "target": "Patch_Management_Server",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.483,
+              "protocol": "wsman",
+              "trust": "high"
+            },
+            {
+              "source": "Corporate_Network",
+              "target": "SCADA_Server",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.6555,
+              "protocol": "opc-ua",
+              "trust": "medium"
+            },
+            {
+              "source": "DMZ",
+              "target": "VPN_Gateway",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.69,
+              "protocol": "ipsec",
+              "trust": "medium"
+            },
+            {
+              "source": "Firewall",
+              "target": "DMZ",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.8625,
+              "protocol": "http",
+              "trust": "medium"
+            },
+            {
+              "source": "VPN_Gateway",
+              "target": "Corporate_Network",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.483,
+              "protocol": "ipsec",
+              "trust": "high"
+            },
+            {
+              "source": "SCADA_Server",
+              "target": "Historian",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.6555,
+              "protocol": "opc-ua",
+              "trust": "medium"
+            },
+            {
+              "source": "SCADA_Server",
+              "target": "HMI",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.6555,
+              "protocol": "opc-ua",
+              "trust": "medium"
+            },
+            {
+              "source": "SCADA_Server",
+              "target": "OPC_Server",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.6555,
+              "protocol": "opc-ua",
+              "trust": "medium"
+            },
+            {
+              "source": "SCADA_Server",
+              "target": "Safety_PLC",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.7245,
+              "protocol": "profinet",
+              "trust": "medium"
+            },
+            {
+              "source": "OPC_Server",
+              "target": "PLC_1",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.99,
+              "protocol": "modbus",
+              "trust": "low"
+            },
+            {
+              "source": "OPC_Server",
+              "target": "PLC_2",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.978075,
+              "protocol": "profinet",
+              "trust": "low"
+            },
+            {
+              "source": "PLC_1",
+              "target": "Sensor",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.99,
+              "protocol": "modbus",
+              "trust": "low"
+            },
+            {
+              "source": "PLC_1",
+              "target": "RTU",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.99,
+              "protocol": "dnp3",
+              "trust": "low"
+            },
+            {
+              "source": "PLC_2",
+              "target": "Actuator",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.978075,
+              "protocol": "ethernet/ip",
+              "trust": "low"
+            },
+            {
+              "source": "RTU",
+              "target": "Remote_Site",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.99,
+              "protocol": "dnp3",
+              "trust": "low"
+            },
+            {
+              "source": "Safety_PLC",
+              "target": "Sensor",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.99,
+              "protocol": "modbus",
+              "trust": "low"
+            }
+          ]
+        },
+        "base_probabilities": {
+          "Internet": 0.78,
+          "Corporate_Network": 0.78,
+          "DMZ": 0.78,
+          "Firewall": 0.78,
+          "VPN_Gateway": 0.78,
+          "Remote_Access_Server": 0.78,
+          "Engineering_Workstation": 0.78,
+          "SCADA_Server": 0.78,
+          "Historian": 0.78,
+          "HMI": 0.78,
+          "Domain_Controller": 0.78,
+          "Patch_Management_Server": 0.78,
+          "OPC_Server": 0.78,
+          "PLC_1": 0.78,
+          "PLC_2": 0.78,
+          "RTU": 0.78,
+          "Remote_Site": 0.78,
+          "Level_3_Switch": 0.78,
+          "Level_2_Switch": 0.78,
+          "Sensor": 0.01,
+          "Actuator": 0.01,
+          "Safety_PLC": 0.78
+        },
+        "posteriors": {
+          "Internet": 0.78,
+          "Firewall": 0.9498840000000001,
+          "Corporate_Network": 0.8783717364320212,
+          "Engineering_Workstation": 0.8733357807132666,
+          "Domain_Controller": 0.8733357807132666,
+          "Patch_Management_Server": 0.8733357807132666,
+          "SCADA_Server": 0.9066699881108617,
+          "DMZ": 0.960240489,
+          "VPN_Gateway": 0.9257645062302,
+          "Historian": 0.9107508789854674,
+          "HMI": 0.9107508789854674,
+          "OPC_Server": 0.9107508789854674,
+          "Safety_PLC": 0.9245141294049902,
+          "PLC_1": 0.9783615414430348,
+          "PLC_2": 0.9759721865120164,
+          "Sensor": 0.9969531540784156,
+          "RTU": 0.993087143726293,
+          "Actuator": 0.955028256359513,
+          "Remote_Site": 0.9962943799035866,
+          "Remote_Access_Server": 0.78,
+          "Level_3_Switch": 0.78,
+          "Level_2_Switch": 0.78
+        },
+        "cpts": {
+          "Internet": {
+            "parents": [],
+            "rows": [
+              {
+                "parent_state": {},
+                "p_compromised": 0.78
+              }
+            ]
+          },
+          "Firewall": {
+            "parents": [
+              "Internet"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Internet": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Internet": 1
+                },
+                "p_compromised": 0.9978
+              }
+            ]
+          },
+          "Corporate_Network": {
+            "parents": [
+              "VPN_Gateway"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "VPN_Gateway": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "VPN_Gateway": 1
+                },
+                "p_compromised": 0.88626
+              }
+            ]
+          },
+          "Engineering_Workstation": {
+            "parents": [
+              "Corporate_Network"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Corporate_Network": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Corporate_Network": 1
+                },
+                "p_compromised": 0.88626
+              }
+            ]
+          },
+          "Domain_Controller": {
+            "parents": [
+              "Corporate_Network"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Corporate_Network": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Corporate_Network": 1
+                },
+                "p_compromised": 0.88626
+              }
+            ]
+          },
+          "Patch_Management_Server": {
+            "parents": [
+              "Corporate_Network"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Corporate_Network": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Corporate_Network": 1
+                },
+                "p_compromised": 0.88626
+              }
+            ]
+          },
+          "SCADA_Server": {
+            "parents": [
+              "Corporate_Network"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Corporate_Network": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Corporate_Network": 1
+                },
+                "p_compromised": 0.92421
+              }
+            ]
+          },
+          "DMZ": {
+            "parents": [
+              "Firewall"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Firewall": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Firewall": 1
+                },
+                "p_compromised": 0.96975
+              }
+            ]
+          },
+          "VPN_Gateway": {
+            "parents": [
+              "DMZ"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "DMZ": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "DMZ": 1
+                },
+                "p_compromised": 0.9318
+              }
+            ]
+          },
+          "Historian": {
+            "parents": [
+              "SCADA_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "SCADA_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "SCADA_Server": 1
+                },
+                "p_compromised": 0.92421
+              }
+            ]
+          },
+          "HMI": {
+            "parents": [
+              "SCADA_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "SCADA_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "SCADA_Server": 1
+                },
+                "p_compromised": 0.92421
+              }
+            ]
+          },
+          "OPC_Server": {
+            "parents": [
+              "SCADA_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "SCADA_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "SCADA_Server": 1
+                },
+                "p_compromised": 0.92421
+              }
+            ]
+          },
+          "Safety_PLC": {
+            "parents": [
+              "SCADA_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "SCADA_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "SCADA_Server": 1
+                },
+                "p_compromised": 0.93939
+              }
+            ]
+          },
+          "PLC_1": {
+            "parents": [
+              "OPC_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "OPC_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "OPC_Server": 1
+                },
+                "p_compromised": 0.9978
+              }
+            ]
+          },
+          "PLC_2": {
+            "parents": [
+              "OPC_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "OPC_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "OPC_Server": 1
+                },
+                "p_compromised": 0.995177
+              }
+            ]
+          },
+          "Sensor": {
+            "parents": [
+              "PLC_1",
+              "Safety_PLC"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "PLC_1": 0,
+                  "Safety_PLC": 0
+                },
+                "p_compromised": 0.01
+              },
+              {
+                "parent_state": {
+                  "PLC_1": 0,
+                  "Safety_PLC": 1
+                },
+                "p_compromised": 0.9901
+              },
+              {
+                "parent_state": {
+                  "PLC_1": 1,
+                  "Safety_PLC": 0
+                },
+                "p_compromised": 0.9901
+              },
+              {
+                "parent_state": {
+                  "PLC_1": 1,
+                  "Safety_PLC": 1
+                },
+                "p_compromised": 0.999901
+              }
+            ]
+          },
+          "RTU": {
+            "parents": [
+              "PLC_1"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "PLC_1": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "PLC_1": 1
+                },
+                "p_compromised": 0.9978
+              }
+            ]
+          },
+          "Actuator": {
+            "parents": [
+              "PLC_2"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "PLC_2": 0
+                },
+                "p_compromised": 0.01
+              },
+              {
+                "parent_state": {
+                  "PLC_2": 1
+                },
+                "p_compromised": 0.978294
+              }
+            ]
+          },
+          "Remote_Site": {
+            "parents": [
+              "RTU"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "RTU": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "RTU": 1
+                },
+                "p_compromised": 0.9978
+              }
+            ]
+          },
+          "Remote_Access_Server": {
+            "parents": [],
+            "rows": [
+              {
+                "parent_state": {},
+                "p_compromised": 0.78
+              }
+            ]
+          },
+          "Level_3_Switch": {
+            "parents": [],
+            "rows": [
+              {
+                "parent_state": {},
+                "p_compromised": 0.78
+              }
+            ]
+          },
+          "Level_2_Switch": {
+            "parents": [],
+            "rows": [
+              {
+                "parent_state": {},
+                "p_compromised": 0.78
+              }
+            ]
+          }
+        },
+        "risk_scores": [
+          {
+            "asset": "Remote_Site",
+            "P(compromised|evidence)": 0.996,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.996
+          },
+          {
+            "asset": "RTU",
+            "P(compromised|evidence)": 0.993,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.993
+          },
+          {
+            "asset": "PLC_1",
+            "P(compromised|evidence)": 0.978,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.978
+          },
+          {
+            "asset": "PLC_2",
+            "P(compromised|evidence)": 0.976,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.976
+          },
+          {
+            "asset": "DMZ",
+            "P(compromised|evidence)": 0.96,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.96
+          },
+          {
+            "asset": "Firewall",
+            "P(compromised|evidence)": 0.95,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.95
+          },
+          {
+            "asset": "VPN_Gateway",
+            "P(compromised|evidence)": 0.926,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.926
+          },
+          {
+            "asset": "Safety_PLC",
+            "P(compromised|evidence)": 0.925,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.925
+          },
+          {
+            "asset": "Historian",
+            "P(compromised|evidence)": 0.911,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.911
+          },
+          {
+            "asset": "OPC_Server",
+            "P(compromised|evidence)": 0.911,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.911
+          },
+          {
+            "asset": "HMI",
+            "P(compromised|evidence)": 0.911,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.911
+          },
+          {
+            "asset": "SCADA_Server",
+            "P(compromised|evidence)": 0.907,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.907
+          },
+          {
+            "asset": "Corporate_Network",
+            "P(compromised|evidence)": 0.878,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.878
+          },
+          {
+            "asset": "Domain_Controller",
+            "P(compromised|evidence)": 0.873,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.873
+          },
+          {
+            "asset": "Engineering_Workstation",
+            "P(compromised|evidence)": 0.873,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.873
+          },
+          {
+            "asset": "Patch_Management_Server",
+            "P(compromised|evidence)": 0.873,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.873
+          },
+          {
+            "asset": "Internet",
+            "P(compromised|evidence)": 0.78,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.78
+          },
+          {
+            "asset": "Remote_Access_Server",
+            "P(compromised|evidence)": 0.78,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.78
+          },
+          {
+            "asset": "Level_3_Switch",
+            "P(compromised|evidence)": 0.78,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.78
+          },
+          {
+            "asset": "Level_2_Switch",
+            "P(compromised|evidence)": 0.78,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.78
+          },
+          {
+            "asset": "Sensor",
+            "P(compromised|evidence)": 0.997,
+            "severity": 0.1,
+            "scope_mult": 1.0,
+            "impact": 0.1,
+            "risk": 0.1
+          },
+          {
+            "asset": "Actuator",
+            "P(compromised|evidence)": 0.955,
+            "severity": 0.1,
+            "scope_mult": 1.0,
+            "impact": 0.1,
+            "risk": 0.096
+          }
+        ],
+        "attack_paths": [
+          {
+            "path": [
+              "Internet",
+              "Firewall"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.9405,
+            "propagation_score": 0.99,
+            "target": "Firewall",
+            "target_risk": 0.95,
+            "source": "Internet",
+            "hops": 1
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.887091,
+            "propagation_score": 0.924054,
+            "target": "DMZ",
+            "target_risk": 0.96,
+            "source": "Internet",
+            "hops": 2
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_1",
+              "RTU",
+              "Remote_Site"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_1",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "PLC_1",
+                "target": "RTU",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "RTU",
+                "target": "Remote_Site",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.785954,
+            "propagation_score": 0.789111,
+            "target": "Remote_Site",
+            "target_risk": 0.996,
+            "source": "Internet",
+            "hops": 9
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.776293,
+            "propagation_score": 0.838329,
+            "target": "VPN_Gateway",
+            "target_risk": 0.926,
+            "source": "Internet",
+            "hops": 3
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_1",
+              "RTU"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_1",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "PLC_1",
+                "target": "RTU",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.761684,
+            "propagation_score": 0.767054,
+            "target": "RTU",
+            "target_risk": 0.993,
+            "source": "Internet",
+            "hops": 8
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_1"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_1",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.723327,
+            "propagation_score": 0.739598,
+            "target": "PLC_1",
+            "target_risk": 0.978,
+            "source": "Internet",
+            "hops": 7
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_2"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_2",
+                "weight": 0.978075,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.720599,
+            "propagation_score": 0.738319,
+            "target": "PLC_2",
+            "target_risk": 0.976,
+            "source": "Internet",
+            "hops": 7
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "Safety_PLC"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "Safety_PLC",
+                "weight": 0.7245,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.662636,
+            "propagation_score": 0.716364,
+            "target": "Safety_PLC",
+            "target_risk": 0.925,
+            "source": "Internet",
+            "hops": 6
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.648276,
+            "propagation_score": 0.714747,
+            "target": "SCADA_Server",
+            "target_risk": 0.907,
+            "source": "Internet",
+            "hops": 5
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "Historian"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "Historian",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.641812,
+            "propagation_score": 0.704513,
+            "target": "Historian",
+            "target_risk": 0.911,
+            "source": "Internet",
+            "hops": 6
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "HMI"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "HMI",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.641812,
+            "propagation_score": 0.704513,
+            "target": "HMI",
+            "target_risk": 0.911,
+            "source": "Internet",
+            "hops": 6
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.641812,
+            "propagation_score": 0.704513,
+            "target": "OPC_Server",
+            "target_risk": 0.911,
+            "source": "Internet",
+            "hops": 6
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.641272,
+            "propagation_score": 0.730378,
+            "target": "Corporate_Network",
+            "target_risk": 0.878,
+            "source": "Internet",
+            "hops": 4
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "Engineering_Workstation"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "Engineering_Workstation",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.587005,
+            "propagation_score": 0.6724,
+            "target": "Engineering_Workstation",
+            "target_risk": 0.873,
+            "source": "Internet",
+            "hops": 5
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "Domain_Controller"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "Domain_Controller",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.587005,
+            "propagation_score": 0.6724,
+            "target": "Domain_Controller",
+            "target_risk": 0.873,
+            "source": "Internet",
+            "hops": 5
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "Patch_Management_Server"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "Patch_Management_Server",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.587005,
+            "propagation_score": 0.6724,
+            "target": "Patch_Management_Server",
+            "target_risk": 0.873,
+            "source": "Internet",
+            "hops": 5
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_1",
+              "Sensor"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_1",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "PLC_1",
+                "target": "Sensor",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.076705,
+            "propagation_score": 0.767054,
+            "target": "Sensor",
+            "target_risk": 0.1,
+            "source": "Internet",
+            "hops": 8
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "Safety_PLC",
+              "Sensor"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "Safety_PLC",
+                "weight": 0.7245,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Safety_PLC",
+                "target": "Sensor",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.075025,
+            "propagation_score": 0.750249,
+            "target": "Sensor",
+            "target_risk": 0.1,
+            "source": "Internet",
+            "hops": 7
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_2",
+              "Actuator"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.483,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_2",
+                "weight": 0.978075,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "PLC_2",
+                "target": "Actuator",
+                "weight": 0.978075,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.073414,
+            "propagation_score": 0.764733,
+            "target": "Actuator",
+            "target_risk": 0.096,
+            "source": "Internet",
+            "hops": 8
+          }
+        ],
+        "summary": {
+          "topology": "inline-topology",
+          "asset_count": 22,
+          "relationship_count": 19,
+          "evidence_used": {},
+          "overall_risk": 0.9806,
+          "overall_risk_basis": "mean of top 5 highest-risk assets",
+          "risk_level": "high",
+          "highest_risk_assets": [
+            "Remote_Site",
+            "RTU",
+            "PLC_1",
+            "PLC_2",
+            "DMZ"
+          ],
+          "critical_attack_path": {
+            "path": [
+              "Internet",
+              "Firewall"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.99,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.9405,
+            "propagation_score": 0.99,
+            "target": "Firewall",
+            "target_risk": 0.95,
+            "source": "Internet",
+            "hops": 1
+          }
+        },
+        "evidence_used": {},
+        "timings": {
+          "build_time_seconds": 0.076728,
+          "inference_time_seconds": 0.020071,
+          "total_time_seconds": 0.096799
+        },
+        "artifacts": {
+          "graph": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\graph.json",
+          "graph_image": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\graph.png",
+          "cpts": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\cpts.json",
+          "posteriors": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\posteriors.json",
+          "risk_table": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\risk_table.csv",
+          "metrics": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\metrics.json",
+          "summary": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\summary.txt"
+        }
+      }
+    },
+    "aml": {
+      "status_code": 200,
+      "response": {
+        "graph": {
+          "nodes": [
+            {
+              "id": "Internet",
+              "kind": "device"
+            },
+            {
+              "id": "Firewall",
+              "kind": "device"
+            },
+            {
+              "id": "DMZ",
+              "kind": "device"
+            },
+            {
+              "id": "VPN_Gateway",
+              "kind": "device"
+            },
+            {
+              "id": "Corporate_Network",
+              "kind": "device"
+            },
+            {
+              "id": "Engineering_Workstation",
+              "kind": "human"
+            },
+            {
+              "id": "Domain_Controller",
+              "kind": "device"
+            },
+            {
+              "id": "Patch_Management_Server",
+              "kind": "device"
+            },
+            {
+              "id": "SCADA_Server",
+              "kind": "device"
+            },
+            {
+              "id": "Historian",
+              "kind": "device"
+            },
+            {
+              "id": "HMI",
+              "kind": "device"
+            },
+            {
+              "id": "OPC_Server",
+              "kind": "device"
+            },
+            {
+              "id": "PLC_1",
+              "kind": "device"
+            },
+            {
+              "id": "PLC_2",
+              "kind": "device"
+            },
+            {
+              "id": "Sensor",
+              "kind": "physical"
+            },
+            {
+              "id": "Actuator",
+              "kind": "physical"
+            },
+            {
+              "id": "RTU",
+              "kind": "device"
+            },
+            {
+              "id": "Remote_Site",
+              "kind": "device"
+            },
+            {
+              "id": "Safety_PLC",
+              "kind": "device"
+            },
+            {
+              "id": "Remote_Access_Server",
+              "kind": "device"
+            },
+            {
+              "id": "Level_3_Switch",
+              "kind": "device"
+            },
+            {
+              "id": "Level_2_Switch",
+              "kind": "device"
+            }
+          ],
+          "edges": [
+            {
+              "source": "Internet",
+              "target": "Firewall",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.8625,
+              "protocol": "http",
+              "trust": "default"
+            },
+            {
+              "source": "Firewall",
+              "target": "DMZ",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.8625,
+              "protocol": "http",
+              "trust": "default"
+            },
+            {
+              "source": "DMZ",
+              "target": "VPN_Gateway",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.69,
+              "protocol": "ipsec",
+              "trust": "default"
+            },
+            {
+              "source": "VPN_Gateway",
+              "target": "Corporate_Network",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.69,
+              "protocol": "ipsec",
+              "trust": "default"
+            },
+            {
+              "source": "Corporate_Network",
+              "target": "Engineering_Workstation",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.69,
+              "protocol": "rdp",
+              "trust": "default"
+            },
+            {
+              "source": "Corporate_Network",
+              "target": "Domain_Controller",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.69,
+              "protocol": "ldap",
+              "trust": "default"
+            },
+            {
+              "source": "Corporate_Network",
+              "target": "Patch_Management_Server",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.69,
+              "protocol": "wsman",
+              "trust": "default"
+            },
+            {
+              "source": "Corporate_Network",
+              "target": "SCADA_Server",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.6555,
+              "protocol": "opc-ua",
+              "trust": "default"
+            },
+            {
+              "source": "SCADA_Server",
+              "target": "Historian",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.6555,
+              "protocol": "opc-ua",
+              "trust": "default"
+            },
+            {
+              "source": "SCADA_Server",
+              "target": "HMI",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.6555,
+              "protocol": "opc-ua",
+              "trust": "default"
+            },
+            {
+              "source": "SCADA_Server",
+              "target": "OPC_Server",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.6555,
+              "protocol": "opc-ua",
+              "trust": "default"
+            },
+            {
+              "source": "OPC_Server",
+              "target": "PLC_1",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.7935,
+              "protocol": "modbus",
+              "trust": "default"
+            },
+            {
+              "source": "OPC_Server",
+              "target": "PLC_2",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.7245,
+              "protocol": "profinet",
+              "trust": "default"
+            },
+            {
+              "source": "PLC_1",
+              "target": "Sensor",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.7935,
+              "protocol": "modbus",
+              "trust": "default"
+            },
+            {
+              "source": "PLC_2",
+              "target": "Actuator",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.7245,
+              "protocol": "ethernet/ip",
+              "trust": "default"
+            },
+            {
+              "source": "PLC_1",
+              "target": "RTU",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.759,
+              "protocol": "dnp3",
+              "trust": "default"
+            },
+            {
+              "source": "RTU",
+              "target": "Remote_Site",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.759,
+              "protocol": "dnp3",
+              "trust": "default"
+            },
+            {
+              "source": "SCADA_Server",
+              "target": "Safety_PLC",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.7245,
+              "protocol": "profinet",
+              "trust": "default"
+            },
+            {
+              "source": "Safety_PLC",
+              "target": "Sensor",
+              "rel_type": "connects-to",
+              "firewalled": false,
+              "weight": 0.7935,
+              "protocol": "modbus",
+              "trust": "default"
+            }
+          ]
+        },
+        "base_probabilities": {
+          "Internet": 0.78,
+          "Corporate_Network": 0.78,
+          "DMZ": 0.78,
+          "Firewall": 0.78,
+          "VPN_Gateway": 0.78,
+          "Remote_Access_Server": 0.78,
+          "Engineering_Workstation": 0.169,
+          "SCADA_Server": 0.78,
+          "Historian": 0.78,
+          "HMI": 0.78,
+          "Domain_Controller": 0.78,
+          "Patch_Management_Server": 0.78,
+          "OPC_Server": 0.78,
+          "PLC_1": 0.78,
+          "PLC_2": 0.78,
+          "RTU": 0.78,
+          "Remote_Site": 0.78,
+          "Level_3_Switch": 0.78,
+          "Level_2_Switch": 0.78,
+          "Sensor": 0.01,
+          "Actuator": 0.01,
+          "Safety_PLC": 0.78
+        },
+        "posteriors": {
+          "Internet": 0.78,
+          "Firewall": 0.928005,
+          "DMZ": 0.9560889487500001,
+          "VPN_Gateway": 0.92513430242025,
+          "Corporate_Network": 0.9204353871073939,
+          "Engineering_Workstation": 0.6967684466135086,
+          "Domain_Controller": 0.9197220917629023,
+          "Patch_Management_Server": 0.9197220917629023,
+          "SCADA_Server": 0.9127359871747572,
+          "Historian": 0.9116256567104717,
+          "HMI": 0.9116256567104717,
+          "OPC_Server": 0.9116256567104717,
+          "PLC_1": 0.939142490891947,
+          "PLC_2": 0.9253040134230821,
+          "Sensor": 0.9327973851401961,
+          "Actuator": 0.6736789301477727,
+          "RTU": 0.9368180131291374,
+          "Remote_Site": 0.9364298718323034,
+          "Safety_PLC": 0.9254809889957845,
+          "Remote_Access_Server": 0.78,
+          "Level_3_Switch": 0.78,
+          "Level_2_Switch": 0.78
+        },
+        "cpts": {
+          "Internet": {
+            "parents": [],
+            "rows": [
+              {
+                "parent_state": {},
+                "p_compromised": 0.78
+              }
+            ]
+          },
+          "Firewall": {
+            "parents": [
+              "Internet"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Internet": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Internet": 1
+                },
+                "p_compromised": 0.96975
+              }
+            ]
+          },
+          "DMZ": {
+            "parents": [
+              "Firewall"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Firewall": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Firewall": 1
+                },
+                "p_compromised": 0.96975
+              }
+            ]
+          },
+          "VPN_Gateway": {
+            "parents": [
+              "DMZ"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "DMZ": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "DMZ": 1
+                },
+                "p_compromised": 0.9318
+              }
+            ]
+          },
+          "Corporate_Network": {
+            "parents": [
+              "VPN_Gateway"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "VPN_Gateway": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "VPN_Gateway": 1
+                },
+                "p_compromised": 0.9318
+              }
+            ]
+          },
+          "Engineering_Workstation": {
+            "parents": [
+              "Corporate_Network"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Corporate_Network": 0
+                },
+                "p_compromised": 0.169
+              },
+              {
+                "parent_state": {
+                  "Corporate_Network": 1
+                },
+                "p_compromised": 0.74239
+              }
+            ]
+          },
+          "Domain_Controller": {
+            "parents": [
+              "Corporate_Network"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Corporate_Network": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Corporate_Network": 1
+                },
+                "p_compromised": 0.9318
+              }
+            ]
+          },
+          "Patch_Management_Server": {
+            "parents": [
+              "Corporate_Network"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Corporate_Network": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Corporate_Network": 1
+                },
+                "p_compromised": 0.9318
+              }
+            ]
+          },
+          "SCADA_Server": {
+            "parents": [
+              "Corporate_Network"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "Corporate_Network": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "Corporate_Network": 1
+                },
+                "p_compromised": 0.92421
+              }
+            ]
+          },
+          "Historian": {
+            "parents": [
+              "SCADA_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "SCADA_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "SCADA_Server": 1
+                },
+                "p_compromised": 0.92421
+              }
+            ]
+          },
+          "HMI": {
+            "parents": [
+              "SCADA_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "SCADA_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "SCADA_Server": 1
+                },
+                "p_compromised": 0.92421
+              }
+            ]
+          },
+          "OPC_Server": {
+            "parents": [
+              "SCADA_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "SCADA_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "SCADA_Server": 1
+                },
+                "p_compromised": 0.92421
+              }
+            ]
+          },
+          "PLC_1": {
+            "parents": [
+              "OPC_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "OPC_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "OPC_Server": 1
+                },
+                "p_compromised": 0.95457
+              }
+            ]
+          },
+          "PLC_2": {
+            "parents": [
+              "OPC_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "OPC_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "OPC_Server": 1
+                },
+                "p_compromised": 0.93939
+              }
+            ]
+          },
+          "Sensor": {
+            "parents": [
+              "PLC_1",
+              "Safety_PLC"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "PLC_1": 0,
+                  "Safety_PLC": 0
+                },
+                "p_compromised": 0.01
+              },
+              {
+                "parent_state": {
+                  "PLC_1": 0,
+                  "Safety_PLC": 1
+                },
+                "p_compromised": 0.795565
+              },
+              {
+                "parent_state": {
+                  "PLC_1": 1,
+                  "Safety_PLC": 0
+                },
+                "p_compromised": 0.795565
+              },
+              {
+                "parent_state": {
+                  "PLC_1": 1,
+                  "Safety_PLC": 1
+                },
+                "p_compromised": 0.957784
+              }
+            ]
+          },
+          "Actuator": {
+            "parents": [
+              "PLC_2"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "PLC_2": 0
+                },
+                "p_compromised": 0.01
+              },
+              {
+                "parent_state": {
+                  "PLC_2": 1
+                },
+                "p_compromised": 0.727255
+              }
+            ]
+          },
+          "RTU": {
+            "parents": [
+              "PLC_1"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "PLC_1": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "PLC_1": 1
+                },
+                "p_compromised": 0.94698
+              }
+            ]
+          },
+          "Remote_Site": {
+            "parents": [
+              "RTU"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "RTU": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "RTU": 1
+                },
+                "p_compromised": 0.94698
+              }
+            ]
+          },
+          "Safety_PLC": {
+            "parents": [
+              "SCADA_Server"
+            ],
+            "rows": [
+              {
+                "parent_state": {
+                  "SCADA_Server": 0
+                },
+                "p_compromised": 0.78
+              },
+              {
+                "parent_state": {
+                  "SCADA_Server": 1
+                },
+                "p_compromised": 0.93939
+              }
+            ]
+          },
+          "Remote_Access_Server": {
+            "parents": [],
+            "rows": [
+              {
+                "parent_state": {},
+                "p_compromised": 0.78
+              }
+            ]
+          },
+          "Level_3_Switch": {
+            "parents": [],
+            "rows": [
+              {
+                "parent_state": {},
+                "p_compromised": 0.78
+              }
+            ]
+          },
+          "Level_2_Switch": {
+            "parents": [],
+            "rows": [
+              {
+                "parent_state": {},
+                "p_compromised": 0.78
+              }
+            ]
+          }
+        },
+        "risk_scores": [
+          {
+            "asset": "DMZ",
+            "P(compromised|evidence)": 0.956,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.956
+          },
+          {
+            "asset": "PLC_1",
+            "P(compromised|evidence)": 0.939,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.939
+          },
+          {
+            "asset": "RTU",
+            "P(compromised|evidence)": 0.937,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.937
+          },
+          {
+            "asset": "Remote_Site",
+            "P(compromised|evidence)": 0.936,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.936
+          },
+          {
+            "asset": "Firewall",
+            "P(compromised|evidence)": 0.928,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.928
+          },
+          {
+            "asset": "VPN_Gateway",
+            "P(compromised|evidence)": 0.925,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.925
+          },
+          {
+            "asset": "Safety_PLC",
+            "P(compromised|evidence)": 0.925,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.925
+          },
+          {
+            "asset": "PLC_2",
+            "P(compromised|evidence)": 0.925,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.925
+          },
+          {
+            "asset": "Corporate_Network",
+            "P(compromised|evidence)": 0.92,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.92
+          },
+          {
+            "asset": "Domain_Controller",
+            "P(compromised|evidence)": 0.92,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.92
+          },
+          {
+            "asset": "Patch_Management_Server",
+            "P(compromised|evidence)": 0.92,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.92
+          },
+          {
+            "asset": "SCADA_Server",
+            "P(compromised|evidence)": 0.913,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.913
+          },
+          {
+            "asset": "HMI",
+            "P(compromised|evidence)": 0.912,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.912
+          },
+          {
+            "asset": "OPC_Server",
+            "P(compromised|evidence)": 0.912,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.912
+          },
+          {
+            "asset": "Historian",
+            "P(compromised|evidence)": 0.912,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.912
+          },
+          {
+            "asset": "Internet",
+            "P(compromised|evidence)": 0.78,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.78
+          },
+          {
+            "asset": "Level_3_Switch",
+            "P(compromised|evidence)": 0.78,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.78
+          },
+          {
+            "asset": "Remote_Access_Server",
+            "P(compromised|evidence)": 0.78,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.78
+          },
+          {
+            "asset": "Level_2_Switch",
+            "P(compromised|evidence)": 0.78,
+            "severity": 1.0,
+            "scope_mult": 1.0,
+            "impact": 1.0,
+            "risk": 0.78
+          },
+          {
+            "asset": "Engineering_Workstation",
+            "P(compromised|evidence)": 0.697,
+            "severity": 0.5,
+            "scope_mult": 1.0,
+            "impact": 0.5,
+            "risk": 0.348
+          },
+          {
+            "asset": "Sensor",
+            "P(compromised|evidence)": 0.933,
+            "severity": 0.1,
+            "scope_mult": 1.0,
+            "impact": 0.1,
+            "risk": 0.093
+          },
+          {
+            "asset": "Actuator",
+            "P(compromised|evidence)": 0.674,
+            "severity": 0.1,
+            "scope_mult": 1.0,
+            "impact": 0.1,
+            "risk": 0.067
+          }
+        ],
+        "attack_paths": [
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.82455,
+            "propagation_score": 0.8625,
+            "target": "DMZ",
+            "target_risk": 0.956,
+            "source": "Internet",
+            "hops": 2
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.8004,
+            "propagation_score": 0.8625,
+            "target": "Firewall",
+            "target_risk": 0.928,
+            "source": "Internet",
+            "hops": 1
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.740624,
+            "propagation_score": 0.800674,
+            "target": "VPN_Gateway",
+            "target_risk": 0.925,
+            "source": "Internet",
+            "hops": 3
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.709728,
+            "propagation_score": 0.771443,
+            "target": "Corporate_Network",
+            "target_risk": 0.92,
+            "source": "Internet",
+            "hops": 4
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_1",
+              "RTU",
+              "Remote_Site"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_1",
+                "weight": 0.7935,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "PLC_1",
+                "target": "RTU",
+                "weight": 0.759,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "RTU",
+                "target": "Remote_Site",
+                "weight": 0.759,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.69607,
+            "propagation_score": 0.743664,
+            "target": "Remote_Site",
+            "target_risk": 0.936,
+            "source": "Internet",
+            "hops": 9
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_1",
+              "RTU"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_1",
+                "weight": 0.7935,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "PLC_1",
+                "target": "RTU",
+                "weight": 0.759,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.695038,
+            "propagation_score": 0.741769,
+            "target": "RTU",
+            "target_risk": 0.937,
+            "source": "Internet",
+            "hops": 8
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_1"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_1",
+                "weight": 0.7935,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.69424,
+            "propagation_score": 0.73934,
+            "target": "PLC_1",
+            "target_risk": 0.939,
+            "source": "Internet",
+            "hops": 7
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "Domain_Controller"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "Domain_Controller",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.694066,
+            "propagation_score": 0.75442,
+            "target": "Domain_Controller",
+            "target_risk": 0.92,
+            "source": "Internet",
+            "hops": 5
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "Patch_Management_Server"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "Patch_Management_Server",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.694066,
+            "propagation_score": 0.75442,
+            "target": "Patch_Management_Server",
+            "target_risk": 0.92,
+            "source": "Internet",
+            "hops": 5
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "Safety_PLC"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "Safety_PLC",
+                "weight": 0.7245,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.687247,
+            "propagation_score": 0.74297,
+            "target": "Safety_PLC",
+            "target_risk": 0.925,
+            "source": "Internet",
+            "hops": 6
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.681755,
+            "propagation_score": 0.74672,
+            "target": "SCADA_Server",
+            "target_risk": 0.913,
+            "source": "Internet",
+            "hops": 5
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_2"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_2",
+                "weight": 0.7245,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.675059,
+            "propagation_score": 0.729794,
+            "target": "PLC_2",
+            "target_risk": 0.925,
+            "source": "Internet",
+            "hops": 7
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "Historian"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "Historian",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.66638,
+            "propagation_score": 0.73068,
+            "target": "Historian",
+            "target_risk": 0.912,
+            "source": "Internet",
+            "hops": 6
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "HMI"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "HMI",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.66638,
+            "propagation_score": 0.73068,
+            "target": "HMI",
+            "target_risk": 0.912,
+            "source": "Internet",
+            "hops": 6
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.66638,
+            "propagation_score": 0.73068,
+            "target": "OPC_Server",
+            "target_risk": 0.912,
+            "source": "Internet",
+            "hops": 6
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "Engineering_Workstation"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "Engineering_Workstation",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.262538,
+            "propagation_score": 0.75442,
+            "target": "Engineering_Workstation",
+            "target_risk": 0.348,
+            "source": "Internet",
+            "hops": 5
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "Safety_PLC",
+              "Sensor"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "Safety_PLC",
+                "weight": 0.7245,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Safety_PLC",
+                "target": "Sensor",
+                "weight": 0.7935,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.069749,
+            "propagation_score": 0.749987,
+            "target": "Sensor",
+            "target_risk": 0.093,
+            "source": "Internet",
+            "hops": 7
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_1",
+              "Sensor"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_1",
+                "weight": 0.7935,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "PLC_1",
+                "target": "Sensor",
+                "weight": 0.7935,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.069369,
+            "propagation_score": 0.745902,
+            "target": "Sensor",
+            "target_risk": 0.093,
+            "source": "Internet",
+            "hops": 8
+          },
+          {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ",
+              "VPN_Gateway",
+              "Corporate_Network",
+              "SCADA_Server",
+              "OPC_Server",
+              "PLC_2",
+              "Actuator"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "DMZ",
+                "target": "VPN_Gateway",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "VPN_Gateway",
+                "target": "Corporate_Network",
+                "weight": 0.69,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Corporate_Network",
+                "target": "SCADA_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "SCADA_Server",
+                "target": "OPC_Server",
+                "weight": 0.6555,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "OPC_Server",
+                "target": "PLC_2",
+                "weight": 0.7245,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "PLC_2",
+                "target": "Actuator",
+                "weight": 0.7245,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.048852,
+            "propagation_score": 0.72913,
+            "target": "Actuator",
+            "target_risk": 0.067,
+            "source": "Internet",
+            "hops": 8
+          }
+        ],
+        "summary": {
+          "topology": "inline-topology",
+          "asset_count": 22,
+          "relationship_count": 19,
+          "evidence_used": {},
+          "overall_risk": 0.9392,
+          "overall_risk_basis": "mean of top 5 highest-risk assets",
+          "risk_level": "high",
+          "highest_risk_assets": [
+            "DMZ",
+            "PLC_1",
+            "RTU",
+            "Remote_Site",
+            "Firewall"
+          ],
+          "critical_attack_path": {
+            "path": [
+              "Internet",
+              "Firewall",
+              "DMZ"
+            ],
+            "edges": [
+              {
+                "source": "Internet",
+                "target": "Firewall",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              },
+              {
+                "source": "Firewall",
+                "target": "DMZ",
+                "weight": 0.8625,
+                "rel_type": "connects-to"
+              }
+            ],
+            "score": 0.82455,
+            "propagation_score": 0.8625,
+            "target": "DMZ",
+            "target_risk": 0.956,
+            "source": "Internet",
+            "hops": 2
+          }
+        },
+        "evidence_used": {},
+        "timings": {
+          "build_time_seconds": 0.057123,
+          "inference_time_seconds": 0.013056,
+          "total_time_seconds": 0.070179
+        },
+        "artifacts": {
+          "graph": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\graph.json",
+          "graph_image": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\graph.png",
+          "cpts": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\cpts.json",
+          "posteriors": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\posteriors.json",
+          "risk_table": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\risk_table.csv",
+          "metrics": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\metrics.json",
+          "summary": "C:\\Users\\Dell\\ICS_Bayesian_Risk_Framework\\output\\summary.txt"
+        }
+      }
+    }
+  },
+  "summary": {}
+}

@@ -243,13 +243,13 @@ def upload_topology(request: Request, payload: TopologyUploadRequest):
     "/upload-topology-file",
     response_model=UploadTopologyFileResponse,
     tags=["Topologies"],
-    summary="Upload topology from file (JSON, YAML, or CSV)",
+    summary="Upload topology from file (JSON, YAML, CSV, Excel, GraphML, XML/AML, or VSDX)",
 )
 @limiter.limit(f"{RATE_LIMIT_PER_MINUTE}/minute")
 async def upload_topology_file(request: Request, file: UploadFile = File(...)):
-    """Upload topology from JSON, YAML, or CSV file.
+    """Upload topology from JSON, YAML, CSV, Excel (.xlsx), GraphML, XML/AML, or VSDX file.
 
-    Supported formats: .json, .yaml, .yml, .csv
+    Supported formats: .json, .yaml, .yml, .csv, .xlsx, .graphml, .xml, .aml, .vsdx
     Maximum file size: {MAX_UPLOAD_SIZE_MB} MB
     """
     if file.size is not None and file.size > MAX_UPLOAD_BYTES:

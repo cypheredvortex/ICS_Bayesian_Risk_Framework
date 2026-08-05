@@ -1,9 +1,17 @@
 ﻿Rank,Asset,Risk Level,Risk Score,Compromise Probability,Impact Score,Consequence Severity,Scope Multiplier
-1,engineering_workstation,Critical,5.778,0.963,6.000,6.000,1.000
-2,scada_server,Critical,5.377,0.768,7.000,7.000,1.000
-3,plc_dosing,Critical,5.283,0.419,12.600,9.000,1.400
-4,chlorine_pump,Critical,3.457,0.332,10.400,8.000,1.300
-5,water_supply,Critical,2.904,0.207,14.000,10.000,1.400
-6,historian,Critical,2.793,0.698,4.000,4.000,1.000
-7,vendor_remote_access,High,1.040,0.520,2.000,2.000,1.000
-8,operator,Low,0.000,0.175,0.000,0.000,1.000
+1,DMZ,High,0.959,0.959,1.000,1.000,1.000
+2,Firewall,High,0.950,0.950,1.000,1.000,1.000
+3,VPN_Gateway,High,0.913,0.913,1.000,1.000,1.000
+4,Domain_Controller,High,0.853,0.853,1.000,1.000,1.000
+5,Patch_Management_Server,High,0.853,0.853,1.000,1.000,1.000
+6,Historian,High,0.851,0.851,1.000,1.000,1.000
+7,HMI,High,0.851,0.851,1.000,1.000,1.000
+8,PLC_2,Moderate,0.799,0.799,1.000,1.000,1.000
+9,Internet,Moderate,0.780,0.780,1.000,1.000,1.000
+10,Corporate_Network,Moderate,0.688,0.688,1.000,1.000,1.000
+11,SCADA_Server,Moderate,0.495,0.495,1.000,1.000,1.000
+12,OPC_Server,Low,0.086,0.086,1.000,1.000,1.000
+13,Safety_PLC,Low,0.084,0.084,1.000,1.000,1.000
+14,Actuator,Low,0.078,0.783,0.100,0.100,1.000
+15,RTU,Low,0.049,0.049,1.000,1.000,1.000
+16,PLC_1,Low,0.019,0.019,1.000,1.000,1.000

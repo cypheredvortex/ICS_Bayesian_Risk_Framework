@@ -1,13 +1,28 @@
 {
-  "evidence": {},
+  "evidence": {
+    "Remote_Site": 0,
+    "Level_3_Switch": 0,
+    "Level_2_Switch": 0,
+    "Sensor": 0,
+    "Engineering_Workstation": 0,
+    "Remote_Access_Server": 0
+  },
   "posteriors": {
-    "vendor_remote_access": 0.52,
-    "engineering_workstation": 0.963,
-    "scada_server": 0.768072,
-    "operator": 0.175,
-    "plc_dosing": 0.419248,
-    "chlorine_pump": 0.332382,
-    "water_supply": 0.207435,
-    "historian": 0.698264
+    "Internet": 0.779796,
+    "Firewall": 0.949624,
+    "DMZ": 0.959143,
+    "VPN_Gateway": 0.912749,
+    "Corporate_Network": 0.687966,
+    "Domain_Controller": 0.853103,
+    "Patch_Management_Server": 0.853103,
+    "SCADA_Server": 0.49545,
+    "Historian": 0.851449,
+    "HMI": 0.851449,
+    "OPC_Server": 0.086331,
+    "PLC_1": 0.018576,
+    "PLC_2": 0.798576,
+    "Actuator": 0.783257,
+    "RTU": 0.048824,
+    "Safety_PLC": 0.083761
   }
 }

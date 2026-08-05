@@ -291,20 +291,18 @@ export default function App() {
     const file = event.target.files?.[0]
     if (!file) return
 
-    const supported = /\.(json|ya?ml|csv)$/i.test(file.name)
+    // Support the full set of backend-supported topology formats
+    const supported = /\.(json|ya?ml|csv|xlsx|graphml|xml|aml|vsdx|vsd|pdf|png)$/i.test(file.name)
     if (!supported) {
       pushToast(
-        'Unsupported file type. Upload a .json, .yaml/.yml, or .csv topology file.',
+        'Unsupported file type. Upload a .json, .yaml/.yml, .csv, .pdf, .vsdx, or .png topology file.',
         'error',
       )
       event.target.value = ''
       return
     }
 
-    // The backend's /upload-topology-file endpoint parses and validates
-    // JSON, YAML, and CSV topologies server-side (DAG check, required
-    // per-kind fields, etc.), so hand it the raw file rather than trying
-    // to parse non-JSON formats in the browser.
+    // The backend's /upload-topology-file endpoint handles many formats
     const formData = new FormData()
     formData.append('file', file)
 
@@ -337,6 +335,7 @@ export default function App() {
       event.target.value = ''
     }
   }
+
 
   const hasUnsavedEvidence = Object.keys(evidence).some(
     (key) => evidence[key] !== 'Unknown',
@@ -595,6 +594,8 @@ export default function App() {
           onDatasetChange={requestPresetChange}
           onFileUpload={handleFileUpload}
           onRunAssessment={() => void runAssessment()}
+          // ✅ New prop: restrict file picker to these extensions
+          accept=".json,.yaml,.yml,.csv,.pdf,.vsdx,.png"
         />
 
         <EvidencePanel

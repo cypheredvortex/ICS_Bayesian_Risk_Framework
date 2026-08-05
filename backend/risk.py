@@ -7,6 +7,7 @@ from pathlib import Path
 import pandas as pd
 
 from backend.config import get_impact_weight
+from backend.settings import get_settings
 
 
 def m_scope(attrs: dict) -> float:
@@ -39,19 +40,20 @@ def build_risk_table(posteriors: dict, assets: dict) -> pd.DataFrame:
     return pd.DataFrame(rows).sort_values("risk", ascending=False).reset_index(drop=True)
 
 
-RISK_LEVEL_THRESHOLDS = {
-    "critical": 1.5,
-    "high": 0.8,
-    "moderate": 0.3,
-}
-
-
 def risk_level_for(value: float) -> str:
-    if value >= RISK_LEVEL_THRESHOLDS["critical"]:
+    settings = get_settings()
+    thresholds = settings.get(
+        "risk_level_thresholds",
+        {"critical": 1.5, "high": 0.8, "moderate": 0.3},
+    )
+    critical = float(thresholds.get("critical", 1.5))
+    high = float(thresholds.get("high", 0.8))
+    moderate = float(thresholds.get("moderate", 0.3))
+    if value >= critical:
         return "Critical"
-    if value >= RISK_LEVEL_THRESHOLDS["high"]:
+    if value >= high:
         return "High"
-    if value >= RISK_LEVEL_THRESHOLDS["moderate"]:
+    if value >= moderate:
         return "Moderate"
     return "Low"
 

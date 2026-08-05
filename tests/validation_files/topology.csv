@@ -1,0 +1,44 @@
+id,name,type,zone
+Internet,Internet,device,Internet
+Corporate_Network,Corporate Network,device,Corporate
+DMZ,DMZ,device,DMZ
+Firewall,Firewall,device,DMZ
+VPN_Gateway,VPN Gateway,device,Corporate
+Remote_Access_Server,Remote Access Server,device,Corporate
+Engineering_Workstation,Engineering Workstation,device,Corporate
+SCADA_Server,SCADA Server,device,Level 3
+Historian,Historian,device,Level 3
+HMI,HMI,device,Level 2
+Domain_Controller,Domain Controller,device,Corporate
+Patch_Management_Server,Patch Management Server,device,Corporate
+OPC_Server,OPC Server,device,Level 2
+PLC_1,PLC 1,device,Level 1
+PLC_2,PLC 2,device,Level 1
+RTU,RTU,device,Level 1
+Remote_Site,Remote Site,device,Remote
+Level_3_Switch,Level 3 Switch,device,Level 3
+Level_2_Switch,Level 2 Switch,device,Level 2
+Sensor,Sensor,physical,Level 0
+Actuator,Actuator,physical,Level 0
+Safety_PLC,Safety PLC,device,Level 1
+
+source,target,type,protocol,trust_level
+Internet,Firewall,connects-to,http,low
+Firewall,DMZ,connects-to,http,medium
+DMZ,VPN_Gateway,connects-to,ipsec,medium
+VPN_Gateway,Corporate_Network,connects-to,ipsec,high
+Corporate_Network,Engineering_Workstation,connects-to,rdp,high
+Corporate_Network,Domain_Controller,connects-to,ldap,high
+Corporate_Network,Patch_Management_Server,connects-to,wsman,high
+Corporate_Network,SCADA_Server,connects-to,opc-ua,medium
+SCADA_Server,Historian,connects-to,opc-ua,medium
+SCADA_Server,HMI,connects-to,opc-ua,medium
+SCADA_Server,OPC_Server,connects-to,opc-ua,medium
+OPC_Server,PLC_1,connects-to,modbus,low
+OPC_Server,PLC_2,connects-to,profinet,low
+PLC_1,Sensor,connects-to,modbus,low
+PLC_2,Actuator,connects-to,ethernet/ip,low
+PLC_1,RTU,connects-to,dnp3,low
+RTU,Remote_Site,connects-to,dnp3,low
+SCADA_Server,Safety_PLC,connects-to,profinet,medium
+Safety_PLC,Sensor,connects-to,modbus,low

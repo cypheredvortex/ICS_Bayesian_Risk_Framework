@@ -1,150 +1,396 @@
 {
-  "vendor_remote_access": {
+  "Internet": {
     "parents": [],
     "rows": [
       {
         "parent_state": {},
-        "p_compromised": 0.52
+        "p_compromised": 0.78
       }
     ]
   },
-  "engineering_workstation": {
+  "Firewall": {
     "parents": [
-      "vendor_remote_access"
+      "Internet"
     ],
     "rows": [
       {
         "parent_state": {
-          "vendor_remote_access": 0
+          "Internet": 0
         },
-        "p_compromised": 0.95
+        "p_compromised": 0.78
       },
       {
         "parent_state": {
-          "vendor_remote_access": 1
+          "Internet": 1
         },
-        "p_compromised": 0.975
+        "p_compromised": 0.9978
       }
     ]
   },
-  "scada_server": {
+  "DMZ": {
     "parents": [
-      "engineering_workstation",
-      "operator"
+      "Firewall"
     ],
     "rows": [
       {
         "parent_state": {
-          "engineering_workstation": 0,
-          "operator": 0
+          "Firewall": 0
         },
-        "p_compromised": 0.189
+        "p_compromised": 0.78
       },
       {
         "parent_state": {
-          "engineering_workstation": 0,
-          "operator": 1
+          "Firewall": 1
         },
-        "p_compromised": 0.7567
-      },
-      {
-        "parent_state": {
-          "engineering_workstation": 1,
-          "operator": 0
-        },
-        "p_compromised": 0.7567
-      },
-      {
-        "parent_state": {
-          "engineering_workstation": 1,
-          "operator": 1
-        },
-        "p_compromised": 0.92701
+        "p_compromised": 0.96975
       }
     ]
   },
-  "operator": {
-    "parents": [],
-    "rows": [
-      {
-        "parent_state": {},
-        "p_compromised": 0.175
-      }
-    ]
-  },
-  "plc_dosing": {
+  "VPN_Gateway": {
     "parents": [
-      "scada_server"
+      "DMZ"
     ],
     "rows": [
       {
         "parent_state": {
-          "scada_server": 0
+          "DMZ": 0
         },
-        "p_compromised": 0.288
+        "p_compromised": 0.78
       },
       {
         "parent_state": {
-          "scada_server": 1
+          "DMZ": 1
         },
-        "p_compromised": 0.45888
+        "p_compromised": 0.9318
       }
     ]
   },
-  "chlorine_pump": {
+  "Corporate_Network": {
     "parents": [
-      "plc_dosing"
+      "VPN_Gateway"
     ],
     "rows": [
       {
         "parent_state": {
-          "plc_dosing": 0
+          "VPN_Gateway": 0
         },
-        "p_compromised": 0.108
+        "p_compromised": 0.78
       },
       {
         "parent_state": {
-          "plc_dosing": 1
+          "VPN_Gateway": 1
         },
-        "p_compromised": 0.6432
+        "p_compromised": 0.88626
       }
     ]
   },
-  "water_supply": {
+  "Engineering_Workstation": {
     "parents": [
-      "chlorine_pump"
+      "Corporate_Network"
     ],
     "rows": [
       {
         "parent_state": {
-          "chlorine_pump": 0
+          "Corporate_Network": 0
+        },
+        "p_compromised": 0.78
+      },
+      {
+        "parent_state": {
+          "Corporate_Network": 1
+        },
+        "p_compromised": 0.88626
+      }
+    ]
+  },
+  "Domain_Controller": {
+    "parents": [
+      "Corporate_Network"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "Corporate_Network": 0
+        },
+        "p_compromised": 0.78
+      },
+      {
+        "parent_state": {
+          "Corporate_Network": 1
+        },
+        "p_compromised": 0.88626
+      }
+    ]
+  },
+  "Patch_Management_Server": {
+    "parents": [
+      "Corporate_Network"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "Corporate_Network": 0
+        },
+        "p_compromised": 0.78
+      },
+      {
+        "parent_state": {
+          "Corporate_Network": 1
+        },
+        "p_compromised": 0.88626
+      }
+    ]
+  },
+  "SCADA_Server": {
+    "parents": [
+      "Corporate_Network"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "Corporate_Network": 0
+        },
+        "p_compromised": 0.78
+      },
+      {
+        "parent_state": {
+          "Corporate_Network": 1
+        },
+        "p_compromised": 0.92421
+      }
+    ]
+  },
+  "Historian": {
+    "parents": [
+      "SCADA_Server"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "SCADA_Server": 0
+        },
+        "p_compromised": 0.78
+      },
+      {
+        "parent_state": {
+          "SCADA_Server": 1
+        },
+        "p_compromised": 0.92421
+      }
+    ]
+  },
+  "HMI": {
+    "parents": [
+      "SCADA_Server"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "SCADA_Server": 0
+        },
+        "p_compromised": 0.78
+      },
+      {
+        "parent_state": {
+          "SCADA_Server": 1
+        },
+        "p_compromised": 0.92421
+      }
+    ]
+  },
+  "OPC_Server": {
+    "parents": [
+      "SCADA_Server"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "SCADA_Server": 0
+        },
+        "p_compromised": 0.78
+      },
+      {
+        "parent_state": {
+          "SCADA_Server": 1
+        },
+        "p_compromised": 0.92421
+      }
+    ]
+  },
+  "PLC_1": {
+    "parents": [
+      "OPC_Server"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "OPC_Server": 0
+        },
+        "p_compromised": 0.78
+      },
+      {
+        "parent_state": {
+          "OPC_Server": 1
+        },
+        "p_compromised": 0.9978
+      }
+    ]
+  },
+  "PLC_2": {
+    "parents": [
+      "OPC_Server"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "OPC_Server": 0
+        },
+        "p_compromised": 0.78
+      },
+      {
+        "parent_state": {
+          "OPC_Server": 1
+        },
+        "p_compromised": 0.995177
+      }
+    ]
+  },
+  "Sensor": {
+    "parents": [
+      "PLC_1",
+      "Safety_PLC"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "PLC_1": 0,
+          "Safety_PLC": 0
         },
         "p_compromised": 0.01
       },
       {
         "parent_state": {
-          "chlorine_pump": 1
+          "PLC_1": 0,
+          "Safety_PLC": 1
         },
-        "p_compromised": 0.604
+        "p_compromised": 0.9901
+      },
+      {
+        "parent_state": {
+          "PLC_1": 1,
+          "Safety_PLC": 0
+        },
+        "p_compromised": 0.9901
+      },
+      {
+        "parent_state": {
+          "PLC_1": 1,
+          "Safety_PLC": 1
+        },
+        "p_compromised": 0.999901
       }
     ]
   },
-  "historian": {
+  "Actuator": {
     "parents": [
-      "scada_server"
+      "PLC_2"
     ],
     "rows": [
       {
         "parent_state": {
-          "scada_server": 0
+          "PLC_2": 0
         },
-        "p_compromised": 0.6435
+        "p_compromised": 0.01
       },
       {
         "parent_state": {
-          "scada_server": 1
+          "PLC_2": 1
         },
-        "p_compromised": 0.7148
+        "p_compromised": 0.978294
+      }
+    ]
+  },
+  "RTU": {
+    "parents": [
+      "PLC_1"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "PLC_1": 0
+        },
+        "p_compromised": 0.78
+      },
+      {
+        "parent_state": {
+          "PLC_1": 1
+        },
+        "p_compromised": 0.9978
+      }
+    ]
+  },
+  "Remote_Site": {
+    "parents": [
+      "RTU"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "RTU": 0
+        },
+        "p_compromised": 0.78
+      },
+      {
+        "parent_state": {
+          "RTU": 1
+        },
+        "p_compromised": 0.9978
+      }
+    ]
+  },
+  "Safety_PLC": {
+    "parents": [
+      "SCADA_Server"
+    ],
+    "rows": [
+      {
+        "parent_state": {
+          "SCADA_Server": 0
+        },
+        "p_compromised": 0.78
+      },
+      {
+        "parent_state": {
+          "SCADA_Server": 1
+        },
+        "p_compromised": 0.93939
+      }
+    ]
+  },
+  "Remote_Access_Server": {
+    "parents": [],
+    "rows": [
+      {
+        "parent_state": {},
+        "p_compromised": 0.78
+      }
+    ]
+  },
+  "Level_3_Switch": {
+    "parents": [],
+    "rows": [
+      {
+        "parent_state": {},
+        "p_compromised": 0.78
+      }
+    ]
+  },
+  "Level_2_Switch": {
+    "parents": [],
+    "rows": [
+      {
+        "parent_state": {},
+        "p_compromised": 0.78
       }
     ]
   }
