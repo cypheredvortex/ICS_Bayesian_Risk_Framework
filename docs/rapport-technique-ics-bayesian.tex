@@ -4,7 +4,6 @@
 \usepackage[french]{babel}
 \usepackage{geometry}
 \usepackage{graphicx}
-\usepackage{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
@@ -22,30 +21,60 @@
 \usepackage{longtable}
 \usepackage{tikz}
 \usepackage{pgfplots}
-\usepackage{microtype}
+
+% --- Typographie : Palatino (texte + math) / Helvetica (titres, sffamily) ---
 \usepackage{mathpazo}
+\usepackage[scaled=0.92]{helvet}
+\linespread{1.04}
+
 \usepackage{setspace}
 \usepackage{parskip}
 \usepackage{needspace}
 \usepackage{etoolbox}
 \usepackage{titlesec}
+\usepackage{titletoc}
 \usepackage{tabularx}
+\usepackage[most]{tcolorbox}
+\usepackage{microtype}
 
 \usetikzlibrary{positioning,arrows.meta,shapes,calc,shadows,shadows.blur,decorations.pathreplacing,backgrounds}
 \pgfplotsset{compat=1.18}
 
-% Géométrie et marges
-\geometry{a4paper, margin=2.8cm, top=3cm, bottom=3cm, headheight=15pt}
+% ============================================================
+% PALETTE DE COULEURS
+% ============================================================
+\definecolor{primary}{RGB}{0,51,102}       % bleu marine principal
+\definecolor{secondary}{RGB}{0,102,204}    % bleu accent
+\definecolor{accent}{RGB}{184,115,51}      % cuivre / ambre — accents chaleureux, boîtes
+\definecolor{accentlight}{RGB}{250,239,224}
+\definecolor{lightgray}{RGB}{246,247,249}
+\definecolor{midgray}{RGB}{225,229,234}
+\definecolor{darkgray}{RGB}{60,64,70}
+\colorlet{ucblue}{secondary}
+\colorlet{classblue}{primary!55!secondary}
+\colorlet{sequenceblue}{secondary!55!white}
+\colorlet{actorcolor}{primary!14!white}
+
+% ============================================================
+% MICROTYPOGRAPHIE
+% ============================================================
+\microtypesetup{protrusion=true, expansion=true, spacing=true, kerning=true, final}
+
+% ============================================================
+% GÉOMÉTRIE ET MARGES
+% ============================================================
+\geometry{a4paper, margin=2.8cm, top=3.1cm, bottom=3.1cm, headheight=16pt, headsep=10pt}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{1.2ex plus 0.3ex minus 0.2ex}
+\setlength{\parskip}{1.1ex plus 0.3ex minus 0.2ex}
 
 % Interligne
 \onehalfspacing
 
-% Pénalités
+% Pénalités anti veuves/orphelines
 \clubpenalty=10000
 \widowpenalty=10000
 \displaywidowpenalty=10000
+\brokenpenalty=10000
 \raggedbottom
 
 % Flottants
@@ -53,111 +82,275 @@
 \renewcommand{\textfraction}{0.05}
 \renewcommand{\topfraction}{0.95}
 \renewcommand{\bottomfraction}{0.8}
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
 
-% Hyperliens
+% ============================================================
+% HYPERREF (chargé après les couleurs, avant les autres réglages)
+% ============================================================
+\usepackage{hyperref}
 \hypersetup{
     colorlinks=true,
-    linkcolor=primary!70,
-    urlcolor=secondary,
-    pdftitle={Rapport technique - Framework d'évaluation quantitative des risques ICS}
+    linkcolor=primary,
+    citecolor=secondary,
+    urlcolor=secondary!80!black,
+    filecolor=secondary,
+    linktoc=all,
+    bookmarksopen=true,
+    bookmarksdepth=3,
+    breaklinks=true,
+    pdftitle={Rapport technique - Framework d'évaluation quantitative des risques ICS},
+    pdfauthor={Sghiri Achraf},
+    pdfsubject={Framework d'évaluation quantitative des risques ICS fondé sur les réseaux bayésiens},
+    pdfcreator={LaTeX}
 }
 
-% Couleurs
-\definecolor{primary}{RGB}{0,51,102}
-\definecolor{secondary}{RGB}{0,102,204}
-\definecolor{lightgray}{RGB}{245,245,245}
-\definecolor{darkgray}{RGB}{50,50,50}
-\definecolor{ucblue}{RGB}{70,130,180}
-\definecolor{classblue}{RGB}{100,149,237}
-\definecolor{sequenceblue}{RGB}{135,206,250}
-\definecolor{actorcolor}{RGB}{210,225,240}
-
-% Style des titres
+% ============================================================
+% TITRES DE SECTION
+% ============================================================
 \titleformat{\section}
   {\normalfont\Large\bfseries\sffamily\color{primary}}
-  {\thesection}{1em}{}
-\titlespacing*{\section}{0pt}{3.5ex plus 1ex minus 0.2ex}{2.3ex plus 0.2ex}
+  {\colorbox{primary}{\makebox[0.95cm][c]{\color{white}\thesection}}}
+  {0.5em}
+  {}
+  [{\color{secondary!70}\titlerule[0.8pt]}]
+\titlespacing*{\section}{0pt}{3.6ex plus 1ex minus 0.2ex}{1.6ex plus 0.2ex}
 
 \titleformat{\subsection}
-  {\normalfont\large\bfseries\sffamily\color{primary!80}}
-  {\thesubsection}{1em}{}
-\titlespacing*{\subsection}{0pt}{2.8ex plus 0.8ex minus 0.2ex}{1.8ex plus 0.2ex}
+  {\normalfont\large\bfseries\sffamily\color{primary!85}}
+  {\textcolor{secondary}{\thesubsection}}{0.9em}{}
+\titlespacing*{\subsection}{0pt}{2.6ex plus 0.8ex minus 0.2ex}{1.4ex plus 0.2ex}
 
 \titleformat{\subsubsection}
   {\normalfont\normalsize\bfseries\sffamily\color{primary!70}}
-  {\thesubsubsection}{1em}{}
-\titlespacing*{\subsubsection}{0pt}{2.2ex plus 0.5ex}{1.5ex}
+  {\textcolor{secondary!80}{\thesubsubsection}}{0.8em}{}
+\titlespacing*{\subsubsection}{0pt}{2.1ex plus 0.5ex}{1.1ex}
 
-% En-tête/pied
+% Titres non numérotés (Résumé, Abstract, Remerciements)
+\newcommand{\unnumberedsection}[1]{%
+  \phantomsection
+  {\normalfont\Large\bfseries\sffamily\color{primary}#1\par}
+  \vspace{-2pt}{\color{secondary!70}\rule{\linewidth}{0.8pt}}
+  \vspace{1.6ex plus 0.2ex}%
+}
+
+% ============================================================
+% EN-TÊTE / PIED DE PAGE
+% ============================================================
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small\itshape\color{primary!70} Rapport technique ICS}
-\fancyhead[R]{\small\thepage}
-\fancyfoot[C]{\small\color{primary!50} -- \thepage\ --}
-\renewcommand{\headrulewidth}{0.4pt}
-\renewcommand{\footrulewidth}{0pt}
-\fancyhead[L]{\small\itshape\color{primary!70} \leftmark}
-\fancyhead[R]{\small\thepage}
+\fancyhead[L]{\small\sffamily\color{primary!75} Rapport technique --- Framework ICS}
+\fancyhead[R]{\small\sffamily\color{primary!75} \nouppercase{\rightmark}}
+\fancyfoot[L]{\footnotesize\sffamily\color{darkgray!70} EMSI}
+\fancyfoot[C]{\footnotesize\sffamily\color{darkgray!70} Sghiri Achraf}
+\fancyfoot[R]{\footnotesize\sffamily\color{primary} \thepage}
+\renewcommand{\headrulewidth}{0.6pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{secondary!55}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrulewidth}{0.3pt}
 
-% Tableaux
+\fancypagestyle{plain}{%
+  \fancyhf{}
+  \fancyfoot[R]{\footnotesize\sffamily\color{primary} \thepage}
+  \renewcommand{\headrulewidth}{0pt}
+}
+
+% ============================================================
+% TABLE DES MATIÈRES / LISTE DES FIGURES
+% ============================================================
+\contentsmargin{0pt}
+\titlecontents{section}
+  [1.1cm]{\vspace{5pt}\sffamily\bfseries\color{primary}}
+  {\contentslabel{1.1cm}}
+  {\hspace*{-1.1cm}}
+  {\hfill\color{primary}\contentspage}
+\titlecontents{subsection}
+  [1.6cm]{\sffamily\color{darkgray}\small}
+  {\contentslabel{1.0cm}}
+  {\hspace*{-1.0cm}}
+  {\hfill\color{darkgray}\contentspage}
+  [\vspace{2pt}]
+
+% ============================================================
+% TABLEAUX
+% ============================================================
 \renewcommand{\arraystretch}{1.4}
 \setlength{\tabcolsep}{10pt}
-\captionsetup[table]{font=small, labelfont=bf, position=above, skip=6pt}
 
-% Figures
-\captionsetup[figure]{font=small, labelfont=bf, position=below, skip=8pt}
+% ============================================================
+% LÉGENDES (FIGURES / TABLEAUX)
+% ============================================================
+\captionsetup{
+    font={small,sf},
+    labelfont={bf,color=primary},
+    labelsep=colon,
+    justification=centering,
+    margin=1cm
+}
+\captionsetup[table]{position=above, skip=7pt}
+\captionsetup[figure]{position=below, skip=8pt}
+
+% ============================================================
+% LISTES
+% ============================================================
+\setlist[itemize,1]{label=\textcolor{secondary}{\small\raisebox{0.15em}{\textbullet}}, topsep=0.4\baselineskip}
+\setlist[itemize,2]{label=\textcolor{accent}{\footnotesize\textendash}, topsep=0.2\baselineskip}
+\setlist[itemize,3]{label=\textcolor{primary!60}{\tiny$\circ$}}
+\setlist[enumerate,1]{label=\textcolor{primary}{\arabic*.}, font=\bfseries\color{primary}, topsep=0.4\baselineskip}
+
+% ============================================================
+% BOÎTES STYLÉES (tcolorbox)
+% ============================================================
+\tcbset{
+  boitecommune/.style={
+    enhanced, breakable, sharp corners=downhill, boxrule=0pt,
+    left=9pt, right=9pt, top=7pt, bottom=7pt,
+    leftrule=3.2pt,
+    fonttitle=\sffamily\bfseries\small,
+    colback=white
+  }
+}
+\newtcolorbox{contributionbox}[1][Fonctionnalités clés]{%
+  boitecommune, colframe=primary, coltitle=primary,
+  title=#1, attach title to upper={\ }
+}
+\newtcolorbox{notebox}[1][Remarque]{%
+  boitecommune, colframe=secondary, coltitle=secondary,
+  title=#1, attach title to upper={\ }
+}
+\newtcolorbox{warningbox}[1][Point de vigilance]{%
+  boitecommune, colframe=accent, coltitle=accent,
+  title=#1, attach title to upper={\ }
+}
+\newtcolorbox{abstractbox}{%
+  enhanced, breakable, sharp corners, boxrule=0.5pt,
+  colframe=midgray, colback=lightgray,
+  left=14pt, right=14pt, top=10pt, bottom=10pt
+}
+
+% ============================================================
+% LISTINGS (au cas où du code source serait inséré)
+% ============================================================
+\lstset{
+  backgroundcolor=\color{lightgray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{primary}\bfseries,
+  commentstyle=\color{darkgray}\itshape,
+  stringstyle=\color{accent},
+  numbers=left, numberstyle=\tiny\color{darkgray!60},
+  frame=single, rulecolor=\color{midgray},
+  breaklines=true, captionpos=b, showstringspaces=false
+}
 
 % Commande pour forcer l'espace
 \newcommand{\forcereset}[1]{%
     \needspace{#1\baselineskip}%
 }
 
-% Page de titre
-\title{
-    \vspace{2.5cm}
-    {\Huge\sffamily\bfseries\color{primary} Rapport technique} \\
-    \vspace{0.6cm}
-    {\Large\sffamily\color{primary!80} Développement d'un framework générique d'évaluation quantitative des risques ICS fondé sur les réseaux bayésiens} \\
-    \vspace{0.4cm}
-    {\large\itshape Modélisation, moteur d'inférence bayésienne, tableau de bord Web et planification du projet} \\
-    \vspace{1.2cm}
-    {\large Période de réalisation : 1er juillet 2026 -- 15 août 2026}
-}
-\date{}
+% Séparateur visuel utilisé à l'intérieur des noeuds TikZ (style UML),
+% remplace un \hline nu qui n'est valide qu'au sein d'un tabular.
+\newcommand{\dividerline}{\rule{2.4cm}{0.4pt}\\[2pt]}
 
 \begin{document}
 
-\maketitle
-\thispagestyle{empty}
+% ============================================================
+% PAGE DE TITRE PERSONNALISÉE AVEC LOGOS
+% ============================================================
+\begin{titlepage}
+    \centering
+    % Logos
+    \includegraphics[width=0.30\textwidth]{emsi_logo.png}\hfill
+    \includegraphics[width=0.25\textwidth]{jesa.png}\\[1.8cm]
+
+    {\color{secondary}\rule{0.5\textwidth}{0.8pt}}\\[0.6cm]
+    {\Huge\sffamily\bfseries\color{primary} Rapport technique}\\[0.9cm]
+    {\Large\sffamily\color{primary!85} Développement d'un framework générique d'évaluation quantitative des risques ICS fondé sur les réseaux bayésiens}\\[0.5cm]
+    {\large\itshape\color{darkgray} Modélisation, moteur d'inférence bayésienne, tableau de bord Web et planification du projet}\\[0.6cm]
+    {\color{secondary}\rule{0.5\textwidth}{0.8pt}}\\[2cm]
+
+    \begin{tcolorbox}[
+        enhanced, breakable=false, sharp corners, boxrule=0.5pt,
+        colframe=midgray, colback=lightgray,
+        width=0.72\textwidth, left=16pt, right=16pt, top=10pt, bottom=10pt
+      ]
+        \begin{flushleft}
+            \large\sffamily
+            \textbf{\textcolor{primary}{Réalisé par :}} Sghiri Achraf \\[2pt]
+            \textbf{\textcolor{primary}{Encadré par :}} Basma Lazaar \\[2pt]
+            \textbf{\textcolor{primary}{Année universitaire :}} 2025-2026
+        \end{flushleft}
+    \end{tcolorbox}
+
+    \vfill
+    {\sffamily\color{primary!70} Période de réalisation : 1er juillet 2026 -- 15 août 2026}
+\end{titlepage}
+
+
+% ============================================================
+% REMERCIEMENTS
+% ============================================================
 \newpage
+\thispagestyle{empty}
+\unnumberedsection{Remerciements}
+\addcontentsline{toc}{section}{Remerciements}
+
+La concrétisation de ce projet n'aurait été possible sans l'apport déterminant de diverses personnes dont l'engagement, explicite ou discret, a constitué un levier essentiel à chaque étape de sa réalisation.
+
+Je tiens à exprimer ma haute considération à \textbf{Basma Lazaar}, encadrante de ce travail, pour la qualité de son encadrement, la pertinence de ses orientations méthodologiques, ainsi que sa constante disponibilité. Son exigence intellectuelle et son professionnalisme ont constitué un cadre structurant et stimulant.
+
+Mes remerciements s'étendent également à mes pairs, dont les échanges constructifs, la solidarité et la coopération ont contribué, de manière significative, à la dynamique constructive ayant entouré ce projet.
+
+Enfin, une mention particulière est adressée à ma famille, dont le soutien moral permanent et la confiance renouvelée ont représenté une assise essentielle tout au long de ce cheminement.
+
+\vspace{1cm}
+\hfill À tous… merci.
+
+% ============================================================
+% RÉSUMÉ
+% ============================================================
+\newpage
+\thispagestyle{empty}
+\unnumberedsection{Résumé}
+\addcontentsline{toc}{section}{Résumé}
+
+\begin{abstractbox}
+Les systèmes de contrôle industriels (ICS) pilotent des procédés physiques dont la compromission peut avoir des conséquences graves en matière de sûreté, d'environnement et d'économie. L'évaluation du risque cyber ne peut se limiter à une liste de vulnérabilités : elle doit intégrer la topologie, les dépendances, les protections, l'incertitude et les observations.
+
+Le présent projet propose un framework qui transforme une architecture ICS en un réseau bayésien discret. Il calcule des probabilités intrinsèques de compromission et paramètre automatiquement les tables de probabilités conditionnelles (CPT) via un modèle Noisy-OR, en attribuant une probabilité de propagation pour chaque relation. L'inférence exacte tient compte des preuves et classe les actifs par risque.
+
+Une application Desktop mono-utilisateur permet d'importer une topologie (JSON, YAML, CSV), de sélectionner des preuves, d'exécuter l'analyse, d'inspecter le réseau et de télécharger un registre des risques ainsi qu'un rapport PDF. Le prototype est fonctionnel, modulaire, testable et configurable pour s'adapter à des contextes industriels réels.
+\end{abstractbox}
+
+% ============================================================
+% ABSTRACT
+% ============================================================
+\newpage
+\thispagestyle{empty}
+\unnumberedsection{Abstract}
+\addcontentsline{toc}{section}{Abstract}
+
+\begin{abstractbox}
+Industrial Control Systems (ICS) drive physical processes whose compromise can lead to severe safety, environmental, and economic consequences. Cybersecurity risk assessment cannot be reduced to a mere list of vulnerabilities; it must account for topology, dependencies, protections, uncertainty, and observations.
+
+This project introduces a framework that transforms an ICS architecture into a discrete Bayesian network. It computes intrinsic compromise probabilities and automatically populates Conditional Probability Tables (CPTs) using a Noisy-OR model, assigning a propagation probability to each relationship. Exact inference incorporates evidence and ranks assets by risk.
+
+A single-user desktop application enables users to import a network topology (JSON, YAML, CSV), select evidence, execute the risk analysis, inspect the Bayesian network, and download a risk register along with a PDF report. The prototype is functional, modular, testable, and configurable, allowing it to be adapted to real-world industrial environments.
+\end{abstractbox}
+
+% ============================================================
+% TABLE DES MATIÈRES ET LISTE DES FIGURES
+% ============================================================
+\newpage
+\pagestyle{fancy}   % réactiver l'en-tête/pied pour le reste du document
 
 \tableofcontents
-\thispagestyle{empty}
+\newpage
+\listoffigures
 \newpage
 
-% ==========================================================================
-% RÉSUMÉ (transformé en points)
-% ==========================================================================
-\section*{Résumé}
-\addcontentsline{toc}{section}{Résumé}
-\markboth{Résumé}{Résumé}
-\forcereset{8}
-
-\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
-    \item Les ICS pilotent des procédés physiques dont la compromission peut avoir des conséquences de sûreté, environnementales et économiques.
-    \item L'évaluation du risque cyber ne peut se limiter à une liste de vulnérabilités : elle doit intégrer la topologie, les dépendances, les protections, l'incertitude et les observations.
-    \item Le framework transforme une architecture ICS en réseau bayésien discret.
-    \item Il calcule des probabilités intrinsèques de compromission et paramètre automatiquement les tables de probabilités conditionnelles (CPT) via un modèle Noisy-OR et attribut une probabilité de propagation pour chaque relation.
-    \item L'inférence exacte tient compte des preuves et classe les actifs par risque.
-    \item L'application Web permet d'importer une topologie (JSON, YAML, CSV), de sélectionner des preuves, d'exécuter l'analyse, d'inspecter le réseau et de télécharger un registre des risques et un rapport PDF.
-    \item Le prototype est fonctionnel, modulaire, testable et configurable pour s'adapter à des contextes industriels réels.
-\end{itemize}
-
-\newpage
-
-% ==========================================================================
-% INTRODUCTION GÉNÉRALE (transformée en points)
-% ==========================================================================
+% ============================================================
+% INTRODUCTION GÉNÉRALE
+% ============================================================
 \section{Introduction générale}
 \markboth{Introduction générale}{Introduction générale}
 \forcereset{8}
@@ -174,9 +367,9 @@
 
 \newpage
 
-% ==========================================================================
+% ============================================================
 % PRÉSENTATION DU PROJET
-% ==========================================================================
+% ============================================================
 \section{Présentation du projet}
 \markboth{Présentation du projet}{Présentation du projet}
 
@@ -196,7 +389,8 @@
 
 \subsection{Fonctionnalités livrées}
 \forcereset{5}
-\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+\begin{contributionbox}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip, topsep=2pt]
     \item Modélisation d'actifs humains, techniques et physiques.
     \item Import de topologies JSON, YAML ou CSV + jeux de données prédéfinis.
     \item Pondération des dépendances et des contrôles.
@@ -206,12 +400,13 @@
     \item Tableau de bord Web avec visualisation de graphe et inspection des CPT.
     \item Export d'un registre de risques CSV et d'un rapport PDF de synthèse.
 \end{itemize}
+\end{contributionbox}
 
 \newpage
 
-% ==========================================================================
+% ============================================================
 % WORKFLOW DE L'APPLICATION
-% ==========================================================================
+% ============================================================
 \section{Workflow de l'application}
 \markboth{Workflow de l'application}{Workflow de l'application}
 \forcereset{5}
@@ -227,8 +422,11 @@
     \item Au chargement, le frontend récupère les pondérations via GET /settings et affiche un tableau de bord vide.
     \item Choix d'un jeu de données prédéfini (SWAT, Building Automation, Power Substation, Water Treatment) ou import d'un fichier.
     \item L'évaluation n'est possible qu'après chargement d'une topologie (bouton désactivé sinon).
-    \item Raccourci clavier (touche r) pour lancer l'évaluation une fois les données disponibles.
 \end{itemize}
+
+\begin{notebox}[Astuce]
+Raccourci clavier (touche r) pour lancer l'évaluation une fois les données disponibles.
+\end{notebox}
 
 \subsection{Chargement et validation de la topologie}
 \forcereset{4}
@@ -239,9 +437,12 @@
             \item POST /upload-topology-file pour un fichier .json, .yaml/.yml ou .csv (backend seul parse et valide).
         \end{itemize}
     \item La validation côté serveur vérifie le graphe orienté acyclique et les champs requis par type d'actif.
-    \item En cas d'échec, le message d'erreur (champ detail de FastAPI) est affiché dans une notification.
     \item Changer de preset alors que des preuves existent déclenche une confirmation (réinitialisation de la topologie, des preuves et du résultat).
 \end{itemize}
+
+\begin{warningbox}[Gestion des erreurs]
+En cas d'échec, le message d'erreur (champ detail de FastAPI) est affiché dans une notification.
+\end{warningbox}
 
 \newpage
 \subsection{Sélection des preuves et configuration}
@@ -267,7 +468,7 @@
             \item Construit le réseau bayésien.
             \item Calcule les probabilités intrinsèques de chaque actif.
             \item Dérive les CPT selon un modèle Noisy-OR.
-            \item Attribut une probabilité de propagation pour chaque relation.
+            \item Attribue une probabilité de propagation pour chaque relation.
             \item Exécute une inférence exacte (élimination de variables) avec les preuves.
         \end{itemize}
     \item Production :
@@ -277,9 +478,6 @@
         \end{itemize}
 \end{itemize}
 
-% ============================================================
-% NOUVEAU SAUT DE PAGE POUR 3.5
-% ============================================================
 \newpage
 \subsection{Exploration des résultats}
 \forcereset{4}
@@ -309,9 +507,9 @@
 
 \newpage
 
-% ==========================================================================
+% ============================================================
 % CHOIX TECHNOLOGIQUES
-% ==========================================================================
+% ============================================================
 \section{Choix technologiques}
 \markboth{Choix technologiques}{Choix technologiques}
 
@@ -342,13 +540,13 @@
 \end{itemize}
 
 \newpage
-\subsection{Base de donn\'ees}
+\subsection{Base de données}
 \forcereset{4}
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
-    \item \textbf{SQLite} : moteur de base de donn\'ees relationnelle embarqu\'e utilis\'e comme stockage principal du framework. La base est enregistr\'ee dans un fichier unique (\texttt{backend/data/ICSRiskFramework.db}) sans n\'ecessiter de serveur ni de configuration. Ce choix simplifie le d\'eploiement en d\'eveloppement et permet de d\'emarrer l'application imm\'ediatement apr\`es le clonage du d\'ep\^ot.
-    \item \textbf{SQLAlchemy 2.0} : ORM (Object-Relational Mapping) complet pour la persistance des analyses en base de donn\'ees. Il est utilis\'e avec SQLite en d\'eveloppement et peut basculer vers PostgreSQL en production via la variable d'environnement \texttt{ICS\_DB\_URL}. La version 2.0 utilise le style de d\'eclaration par type (\texttt{Mapped} + \texttt{mapped\_column}) offrant un typage statique des mod\`eles. Un mod\`ele Repository d\'ecouple l'acc\`es aux donn\'ees de la couche m\'etier.
-    \item \textbf{Alembic} : outil de gestion de migrations de sch\'ema de base de donn\'ees pour SQLAlchemy. Il permet de versionner les \'evolutions du sch\'ema (cr\'eation de tables, ajout de colonnes) via des fichiers de migration g\'en\'er\'es automatiquement. La migration initiale (\texttt{alembic/versions/3f1fade8e943\_initial\_schema.py}) d\'efinit les 9 tables du projet : projets, actifs, connexions, n\oe uds bay\'esiens, CPT, r\'esultats d'inf\'erence, scores de risque, rapports et param\`etres.
-    \item \textbf{Initialisation automatique} : la base et les tables sont cr\'e\'ees au premier appel \`a la fonction \texttt{initialize\_database()}, prot\'eg\'ee par un indicateur pour \'eviter les doublons. Le fichier \texttt{backend/database/config.py} centralise la configuration et permet de changer de moteur (PostgreSQL, MySQL) sans modifier le code applicatif.
+    \item \textbf{SQLite} : moteur de base de données relationnelle embarqué utilisé comme stockage principal du framework. La base est enregistrée dans un fichier unique (\texttt{backend/data/ICSRiskFramework.db}) sans nécessiter de serveur ni de configuration. Ce choix simplifie le déploiement en développement et permet de démarrer l'application immédiatement après le clonage du dépôt.
+    \item \textbf{SQLAlchemy 2.0} : ORM (Object-Relational Mapping) complet pour la persistance des analyses en base de données. Il est utilisé avec SQLite en développement et peut basculer vers PostgreSQL en production via la variable d'environnement \texttt{ICS\_DB\_URL}. La version 2.0 utilise le style de déclaration par type (\texttt{Mapped} + \texttt{mapped\_column}) offrant un typage statique des modèles. Un modèle Repository découple l'accès aux données de la couche métier.
+    \item \textbf{Alembic} : outil de gestion de migrations de schéma de base de données pour SQLAlchemy. Il permet de versionner les évolutions du schéma (création de tables, ajout de colonnes) via des fichiers de migration générés automatiquement. La migration initiale (\texttt{alembic/versions/3f1fade8e943\_initial\_schema.py}) définit les 9 tables du projet : projets, actifs, connexions, nœuds bayésiens, CPT, résultats d'inférence, scores de risque, rapports et paramètres.
+    \item \textbf{Initialisation automatique} : la base et les tables sont créées au premier appel à la fonction \texttt{initialize\_database()}, protégée par un indicateur pour éviter les doublons. Le fichier \texttt{backend/database/config.py} centralise la configuration et permet de changer de moteur (PostgreSQL, MySQL) sans modifier le code applicatif.
 \end{itemize}
 
 \newpage
@@ -361,7 +559,7 @@
     \item Git pour l'historique local ; GitHub pour la collaboration (sous réserve des politiques de l'organisme).
 \end{itemize}
 
-% Tableau comparatif (inchangé)
+% Tableau comparatif
 \begin{table}[H]
 \centering
 \caption{Tableau comparatif des technologies}
@@ -370,7 +568,8 @@
 \setlength{\tabcolsep}{10pt}
 \begin{tabular}{>{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}p{3.5cm}}
 \toprule
-\textbf{Technologie} & \textbf{Pourquoi} & \textbf{Alternative} & \textbf{Motif du choix} \\
+\rowcolor{primary}
+\textcolor{white}{\textbf{Technologie}} & \textcolor{white}{\textbf{Pourquoi}} & \textcolor{white}{\textbf{Alternative}} & \textcolor{white}{\textbf{Motif du choix}} \\
 \midrule
 React + TypeScript & UI interactive et contrat de données explicite & Vue, Angular & Écosystème mature et composants adaptés au dashboard \\
 Vite & Build et serveur de développement rapides & Webpack & Configuration plus légère pour une SPA \\
@@ -385,9 +584,9 @@ fetch & Client HTTP natif & Axios & Besoin couvert sans ajouter de dépendance \
 
 \newpage
 
-% ==========================================================================
+% ============================================================
 % MODÉLISATION UML
-% ==========================================================================
+% ============================================================
 \section{Modélisation UML}
 \markboth{Modélisation UML}{Modélisation UML}
 \forcereset{5}
@@ -461,23 +660,23 @@ fetch & Client HTTP natif & Axios & Besoin couvert sans ajouter de dépendance \
     class/.style={rectangle, draw, minimum width=3.2cm, minimum height=1.4cm, align=center, fill=classblue!12, rounded corners, drop shadow, thick, font=\small\sffamily, inner sep=6pt},
     relation/.style={-{Stealth[scale=1.3]}, line width=1.1pt, draw=primary!70}
 ]
-\node[class] (asset) at (-6,4) {Asset\\\hline - id, kind\\- attributes};
-\node[class] (rel) at (-6,0) {Relationship\\\hline - source, target\\- type, firewalled};
-\node[class] (evidence) at (-6,-4) {Evidence\\\hline - asset, state};
+\node[class] (asset) at (-6,4) {Asset\\\dividerline - id, kind\\- attributes};
+\node[class] (rel) at (-6,0) {Relationship\\\dividerline - source, target\\- type, firewalled};
+\node[class] (evidence) at (-6,-4) {Evidence\\\dividerline - asset, state};
 
-\node[class] (graphbuilder) at (-1,2) {GraphBuilder\\\hline + build\_graph()};
-\node[class] (probaengine) at (-1,-2) {ProbabilityEngine\\\hline + compute\_base\_probs()};
+\node[class] (graphbuilder) at (-1,2) {GraphBuilder\\\dividerline + build\_graph()};
+\node[class] (probaengine) at (-1,-2) {ProbabilityEngine\\\dividerline + compute\_base\_probs()};
 
-\node[class] (cptgen) at (4,2) {CPTGenerator\\\hline + generate\_cpt()\\(Noisy-OR)};
-\node[class] (settings) at (4,-2) {Settings\\\hline - poids CVSS,\\exposition, propagation};
+\node[class] (cptgen) at (4,2) {CPTGenerator\\\dividerline + generate\_cpt()\\(Noisy-OR)};
+\node[class] (settings) at (4,-2) {Settings\\\dividerline - poids CVSS,\\exposition, propagation};
 
-\node[class] (inference) at (9,2) {InferenceEngine\\\hline + run\_inference()\\(pgmpy)};
+\node[class] (inference) at (9,2) {InferenceEngine\\\dividerline + run\_inference()\\(pgmpy)};
 
-\node[class] (risk) at (9,-2) {RiskCalculator\\\hline + compute\_risk()\\+ rank\_assets()};
+\node[class] (risk) at (9,-2) {RiskCalculator\\\dividerline + compute\_risk()\\+ rank\_assets()};
 
-\node[class] (attackpaths) at (14,-4) {AttackPathFinder\\\hline + compute\_attack\_paths()};
+\node[class] (attackpaths) at (14,-4) {AttackPathFinder\\\dividerline + compute\_attack\_paths()};
 
-\node[class] (result) at (14,1) {AnalysisResult\\\hline - posteriors\\- cpts\\- risk\_scores\\- attack\_paths};
+\node[class] (result) at (14,1) {AnalysisResult\\\dividerline - posteriors\\- cpts\\- risk\_scores\\- attack\_paths};
 
 \draw[relation] (asset) -- (graphbuilder);
 \draw[relation] (rel) -- (graphbuilder);
@@ -561,9 +760,9 @@ fetch & Client HTTP natif & Axios & Besoin couvert sans ajouter de dépendance \
 
 \newpage
 
-% ==========================================================================
+% ============================================================
 % PLANIFICATION (GANTT)
-% ==========================================================================
+% ============================================================
 \section{Planification du projet --- diagramme de Gantt}
 \markboth{Planification du projet}{Planification du projet}
 \forcereset{6}
@@ -621,9 +820,11 @@ fetch & Client HTTP natif & Axios & Besoin couvert sans ajouter de dépendance \
 \footnotesize
 \setlength{\tabcolsep}{4pt}
 \renewcommand{\arraystretch}{1.2}
+\rowcolors{2}{lightgray}{white}
 \begin{tabularx}{\textwidth}{X c c c X}
 \toprule
-\textbf{Phase} & \textbf{Début} & \textbf{Fin} & \textbf{Durée} & \textbf{Objectif} \\
+\rowcolor{primary}
+\textcolor{white}{\textbf{Phase}} & \textcolor{white}{\textbf{Début}} & \textcolor{white}{\textbf{Fin}} & \textcolor{white}{\textbf{Durée}} & \textcolor{white}{\textbf{Objectif}} \\
 \midrule
 Analyse des besoins et spécifications & 01/07/2026 & 05/07/2026 & 5 j & Cadrer le périmètre fonctionnel et les jeux de données de référence \\
 Conception de l'architecture et du modèle de données & 06/07/2026 & 12/07/2026 & 7 j & Définir le schéma de topologie et la structure du réseau bayésien \\
@@ -639,9 +840,9 @@ Rédaction du rapport et de la documentation & 12/08/2026 & 15/08/2026 & 4 j & F
 
 \newpage
 
-% ==========================================================================
+% ============================================================
 % CONCLUSION
-% ==========================================================================
+% ============================================================
 \section{Conclusion}
 \markboth{Conclusion}{Conclusion}
 \forcereset{7}

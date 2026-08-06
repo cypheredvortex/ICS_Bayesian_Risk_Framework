@@ -325,19 +325,14 @@ def validate_graph(assets: dict[str, dict], relationships: list[tuple], source_l
         raise ValueError(f"{source_label}: no assets found in the topology.")
 
     node_ids = set(assets.keys())
+    supported_types = set(get_propagation_weights().keys())
     for rel in relationships:
         source, target, rel_type, firewalled, metadata = rel
         if source not in node_ids:
             raise ValueError(f"Relationship ({source} -> {target}) references unknown source asset.")
         if target not in node_ids:
             raise ValueError(f"Relationship ({source} -> {target}) references unknown target asset.")
-        if rel_type not in {
-            "controls",
-            "monitors",
-            "actuates",
-            "connects-to",
-            "programs / operates",
-        }:
+        if rel_type not in supported_types:
             raise ValueError(
                 f"Relationship ({source} -> {target}): unknown relationship type '{rel_type}'."
             )

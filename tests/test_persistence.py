@@ -91,9 +91,56 @@ class PersistenceTests(unittest.TestCase):
         self.assertIsNotNone(reloaded)
         self.assertEqual(reloaded.name, "Demo Project")
         self.assertEqual(len(reloaded.assets), 1)
-        self.assertGreaterEqual(len(reloaded.inference_results), 1)
+        self.assertEqual(len(reloaded.inference_results), 1)
         self.assertEqual(len(reloaded.risk_results), 1)
         self.assertEqual(len(reloaded.reports), 1)
+
+    def test_repeated_analysis_run_updates_report_metadata(self):
+        """Verify running the same project again updates its report path and generated timestamp."""
+        topology = {
+            "assets": {
+                "plc_1": {
+                    "kind": "device",
+                    "cvss_type": 8.8,
+                    "exposed": True,
+                    "patched": False,
+                    "consequence_severity": 5.0,
+                }
+            },
+            "relationships": [],
+        }
+        analysis_result = {
+            "posteriors": {"plc_1": 0.72},
+            "risk_scores": [
+                {"asset": "plc_1", "risk": 0.91, "risk_level": "high"}
+            ],
+            "artifacts": {"risk_table": "output/report_v1.csv"},
+        }
+
+        project = self.service.persist_analysis_run(
+            topology=topology,
+            evidence={"plc_1": 1},
+            analysis_result=analysis_result,
+            project_name="Demo Project",
+            topology_source="inline",
+        )
+
+        first_report = project.reports[0]
+        first_generated_at = first_report.generated_at
+
+        analysis_result["artifacts"]["risk_table"] = "output/report_v2.csv"
+        project = self.service.persist_analysis_run(
+            topology=topology,
+            evidence={"plc_1": 1},
+            analysis_result=analysis_result,
+            project_name="Demo Project",
+            topology_source="inline",
+        )
+
+        self.assertEqual(len(project.reports), 1)
+        self.assertEqual(project.reports[0].path, "output/report_v2.csv")
+        self.assertEqual(project.reports[0].filename, "report_v2.csv")
+        self.assertGreater(project.reports[0].generated_at, first_generated_at)
 
     def test_save_and_get_settings(self):
         """Verify settings persistence round-trip."""

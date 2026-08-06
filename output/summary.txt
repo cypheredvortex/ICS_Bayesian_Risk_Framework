@@ -3,15 +3,15 @@ ICS Risk Pipeline -- Run Summary
 Topology file : inline-topology
 Assets        : 22
 Relationships : 19
-Evidence used : {'Remote_Site': 0, 'Level_3_Switch': 0, 'Level_2_Switch': 0, 'Sensor': 0, 'Engineering_Workstation': 0, 'Remote_Access_Server': 0}
+Evidence used : (none provided)
 
 Top 5 assets by risk:
 ----------------------------------------
-  DMZ                      risk=0.959  P(compromised)=0.959  severity=1.0
-  Firewall                 risk=0.950  P(compromised)=0.950  severity=1.0
-  VPN_Gateway              risk=0.913  P(compromised)=0.913  severity=1.0
-  Domain_Controller        risk=0.853  P(compromised)=0.853  severity=1.0
-  Patch_Management_Server  risk=0.853  P(compromised)=0.853  severity=1.0
+  RTU                      risk=0.757  P(compromised)=0.757  severity=1.0
+  Remote_Site              risk=0.757  P(compromised)=0.757  severity=1.0
+  PLC_2                    risk=0.757  P(compromised)=0.757  severity=1.0
+  PLC_1                    risk=0.757  P(compromised)=0.757  severity=1.0
+  HMI                      risk=0.757  P(compromised)=0.757  severity=1.0
 
 Files written this run:
   output/graph.json        - node list + edges + weights

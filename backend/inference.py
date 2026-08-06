@@ -48,6 +48,7 @@ def compute_posteriors_with_evidence(model, evidence: dict) -> tuple[dict, dict]
 
     for node_id in model.nodes():
         if node_id in sanitized:
+            posteriors[node_id] = float(sanitized[node_id])
             continue
         result = infer.query(variables=[node_id], evidence=sanitized, show_progress=False)
         posteriors[node_id] = float(result.get_value(**{node_id: 1}))

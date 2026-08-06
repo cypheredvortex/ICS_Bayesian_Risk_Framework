@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ics-risk-framework"
-version = "1.0.0"
+version = "1.0.1"
 description = "A Generic Bayesian Network-Based Framework for Quantitative Risk Assessment of Industrial Control Systems (ICS)"
 readme = "README.md"
 authors = [
@@ -40,9 +40,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/your-org/ics-risk-framework"
-Repository = "https://github.com/your-org/ics-risk-framework"
-Documentation = "https://github.com/your-org/ics-risk-framework/docs"
+Homepage = "https://github.com/cypheredvortex/ICS_Bayesian_Risk_Framework"
+Repository = "https://github.com/cypheredvortex/ICS_Bayesian_Risk_Framework"
+Documentation = "https://github.com/cypheredvortex/ICS_Bayesian_Risk_Framework/tree/main/docs"
 
 [project.scripts]
 ics-risk = "backend.cli:main"
@@ -59,4 +59,3 @@ python_functions = ["test_*"]
 [tool.coverage.run]
 source = ["backend"]
 omit = ["*/tests/*", "*/migrations/*"]
-

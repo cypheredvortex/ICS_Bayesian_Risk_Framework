@@ -47,7 +47,8 @@ def parameterize(model, edge_weights: dict, base_probs: dict):
         cpd = noisy_or_cpt(node_id, model, edge_weights, base_probs)
         model.add_cpds(cpd)
 
-    assert model.check_model()
+    if not model.check_model():
+        raise ValueError("Bayesian network model validation failed after CPT parameterization.")
     return model
 
 

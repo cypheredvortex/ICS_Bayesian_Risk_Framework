@@ -4,7 +4,7 @@
     "rows": [
       {
         "parent_state": {},
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       }
     ]
   },
@@ -17,13 +17,13 @@
         "parent_state": {
           "Internet": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "Internet": 1
         },
-        "p_compromised": 0.9978
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -36,13 +36,13 @@
         "parent_state": {
           "Firewall": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "Firewall": 1
         },
-        "p_compromised": 0.96975
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -55,13 +55,13 @@
         "parent_state": {
           "DMZ": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "DMZ": 1
         },
-        "p_compromised": 0.9318
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -74,13 +74,13 @@
         "parent_state": {
           "VPN_Gateway": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "VPN_Gateway": 1
         },
-        "p_compromised": 0.88626
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -93,13 +93,13 @@
         "parent_state": {
           "Corporate_Network": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "Corporate_Network": 1
         },
-        "p_compromised": 0.88626
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -112,13 +112,13 @@
         "parent_state": {
           "Corporate_Network": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "Corporate_Network": 1
         },
-        "p_compromised": 0.88626
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -131,13 +131,13 @@
         "parent_state": {
           "Corporate_Network": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "Corporate_Network": 1
         },
-        "p_compromised": 0.88626
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -150,13 +150,13 @@
         "parent_state": {
           "Corporate_Network": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "Corporate_Network": 1
         },
-        "p_compromised": 0.92421
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -169,13 +169,13 @@
         "parent_state": {
           "SCADA_Server": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "SCADA_Server": 1
         },
-        "p_compromised": 0.92421
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -188,13 +188,13 @@
         "parent_state": {
           "SCADA_Server": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "SCADA_Server": 1
         },
-        "p_compromised": 0.92421
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -207,13 +207,13 @@
         "parent_state": {
           "SCADA_Server": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "SCADA_Server": 1
         },
-        "p_compromised": 0.92421
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -226,13 +226,13 @@
         "parent_state": {
           "OPC_Server": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "OPC_Server": 1
         },
-        "p_compromised": 0.9978
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -245,13 +245,13 @@
         "parent_state": {
           "OPC_Server": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "OPC_Server": 1
         },
-        "p_compromised": 0.995177
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -273,21 +273,21 @@
           "PLC_1": 0,
           "Safety_PLC": 1
         },
-        "p_compromised": 0.9901
+        "p_compromised": 0.505
       },
       {
         "parent_state": {
           "PLC_1": 1,
           "Safety_PLC": 0
         },
-        "p_compromised": 0.9901
+        "p_compromised": 0.505
       },
       {
         "parent_state": {
           "PLC_1": 1,
           "Safety_PLC": 1
         },
-        "p_compromised": 0.999901
+        "p_compromised": 0.7525
       }
     ]
   },
@@ -306,7 +306,7 @@
         "parent_state": {
           "PLC_2": 1
         },
-        "p_compromised": 0.978294
+        "p_compromised": 0.505
       }
     ]
   },
@@ -319,13 +319,13 @@
         "parent_state": {
           "PLC_1": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "PLC_1": 1
         },
-        "p_compromised": 0.9978
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -338,13 +338,13 @@
         "parent_state": {
           "RTU": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "RTU": 1
         },
-        "p_compromised": 0.9978
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -357,13 +357,13 @@
         "parent_state": {
           "SCADA_Server": 0
         },
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       },
       {
         "parent_state": {
           "SCADA_Server": 1
         },
-        "p_compromised": 0.93939
+        "p_compromised": 0.804688
       }
     ]
   },
@@ -372,7 +372,7 @@
     "rows": [
       {
         "parent_state": {},
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       }
     ]
   },
@@ -381,7 +381,7 @@
     "rows": [
       {
         "parent_state": {},
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       }
     ]
   },
@@ -390,7 +390,7 @@
     "rows": [
       {
         "parent_state": {},
-        "p_compromised": 0.78
+        "p_compromised": 0.609375
       }
     ]
   }

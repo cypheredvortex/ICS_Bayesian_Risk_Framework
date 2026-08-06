@@ -126,9 +126,7 @@ class AssessmentPersistenceService:
                     "x_position": attributes.get("x_position"),
                     "y_position": attributes.get("y_position"),
                 }
-                asset = asset_repo.create_for_project(project.id, asset_payload)
-                if evidence and asset_key in evidence:
-                    inference_repo.create_for_project(project.id, asset.asset_name, float(evidence[asset_key]), asset_id=asset.id)
+                asset_repo.create_for_project(project.id, asset_payload)
 
             for relationship in relationships:
                 connection_repo.create_for_project(project.id, relationship)
@@ -178,11 +176,19 @@ class AssessmentPersistenceService:
             setting_repo.upsert("recent_projects", json.dumps(recent_list))
             setting_repo.upsert("language", "en")
             session.commit()
-            # Re-fetch the project within the same session to avoid
-            # detached instance errors on refresh.
-            reloaded_project = session.get(Project, project.id)
-            if reloaded_project is not None:
-                session.refresh(reloaded_project)
+            # Re-fetch the project with eagerly loaded relationships so the
+            # returned object remains usable after the session closes.
+            reloaded_project = (
+                session.query(Project)
+                .options(
+                    selectinload(Project.assets),
+                    selectinload(Project.inference_results),
+                    selectinload(Project.risk_results),
+                    selectinload(Project.reports),
+                )
+                .filter(Project.id == project.id)
+                .first()
+            )
             logger.info("Persisted assessment project %s", project.id)
             return reloaded_project or project
         finally:

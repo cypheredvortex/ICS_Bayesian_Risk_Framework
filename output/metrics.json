@@ -1,29 +1,22 @@
 {
-  "framework_version": "1.0",
-  "generated_at": "2026-08-05T11:49:41Z",
+  "framework_version": "1.0.1",
+  "generated_at": "2026-08-06T10:25:24Z",
   "topology": "inline-topology",
   "asset_count": 22,
   "relationship_count": 19,
   "node_count": 22,
   "edge_count": 19,
-  "posterior_count": 16,
-  "risk_row_count": 16,
-  "evidence_count": 6,
-  "evidence_used": {
-    "Remote_Site": 0,
-    "Level_3_Switch": 0,
-    "Level_2_Switch": 0,
-    "Sensor": 0,
-    "Engineering_Workstation": 0,
-    "Remote_Access_Server": 0
-  },
-  "attack_path_count": 15,
+  "posterior_count": 22,
+  "risk_row_count": 22,
+  "evidence_count": 0,
+  "evidence_used": {},
+  "attack_path_count": 19,
   "validation": {
     "success": true,
     "errors": 0
   },
   "inference_algorithm": "Variable Elimination",
-  "build_time_seconds": 0.11389,
-  "inference_time_seconds": 0.03214,
-  "total_time_seconds": 0.14603
+  "build_time_seconds": 0.11,
+  "inference_time_seconds": 0.026862,
+  "total_time_seconds": 0.136862
 }

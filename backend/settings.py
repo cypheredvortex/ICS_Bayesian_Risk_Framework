@@ -55,6 +55,11 @@ DEFAULT_SETTINGS: dict[str, Any] = {
         "T0855": 1.25,
         "T0866": 1.05,
     },
+    "risk_thresholds": {
+        "critical": 1.50,
+        "high": 0.80,
+        "moderate": 0.30,
+    },
 }
 
 _SCALAR_WEIGHT_KEYS = ("cvss_weight", "exposure_weight", "patch_weight", "impact_weight")
@@ -78,7 +83,7 @@ def _parse_db_value(key: str, raw: str) -> Any:
     Dict values are stored as JSON strings. Scalars are stored as plain strings.
     Falls back to the default value if parsing fails.
     """
-    if key in _TABLE_KEYS or key == "firewall_multipliers":
+    if key in _TABLE_KEYS or key == "firewall_multipliers" or key == "risk_thresholds":
         try:
             return json.loads(raw)
         except (json.JSONDecodeError, TypeError):
@@ -97,8 +102,6 @@ def get_settings() -> dict[str, Any]:
         service = AssessmentPersistenceService()
         db_settings = service.get_settings()
         if db_settings:
-            # Reconstruct properly typed settings from DB values,
-            # falling back to runtime defaults for missing keys.
             merged = deepcopy(DEFAULT_SETTINGS)
             for key, value in db_settings.items():
                 if value is not None:
@@ -162,7 +165,9 @@ def _validate_settings(settings: dict[str, Any]) -> None:
             raise ValueError(f"'{table_key}' must be an object.")
         for name, value in table.items():
             if not isinstance(value, (int, float)) or value < 0:
-                raise ValueError(f"'{table_key}.{name}' must be a non-negative number, got {value!r}.")
+                raise ValueError(
+                    f"'{table_key}.{name}' must be a non-negative number, got {value!r}."
+                )
 
     firewall = settings.get("firewall_multipliers", {})
     if not isinstance(firewall, dict):
@@ -171,9 +176,26 @@ def _validate_settings(settings: dict[str, Any]) -> None:
     false_value = firewall.get("false")
     for label, value in (("true", true_value), ("false", false_value)):
         if value is not None and (not isinstance(value, (int, float)) or value < 0):
-            raise ValueError(f"'firewall_multipliers.{label}' must be a non-negative number, got {value!r}.")
+            raise ValueError(
+                f"'firewall_multipliers.{label}' must be a non-negative number, got {value!r}."
+            )
     if true_value is not None and false_value is not None and float(true_value) > float(false_value):
         raise ValueError(
             "'firewall_multipliers.true' (firewalled) cannot exceed 'firewall_multipliers.false' "
             "(not firewalled) -- a firewall must never be configured to increase propagated risk."
         )
+
+    # Validate risk thresholds if present
+    risk_thresholds = settings.get("risk_thresholds", {})
+    if risk_thresholds:
+        if not isinstance(risk_thresholds, dict):
+            raise ValueError("'risk_thresholds' must be an object.")
+        for level in ("critical", "high", "moderate"):
+            val = risk_thresholds.get(level)
+            if val is not None and (not isinstance(val, (int, float)) or val < 0):
+                raise ValueError(f"'risk_thresholds.{level}' must be a non-negative number.")
+        crit = float(risk_thresholds.get("critical", 1.5))
+        high = float(risk_thresholds.get("high", 0.8))
+        mod = float(risk_thresholds.get("moderate", 0.3))
+        if not (crit > high > mod):
+            raise ValueError("Risk thresholds must satisfy: critical > high > moderate.")

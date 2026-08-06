@@ -2,6 +2,8 @@
 FastAPI application for the ICS Risk Assessment Framework.
 
 Production-hardened API with:
+- Stateless design (topology required in every /analyze call)
+- Optional API-key authentication
 - Rate limiting
 - Request ID tracing
 - Structured error responses
@@ -18,9 +20,10 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, File, HTTPException, Request, UploadFile
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile, Depends, Security
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
@@ -59,11 +62,12 @@ DATASET_FILES: dict[str, Path] = {
 }
 
 # ---- Configuration from environment ----
-CORS_ORIGINS = os.getenv("CORS_ORIGINS", "*").split(",")
+CORS_ORIGINS = [o.strip() for o in os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",") if o.strip()]
 MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", "50"))
 MAX_UPLOAD_BYTES = MAX_UPLOAD_SIZE_MB * 1024 * 1024
-API_VERSION = "1.0.0"
+API_VERSION = "1.0.1"
 RATE_LIMIT_PER_MINUTE = int(os.getenv("RATE_LIMIT_PER_MINUTE", "60"))
+API_KEY = os.getenv("ICS_API_KEY", "")  # Set to enable authentication
 
 # Validate dataset names to prevent path traversal
 _VALID_DATASET_NAMES = set(DATASET_FILES.keys())
@@ -72,24 +76,30 @@ _VALID_REPORT_NAMES = set(REPORT_FILES.keys())
 # ---- Rate limiter ----
 limiter = Limiter(key_func=get_remote_address)
 
+security = HTTPBearer(auto_error=False)
+
 
 def _sanitize_dataset_name(name: str) -> str:
-    """Validate dataset name against known datasets to prevent path traversal."""
     if name not in _VALID_DATASET_NAMES:
         raise HTTPException(status_code=404, detail=f"Dataset '{name}' does not exist.")
     return name
 
 
 def _sanitize_report_name(name: str) -> str:
-    """Validate report file name against known reports."""
     if name not in _VALID_REPORT_NAMES:
         raise HTTPException(status_code=404, detail=f"Report '{name}' does not exist.")
     return name
 
 
+def _require_api_key(credentials: HTTPAuthorizationCredentials | None = Security(security)) -> None:
+    if not API_KEY:
+        return  # Auth disabled
+    if credentials is None or credentials.credentials != API_KEY:
+        raise HTTPException(status_code=401, detail="Invalid or missing API key.")
+
+
 # ---- Request ID middleware ----
 async def _request_id_middleware(request: Request, call_next: Any) -> Any:
-    """Inject a unique request ID for tracing."""
     request_id = request.headers.get("X-Request-ID", str(uuid.uuid4()))
     set_request_id(request_id)
     response = await call_next(request)
@@ -99,7 +109,6 @@ async def _request_id_middleware(request: Request, call_next: Any) -> Any:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Application lifespan: configure logging, initialize DB."""
     configure_logging()
     logger.info("Starting ICS Risk Assessment Framework API v%s", API_VERSION)
     logger.info("CORS origins: %s", CORS_ORIGINS)
@@ -107,8 +116,6 @@ async def lifespan(app: FastAPI):
     logger.info("Rate limit: %d requests/minute", RATE_LIMIT_PER_MINUTE)
     logger.info("Database URL: %s", get_db_url())
     initialize_database()
-    app.state.latest_result: dict[str, Any] = {}
-    app.state.uploaded_topology: dict[str, Any] | None = None
     yield
     logger.info("Shutting down ICS Risk Assessment Framework API")
 
@@ -119,13 +126,10 @@ app = FastAPI(
     "Upload a topology, optionally provide evidence, and receive risk scores, attack paths, and reports.",
     version=API_VERSION,
     lifespan=lifespan,
-    license_info={
-        "name": "MIT",
-        "url": "https://opensource.org/licenses/MIT",
-    },
+    license_info={"name": "MIT", "url": "https://opensource.org/licenses/MIT"},
     contact={
         "name": "ICS Risk Framework Team",
-        "url": "https://github.com/your-org/ics-risk-framework",
+        "url": "https://github.com/cypheredvortex/ICS_Bayesian_Risk_Framework",
     },
     openapi_tags=[
         {"name": "Assessments", "description": "Run risk assessments and view results"},
@@ -155,7 +159,6 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # ---- Exception handlers ----
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
-    """Return structured error responses for HTTP exceptions."""
     return JSONResponse(
         status_code=exc.status_code,
         content=ErrorResponse(
@@ -168,7 +171,6 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    """Catch-all exception handler for unhandled errors."""
     logger.exception("Unhandled exception: %s", exc)
     return JSONResponse(
         status_code=500,
@@ -184,7 +186,6 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
 
 @app.get("/", response_model=HealthCheckResponse, tags=["System"])
 def healthcheck():
-    """Comprehensive health check with version, DB status, and endpoint info."""
     db_status = "unknown"
     try:
         factory = get_session_factory()
@@ -218,22 +219,18 @@ def healthcheck():
     "/upload-topology",
     response_model=UploadTopologyResponse,
     tags=["Topologies"],
-    summary="Upload topology as JSON payload",
+    summary="Validate topology JSON payload",
 )
 @limiter.limit(f"{RATE_LIMIT_PER_MINUTE}/minute")
 def upload_topology(request: Request, payload: TopologyUploadRequest):
-    """Validate and store a topology payload for the session."""
+    """Validate a topology payload. Returns parsed counts but does NOT store server-side state."""
     try:
         assets, relationships = load_topology(payload.topology)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
-    app.state.uploaded_topology = {
-        "assets": assets,
-        "relationships": [list(rel) for rel in relationships],
-    }
     return UploadTopologyResponse(
-        message="Topology uploaded successfully",
+        message="Topology validated successfully",
         asset_count=len(assets),
         relationship_count=len(relationships),
     )
@@ -247,11 +244,6 @@ def upload_topology(request: Request, payload: TopologyUploadRequest):
 )
 @limiter.limit(f"{RATE_LIMIT_PER_MINUTE}/minute")
 async def upload_topology_file(request: Request, file: UploadFile = File(...)):
-    """Upload topology from JSON, YAML, CSV, Excel (.xlsx), GraphML, XML/AML, or VSDX file.
-
-    Supported formats: .json, .yaml, .yml, .csv, .xlsx, .graphml, .xml, .aml, .vsdx
-    Maximum file size: {MAX_UPLOAD_SIZE_MB} MB
-    """
     if file.size is not None and file.size > MAX_UPLOAD_BYTES:
         raise HTTPException(
             status_code=413,
@@ -274,9 +266,8 @@ async def upload_topology_file(request: Request, file: UploadFile = File(...)):
         "assets": assets,
         "relationships": [list(rel) for rel in relationships],
     }
-    app.state.uploaded_topology = topology
     return UploadTopologyFileResponse(
-        message=f"Topology file '{file.filename}' uploaded successfully",
+        message=f"Topology file '{file.filename}' validated successfully",
         asset_count=len(assets),
         relationship_count=len(relationships),
         topology=topology,
@@ -285,11 +276,14 @@ async def upload_topology_file(request: Request, file: UploadFile = File(...)):
 
 @app.post("/analyze", tags=["Assessments"], summary="Run a full Bayesian risk assessment")
 @limiter.limit(f"{RATE_LIMIT_PER_MINUTE}/minute")
-def analyze_endpoint(request: Request, payload: AnalyzeRequest):
+def analyze_endpoint(
+    request: Request,
+    payload: AnalyzeRequest,
+    _auth: None = Depends(_require_api_key),
+):
     """Run the framework and regenerate all report artifacts.
 
-    Accepts a topology and optional evidence, runs the full Bayesian pipeline,
-    and returns structured results including risk scores, attack paths, and CPTs.
+    This endpoint is STATELESS: the topology must be provided in every request.
     """
     topology = payload.topology
     if not topology:
@@ -306,13 +300,11 @@ def analyze_endpoint(request: Request, payload: AnalyzeRequest):
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Assessment execution failed: {exc}") from exc
 
-    # Generate professional PDF report using reportlab
     try:
         generate_pdf_report(result, REPORT_FILES["assessment.pdf"])
     except Exception as exc:
         logger.warning("PDF reportlab generation failed: %s", exc)
 
-    app.state.latest_result = result
     return result
 
 
@@ -323,7 +315,10 @@ def read_settings():
 
 
 @app.put("/settings", tags=["Settings"], summary="Update runtime settings")
-def write_settings(payload: SettingsUpdateRequest):
+def write_settings(
+    payload: SettingsUpdateRequest,
+    _auth: None = Depends(_require_api_key),
+):
     """Update runtime settings. Validates all values before applying."""
     try:
         updated = update_settings(payload.settings)
@@ -333,23 +328,9 @@ def write_settings(payload: SettingsUpdateRequest):
 
 
 @app.post("/settings/reset", tags=["Settings"], summary="Reset settings to defaults")
-def reset_settings_endpoint():
+def reset_settings_endpoint(_auth: None = Depends(_require_api_key)):
     """Reset all runtime settings to framework defaults."""
     return reset_settings()
-
-
-@app.get("/results", tags=["Assessments"], summary="Get latest assessment results")
-def get_results():
-    """Retrieve the latest assessment results."""
-    return app.state.latest_result or {"message": "No analysis has been run yet."}
-
-
-@app.get("/graph", tags=["Assessments"], summary="Get Bayesian network graph")
-def get_graph():
-    """Get the Bayesian network graph from the latest assessment."""
-    if not app.state.latest_result:
-        return {"nodes": [], "edges": []}
-    return app.state.latest_result.get("graph", {"nodes": [], "edges": []})
 
 
 @app.get("/datasets", response_model=DatasetInfo, tags=["Datasets"], summary="List available datasets")
@@ -399,6 +380,7 @@ def download_report(report_name: str):
 def run_api() -> None:
     """Run the API server via uvicorn (used by `ics-risk-api` console_scripts entry point)."""
     import uvicorn
+
     host = os.getenv("API_HOST", "127.0.0.1")
     port = int(os.getenv("API_PORT", "8000"))
     uvicorn.run(
@@ -409,4 +391,3 @@ def run_api() -> None:
         proxy_headers=True,
         forwarded_allow_ips="*",
     )
-

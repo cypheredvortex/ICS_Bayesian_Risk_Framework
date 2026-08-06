@@ -31,7 +31,8 @@ class InferenceTests(unittest.TestCase):
 
         self.assertIsInstance(posteriors, dict)
         self.assertGreater(len(posteriors), 0)
-        self.assertNotIn("local_hmi", posteriors)
+        self.assertIn("local_hmi", posteriors)
+        self.assertEqual(posteriors["local_hmi"], 1.0)
 
     def test_compute_posteriors_returns_all_nodes_for_empty_evidence(self):
         """Verify all nodes get posteriors with empty evidence."""
@@ -55,6 +56,12 @@ class InferenceTests(unittest.TestCase):
         )
         self.assertIn("local_hmi", sanitized)
         self.assertEqual(sanitized["local_hmi"], 1)
+
+    def test_compute_posteriors_includes_evidence_nodes(self):
+        """Evidence nodes should appear in the returned posterior mapping with their observed state."""
+        posteriors = compute_posteriors(self.model, {"local_hmi": 1})
+        self.assertIn("local_hmi", posteriors)
+        self.assertEqual(posteriors["local_hmi"], 1.0)
 
     def test_posterior_probabilities_in_valid_range(self):
         """Verify all posterior probabilities are in [0, 1]."""

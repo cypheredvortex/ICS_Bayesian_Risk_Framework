@@ -292,10 +292,10 @@ export default function App() {
     if (!file) return
 
     // Support the full set of backend-supported topology formats
-    const supported = /\.(json|ya?ml|csv|xlsx|graphml|xml|aml|vsdx|vsd|pdf|png)$/i.test(file.name)
+    const supported = /\.(json|ya?ml|csv|xlsx|graphml|xml|aml|vsdx|vsd)$/i.test(file.name)
     if (!supported) {
       pushToast(
-        'Unsupported file type. Upload a .json, .yaml/.yml, .csv, .pdf, .vsdx, or .png topology file.',
+        'Unsupported file type. Upload a .json, .yaml/.yml, .csv, .xlsx, .graphml, .xml, .aml, .vsdx, or .vsd topology file.',
         'error',
       )
       event.target.value = ''
@@ -595,7 +595,7 @@ export default function App() {
           onFileUpload={handleFileUpload}
           onRunAssessment={() => void runAssessment()}
           // ✅ New prop: restrict file picker to these extensions
-          accept=".json,.yaml,.yml,.csv,.pdf,.vsdx,.png"
+          accept=".json,.yaml,.yml,.csv,.xlsx,.graphml,.xml,.aml,.vsdx"
         />
 
         <EvidencePanel
@@ -671,7 +671,7 @@ export default function App() {
           onCptQueryChange={setCptQuery}
         />
 
-        <ReportsSection />
+        <ReportsSection available={Boolean(result)} />
       </main>
     </div>
   )

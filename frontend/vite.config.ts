@@ -13,4 +13,16 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.indexOf('node_modules') !== -1) {
+            return 'vendor'
+          }
+        },
+      },
+    },
+  },
 })

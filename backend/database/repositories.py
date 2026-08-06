@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from typing import Any, Generic, TypeVar
 
 from sqlalchemy import select
@@ -199,14 +200,20 @@ class ReportRepository(BaseRepository[Report]):
         super().__init__(session, Report)
 
     def create_for_project(self, project_id: int, filename: str, path: str | None, report_type: str | None) -> Report:
-        existing = self.session.scalar(
-            select(Report).where(
-                Report.project_id == project_id,
-                Report.filename == filename,
-            )
-        )
+        query = select(Report).where(Report.project_id == project_id)
+        if report_type is not None:
+            query = query.where(Report.report_type == report_type)
+        else:
+            query = query.where(Report.filename == filename)
+
+        existing = self.session.scalar(query)
         if existing is not None:
+            existing.filename = filename
+            existing.path = path
+            existing.report_type = report_type
+            existing.generated_at = datetime.now(timezone.utc)
             return existing
+
         report = Report(project_id=project_id, filename=filename, path=path, report_type=report_type)
         self.add(report)
         return report

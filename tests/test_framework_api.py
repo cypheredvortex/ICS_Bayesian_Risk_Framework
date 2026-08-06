@@ -46,6 +46,31 @@ class FrameworkApiTests(unittest.TestCase):
         self.assertIn("risk_scores", result)
         self.assertEqual(len(result["risk_scores"]), 1)
 
+    def test_run_includes_evidence_in_posteriors(self):
+        """Run should preserve observed evidence in the posterior mapping."""
+        topology = {
+            "assets": {
+                "local_hmi": {
+                    "kind": "device",
+                    "cvss_type": 3.0,
+                    "exposed": True,
+                    "patched": False,
+                    "consequence_severity": 5.0,
+                },
+                "plc_1": {
+                    "kind": "device",
+                    "cvss_type": 6.0,
+                    "exposed": True,
+                    "patched": False,
+                    "consequence_severity": 7.0,
+                },
+            },
+            "relationships": [["local_hmi", "plc_1", "connects-to", False]],
+        }
+        result = run(topology, {"local_hmi": 1})
+        self.assertEqual(result["posteriors"].get("local_hmi"), 1.0)
+        self.assertIn("plc_1", result["posteriors"])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -11,8 +11,10 @@ import csv
 import io
 import json
 import os
-import tempfile
 import re
+import shutil
+import subprocess
+import tempfile
 import zipfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -42,6 +44,7 @@ _SUPPORTED_EXTENSIONS = {
     ".xlsx",
     ".vsdx",
     ".vsd",
+    ".vdx",
     ".graphml",
     ".xml",
     ".aml",
@@ -124,28 +127,33 @@ def load_topology_from_bytes(content: bytes, filename: str) -> dict[str, Any]:
         raw = _parse_csv_bytes(content)
     elif suffix == ".xlsx":
         raw = _parse_excel_bytes(content)
-    elif suffix in {".graphml"}:
+    elif suffix == ".graphml":
         raw = _parse_graphml_bytes(content)
     elif suffix in {".xml", ".aml"}:
         raw = _parse_aml_bytes(content)
+    elif suffix == ".vdx":
+        raw = _parse_vdx_bytes(content)
     elif suffix in {".vsdx", ".vsd"}:
         raw = _parse_vsdx_bytes(content, filename)
     else:
         raise ValueError(
             f"Unsupported topology format '{suffix}'. Supported formats: "
-            ".json, .yaml, .yml, .csv, .xlsx, .vsdx, .graphml, .xml, .aml"
+            ".json, .yaml, .yml, .csv, .xlsx, .vsdx, .vsd, .vdx, .graphml, .xml, .aml"
         )
     return _normalize_topology(raw, filename)
 
 
 def _load_file(path: Path) -> dict[str, Any]:
     suffix = path.suffix.lower()
-    if suffix in {".json", ".yaml", ".yml", ".csv", ".xlsx", ".vsdx", ".graphml", ".xml", ".aml"}:
+    if suffix in {
+        ".json", ".yaml", ".yml", ".csv", ".xlsx",
+        ".vsdx", ".vsd", ".vdx", ".graphml", ".xml", ".aml",
+    }:
         with open(path, "rb") as handle:
             return load_topology_from_bytes(handle.read(), path.name)
     raise ValueError(
         f"Unsupported topology format '{suffix}'. Supported formats: "
-        ".json, .yaml, .yml, .csv, .xlsx, .vsdx, .graphml, .xml, .aml"
+        ".json, .yaml, .yml, .csv, .xlsx, .vsdx, .vsd, .vdx, .graphml, .xml, .aml"
     )
 
 
@@ -437,17 +445,164 @@ def _parse_aml_bytes(content: bytes) -> dict[str, Any]:
     return {"assets": assets, "relationships": relationships}
 
 
+def _try_libreoffice_convert_vsd(content: bytes) -> bytes | None:
+    """Attempt to convert .vsd (binary) to .vsdx via LibreOffice headless mode.
+
+    Returns the converted .vsdx bytes, or None if LibreOffice is unavailable
+    or conversion fails.
+    """
+    if not shutil.which("soffice"):
+        return None
+
+    with tempfile.NamedTemporaryFile(suffix=".vsd", delete=False) as in_tmp:
+        in_tmp.write(content)
+        in_path = in_tmp.name
+
+    out_dir = tempfile.mkdtemp()
+    try:
+        subprocess.run(
+            ["soffice", "--headless", "--convert-to", "vsdx", "--outdir", out_dir, in_path],
+            check=True,
+            capture_output=True,
+            timeout=60,
+        )
+        out_path = Path(out_dir) / (Path(in_path).stem + ".vsdx")
+        if out_path.exists():
+            return out_path.read_bytes()
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError):
+        pass
+    finally:
+        try:
+            os.unlink(in_path)
+        except OSError:
+            pass
+        try:
+            shutil.rmtree(out_dir)
+        except OSError:
+            pass
+    return None
+
+
+def _parse_vdx_bytes(content: bytes) -> dict[str, Any]:
+    """Parse Visio 2003-2010 XML (.vdx) format.
+
+    .vdx is an XML-based format (not ZIP-based like .vsdx).  We extract
+    shape text that follows the 'asset,...' or 'relationship,...' convention.
+    """
+    text = content.decode("utf-8-sig", errors="replace")
+    root = ET.fromstring(text)
+
+    def strip_ns(tag: str) -> str:
+        return tag[tag.find("}") + 1 :] if "}" in tag else tag
+
+    assets: dict[str, dict] = {}
+    relationships: list[dict] = []
+
+    # Find all Shape elements across all pages
+    for shape in root.iter():
+        tag = strip_ns(shape.tag)
+        if tag != "Shape":
+            continue
+
+        # Extract text from the shape
+        shape_text = ""
+        for text_elem in shape.iter():
+            if strip_ns(text_elem.tag) in {"Text", "Cp"}:
+                if text_elem.text:
+                    shape_text += text_elem.text
+
+        shape_text = shape_text.strip()
+        if not shape_text:
+            continue
+
+        # Check for asset/relationship markers
+        if shape_text.lower().startswith("relationship,"):
+            parts = [part.strip() for part in shape_text.split(",")]
+            rel = {
+                "source": parts[1] if len(parts) > 1 else None,
+                "target": parts[2] if len(parts) > 2 else None,
+                "type": parts[3] if len(parts) > 3 else DEFAULT_REL_TYPE,
+                "firewalled": parts[4].lower() in {"1", "true", "yes"} if len(parts) > 4 else False,
+                "protocol": parts[5] if len(parts) > 5 else None,
+                "trust_level": parts[6] if len(parts) > 6 else None,
+                "mitre_technique": parts[7] if len(parts) > 7 else None,
+            }
+            if rel["source"] and rel["target"]:
+                relationships.append(rel)
+            continue
+
+        if shape_text.lower().startswith("asset,"):
+            parts = [part.strip() for part in shape_text.split(",")]
+            raw = {"id": parts[1] if len(parts) > 1 else None, "name": parts[1] if len(parts) > 1 else None}
+            if len(parts) > 2:
+                raw["type"] = parts[2]
+            if len(parts) > 3:
+                raw["cvss_type"] = parts[3]
+            if len(parts) > 4:
+                raw["exposed"] = parts[4]
+            if len(parts) > 5:
+                raw["patched"] = parts[5]
+            if len(parts) > 6:
+                raw["consequence_severity"] = parts[6]
+            if raw.get("id"):
+                assets[raw["id"]] = raw
+            continue
+
+        # Fallback: try shape custom properties (Prop elements)
+        props = {}
+        for prop in shape.iter():
+            if strip_ns(prop.tag) == "Prop":
+                label = prop.get("Label") or prop.get("N")
+                val_elem = prop.find(".//{*}Value")
+                if label and val_elem is not None and val_elem.text:
+                    props[label] = val_elem.text.strip()
+
+        if props.get("ID") or props.get("id") or props.get("Name"):
+            raw = {
+                "id": _normalize_text(props.get("ID") or props.get("id") or props.get("Name")),
+                "name": _normalize_text(props.get("Name") or props.get("ID")),
+            }
+            if kind := props.get("Kind") or props.get("Type"):
+                raw["kind"] = kind
+            if vendor := props.get("Vendor"):
+                raw["vendor"] = vendor
+            if model := props.get("Model"):
+                raw["model"] = model
+            if raw["id"]:
+                assets[raw["id"]] = raw
+
+    if not assets:
+        raise ValueError(
+            "No asset shapes found in .vdx file. Ensure each asset shape contains readable text "
+            "like 'asset,,,...' or add shape custom properties (ID/Name)."
+        )
+    return {"assets": assets, "relationships": relationships}
+
+
 def _parse_vsdx_bytes(content: bytes, filename: str) -> dict[str, Any]:
+    """Parse Visio .vsdx (Open XML) or converted .vsd files."""
     if vsdx is None:
         raise ImportError(
             "vsdx library is required to parse .vsdx files. Install with: pip install vsdx"
         )
 
     suffix = Path(filename).suffix.lower()
+
+    # --- Handle legacy .vsd (binary) via LibreOffice conversion ---
     if suffix == ".vsd":
-        raise ValueError(
-            "Legacy .vsd files are not supported. Upload a modern .vsdx package instead."
-        )
+        converted = _try_libreoffice_convert_vsd(content)
+        if converted is None:
+            raise ValueError(
+                "Legacy .vsd (binary Visio) files cannot be parsed directly. "
+                "LibreOffice (soffice) was not found on this system to perform automatic conversion.\n\n"
+                "To upload this file, convert it first:\n"
+                "  1. Open in Microsoft Visio and Save As → .vsdx\n"
+                "  2. Or install LibreOffice and run:\n"
+                "       soffice --headless --convert-to vsdx your_file.vsd\n"
+                "  3. Or export from Visio to GraphML, JSON, or CSV and upload that instead."
+            )
+        content = converted
+        filename = Path(filename).stem + ".vsdx"
 
     with tempfile.NamedTemporaryFile(suffix=".vsdx", delete=False) as tmp:
         tmp.write(content)
@@ -529,7 +684,7 @@ def _parse_vsdx_bytes(content: bytes, filename: str) -> dict[str, Any]:
 
         if not assets:
             # Fallback: attempt to scan the VSDX package XML files for labeled
-            # text like 'asset,<id>,...' or 'relationship,<src>,<tgt>,...'. This
+            # text like 'asset,,...' or 'relationship,,,...'. This
             # helps when the `vsdx` library cannot expose shape text but the
             # raw XML still contains our authoring markers.
             try:
@@ -565,11 +720,11 @@ def _parse_vsdx_bytes(content: bytes, filename: str) -> dict[str, Any]:
             except Exception:
                 pass
 
-            if not assets:
-                raise ValueError(
-                    "No asset shapes found in .vsdx file. Ensure each asset shape contains readable text like 'asset,<id>,<type>,...' or add shape custom properties (ID/Name)."
-                    " If you cannot modify the Visio source, export the diagram to GraphML, JSON, or CSV from Visio and re-upload."
-                )
+        if not assets:
+            raise ValueError(
+                "No asset shapes found in .vsdx file. Ensure each asset shape contains readable text like 'asset,,,...' or add shape custom properties (ID/Name)."
+                " If you cannot modify the Visio source, export the diagram to GraphML, JSON, or CSV from Visio and re-upload."
+            )
         return {"assets": assets, "relationships": relationships}
     finally:
         try:

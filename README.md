@@ -1,39 +1,30 @@
-# ICS Risk Assessment Framework
-
-A **Generic Bayesian Network-Based Framework for Quantitative Risk Assessment of Industrial Control Systems (ICS)**.
-
-## Overview
-
+ICS Bayesian Risk Framework
+A Generic Bayesian Network-Based Framework for Quantitative Risk Assessment of Industrial Control Systems (ICS).
+Overview
 This framework provides a complete pipeline for quantitative cyber-risk assessment of ICS environments:
-
-1. **Topology Import** - Load ICS topology from JSON, YAML, or CSV
-2. **Bayesian Network Construction** - Build DAG from ICS asset relationships
-3. **Intrinsic Probability** - Compute base compromise probabilities per asset type
-4. **CPT Generation** - Generate Conditional Probability Tables via noisy-OR
-5. **Inference** - Exact inference using Variable Elimination
-6. **Risk Scoring** - Compute and rank asset risk scores
-7. **Attack Path Analysis** - Identify high-risk propagation paths
-8. **Visualization** - Generate graph diagrams and charts
-9. **Reporting** - Export risk registers (CSV) and assessment reports (PDF)
-
-## Quick Start
-
-### Prerequisites
-
-- Python 3.11+
-- Node.js 18+ (for frontend)
-
-### Installation
-
-```bash
+Topology Import — Load ICS topology from JSON, YAML, CSV, Excel, GraphML, XML/AML, or VSDX
+Bayesian Network Construction — Build DAG from ICS asset relationships
+Intrinsic Probability — Compute base compromise probabilities per asset type
+CPT Generation — Generate Conditional Probability Tables via Noisy-OR
+Inference — Exact inference using Variable Elimination
+Risk Scoring — Compute and rank asset risk indices
+Attack Path Analysis — Identify high-risk propagation paths (DAG-directed)
+Visualization — Generate graph diagrams and charts
+Reporting — Export risk registers (CSV) and assessment reports (PDF)
+Quick Start
+Prerequisites
+Python 3.11+
+Node.js 18+ (for frontend)
+Installation
+bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/cypheredvortex/ICS_Bayesian_Risk_Framework.git
 cd ICS_Bayesian_Risk_Framework
 
 # Create and activate virtual environment
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
-# venv\Scripts\activate   # Windows
+# venv\Scripts\activate    # Windows
 
 # Install Python dependencies
 pip install -e .
@@ -42,25 +33,18 @@ pip install -e .
 cd frontend
 npm install
 cd ..
-```
-
-### CLI Usage
-
-```bash
+CLI Usage
+bash
 # Run assessment with default topology
-python -m ics_risk_framework
+ics-risk
 
 # Run with specific topology and evidence
-python -m ics_risk_framework --topology data/swat_example.json --evidence corp_net=1 --evidence hmi=1
+ics-risk --topology data/swat_example.json --evidence corp_net=1
 
 # Run API server
 ics-risk-api
-# or: python -m uvicorn src.ics_risk_framework.api:app --reload
-```
-
-### API Usage
-
-```bash
+API Usage
+bash
 # Start the API server
 ics-risk-api
 
@@ -68,119 +52,107 @@ ics-risk-api
 curl -X POST http://localhost:8000/analyze \
   -H "Content-Type: application/json" \
   -d '{
-    "topology": <topology-json>,
+    "topology": {"assets": {...}, "relationships": [...]},
     "evidence": [{"asset": "corp_net", "state": "Compromised"}]
   }'
-```
-
-### Frontend
-
-```bash
+Frontend
+bash
 cd frontend
 npm run dev
-```
-
-The frontend runs on `http://localhost:5173` and proxies API requests to `http://localhost:8000`.
-
-## Project Structure
-
-```
+The frontend runs on http://localhost:5173 and proxies API requests to http://localhost:8000.
+Project Structure
+plain
 ICS_Bayesian_Risk_Framework/
-├── src/
-│   └── ics_risk_framework/     # Python package
-│       ├── __init__.py          # Public API exports
-│       ├── __main__.py          # `python -m` entry point
-│       ├── cli.py               # CLI interface
-│       ├── api.py               # FastAPI REST API
-│       ├── api_adapter.py       # HTTP-to-framework adapter
-│       ├── schemas.py           # Pydantic request/response models
-│       ├── config.py            # Constants and lookup tables
-│       ├── settings.py          # Runtime-configurable settings
-│       ├── assets.py            # Topology loading/validation
-│       ├── probability.py       # Base probability computation
-│       ├── graph_builder.py     # Bayesian network construction
-│       ├── cpt_generator.py     # Noisy-OR CPT generation
-│       ├── inference.py         # Variable Elimination inference
-│       ├── risk.py              # Risk scoring and ranking
-│       ├── attack_paths.py      # Attack path analysis
-│       ├── outputs.py           # File writers (JSON, PNG, TXT)
-│       └── database/            # Persistence layer
-│           ├── config.py        # SQLAlchemy engine/session
-│           ├── models.py        # ORM models
-│           ├── repositories.py  # Repository pattern
-│           └── services.py      # Assessment persistence service
-├── frontend/
-│   ├── src/
-│   │   ├── App.tsx              # Main React application
-│   │   ├── main.tsx             # React entry point
-│   │   └── styles.css           # Tailwind CSS styles
-│   ├── index.html
-│   ├── vite.config.ts
-│   ├── package.json
-│   └── tailwind.config.js
-├── data/                        # Preset topology datasets
-├── docs/                        # Documentation
-├── tests/                       # Test suite
-├── output/                      # Generated artifacts (gitignored)
-├── alembic/                     # Database migrations
-├── pyproject.toml               # Python project configuration
-└── .env.example                 # Environment variable template
-```
-
-## Bayesian Pipeline
-
-```
-Import Topology (JSON/YAML/CSV)
-       ↓
-Graph Construction (DAG from asset relationships)
-       ↓
-Intrinsic Probability (per asset, Phase 3A)
-       ↓
-Propagation Probability (edge weights, Phase 2)
-       ↓
-CPT Generation (Noisy-OR, Phase 3B)
-       ↓
-Inference (Variable Elimination, Phase 4)
-       ↓
+├── backend/                 # Python package
+│   ├── api.py              # FastAPI REST API
+│   ├── cli.py              # CLI interface
+│   ├── probability.py      # Base probability (logistic CVSS mapping)
+│   ├── cpt_generator.py    # Noisy-OR CPT generation
+│   ├── inference.py        # Variable Elimination
+│   ├── risk.py             # Risk index computation
+│   ├── attack_paths.py     # DAG-directed attack path analysis
+│   └── database/           # SQLAlchemy persistence
+├── frontend/               # React + Vite + Tailwind
+├── data/                   # Preset topology datasets
+├── tests/                  # Test suite
+├── docs/                   # Documentation
+├── pyproject.toml
+└── .env.example
+Bayesian Pipeline
+plain
+Import Topology
+    ↓
+Validate DAG (cycle rejection)
+    ↓
+Intrinsic Probability (logistic CVSS → prior)
+    ↓
+Propagation Probability (edge weights)
+    ↓
+CPT Generation (Noisy-OR with leak probability)
+    ↓
+Inference (Variable Elimination)
+    ↓
 Posterior Probabilities
-       ↓
-Risk Computation (Phase 5)
-       ↓
-Risk Table → Risk Register (CSV)
-       ↓
-Attack Path Analysis
-       ↓
-Visualization → Graph (PNG/JSON)
-       ↓
-Report Generation → Assessment Report (PDF)
-```
-
-## Key Features
-
-- **Multi-format topology import**: JSON, YAML, CSV
-       - **Visio (.vsdx)**: modern Visio files are supported only when asset shapes include readable shape text or custom shape properties (ID/Name). If your Visio export lacks these, export the diagram to GraphML, JSON, or CSV from Visio and re-upload. Legacy `.vsd` is not supported.
-- **Three asset types**: Device, Human, Physical
-- **Configurable risk weights**: CVSS, exposure, patch, impact
-- **Evidence-based analysis**: Mark assets as compromised/safe
-- **Attack path analysis**: BFS-based path finding with geometric mean scoring
-- **Professional reports**: CSV risk register with BOM, PDF assessment reports
-- **REST API**: FastAPI with CORS support for web frontends
-- **Database persistence**: SQLAlchemy with SQLite (PostgreSQL-ready)
-
-## Configuration
-
-Copy `.env.example` to `.env` and customize:
-
-```bash
+    ↓
+Risk Index = Posterior × Impact
+    ↓
+Risk Register (CSV) + Assessment Report (PDF)
+Key Features
+Multi-format topology import: JSON, YAML, CSV, Excel, GraphML, XML/AML, VSDX
+Three asset types: Device, Human, Physical
+Calibrated base probabilities: Logistic CVSS mapping with additive log-odds context adjustment
+Configurable risk weights: CVSS, exposure, patch, impact, propagation, firewall
+Evidence-based analysis: Mark assets as compromised/safe
+DAG-directed attack paths: Follows causal direction of the Bayesian network
+Professional reports: CSV risk register with BOM, PDF assessment reports
+Stateless REST API: FastAPI with optional API-key auth
+Database persistence: SQLAlchemy with SQLite (PostgreSQL-ready)
+Configuration
+Copy .env.example to .env and customize:
+bash
 ICS_DB_URL=sqlite:///backend/data/ICSRiskFramework.db
 CORS_ORIGINS=http://localhost:5173
 API_HOST=0.0.0.0
 API_PORT=8000
 LOG_LEVEL=INFO
 MAX_UPLOAD_SIZE_MB=10
-```
-
-## License
-
+ICS_API_KEY=your-secret-key-here   # Optional: enables API authentication
+Scientific Methodology
+CVSS-to-Prior Mapping
+CVSS Base Score is a severity metric (0–10), not a probability. Direct linear scaling P = CVSS/10 is statistically indefensible because it implies a CVSS-10 vulnerability guarantees compromise (P=1.0).
+We use a calibrated logistic (sigmoid) mapping:
+plain
+P₀ = 1 / (1 + exp(−k·(CVSS − x₀)))
+with default k=0.8, x₀=5.0. This produces:
+CVSS 0  → P ≈ 0.02
+CVSS 5  → P ≈ 0.50
+CVSS 10 → P ≈ 0.98
+Parameters are user-configurable via settings.
+Context-Factor Adjustment
+Rather than multiply odds by arbitrary constants raised to arbitrary exponents, we use an additive log-odds (logit) model:
+plain
+logit(P) = logit(P₀) + Σ wᵢ · log(Mᵢ)
+where Mᵢ are the multipliers from config.py and wᵢ are user-configurable weights. This is the standard formulation in logistic regression and Bayesian calibration.
+Risk Index
+The quantity computed is a relative risk index, not an absolute quantitative risk measure (e.g. Annual Loss Expectancy). It is designed for ranking assets so analysts can prioritise investigation and mitigation.
+plain
+Risk Index = P(Compromised | evidence) × Impact
+Default thresholds are calibration placeholders:
+Critical ≥ 1.50
+High ≥ 0.80
+Moderate ≥ 0.30
+Low < 0.30
+Organisations should tune these against their own risk appetite and historical incident data.
+Attack Path Scoring
+Paths follow the DAG direction (parent → child). Scoring uses Bayesian posterior probabilities:
+plain
+path_score = min(P(nodeᵢ=1 | evidence)) × target_risk_index
+The minimum posterior represents the "weakest link". Alternative product model available via ATTACK_PATH_SCORING=product.
+References
+Pearl, J. (1988). Probabilistic Reasoning in Intelligent Systems.
+Fenton, N. E., & Neil, M. (2012). Risk Assessment and Decision Analysis with Bayesian Networks. CRC Press.
+FIRST (2019). CVSS v3.1 User Guide. https://www.first.org/cvss/user-guide
+NIST SP 800-30 Rev. 1 — Guide for Conducting Risk Assessments.
+IEC 62443-3-3 — Industrial communication networks — Network and system security.
+License
 MIT License. See LICENSE file for details.
-
