@@ -73,7 +73,7 @@
       "target": "Firewall",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -82,7 +82,7 @@
       "target": "DMZ",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -91,7 +91,7 @@
       "target": "VPN_Gateway",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -100,7 +100,7 @@
       "target": "Corporate_Network",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -109,7 +109,7 @@
       "target": "Engineering_Workstation",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -118,7 +118,7 @@
       "target": "Domain_Controller",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -127,7 +127,7 @@
       "target": "Patch_Management_Server",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -136,7 +136,7 @@
       "target": "SCADA_Server",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -145,7 +145,7 @@
       "target": "Historian",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -154,7 +154,7 @@
       "target": "HMI",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -163,7 +163,7 @@
       "target": "OPC_Server",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -172,7 +172,7 @@
       "target": "PLC_1",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -181,7 +181,7 @@
       "target": "PLC_2",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -190,7 +190,7 @@
       "target": "Sensor",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -199,7 +199,7 @@
       "target": "Actuator",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -208,7 +208,7 @@
       "target": "RTU",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -217,7 +217,7 @@
       "target": "Remote_Site",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -226,7 +226,7 @@
       "target": "Safety_PLC",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     },
@@ -235,7 +235,7 @@
       "target": "Sensor",
       "rel_type": "connects-to",
       "firewalled": false,
-      "weight": 0.5,
+      "weight": 0.16,
       "protocol": "unknown",
       "trust": "default"
     }

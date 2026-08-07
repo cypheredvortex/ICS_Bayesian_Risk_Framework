@@ -23,7 +23,7 @@
         "parent_state": {
           "Internet": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -42,7 +42,7 @@
         "parent_state": {
           "Firewall": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -61,7 +61,7 @@
         "parent_state": {
           "DMZ": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -80,7 +80,7 @@
         "parent_state": {
           "VPN_Gateway": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -99,7 +99,7 @@
         "parent_state": {
           "Corporate_Network": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -118,7 +118,7 @@
         "parent_state": {
           "Corporate_Network": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -137,7 +137,7 @@
         "parent_state": {
           "Corporate_Network": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -156,7 +156,7 @@
         "parent_state": {
           "Corporate_Network": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -175,7 +175,7 @@
         "parent_state": {
           "SCADA_Server": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -194,7 +194,7 @@
         "parent_state": {
           "SCADA_Server": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -213,7 +213,7 @@
         "parent_state": {
           "SCADA_Server": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -232,7 +232,7 @@
         "parent_state": {
           "OPC_Server": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -251,7 +251,7 @@
         "parent_state": {
           "OPC_Server": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -273,21 +273,21 @@
           "PLC_1": 0,
           "Safety_PLC": 1
         },
-        "p_compromised": 0.505
+        "p_compromised": 0.1684
       },
       {
         "parent_state": {
           "PLC_1": 1,
           "Safety_PLC": 0
         },
-        "p_compromised": 0.505
+        "p_compromised": 0.1684
       },
       {
         "parent_state": {
           "PLC_1": 1,
           "Safety_PLC": 1
         },
-        "p_compromised": 0.7525
+        "p_compromised": 0.301456
       }
     ]
   },
@@ -306,7 +306,7 @@
         "parent_state": {
           "PLC_2": 1
         },
-        "p_compromised": 0.505
+        "p_compromised": 0.1684
       }
     ]
   },
@@ -325,7 +325,7 @@
         "parent_state": {
           "PLC_1": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -344,7 +344,7 @@
         "parent_state": {
           "RTU": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },
@@ -363,7 +363,7 @@
         "parent_state": {
           "SCADA_Server": 1
         },
-        "p_compromised": 0.804688
+        "p_compromised": 0.671875
       }
     ]
   },

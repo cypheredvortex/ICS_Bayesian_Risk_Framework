@@ -1,6 +1,6 @@
 {
   "framework_version": "1.0.1",
-  "generated_at": "2026-08-06T10:25:24Z",
+  "generated_at": "2026-08-07T11:53:50Z",
   "topology": "inline-topology",
   "asset_count": 22,
   "relationship_count": 19,
@@ -8,15 +8,20 @@
   "edge_count": 19,
   "posterior_count": 22,
   "risk_row_count": 22,
-  "evidence_count": 0,
-  "evidence_used": {},
-  "attack_path_count": 19,
+  "evidence_count": 4,
+  "evidence_used": {
+    "Firewall": 1,
+    "VPN_Gateway": 1,
+    "Remote_Access_Server": 1,
+    "Engineering_Workstation": 1
+  },
+  "attack_path_count": 34,
   "validation": {
     "success": true,
     "errors": 0
   },
   "inference_algorithm": "Variable Elimination",
-  "build_time_seconds": 0.11,
-  "inference_time_seconds": 0.026862,
-  "total_time_seconds": 0.136862
+  "build_time_seconds": 0.093061,
+  "inference_time_seconds": 0.025085,
+  "total_time_seconds": 0.118146
 }
