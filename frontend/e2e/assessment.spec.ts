@@ -60,6 +60,9 @@ test('full assessment workflow', async ({ page }) => {
   expect(posteriorBefore).toMatch(/\d\.\d{3}/)
 
   // --- Apply evidence and rerun ---
+  // Evidence Selection lives inside the Topology & Assessment card as a
+  // collapsible section (collapsed by default), so expand it first.
+  await page.getByText('Evidence Selection').click()
   // NOTE: the completion toast of the first run may still be visible, so do
   // not key on it for the second run; poll the actual posterior value.
   await page
@@ -79,6 +82,10 @@ test('full assessment workflow', async ({ page }) => {
   expect(posteriorAfter).not.toEqual(posteriorBefore)
 
   // --- Export the risk register ---
+  // Reports moved into the header control area next to Settings — open it
+  // before using the export controls.
+  await page.getByRole('button', { name: 'Reports' }).click()
+  await expect(page.getByText('Download risk register (CSV)')).toBeVisible()
   const downloadPromise = page.waitForEvent('download')
   await page.getByText('Download risk register (CSV)').click()
   const download = await downloadPromise

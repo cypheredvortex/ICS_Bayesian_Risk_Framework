@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import { API_BASE_URL, topologyFormats } from '../constants'
 import type { TopologyReviewInfo } from '../types'
 import { formatBytes } from '../utils'
@@ -22,6 +22,7 @@ export default function TopologySection({
   onRemoveTopology,
   onRunAssessment,
   accept,
+  children,
 }: {
   uploadedFileName: string
   review: TopologyReviewInfo | null
@@ -33,6 +34,10 @@ export default function TopologySection({
   onRemoveTopology: () => void
   onRunAssessment: () => void
   accept: string
+  // Optional secondary workflow sections rendered inside the card (e.g. the
+  // collapsible Evidence Selection), so they read as subsections of the
+  // Topology & Assessment workflow rather than standalone cards.
+  children?: ReactNode
 }) {
   // The file input is intentionally rendered once, outside every conditional
   // branch, so the ref always points at a mounted element. That is what makes
@@ -469,6 +474,9 @@ export default function TopologySection({
           </ul>
         </div>
       </details>
+
+      {/* Embedded secondary sections (evidence selection, …) */}
+      {children}
 
       {/* Hidden file input — mounted once for both initial selection and
           replacement so no page refresh is ever needed. */}

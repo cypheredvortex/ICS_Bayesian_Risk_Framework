@@ -3,10 +3,12 @@ import { StatusDot } from './ui'
 
 export default function Header({
   settingsButton,
+  reportsButton,
   apiOnline,
   children,
 }: {
   settingsButton: ReactNode
+  reportsButton?: ReactNode
   apiOnline: boolean | null
   children: ReactNode
 }) {
@@ -61,6 +63,7 @@ export default function Header({
                 : 'API unreachable'}
           </span>
           {settingsButton}
+          {reportsButton}
         </div>
       </div>
       {children}

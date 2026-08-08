@@ -14,7 +14,9 @@ import {
 import '@xyflow/react/dist/style.css'
 import { kindColors, kindMeta } from '../constants'
 import { getProbabilityColor, computeLayeredPositions, formatProbability } from '../utils'
+import type { ResultPayload } from '../types'
 import { EmptyState } from './ui'
+import BayesianResults from './BayesianResults'
 
 type NetworkNodeData = {
   label: string
@@ -110,6 +112,7 @@ const NetworkViewer = forwardRef<
     onSearchChange: (value: string) => void
     onColorModeChange: (mode: 'risk' | 'kind') => void
     onAttackPathToggle: () => void
+    result?: ResultPayload | null
   }
 >(function NetworkViewer(
   {
@@ -129,6 +132,7 @@ const NetworkViewer = forwardRef<
     onSearchChange,
     onColorModeChange,
     onAttackPathToggle,
+    result,
   },
   searchInputRef,
 ) {
@@ -332,9 +336,25 @@ const NetworkViewer = forwardRef<
         </span>
       </div>
 
-      <details className="details-card mt-3">
+      <details className="details-card disclosure-no-marker mt-3">
         <summary className="details-summary">
-          How to read this network
+          <span className="flex items-center gap-2.5">
+            <svg
+              className="details-chevron h-4 w-4 shrink-0 text-slate-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+            <span className="text-sm font-semibold text-slate-100">
+              How to read this network
+            </span>
+          </span>
         </summary>
         <div className="border-t border-slate-800 px-4 py-3 text-xs leading-relaxed text-slate-400">
           <p>
@@ -353,6 +373,39 @@ const NetworkViewer = forwardRef<
               ? ' The rose outline shows the highest-scoring calculated path in this assessment.'
               : ''}
           </p>
+        </div>
+      </details>
+
+      {/* Bayesian Results — the model context and outputs for the current
+          run, tucked below the reading guide so the graph stays the primary
+          content. Collapsed by default like the other disclosure sections. */}
+      <details className="details-card disclosure-no-marker mt-3">
+        <summary className="details-summary">
+          <span className="flex items-center gap-2.5">
+            <svg
+              className="details-chevron h-4 w-4 shrink-0 text-slate-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+            <span className="text-sm font-semibold text-slate-100">
+              Bayesian Results
+            </span>
+          </span>
+          <span className="hidden text-xs font-normal text-slate-500 sm:inline">
+            {result
+              ? `${result.summary.asset_count} assets · ${formatProbability(result.summary.overall_risk)} overall risk`
+              : 'run an assessment to populate'}
+          </span>
+        </summary>
+        <div className="details-panel border-t border-slate-800 px-4 py-3">
+          <BayesianResults result={result ?? null} embedded />
         </div>
       </details>
     </div>

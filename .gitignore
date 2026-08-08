@@ -73,3 +73,20 @@ logs/
 # Alembic
 alembic/versions/*.pyc
 
+# LaTeX generated artifacts (the report source is docs/rapport_de_stage.tex)
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+docs/*.pdf
+

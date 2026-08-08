@@ -7,10 +7,15 @@ export default function EvidencePanel({
   assets,
   evidence,
   onUpdateEvidence,
+  embedded = false,
 }: {
   assets: [string, Record<string, unknown>][]
   evidence: Record<string, AssetState>
   onUpdateEvidence: (asset: string, state: AssetState) => void
+  // When embedded, the panel drops its own card chrome and header so it can
+  // live inside a parent disclosure (Topology & Assessment → Evidence
+  // Selection). All state/logic is identical.
+  embedded?: boolean
 }) {
   const [query, setQuery] = useState('')
 
@@ -41,30 +46,39 @@ export default function EvidencePanel({
     )
   }, [filtered])
 
+  // Filter + counter toolbar, shared by both layouts.
+  const toolbar = (
+    <div className="flex flex-wrap items-center gap-2">
+      <input
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+        placeholder="Filter assets…"
+        aria-label="Filter evidence assets"
+        className="field field-sm w-44"
+      />
+      <Badge tone={markedCount > 0 ? 'cyan' : 'slate'}>
+        {markedCount} of {assets.length} marked
+      </Badge>
+    </div>
+  )
+
   return (
-    <section className="card card-pad">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h2 className="card-title">Evidence Selection</h2>
-          <p className="card-subtitle">
-            Mark assets you know to be Compromised or Safe. These states are
-            applied when you run the assessment and every compromise
-            probability is recomputed from them.
-          </p>
+    <div className={embedded ? undefined : 'card card-pad'}>
+      {embedded ? (
+        toolbar
+      ) : (
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="card-title">Evidence Selection</h2>
+            <p className="card-subtitle">
+              Mark assets you know to be Compromised or Safe. These states are
+              applied when you run the assessment and every compromise
+              probability is recomputed from them.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">{toolbar}</div>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Filter assets…"
-            aria-label="Filter evidence assets"
-            className="field field-sm w-44"
-          />
-          <Badge tone={markedCount > 0 ? 'cyan' : 'slate'}>
-            {markedCount} of {assets.length} marked
-          </Badge>
-        </div>
-      </div>
+      )}
 
       <div className="mt-4 max-h-80 space-y-4 overflow-y-auto pr-1">
         {assets.length === 0 ? (
@@ -131,6 +145,6 @@ export default function EvidencePanel({
           ))
         )}
       </div>
-    </section>
+    </div>
   )
 }

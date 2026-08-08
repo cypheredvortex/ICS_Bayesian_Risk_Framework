@@ -10,13 +10,18 @@ import {
 } from 'recharts'
 import { getProbabilityColor, formatProbability } from '../utils'
 import { EmptyState } from './ui'
+import RiskPieChart from './RiskPieChart'
 
 export default function ProbabilityChart({
   chartData,
   setSelectedNode,
+  pieData,
 }: {
   chartData: Array<{ asset: string; probability: number; pinned: boolean }>
   setSelectedNode: (id: string) => void
+  // Risk-level distribution, rendered below the probability graph so the
+  // Probability → Risk relationship is visually obvious.
+  pieData: Array<{ name: string; value: number }>
 }) {
   return (
     <div className="card card-pad">
@@ -97,6 +102,12 @@ export default function ProbabilityChart({
             hint="Run an assessment to populate this chart."
           />
         )}
+      </div>
+
+      {/* Risk ranking — the direct interpretation of the probabilities above:
+          assets classified into risk levels with the active thresholds. */}
+      <div className="mt-6 border-t border-slate-800 pt-6">
+        <RiskPieChart pieData={pieData} embedded />
       </div>
     </div>
   )

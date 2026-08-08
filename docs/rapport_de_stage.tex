@@ -4,12 +4,11 @@
 \usepackage[french]{babel}
 \usepackage{geometry}
 \usepackage{graphicx}
+\usepackage[table]{xcolor}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
 \usepackage{array}
-\usepackage{colortbl}
-\usepackage{xcolor}
 \usepackage{titling}
 \usepackage{fancyhdr}
 \usepackage{float}
@@ -63,7 +62,7 @@
 % ============================================================
 % GÉOMÉTRIE ET MARGES
 % ============================================================
-\geometry{a4paper, margin=2.8cm, top=3.1cm, bottom=3.1cm, headheight=16pt, headsep=10pt}
+\geometry{a4paper, margin=2.8cm, top=3.1cm, bottom=3.1cm, headheight=24.1pt, headsep=12pt}
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1.1ex plus 0.3ex minus 0.2ex}
 
@@ -139,7 +138,7 @@
 % ============================================================
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small\sffamily\color{primary!75} Rapport technique --- Framework ICS}
+\fancyhead[L]{\small\sffamily\color{primary!75} Rapport de stage --- Framework ICS}
 \fancyhead[R]{\small\sffamily\color{primary!75} \nouppercase{\rightmark}}
 \fancyfoot[L]{\footnotesize\sffamily\color{darkgray!70} EMSI}
 \fancyfoot[C]{\footnotesize\sffamily\color{darkgray!70} Sghiri Achraf}
@@ -157,16 +156,16 @@
 % ============================================================
 % TABLE DES MATIÈRES / LISTE DES FIGURES
 % ============================================================
-\contentsmargin{0pt}
+\contentsmargin{1em}
 \titlecontents{section}
-  [1.1cm]{\vspace{5pt}\sffamily\bfseries\color{primary}}
-  {\contentslabel{1.1cm}}
-  {\hspace*{-1.1cm}}
+  [1.5cm]{\vspace{5pt}\sffamily\bfseries\color{primary}}
+  {\contentslabel{1.5cm}}
+  {\hspace*{-1.5cm}}
   {\hfill\color{primary}\contentspage}
 \titlecontents{subsection}
-  [1.6cm]{\sffamily\color{darkgray}\small}
-  {\contentslabel{1.0cm}}
-  {\hspace*{-1.0cm}}
+  [2.0cm]{\sffamily\color{darkgray}\small}
+  {\contentslabel{1.3cm}}
+  {\hspace*{-1.3cm}}
   {\hfill\color{darkgray}\contentspage}
   [\vspace{2pt}]
 
@@ -243,6 +242,7 @@
 \interlinepenalty=10000
 \relpenalty=10000
 \binoppenalty=10000
+\emergencystretch=2em
 
 % ============================================================
 % ESPACEMENT AUTOUR DES ÉQUATIONS
@@ -255,8 +255,6 @@
 % ============================================================
 % FIGURES ET TABLEAUX : CONTRE LES FLOTTANTS ERRANTS
 % ============================================================
-% On utilise le modificateur [H] de float pour placer exactement,
-% mais on ajoute des barrières pour éviter qu'ils ne s'égarent.
 \renewcommand{\floatpagefraction}{0.9}
 \renewcommand{\textfraction}{0.05}
 \renewcommand{\topfraction}{0.95}
@@ -279,21 +277,16 @@
 \begin{titlepage}
     \thispagestyle{empty}
     \centering
-    \vspace*{0.8cm}
-    \begin{minipage}{0.28\textwidth}
-        \includegraphics[width=\linewidth]{emsi_logo.png}
-    \end{minipage}
-    \hfill
-    \begin{minipage}{0.28\textwidth}
-        \includegraphics[width=\linewidth]{jesa.png}
-    \end{minipage}
-    \vspace{1.5cm}
-    
-    {\color{secondary}\rule{0.6\textwidth}{0.8pt}}\\[0.8cm]
-    {\Huge\sffamily\bfseries\color{primary} Rapport de stage de fin d'année}\\[0.8cm]
+    \vspace*{1.4cm}
+
+    {\small\sffamily\color{primary!80}\uppercase{École Marocaine des Sciences de l'Ingénieur (EMSI)}}
+    \vspace{1.2cm}
+
+    {\color{secondary}\rule{0.6\textwidth}{0.8pt}}\\[0.9cm]
+    {\Huge\sffamily\bfseries\color{primary} Rapport de stage de fin d'année}\\[0.9cm]
     {\Large\sffamily\color{primary!85} Développement d'un framework générique basé sur les réseaux bayésiens pour l'évaluation quantitative des risques des systèmes de contrôle industriels (ICS)}\\[0.4cm]
     {\large\itshape\color{darkgray} Modélisation probabiliste, moteur d'inférence bayésienne et tableau de bord Web}\\[0.6cm]
-    {\color{secondary}\rule{0.6\textwidth}{0.8pt}}\\[2.5cm]
+    {\color{secondary}\rule{0.6\textwidth}{0.8pt}}\\[2.6cm]
 
     \begin{tcolorbox}[
         enhanced, breakable=false, sharp corners, boxrule=0.6pt,
@@ -342,9 +335,9 @@ Enfin, une mention particulière est adressée à ma famille, dont le soutien mo
 \begin{abstractbox}
 Les systèmes de contrôle industriels (ICS) pilotent des procédés physiques dont la compromission peut avoir des conséquences graves en matière de sûreté, d'environnement et d'économie. L'évaluation du risque cyber ne peut se limiter à une liste de vulnérabilités : elle doit intégrer la topologie du réseau, les dépendances entre actifs, les protections en place, l'incertitude inhérente aux observations disponibles et leur mise à jour au fil de l'analyse.
 
-Ce rapport présente un framework générique qui transforme une architecture ICS en un réseau bayésien discret. Chaque actif reçoit une probabilité intrinsèque de compromission calculée à partir de son score CVSS, de son exposition et de son niveau de correctif ; chaque relation entre actifs reçoit une probabilité de propagation dépendant du type de liaison, des protocoles industriels utilisés et de la présence d'un pare-feu. Les tables de probabilités conditionnelles (CPT) de chaque nœud sont ensuite générées automatiquement au moyen d'un modèle Noisy-OR, ce qui évite la saisie manuelle de tables dont la taille croît exponentiellement avec le nombre de parents. Une fois le réseau bayésien construit, une inférence exacte par élimination de variables met à jour les probabilités de compromission à partir des preuves observées et permet de classer les actifs selon leur niveau de risque et d'identifier les chemins d'attaque les plus critiques.
+Ce rapport présente un framework générique qui transforme une architecture ICS en un réseau bayésien discret. Chaque actif reçoit une probabilité intrinsèque de compromission calculée à partir de son score CVSS v3.1 (score de sévérité officiel, jamais confondu avec une probabilité) au moyen d'un modèle logistique calibré, ajusté par des facteurs de contexte (exposition, niveau de correctif, protocoles) combinés dans l'espace log-odds. Chaque relation entre actifs porte un poids causal Noisy-OR dépendant du type de liaison, des protocoles industriels utilisés et de la présence d'un pare-feu. Les tables de probabilités conditionnelles (CPT) de chaque nœud sont ensuite générées automatiquement au moyen d'un modèle Noisy-OR, ce qui évite la saisie manuelle de tables dont la taille croît exponentiellement avec le nombre de parents. Une fois le réseau bayésien construit, une inférence exacte par élimination de variables met à jour les probabilités de compromission à partir des preuves observées, permet de classer les actifs selon un indice de risque borné et d'identifier les chemins d'attaque les plus critiques.
 
-Le framework est concrétisé par une application Web mono-utilisateur combinant un backend FastAPI/Python adossé à la bibliothèque \texttt{pgmpy} et un frontend React/TypeScript. Elle permet d'importer une topologie (JSON, YAML, CSV), de sélectionner des preuves, d'ajuster les paramètres de pondération, d'exécuter l'analyse, d'explorer le réseau bayésien de façon interactive et d'exporter un registre des risques ainsi qu'un rapport de synthèse. Le prototype obtenu est fonctionnel, modulaire, testable et configurable, ce qui le rend adaptable à des contextes industriels réels.
+Le framework est concrétisé par une application Web mono-utilisateur combinant un backend FastAPI/Python adossé à la bibliothèque \texttt{pgmpy} et un frontend React/TypeScript. Elle permet d'importer une topologie dans plusieurs formats (JSON, YAML, CSV, Excel, GraphML, XML/AML, Visio), de la valider, de sélectionner des preuves, d'ajuster les paramètres de pondération, d'exécuter l'analyse, d'explorer le réseau bayésien de façon interactive, de conduire une analyse de sensibilité et d'exporter un registre des risques ainsi qu'un rapport de synthèse. Le prototype obtenu est fonctionnel, modulaire, testable et configurable, ce qui le rend adaptable à des contextes industriels réels.
 \end{abstractbox}
 
 % ============================================================
@@ -358,10 +351,60 @@ Le framework est concrétisé par une application Web mono-utilisateur combinant
 \begin{abstractbox}
 Industrial Control Systems (ICS) drive physical processes whose compromise can lead to severe safety, environmental, and economic consequences. Cybersecurity risk assessment cannot be reduced to a mere list of vulnerabilities; it must account for network topology, dependencies between assets, existing protections, the uncertainty inherent to available observations, and their continuous update as the analysis progresses.
 
-This report presents a generic framework that transforms an ICS architecture into a discrete Bayesian network. Each asset is assigned an intrinsic compromise probability computed from its CVSS score, exposure, and patch level; each relationship between assets is assigned a propagation probability that depends on the link type, the industrial protocols involved, and the presence of a firewall. The conditional probability tables (CPTs) of each node are then automatically generated using a Noisy-OR model, avoiding the manual entry of tables whose size grows exponentially with the number of parents. Once the Bayesian network is built, exact inference by variable elimination updates compromise probabilities from observed evidence and enables asset ranking by risk level as well as the identification of the most critical attack paths.
+This report presents a generic framework that transforms an ICS architecture into a discrete Bayesian network. Each asset is assigned an intrinsic compromise probability computed from its CVSS v3.1 score (an official severity score, never confused with a probability) through a calibrated logistic model, adjusted by contextual factors (exposure, patch level, protocols) combined in log-odds space. Each relationship between assets carries a Noisy-OR causal weight that depends on the link type, the industrial protocols involved, and the presence of a firewall. The conditional probability tables (CPTs) of each node are then automatically generated using a Noisy-OR model, avoiding the manual entry of tables whose size grows exponentially with the number of parents. Once the Bayesian network is built, exact inference by variable elimination updates compromise probabilities from observed evidence, enables asset ranking according to a bounded risk index, and identifies the most critical attack paths.
 
-The framework is implemented as a single-user Web application combining a FastAPI/Python backend built on the \texttt{pgmpy} library with a React/TypeScript frontend. It allows users to import a topology (JSON, YAML, CSV), select evidence, adjust weighting parameters, run the analysis, interactively explore the Bayesian network, and export a risk register together with a summary report. The resulting prototype is functional, modular, testable, and configurable, making it adaptable to real industrial contexts.
+The framework is implemented as a single-user Web application combining a FastAPI/Python backend built on the \texttt{pgmpy} library with a React/TypeScript frontend. It allows users to import a topology in several formats (JSON, YAML, CSV, Excel, GraphML, XML/AML, Visio), validate it, select evidence, adjust weighting parameters, run the analysis, interactively explore the Bayesian network, conduct a sensitivity analysis, and export a risk register together with a summary report. The resulting prototype is functional, modular, testable, and configurable, making it adaptable to real industrial contexts.
 \end{abstractbox}
+
+% ============================================================
+% LISTE DES ACRONYMES
+% ============================================================
+\newpage
+\thispagestyle{empty}
+\unnumberedsection{Liste des acronymes}
+\addcontentsline{toc}{section}{Liste des acronymes}
+
+\begin{small}
+\setlength{\tabcolsep}{8pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{p{2.4cm} p{10.6cm}}
+\toprule
+\textbf{Acronyme} & \textbf{Signification} \\
+\midrule
+\endhead
+ICS & \emph{Industrial Control Systems} --- systèmes de contrôle industriels \\
+SCADA & \emph{Supervisory Control and Data Acquisition} --- supervision et acquisition de données \\
+PLC & \emph{Programmable Logic Controller} --- automate programmable industriel \\
+IHM & Interface Homme--Machine \\
+OT & \emph{Operational Technology} --- technologies opérationnelles \\
+IT & \emph{Information Technology} --- technologies de l'information \\
+CVSS & \emph{Common Vulnerability Scoring System} --- système de score de sévérité des vulnérabilités \\
+CVE & \emph{Common Vulnerabilities and Exposures} --- référentiel public de vulnérabilités \\
+NVD & \emph{National Vulnerability Database} --- base de données nationale de vulnérabilités \\
+CPT & \emph{Conditional Probability Table} --- table de probabilités conditionnelles \\
+DAG & \emph{Directed Acyclic Graph} --- graphe orienté acyclique \\
+VE & \emph{Variable Elimination} --- élimination de variables (inférence exacte) \\
+API & \emph{Application Programming Interface} --- interface de programmation applicative \\
+REST & \emph{Representational State Transfer} --- style d'architecture web \\
+JSON & \emph{JavaScript Object Notation} --- format d'échange de données \\
+YAML & \emph{YAML Ain't Markup Language} --- format de sérialisation lisible \\
+CSV & \emph{Comma-Separated Values} --- valeurs séparées par des virgules \\
+GraphML & \emph{Graph Markup Language} --- format XML d'échange de graphes \\
+AML & \emph{AutomationML} --- format d'ingénierie des systèmes automatisés \\
+SQL & \emph{Structured Query Language} --- langage de requêtes relationnel \\
+ORM & \emph{Object-Relational Mapping} --- mapping objet-relationnel \\
+ALE & \emph{Annualised Loss Expectancy} --- perte annuelle estimée \\
+MITRE & Organisation américaine publiant notamment le référentiel ATT\&CK for ICS \\
+NIST & \emph{National Institute of Standards and Technology} --- institut américain de normalisation \\
+ISO/IEC & \emph{International Organization for Standardization} / \emph{International Electrotechnical Commission} \\
+BFS & \emph{Breadth-First Search} --- parcours en largeur \\
+UML & \emph{Unified Modeling Language} --- langage de modélisation unifié \\
+SPA & \emph{Single Page Application} --- application monopage \\
+E2E & \emph{End-to-End} --- tests de bout en bout \\
+CI & \emph{Continuous Integration} --- intégration continue \\
+\bottomrule
+\end{longtable}
+\end{small}
 
 % ============================================================
 % TABLE DES MATIÈRES ET LISTE DES FIGURES
@@ -377,17 +420,18 @@ The framework is implemented as a single-user Web application combining a FastAP
 % ============================================================
 % 7. INTRODUCTION GÉNÉRALE
 % ============================================================
+\setcounter{section}{6}   % la numérotation des chapitres commence à 7
 \section{Introduction générale}
 \markboth{Introduction générale}{Introduction générale}
 \forcereset{8}
 
-Un système de contrôle industriel (ICS) regroupe l'ensemble des équipements — automates programmables (PLC), interfaces homme-machine (IHM), serveurs SCADA, capteurs, actionneurs et postes d'ingénierie — qui assurent le pilotage automatisé d'un procédé physique. Contrairement à un système d'information classique, où une compromission se traduit essentiellement par une perte de confidentialité ou d'intégrité de données, une erreur de commande ou une indisponibilité dans un ICS affecte directement le monde physique : arrêt de production, dommage matériel, voire mise en danger des personnes et de l'environnement. Les exigences de disponibilité, de sûreté de fonctionnement et de continuité d'exploitation y sont donc primordiales, et priment souvent sur la confidentialité.
+Un système de contrôle industriel (ICS) regroupe l'ensemble des équipements --- automates programmables (PLC), interfaces homme-machine (IHM), serveurs SCADA, capteurs, actionneurs et postes d'ingénierie --- qui assurent le pilotage automatisé d'un procédé physique. Contrairement à un système d'information classique, où une compromission se traduit essentiellement par une perte de confidentialité ou d'intégrité de données, une erreur de commande ou une indisponibilité dans un ICS affecte directement le monde physique : arrêt de production, dommage matériel, voire mise en danger des personnes et de l'environnement. Les exigences de disponibilité, de sûreté de fonctionnement et de continuité d'exploitation y sont donc primordiales, et priment souvent sur la confidentialité.
 
 Cette spécificité rend l'évaluation du risque cyber particulièrement délicate. Les méthodes classiques, fondées sur une matrice croisant vraisemblance et impact ou sur un simple inventaire de vulnérabilités, peinent à modéliser des phénomènes essentiels : la manière dont une compromission se propage d'un équipement à un autre à travers le réseau, l'effet protecteur d'un pare-feu ou d'une segmentation, et la mise à jour du diagnostic de risque à mesure que de nouvelles observations deviennent disponibles sur le terrain.
 
 Les réseaux bayésiens apportent une réponse structurée à ces limites. En représentant l'infrastructure sous la forme d'un graphe orienté acyclique dont chaque nœud porte une distribution de probabilité conditionnée par ses parents, ils permettent de raisonner explicitement sur l'incertitude, de propager une observation locale (« tel équipement est compromis ») à l'ensemble du réseau, et de recalculer dynamiquement le niveau de risque global de l'installation.
 
-C'est cette approche que ce projet de fin d'études met en œuvre à travers la conception d'un \textbf{framework générique, transparent et directement exploitable par un analyste de risque}, sans que celui-ci ait à manipuler de code ou à définir manuellement des tables de probabilités conditionnelles. Le présent rapport est organisé de la manière suivante : les chapitres 8 à 11 posent le contexte, la problématique, les objectifs et l'état de l'art ; le chapitre 12 présente les fondements théoriques mobilisés ; les chapitres 13 à 21 détaillent la conception et l'implémentation du framework (architecture, modélisation, workflow, choix technologiques, UML, interface) ; le chapitre 22 explicite le pipeline complet de calcul ; enfin, les chapitres 23 à 26 présentent les résultats obtenus, discutent des limites et des perspectives, et concluent le travail réalisé.
+C'est cette approche que ce stage de fin d'année met en œuvre à travers la conception d'un \textbf{framework générique, transparent et directement exploitable par un analyste de risque}, sans que celui-ci ait à manipuler de code ou à définir manuellement des tables de probabilités conditionnelles. Le présent rapport est organisé de la manière suivante : les chapitres 8 à 11 posent le contexte, la problématique, les objectifs et l'état de l'art ; le chapitre 12 présente les fondements théoriques mobilisés ; les chapitres 13 à 21 détaillent la conception et l'implémentation du framework (architecture, modélisation, workflow, choix technologiques, conception UML, implémentation, interface) ; le chapitre 22 explicite le pipeline complet de calcul ; enfin, les chapitres 23 à 26 présentent les résultats obtenus, discutent des limites et des perspectives, et concluent le travail réalisé.
 
 % ============================================================
 % 8. CONTEXTE DES SYSTÈMES ICS
@@ -399,7 +443,6 @@ C'est cette approche que ce projet de fin d'études met en œuvre à travers la 
 \subsection{Architecture typique d'un ICS}
 Un ICS s'organise traditionnellement selon une architecture hiérarchique en niveaux, inspirée du modèle de référence de Purdue : au niveau le plus bas, capteurs et actionneurs interagissent directement avec le procédé physique ; au-dessus, les automates programmables (PLC) exécutent la logique de commande en temps réel ; les serveurs SCADA et les IHM assurent la supervision, la visualisation et le pilotage par les opérateurs ; enfin, les postes d'ingénierie permettent de programmer et de maintenir les équipements. Ces différents niveaux communiquent au moyen de protocoles industriels dédiés (Modbus, Profinet, OPC-UA, DNP3, etc.), dont beaucoup n'intègrent nativement ni authentification ni chiffrement.
 
-
 \newpage
 \subsection{Spécificités et enjeux de cybersécurité}
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
@@ -410,7 +453,7 @@ Un ICS s'organise traditionnellement selon une architecture hiérarchique en niv
     \item \textbf{Conséquences physiques} : une attaque réussie peut se traduire par un arrêt de production, un dommage matériel ou un impact sur la sécurité des personnes et de l'environnement, ce qui distingue fondamentalement le risque ICS du risque IT traditionnel.
 \end{itemize}
 
-Ces spécificités justifient le recours à une méthode d'évaluation du risque capable de représenter explicitement la topologie du réseau, les dépendances entre actifs et l'incertitude propre à chaque source d'information — c'est précisément l'objet du framework développé dans ce projet.
+Ces spécificités justifient le recours à une méthode d'évaluation du risque capable de représenter explicitement la topologie du réseau, les dépendances entre actifs et l'incertitude propre à chaque source d'information --- c'est précisément l'objet du framework développé dans ce projet.
 
 % ============================================================
 % 9. PROBLÉMATIQUE
@@ -429,7 +472,7 @@ Une topologie ICS réunit des actifs hétérogènes (PLC, SCADA, IHM, capteurs, 
     \item Comment ce diagnostic doit-il évoluer lorsqu'une observation concrète est disponible sur le terrain (par exemple, la détection avérée d'une compromission sur un équipement précis) ?
 \end{itemize}
 
-Les méthodes classiques d'évaluation des risques — matrices vraisemblance/impact, listes de vulnérabilités pondérées par leur score CVSS, arbres de défaillance statiques — ne permettent pas de répondre correctement à ces questions. Elles traitent en général chaque actif isolément, sans modéliser explicitement les dépendances structurelles entre équipements, et elles ne disposent d'aucun mécanisme naturel pour mettre à jour une estimation de risque à partir d'une observation partielle. Or, comme les événements de compromission dans un ICS sont à la fois incertains et interdépendants, une approche purement déterministe ou additive sous-estime ou surestime systématiquement le risque réel de propagation.
+Les méthodes classiques d'évaluation des risques --- matrices vraisemblance/impact, listes de vulnérabilités pondérées par leur score CVSS, arbres de défaillance statiques --- ne permettent pas de répondre correctement à ces questions. Elles traitent en général chaque actif isolément, sans modéliser explicitement les dépendances structurelles entre équipements, et elles ne disposent d'aucun mécanisme naturel pour mettre à jour une estimation de risque à partir d'une observation partielle. Or, comme les événements de compromission dans un ICS sont à la fois incertains et interdépendants, une approche purement déterministe ou additive sous-estime ou surestime systématiquement le risque réel de propagation.
 
 La problématique centrale de ce projet est donc la suivante : \textbf{comment concevoir un framework générique capable de transformer automatiquement une topologie ICS hétérogène en un modèle quantitatif cohérent, qui représente explicitement l'incertitude et les dépendances entre actifs, et qui permette de recalculer dynamiquement le risque de chaque équipement à partir d'observations disponibles ?} La réponse retenue dans ce travail repose sur la modélisation probabiliste par réseau bayésien, complétée par un mécanisme de génération automatique des tables de probabilités conditionnelles afin de rester praticable sur des infrastructures de taille réaliste.
 
@@ -447,11 +490,12 @@ Concevoir et développer un framework générique, fondé sur les réseaux bayé
 \subsection{Objectifs spécifiques}
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
     \item Modéliser toute infrastructure ICS sous la forme d'un graphe orienté représentant les actifs et leurs relations.
-    \item Calculer automatiquement une probabilité intrinsèque de compromission pour chaque actif à partir de facteurs objectifs (CVSS, exposition, niveau de correctif).
-    \item Attribuer une probabilité de propagation à chaque relation entre actifs, en fonction du type de liaison, des protocoles utilisés et de la présence de protections.
+    \item Importer et valider la topologie dans plusieurs représentations réelles (JSON, YAML, CSV, Excel, GraphML, XML/AML, Visio).
+    \item Calculer automatiquement une probabilité intrinsèque de compromission pour chaque actif à partir de facteurs objectifs (score CVSS v3.1, exposition, niveau de correctif), via un modèle logistique explicite et configurable.
+    \item Attribuer un poids causal Noisy-OR à chaque relation entre actifs, en fonction du type de liaison, des protocoles utilisés et de la présence de protections.
     \item Générer automatiquement les tables de probabilités conditionnelles (CPT) de chaque nœud au moyen d'un modèle Noisy-OR, afin d'éviter leur saisie manuelle.
     \item Réaliser une inférence bayésienne exacte, à partir de preuves fournies par l'utilisateur, pour obtenir des probabilités de compromission actualisées.
-    \item Classer les actifs selon leur niveau de risque et identifier les chemins d'attaque les plus critiques.
+    \item Classer les actifs selon un indice de risque borné et identifier les chemins d'attaque les plus critiques.
     \item Fournir une application Web complète permettant d'importer une topologie, de configurer l'analyse, d'explorer les résultats et d'exporter les livrables (registre des risques, rapport de synthèse).
 \end{itemize}
 
@@ -461,6 +505,7 @@ Concevoir et développer un framework générique, fondé sur les réseaux bayé
     \item Une formalisation générique de la transformation d'une topologie ICS en réseau bayésien, indépendante du secteur industriel considéré.
     \item Un mécanisme original de génération automatique des CPT par modèle Noisy-OR, contournant l'explosion combinatoire liée au nombre de parents.
     \item Une chaîne de calcul complète, de l'import de la topologie jusqu'à l'export des livrables, intégralement automatisée.
+    \item Un moteur CVSS v3.1 officiel (équations FIRST), une cartographie CVSS-probabilité logistique explicite et une analyse de sensibilité paramétrique.
     \item Un prototype fonctionnel, modulaire et testable, démontrant la faisabilité de l'approche sur des jeux de données représentatifs (SWaT, automatisation du bâtiment, poste électrique, traitement de l'eau).
 \end{itemize}
 \end{contributionbox}
@@ -478,13 +523,13 @@ Concevoir et développer un framework générique, fondé sur les réseaux bayé
 Les méthodes historiquement employées pour évaluer le risque cyber d'un système d'information, et par extension d'un ICS, reposent le plus souvent sur des grilles qualitatives croisant la vraisemblance d'un incident et son impact potentiel (matrices de risque), ou sur des référentiels normatifs tels que EBIOS RM ou ISO/IEC 27005. Ces approches offrent l'avantage d'être simples à mettre en œuvre et largement acceptées par les organisations, mais elles restent fondamentalement statiques : elles ne modélisent pas la manière dont un incident se propage d'un actif à un autre et ne permettent pas de réviser une estimation de risque à la lumière d'une observation nouvelle. Les arbres de défaillance (Fault Tree Analysis) et les arbres d'attaque (Attack Trees) constituent une amélioration en représentant explicitement les combinaisons de conditions menant à un événement redouté, mais ils demeurent généralement construits avec des probabilités fixes et ne capturent pas aisément les dépendances complexes propres à un réseau industriel.
 
 \subsection{Méthodes quantitatives et scoring de vulnérabilités}
-Le score CVSS (Common Vulnerability Scoring System) constitue la référence la plus répandue pour quantifier la sévérité d'une vulnérabilité logicielle. Utilisé seul, il ne renseigne cependant que sur la difficulté d'exploitation d'un actif isolé, sans tenir compte de sa position dans la topologie ni des protections qui l'entourent. Des approches de scoring agrégé combinent le CVSS à des facteurs d'exposition et de correctif pour approcher une probabilité de compromission par actif ; c'est le principe repris par la probabilité intrinsèque calculée dans ce projet, mais qui reste insuffisant tant qu'il n'est pas complété par un mécanisme de propagation entre actifs.
+Le score CVSS (Common Vulnerability Scoring System) constitue la référence la plus répandue pour quantifier la sévérité d'une vulnérabilité logicielle. Utilisé seul, il ne renseigne cependant que sur la difficulté d'exploitation d'un actif isolé, sans tenir compte de sa position dans la topologie ni des protections qui l'entourent. De surcroît, CVSS est un \emph{score de sévérité}, pas une probabilité : le convertir en probabilité de compromission exige un modèle de correspondance explicite et assumé comme tel. Des approches de scoring agrégé combinent le CVSS à des facteurs d'exposition et de correctif pour approcher une probabilité de compromission par actif ; c'est le principe repris par la probabilité intrinsèque calculée dans ce projet, mais qui reste insuffisant tant qu'il n'est pas complété par un mécanisme de propagation entre actifs.
 
 \subsection{Réseaux bayésiens et graphes d'attaque probabilistes}
-Les réseaux bayésiens, formalisés par Pearl comme un cadre général de raisonnement probabiliste sur des graphes orientés acycliques, ont été appliqués dès les années 2000 à la modélisation de graphes d'attaque (\emph{Bayesian Attack Graphs}). Ces travaux montrent que la représentation des dépendances de sécurité sous forme de réseau bayésien permet de calculer des probabilités de compromission cohérentes avec la structure du réseau et de les mettre à jour dynamiquement par inférence lorsqu'une preuve devient disponible — exactement la logique retenue dans ce framework. Des extensions dynamiques (\emph{Dynamic Bayesian Networks}) ont par ailleurs été proposées pour la gestion du risque dans le temps, mais leur complexité de mise en œuvre limite souvent leur adoption opérationnelle.
+Les réseaux bayésiens, formalisés par Pearl comme un cadre général de raisonnement probabiliste sur des graphes orientés acycliques, ont été appliqués dès les années 2000 à la modélisation de graphes d'attaque (\emph{Bayesian Attack Graphs}). Ces travaux montrent que la représentation des dépendances de sécurité sous forme de réseau bayésien permet de calculer des probabilités de compromission cohérentes avec la structure du réseau et de les mettre à jour dynamiquement par inférence lorsqu'une preuve devient disponible --- exactement la logique retenue dans ce framework. Des extensions dynamiques (\emph{Dynamic Bayesian Networks}) ont par ailleurs été proposées pour la gestion du risque dans le temps, mais leur complexité de mise en œuvre limite souvent leur adoption opérationnelle.
 
 \subsection{Approches spécifiques aux ICS}
-Plusieurs travaux appliquent spécifiquement les graphes d'attaque et les réseaux bayésiens aux environnements ICS/SCADA, en tenant compte des protocoles industriels et de la segmentation réseau propre à ces infrastructures. Ces approches soulignent l'intérêt de modéliser explicitement les relations de commande, de supervision et de communication entre équipements, mais restent le plus souvent limitées à des démonstrateurs académiques, sans outil generique directement exploitable par un analyste métier ni mécanisme automatisé de construction des tables de probabilités conditionnelles.
+Plusieurs travaux appliquent spécifiquement les graphes d'attaque et les réseaux bayésiens aux environnements ICS/SCADA, en tenant compte des protocoles industriels et de la segmentation réseau propre à ces infrastructures. Ces approches soulignent l'intérêt de modéliser explicitement les relations de commande, de supervision et de communication entre équipements, mais restent le plus souvent limitées à des démonstrateurs académiques, sans outil générique directement exploitable par un analyste métier ni mécanisme automatisé de construction des tables de probabilités conditionnelles.
 
 \subsection{Synthèse et positionnement du framework}
 La revue de littérature met en évidence trois limites récurrentes des approches existantes : (i) l'absence de modélisation explicite de la propagation entre actifs dans les méthodes classiques ; (ii) la complexité de construction manuelle des tables de probabilités conditionnelles dans les approches bayésiennes, qui freine leur adoption sur des réseaux de taille réaliste ; (iii) le manque d'outils génériques et accessibles, indépendants du secteur industriel, permettant à un analyste de risque de mener cette analyse sans compétence en programmation. Le framework proposé dans ce rapport répond directement à ces trois limites en combinant une modélisation par réseau bayésien, une génération automatique des CPT par modèle Noisy-OR, et une application Web complète couvrant l'ensemble de la chaîne, de l'import de la topologie à l'export des résultats.
@@ -498,14 +543,67 @@ La revue de littérature met en évidence trois limites récurrentes des approch
 \markboth{Fondements théoriques}{Fondements théoriques}
 \forcereset{6}
 
-Ce chapitre présente les notions probabilistes et algorithmiques sur lesquelles repose le framework : les probabilités conditionnelles et le théorème de Bayes, la structure d'un réseau bayésien, le modèle Noisy-OR utilisé pour générer automatiquement les tables de probabilités conditionnelles, et l'algorithme Variable Elimination utilisé pour l'inférence.
+Ce chapitre présente les notions probabilistes et algorithmiques sur lesquelles repose le framework : les probabilités conditionnelles et le théorème de Bayes, le scoring de sévérité CVSS v3.1, la structure d'un réseau bayésien, le modèle logistique de correspondance CVSS-probabilité, le modèle Noisy-OR utilisé pour générer automatiquement les tables de probabilités conditionnelles, et l'algorithme Variable Elimination utilisé pour l'inférence.
 
 \subsection{Probabilités conditionnelles et théorème de Bayes}
 La probabilité conditionnelle $P(A \mid B)$ désigne la probabilité que l'événement $A$ se produise sachant que l'événement $B$ est réalisé. Le théorème de Bayes relie cette probabilité à la probabilité inverse :
 \[
 P(A \mid B) = \frac{P(B \mid A) \times P(A)}{P(B)}
 \]
-Dans le contexte du framework, ce théorème permet de mettre à jour la probabilité de compromission d'un actif dès qu'une nouvelle information — une preuve — devient disponible sur un autre actif du réseau.
+Dans le contexte du framework, ce théorème permet de mettre à jour la probabilité de compromission d'un actif dès qu'une nouvelle information --- une preuve --- devient disponible sur un autre actif du réseau.
+
+\subsection{Le scoring de sévérité CVSS v3.1}
+\begin{defbox}
+CVSS (Common Vulnerability Scoring System) est un \textbf{score de sévérité} (0--10) décrivant la difficulté d'exploitation et l'impact d'une vulnérabilité. Ce n'est \emph{pas} une probabilité de compromission : le framework calcule les scores avec les équations officielles FIRST, puis les convertit en probabilité au moyen d'un modèle explicite (section~12.4).
+\end{defbox}
+
+Le moteur du framework (\texttt{backend/cvss.py}) implémente les équations officielles de la spécification CVSS v3.1. À partir des huit métriques du vecteur (AV, AC, PR, UI, S, C, I, A), le score de base se calcule ainsi :
+\[
+\text{ISS} = 1 - (1-C)(1-I)(1-A)
+\]
+\[
+\text{Impact} = 
+\begin{cases}
+6{,}42 \times \text{ISS} & \text{si portée inchangée} \\[2pt]
+7{,}52(\text{ISS}-0{,}029) - 3{,}25(\text{ISS}-0{,}02)^{15} & \text{si portée modifiée}
+\end{cases}
+\]
+\[
+\text{Exploitabilité} = 8{,}22 \times \text{AV} \times \text{AC} \times \text{PR} \times \text{UI}
+\]
+\[
+\text{Score de base} = 
+\begin{cases}
+\text{Roundup}\!\big(\min(\text{Impact} + \text{Exploitabilité},\, 10)\big) & \text{portée inchangée} \\[4pt]
+\begin{aligned}[t]
+&\text{Roundup}\!\big(\min(1{,}08 \times (\text{Impact}\\
+&\hspace{2em}+ \text{Exploitabilité}),\; 10)\big)
+\end{aligned} & \text{portée modifiée}
+\end{cases}
+\]
+où \textsc{Roundup} est la fonction officielle d'arrondi de la spécification et les poids des métriques sont ceux du tableau~\ref{tab:cvss-weights}. La sévérité qualitative est ensuite dérivée du score (Critique $\geq 9$; Élevée $\geq 7$; Moyenne $\geq 4$; Faible $> 0$; Aucune).
+
+\begin{table}[H]
+\centering
+\small
+\caption{Poids des métriques CVSS v3.1 (table 2-7 de la spécification FIRST)}
+\label{tab:cvss-weights}
+\rowcolors{2}{lightgray}{white}
+\begin{tabular}{lll}
+\toprule
+\textbf{Métrique} & \textbf{Valeurs} & \textbf{Poids} \\
+\midrule
+AV (vecteur d'attaque) & N / A / L / P & 0,85 / 0,62 / 0,55 / 0,20 \\
+AC (complexité) & L / H & 0,77 / 0,44 \\
+PR (privilèges requis) & N / L / H & 0,85 / 0,62 / 0,27 (portée inchangée) \\
+PR (portée modifiée) & N / L / H & 0,85 / 0,68 / 0,50 \\
+UI (interaction utilisateur) & N / R & 0,85 / 0,62 \\
+C, I, A (impact) & H / L / N & 0,56 / 0,22 / 0,00 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Le framework n'invente aucune formule « maison » : les scores non fournis en surcharge numérique sont toujours calculés par les équations ci-dessus, à partir de vecteurs CVSS v3.1 fournis par l'analyste. Pour un actif déclarant plusieurs vulnérabilités, le score effectif est le \textbf{maximum} des scores de base de ses vulnérabilités.
 
 \subsection{Réseaux bayésiens}
 \begin{defbox}
@@ -531,17 +629,71 @@ Dans le framework, chaque actif de l'infrastructure ICS devient un nœud du rés
 \end{figure}
 
 \subsection{Probabilité intrinsèque d'un actif}
-Chaque équipement possède une probabilité intrinsèque de compromission, indépendante de ses voisins, qui reflète sa vulnérabilité propre :
+Chaque équipement possède une probabilité intrinsèque de compromission, indépendante de ses voisins, qui reflète sa vulnérabilité propre. La correspondance linéaire $P = \text{CVSS}/10$ est statistiquement indéfendable --- elle impliquerait qu'une vulnérabilité de score 10 garantit la compromission --- et n'est conservée qu'en option héritée déconseillée. Le modèle par défaut est une \textbf{fonction logistique calibrée}, déclarée explicitement comme une hypothèse de modélisation :
 \[
-P_{\text{base}} = \frac{\text{CVSS}}{10} \times F_{\text{exposition}} \times F_{\text{patch}}, \qquad F_{\text{exposition}}, F_{\text{patch}} \in [0,1]
+P_0 = \frac{1}{1 + e^{-k\,(\text{CVSS} - x_0)}}
 \]
-où le score CVSS traduit la sévérité des vulnérabilités connues de l'équipement, $F_{\text{exposition}}$ traduit son degré d'accessibilité (interne, DMZ, exposé) et $F_{\text{patch}}$ son niveau de mise à jour. Cette probabilité représente le risque intrinsèque de l'équipement, indépendamment de tout effet de propagation.
+avec les paramètres par défaut $k = 0{,}8$ et $x_0 = 5{,}0$ :
 
-\subsection{Probabilité de propagation}
-Chaque liaison entre deux actifs reçoit une probabilité de propagation $P_{\text{propagation}}(\text{Parent} \rightarrow \text{Enfant})$, c'est-à-dire la probabilité qu'une attaque se transmette d'un actif compromis vers l'actif qu'il alimente ou contrôle. Cette probabilité dépend du type de liaison (commande, supervision, communication réseau), des protocoles industriels utilisés, du niveau de confiance accordé à la relation, ainsi que de scénarios de référence tels que ceux du référentiel MITRE ATT\&CK pour ICS.
+\begin{table}[H]
+\centering
+\caption{Correspondance logistique CVSS $\rightarrow$ probabilité intrinsèque (défauts $k=0{,}8$, $x_0=5{,}0$)}
+\label{tab:logistic}
+\rowcolors{2}{lightgray}{white}
+\begin{tabular}{ccc}
+\toprule
+\textbf{Score CVSS} & \textbf{$P_0$} & \textbf{Interprétation} \\
+\midrule
+0  & $\approx 0{,}02$ & risque résiduel non nul \\
+5  & $\approx 0{,}50$ & point d'inflexion \\
+10 & $\approx 0{,}98$ & quasi-certitude, jamais 1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+On notera qu'un score CVSS nul ne produit pas une probabilité nulle : un actif sans vulnérabilité connue sévère conserve un risque résiduel de compromission. Les paramètres $k$ et $x_0$ sont configurables (réglages \texttt{cvss\_mapping} et \texttt{cvss\_logistic\_params}), afin de permettre une calibration par l'organisation contre ses propres données d'incident.
+
+Les facteurs de contexte sont ensuite combinés de manière \textbf{additive dans l'espace log-odds} (logit) :
+\[
+\log\text{it}(P) = \log\text{it}(P_0) + \sum_i w_i \cdot \log(M_i)
+\]
+où $M_i$ sont les multiplicateurs (exposition, correctif, protocole, confiance, technique MITRE) et $w_i$ les poids configurables. Cette formulation est celle de la régression logistique et constitue le conjugué naturel de la mise à jour bayésienne de probabilités binaires. Les probabilités sont bornées par un plafond doux $P_{\text{cap}} = 0{,}9995$ : elles ne sont jamais exactement 0 ou 1, car une probabilité extrême rendrait la mise à jour bayésienne irréversible.
+
+Pour les actifs \textbf{humains}, la probabilité de base modélise la susceptibilité au hameçonnage :
+\[
+P_0 = R_{\text{rôle}} \times (1 - \text{awareness})
+\]
+puis est ajustée pour le privilège par le même mécanisme log-odds. Pour les actifs \textbf{physiques} (procédé), une valeur directe $p_{\text{base\_override}}$ fournie par un expert est utilisée, la compromission physique (ex. sabotage d'une vanne) étant généralement évaluée par expertise plutôt que dérivée du CVSS.
+
+\subsection{Propagation : poids causaux Noisy-OR}
+Chaque arc orienté du graphe porte un \textbf{poids causal Noisy-OR $w$} --- un paramètre de modélisation, \emph{pas} la probabilité conditionnelle littérale $P(\text{cible}=1 \mid \text{source}=1)$. Pour un parent actif unique :
+\[
+P(\text{cible}=1 \mid \text{parent}=1) = 1 - (1 - \text{leak}) \times (1 - w)
+\]
+où \emph{leak} est la probabilité intrinsèque de la cible (la probabilité d'être compromis « tout seul »). Les poids par défaut dépendent du type de relation :
+
+\begin{table}[H]
+\centering
+\caption{Poids causaux Noisy-OR par défaut selon le type de relation}
+\label{tab:propagation}
+\rowcolors{2}{lightgray}{white}
+\begin{tabular}{lc}
+\toprule
+\textbf{Type de relation} & \textbf{Poids $w$ par défaut} \\
+\midrule
+programs / operates (programmation/exploitation) & 0,80 \\
+controls (commande) & 0,70 \\
+actuates (actionnement) & 0,60 \\
+connects-to (communication réseau) & 0,50 \\
+monitors (supervision) & 0,20 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Ces poids sont affinés par des multiplicateurs de \textbf{protocole} (Modbus 1,15, MQTT 1,20, HTTP 1,25, OPC-UA 0,95\ldots), de \textbf{niveau de confiance} (modèle de Purdue / IEC 62443-3-3) et de \textbf{technique MITRE ATT\&CK for ICS} (T0855 1,25, T0886 1,20\ldots). La présence d'un \textbf{pare-feu} sur une liaison applique un multiplicateur réducteur (par défaut 0,30, soit une réduction d'environ 70~\% conforme aux orientations du NIST SP 800-41).
 
 \subsection{Génération automatique des CPT par modèle Noisy-OR}
-Une fois les probabilités intrinsèques et de propagation connues, il reste à construire la table de probabilités conditionnelles de chaque nœud du réseau bayésien, c'est-à-dire sa probabilité d'être compromis en fonction de l'état de compromission de chacun de ses parents. Or la taille d'une CPT croît exponentiellement avec le nombre de parents, comme le montre le tableau~\ref{tab:cptsize} : au-delà de quelques parents, une saisie manuelle n'est plus praticable.
+Une fois les probabilités intrinsèques et les poids de propagation connus, il reste à construire la table de probabilités conditionnelles de chaque nœud du réseau bayésien, c'est-à-dire sa probabilité d'être compromis en fonction de l'état de compromission de chacun de ses parents. Or la taille d'une CPT croît exponentiellement avec le nombre de parents, comme le montre le tableau~\ref{tab:cptsize} : au-delà de quelques parents, une saisie manuelle n'est plus praticable.
 
 \begin{table}[H]
 \centering
@@ -559,13 +711,13 @@ Une fois les probabilités intrinsèques et de propagation connues, il reste à 
 \end{tabular}
 \end{table}
 
-Le framework résout ce problème en supposant que chaque parent peut compromettre le nœud \textbf{indépendamment} des autres — chaque parent constitue une cause de compromission possible parmi d'autres, y compris la cause intrinsèque de l'actif lui-même. Cette hypothèse conduit au modèle \textbf{Noisy-OR}, dont la formule est :
+Le framework résout ce problème en supposant que chaque parent peut compromettre le nœud \textbf{indépendamment} des autres --- chaque parent constitue une cause de compromission possible parmi d'autres, y compris la cause intrinsèque de l'actif lui-même. Cette hypothèse conduit au modèle \textbf{Noisy-OR}, dont la forme fermée pour un ensemble de parents actifs $S$ est :
 \[
-P(X) = 1 - (1 - P_{\text{base}}) \prod_{i=1}^{n} (1 - p_i)
+P(X = 1 \mid S) = 1 - (1 - P_{\text{base}}) \prod_{i \in S} (1 - w_i)
 \]
-où $P_{\text{base}}$ est la probabilité que le nœud soit compromis « tout seul » (cause intrinsèque) et $p_i$ la probabilité que le parent $i$ propage la compromission au nœud considéré.
+où $P_{\text{base}}$ est la probabilité que le nœud soit compromis « tout seul » (cause intrinsèque, \emph{leak}) et $w_i$ le poids causal du parent $i$.
 
-Le raisonnement se décompose ainsi : $(1 - P_{\text{base}})$ est la probabilité de ne \emph{pas} être compromis spontanément ; $\prod_i (1 - p_i)$ est la probabilité qu'\emph{aucun} parent ne compromette le nœud ; le produit des deux termes donne la probabilité de rester sain toutes causes confondues ; enfin, $1$ moins ce produit donne la probabilité qu'\emph{au moins une} cause ait réussi à compromettre le nœud. Cette formule permet de calculer automatiquement l'intégralité des CPT du réseau, sans qu'aucune ne soit saisie manuellement.
+Le raisonnement se décompose ainsi : $(1 - P_{\text{base}})$ est la probabilité de ne \emph{pas} être compromis spontanément ; $\prod_{i \in S} (1 - w_i)$ est la probabilité qu'\emph{aucun} parent actif ne compromette le nœud ; le produit des deux termes donne la probabilité de rester sain toutes causes confondues ; enfin, $1$ moins ce produit donne la probabilité qu'\emph{au moins une} cause ait réussi à compromettre le nœud. Cette formule permet de calculer automatiquement l'intégralité des CPT du réseau, sans qu'aucune ne soit saisie manuellement.
 
 \begin{figure}[H]
 \centering
@@ -598,12 +750,38 @@ L'algorithme \textbf{Variable Elimination} permet de calculer cette probabilité
 \end{enumerate}
 En répétant ces étapes jusqu'à ne conserver que la variable recherchée, l'algorithme fournit la probabilité \emph{a posteriori} exacte. C'est cette méthode qui est utilisée par le moteur d'inférence du framework, via la bibliothèque \texttt{pgmpy} (cf. chapitre~18).
 
-\subsection{Calcul quantitatif du risque}
-Enfin, le risque associé à chaque actif est obtenu en combinant sa probabilité \emph{a posteriori} de compromission à sa criticité :
+\begin{warningbox}[Preuves impossibles]
+Le framework ne se contente jamais d'accepter silencieusement une preuve de probabilité nulle (par exemple, un actif physique dont la probabilité de base est exactement 0 déclaré \emph{Compromis}). Une telle preuve est détectée avant l'inférence et renvoie un diagnostic structuré \texttt{IMPOSSIBLE\_EVIDENCE} identifiant les nœuds affectés.
+\end{warningbox}
+
+\subsection{Indice de risque quantitatif}
+Le risque associé à chaque actif est obtenu en combinant sa probabilité \emph{a posteriori} de compromission à son impact de conséquence :
 \[
-\text{Risque} = P_{\text{posterior}} \times \text{Impact}
+\text{Indice de risque} = P(\text{Compromis} \mid \text{preuves}) \times \text{Impact}
 \]
-où $P_{\text{posterior}}$ est la probabilité de compromission après inférence et \text{Impact} traduit la criticité de l'actif pour le procédé industriel. Ce score permet de hiérarchiser les actifs et d'orienter les priorités de remédiation.
+\[
+\text{Impact} = \frac{\text{consequence\_severity}}{10} \times \text{multiplicateur de portée} \times \text{poids d'impact}
+\]
+où \texttt{consequence\_severity} est une criticité fournie par l'analyste sur une échelle 0--10 (10 = perte catastrophique de disponibilité/sûreté pour le procédé), le multiplicateur de portée vaut $1 + (\text{scope} - 1) \times 0{,}1$ (avec \texttt{scope} $\in [1, 5]$, donnant $[1{,}0,\, 1{,}4]$), et le poids d'impact est un paramètre organisationnel de calibration. L'indice de risque est ainsi \textbf{borné} (approximativement $[0,\, 1{,}4]$) et sert exclusivement au \textbf{classement} des actifs : ce n'est ni une probabilité, ni une perte annuelle estimée (ALE), ni une perte monétaire.
+
+\begin{table}[H]
+\centering
+\caption{Seuils de niveau de risque (configurables, source unique backend/frontend)}
+\label{tab:thresholds}
+\rowcolors{2}{lightgray}{white}
+\begin{tabular}{lc}
+\toprule
+\textbf{Niveau} & \textbf{Seuil d'indice de risque} \\
+\midrule
+Critique & $\geq 0{,}75$ \\
+Élevé & $\geq 0{,}50$ \\
+Modéré & $\geq 0{,}25$ \\
+Faible & $< 0{,}25$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Ces seuils sont issus d'un \textbf{ensemble unique de seuils configurables} consommé par la classification backend, les couleurs du rapport PDF et le tableau de bord frontend (clé \texttt{risk\_\hspace{0pt}thresholds} dans la configuration) : une modification se propage partout. Le risque global de l'installation est le pire cas individuel (maximum des indices de risque des actifs) ; la moyenne, la médiane et les effectifs par niveau sont également rapportés.
 
 \newpage
 
@@ -615,12 +793,12 @@ où $P_{\text{posterior}}$ est la probabilité de compromission après inférenc
 \forcereset{6}
 
 \subsection{Principe général}
-Le framework transforme une topologie ICS structurée (actifs et relations) en un réseau bayésien exploitable, sans intervention manuelle sur les probabilités conditionnelles. L'utilisateur importe sa topologie, sélectionne d'éventuelles preuves de compromission, lance l'analyse, puis explore les résultats produits — probabilités actualisées, classement des risques, chemins d'attaque — au moyen d'un tableau de bord interactif.
+Le framework transforme une topologie ICS structurée (actifs et relations) en un réseau bayésien exploitable, sans intervention manuelle sur les probabilités conditionnelles. L'utilisateur importe sa topologie, la valide, sélectionne d'éventuelles preuves de compromission, lance l'analyse, puis explore les résultats produits --- probabilités actualisées, classement des risques, chemins d'attaque --- au moyen d'un tableau de bord interactif.
 
 \subsection{Objectifs fonctionnels}
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
-    \item Accepter une topologie structurée (JSON, YAML, CSV) et la valider automatiquement.
-    \item Calculer les probabilités intrinsèques, les probabilités de propagation, puis les CPT sans intervention manuelle.
+    \item Accepter une topologie structurée dans plusieurs formats (JSON, YAML, CSV, Excel, GraphML, XML/AML, Visio) et la valider automatiquement.
+    \item Calculer les probabilités intrinsèques, les poids de propagation, puis les CPT sans intervention manuelle.
     \item Réaliser une inférence bayésienne exacte à partir des preuves fournies.
     \item Produire un résultat compréhensible sans manipulation directe de code.
 \end{itemize}
@@ -628,12 +806,13 @@ Le framework transforme une topologie ICS structurée (actifs et relations) en u
 \subsection{Fonctionnalités principales}
 \begin{contributionbox}
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip, topsep=2pt]
-    \item Modélisation d'actifs humains, techniques et physiques.
-    \item Import de topologies JSON, YAML ou CSV, et jeux de données prédéfinis (SWaT, automatisation du bâtiment, poste électrique, traitement de l'eau).
-    \item Pondération configurable des dépendances et des contrôles de sécurité.
-    \item Calcul automatique des probabilités de base, des CPT (Noisy-OR) et des probabilités de propagation.
-    \item Inférence bayésienne à partir de preuves \emph{Compromised} ou \emph{Safe}.
-    \item Calcul et classement des risques, identification des chemins d'attaque.
+    \item Modélisation de trois types d'actifs : \emph{Device} (équipement), \emph{Human} (opérateur) et \emph{Physical} (procédé).
+    \item Import multi-format de topologies et jeux de données de référence (SWaT, automatisation du bâtiment, poste électrique, traitement de l'eau).
+    \item Moteur CVSS v3.1 officiel et correspondance CVSS-probabilité logistique configurable.
+    \item Pondération configurable des dépendances, des contrôles de sécurité, des protocoles et des techniques MITRE.
+    \item Calcul automatique des probabilités de base, des CPT (Noisy-OR) et des poids de propagation.
+    \item Inférence bayésienne à partir de preuves \emph{Compromised} ou \emph{Safe}, avec détection des preuves impossibles.
+    \item Calcul et classement des risques, identification des chemins d'attaque, analyse de sensibilité.
     \item Tableau de bord Web avec visualisation interactive du graphe et inspection des CPT.
     \item Export d'un registre de risques CSV et d'un rapport PDF de synthèse.
 \end{itemize}
@@ -643,7 +822,7 @@ Le framework transforme une topologie ICS structurée (actifs et relations) en u
 Le framework s'adresse aux analystes cybersécurité ICS, aux ingénieurs OT, aux responsables de sûreté industrielle et, dans un cadre académique, aux encadrants souhaitant évaluer la démarche méthodologique et les résultats produits.
 
 \subsection{Résultats attendus}
-Pour une topologie donnée, le framework produit : le réseau bayésien complet représentant l'infrastructure, l'ensemble des CPT générées automatiquement, les probabilités \emph{a posteriori} de chaque équipement après inférence, un classement des actifs par niveau de risque, ainsi qu'un ou plusieurs chemins d'attaque candidats accompagnés d'un score de criticité.
+Pour une topologie donnée, le framework produit : le réseau bayésien complet représentant l'infrastructure, l'ensemble des CPT générées automatiquement, les probabilités \emph{a posteriori} de chaque équipement après inférence, un classement des actifs par indice de risque, un ou plusieurs chemins d'attaque candidats assortis d'un score de criticité, ainsi qu'une analyse de sensibilité quantifiant l'influence des paramètres sur les résultats.
 
 % ============================================================
 % 14. ARCHITECTURE GÉNÉRALE
@@ -653,10 +832,11 @@ Pour une topologie donnée, le framework produit : le réseau bayésien complet 
 \markboth{Architecture générale}{Architecture générale}
 \forcereset{8}
 
-L'architecture générale du framework s'organise en quatre composants principaux qui communiquent selon un modèle client-serveur classique : un \textbf{frontend} React/TypeScript assurant l'interface utilisateur, un \textbf{backend} FastAPI exposant une API REST typée, une \textbf{base de données} SQLite/SQLAlchemy assurant la persistance, et un \textbf{moteur bayésien} interne au backend, chargé de la construction du réseau, de la génération des CPT et de l'inférence.
+L'architecture générale du framework s'organise en quatre composants principaux qui communiquent selon un modèle client-serveur classique : un \textbf{frontend} React/\allowbreak TypeScript assurant l'interface utilisateur, un \textbf{backend} FastAPI exposant une API REST typée, une \textbf{base de données} SQLAlchemy assurant la persistance (SQLite par défaut, PostgreSQL en production), et un \textbf{moteur d'analyse} interne au backend, chargé de la construction du graphe, du calcul des probabilités, de la génération des CPT et de l'inférence.
 
 \begin{figure}[H]
 \centering
+\resizebox{0.96\textwidth}{!}{%
 \begin{tikzpicture}[
     box/.style={rectangle, draw=primary!70, fill=primary!8, minimum width=3.6cm, minimum height=1.3cm, align=center, rounded corners, thick, font=\small\sffamily},
     enginebox/.style={rectangle, draw=accent, fill=accent!10, minimum width=3.6cm, minimum height=1.3cm, align=center, rounded corners, thick, font=\small\sffamily},
@@ -664,18 +844,19 @@ L'architecture générale du framework s'organise en quatre composants principau
 ]
 \node[box] (front) at (0,0) {Frontend\\React / TypeScript};
 \node[box] (api) at (5.5,0) {API REST\\FastAPI + Pydantic};
-\node[enginebox] (engine) at (11,1.5) {Moteur bayésien\\pgmpy + NetworkX};
-\node[box] (db) at (11,-1.5) {Base de données\\SQLite + SQLAlchemy};
+\node[enginebox] (engine) at (11,1.5) {Moteur d'analyse\\pgmpy + NetworkX};
+\node[box] (db) at (11,-1.5) {Base de données\\SQLAlchemy (SQLite/PostgreSQL)};
 
 \draw[arrow] (front) -- (api) node[midway, above, font=\scriptsize\sffamily] {HTTP / JSON};
 \draw[arrow] (api) -- (engine) node[midway, above, sloped, font=\scriptsize\sffamily] {appel interne};
 \draw[arrow] (api) -- (db) node[midway, below, sloped, font=\scriptsize\sffamily] {persistance};
-\end{tikzpicture}
+\end{tikzpicture}%
+}
 \caption{Architecture générale du framework}
 \label{fig:archi-generale}
 \end{figure}
 
-L'utilisateur interagit exclusivement avec le frontend, qui adresse toutes les opérations (import de topologie, réglages, lancement de l'analyse, export) à l'API REST du backend. Celle-ci valide les données via Pydantic, orchestre le moteur bayésien pour produire les résultats, et persiste les projets, actifs, connexions, CPT et résultats d'inférence dans la base de données. Cette séparation des responsabilités rend chaque composant indépendamment testable et remplaçable — la base SQLite peut par exemple être remplacée par PostgreSQL sans modification du code applicatif.
+L'utilisateur interagit exclusivement avec le frontend, qui adresse toutes les opérations (import de topologie, réglages, lancement de l'analyse, export) à l'API REST du backend. Celle-ci valide les données via Pydantic, orchestre le moteur d'analyse pour produire les résultats, et persiste les réglages ainsi que l'historique des évaluations dans la base de données. Cette séparation des responsabilités rend chaque composant indépendamment testable et remplaçable --- la base SQLite peut par exemple être remplacée par PostgreSQL sans modification du code applicatif, et le pipeline d'analyse dégrade gracieusement lorsque la base est indisponible (les réglages restent alors en mémoire, sans blocage du moteur).
 
 % ============================================================
 % 15. MODÉLISATION DE L'INFRASTRUCTURE ICS
@@ -686,13 +867,52 @@ L'utilisateur interagit exclusivement avec le frontend, qui adresse toutes les o
 \forcereset{6}
 
 \subsection{Principe de représentation}
-Chaque équipement de l'infrastructure ICS — actif humain, technique ou physique — devient un \textbf{nœud} du modèle ; chaque communication ou dépendance entre deux équipements devient une \textbf{arête orientée}. L'ensemble constitue un \textbf{graphe orienté} (\emph{Directed Graph}), qui représente la structure statique de l'ICS et les chemins possibles de propagation d'une attaque (cf. figure~\ref{fig:dag}).
+Chaque équipement de l'infrastructure ICS --- actif de type \emph{Device}, \emph{Human} ou \emph{Physical} --- devient un \textbf{nœud} du modèle ; chaque communication ou dépendance entre deux équipements devient une \textbf{arête orientée}. L'ensemble constitue un \textbf{graphe orienté} (\emph{Directed Graph}), qui représente la structure statique de l'ICS et les chemins possibles de propagation d'une attaque (cf. figure~\ref{fig:dag}).
 
 \subsection{Actifs et relations}
-Le framework distingue plusieurs types d'actifs (PLC, SCADA, IHM, capteur, actionneur, poste d'ingénierie) et plusieurs types de relations (\emph{controls}, \emph{monitors}, \emph{actuates}, \emph{connects-to}, \emph{programs}/\emph{operates}), chacune associée à un poids de propagation par défaut, ajustable via le panneau de configuration de l'application (cf. section~21.3). La présence d'un pare-feu sur une relation applique un multiplicateur réducteur à la probabilité de propagation correspondante.
+Trois types d'actifs sont distingués, chacun avec ses attributs propres :
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item \textbf{Device} : vulnérabilités (CVE + vecteur CVSS v3.1 + attribution de source), type CVSS, exposition, niveau de correctif, sévérité de conséquence, portée.
+    \item \textbf{Human} : rôle, niveau de sensibilisation (\emph{awareness}), privilège, sévérité de conséquence.
+    \item \textbf{Physical} : probabilité de base en surcharge (\emph{p\_base\_override}), sévérité de conséquence.
+\end{itemize}
+Les relations orientées sont typées --- \emph{controls}, \emph{monitors}, \emph{actuates}, \emph{connects-to}, \emph{programs / operates} --- et chacune reçoit un poids causal Noisy-OR par défaut, ajustable via le panneau de configuration de l'application (cf. section~16.2). Une relation peut également porter un indicateur \emph{firewalled}, auquel cas le multiplicateur réducteur de pare-feu s'applique à la probabilité de propagation correspondante.
+
+\subsection{Représentations de topologie supportées}
+Le framework importe les topologies depuis plusieurs représentations réelles, converties en un schéma interne normalisé unique :
+
+\begin{table}[H]
+\centering
+\caption{Représentations de topologie supportées et leur sémantique}
+\label{tab:formats}
+\rowcolors{2}{lightgray}{white}
+\setlength{\tabcolsep}{6pt}
+\begin{tabularx}{\textwidth}{p{2.8cm} p{3.2cm} X p{2.4cm}}
+\toprule
+\textbf{Format} & \textbf{Extensions} & \textbf{Sémantique} & \textbf{Statut} \\
+\midrule
+JSON / YAML & .json, .yaml, .yml & Format natif du framework & Supporté \\
+CSV & .csv & Inventaire tabulaire (actifs et relations) & Supporté \\
+Excel & .xlsx & Inventaire tabulaire & Supporté \\
+GraphML & .graphml & Interopérabilité d'échange de graphes & Supporté \\
+AutomationML & .aml & Ingénierie de systèmes automatisés & Supporté \\
+XML générique & .xml & Conversion d'exports ad hoc d'outils internes & Supporté \\
+Visio & .vsdx, .vdx & Visualisation / conversion & Supporté \\
+Visio natif & .vsd & Format binaire hérité & Rejeté avec message explicatif \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Chaque représentation a une sémantique réelle distincte (native, inventaire, interopérabilité, visualisation/conversion) : elles ne sont pas traitées comme équivalentes. Les fichiers malformés susceptibles d'altérer matériellement le modèle de risque sont \textbf{rejetés} avec un message explicite.
 
 \subsection{Validation structurelle}
-Avant tout calcul, la topologie importée est validée côté serveur : le graphe doit être orienté acyclique (l'existence d'un cycle rendrait la définition des CPT incohérente) et chaque actif doit renseigner les champs requis par son type. Cette étape de validation conditionne la suite du pipeline de calcul détaillé au chapitre~22.
+Avant tout calcul, la topologie importée est validée côté serveur :
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item le graphe doit être orienté acyclique (l'existence d'un cycle rendrait la définition des CPT incohérente) : les cycles sont rejetés ;
+    \item chaque actif doit renseigner les champs requis par son type ; les valeurs hors bornes, les actifs inconnus et les types inconnus sont rejetés ;
+    \item une normalisation déterministe et sûre (suppression des auto-boucles, déduplication des arêtes) est effectuée \textbf{avec un avertissement explicite} remonté dans la réponse API : rien n'est supprimé silencieusement.
+\end{itemize}
+Cette étape de validation conditionne la suite du pipeline de calcul détaillé au chapitre~22.
 
 \newpage
 
@@ -703,20 +923,20 @@ Avant tout calcul, la topologie importée est validée côté serveur : le graph
 \markboth{Workflow complet du framework}{Workflow complet du framework}
 \forcereset{6}
 
-Le parcours utilisateur se déroule en six étapes séquentielles, du chargement de la topologie à l'export des livrables. Chaque étape correspond à une section du tableau de bord React et à une route de l'API FastAPI.
+Le parcours utilisateur se déroule en cinq étapes séquentielles, du chargement de la topologie à l'export des livrables. Chaque étape correspond à une section du tableau de bord React et à une route de l'API FastAPI.
 
 \subsection{Chargement et validation de la topologie}
 \forcereset{5}
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
-    \item Au chargement de l'application, le frontend récupère les pondérations courantes via \texttt{GET /settings} et affiche un tableau de bord vide.
-    \item Deux chemins de chargement sont proposés : la sélection d'un jeu de données prédéfini (SWaT, automatisation du bâtiment, poste électrique, traitement de l'eau) via \texttt{GET /datasets/\{nom\}}, republié ensuite via \texttt{POST /upload-topology} ; ou l'import d'un fichier \texttt{.json}, \texttt{.yaml}/\texttt{.yml} ou \texttt{.csv} via \texttt{POST /upload-topology-file}, entièrement analysé et validé côté serveur.
+    \item Au chargement de l'application, le frontend récupère les réglages courants via \texttt{GET /settings} et affiche un tableau de bord vide.
+    \item Le parcours principal est l'\textbf{import d'un fichier de topologie} (JSON, YAML, CSV, Excel, GraphML, XML/AML, Visio ; extensions détaillées au tableau~\ref{tab:formats}) via la route \texttt{POST} \texttt{/upload-topology-file}, entièrement analysé et validé côté serveur.
+    \item Une fois un fichier chargé, l'interface affiche un panneau de revue (nom du fichier, badge de validité, résumé structurel : nombre d'actifs, de relations, de zones) et permet de le \textbf{remplacer} ou de le \textbf{retirer} sans rechargement de page. Un bouton « Sample topology » télécharge un jeu de données de référence pour faciliter la prise en main.
     \item La validation vérifie que le graphe est orienté acyclique et que les champs requis par type d'actif sont renseignés.
-    \item L'évaluation n'est possible qu'une fois une topologie chargée (le bouton correspondant reste désactivé dans le cas contraire).
-    \item Changer de jeu de données alors que des preuves sont déjà définies déclenche une confirmation, car cela réinitialise la topologie, les preuves et le résultat courant.
+    \item L'évaluation n'est possible qu'une fois une topologie chargée et validée (le bouton correspondant reste désactivé dans le cas contraire).
 \end{itemize}
 
 \begin{warningbox}[Gestion des erreurs]
-En cas d'échec de validation, le message d'erreur renvoyé par l'API (champ \texttt{detail} de FastAPI) est affiché à l'utilisateur sous forme de notification.
+En cas d'échec de validation, le message d'erreur renvoyé par l'API (champ \texttt{detail} de FastAPI) est affiché à l'utilisateur sous forme de notification. Tout changement de fichier remet à zéro les preuves et le résultat associés au fichier précédent.
 \end{warningbox}
 
 \newpage
@@ -725,20 +945,20 @@ En cas d'échec de validation, le message d'erreur renvoyé par l'API (champ \te
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
     \item Pour chaque actif, l'utilisateur choisit un état : \emph{Unknown}, \emph{Compromised} ou \emph{Safe}.
     \item Les preuves sont conservées côté client sous une forme lisible, puis converties en couples \texttt{\{asset, state\}} (valeurs 0/1) au moment de l'envoi au backend.
-    \item Le panneau « Settings » permet d'ajuster les poids CVSS, d'exposition, de correctif et d'impact, les poids de propagation par type de relation, ainsi que les multiplicateurs appliqués en présence ou non d'un pare-feu.
-    \item Ces réglages sont persistés côté serveur (\texttt{GET}/\texttt{PUT /settings}) et s'appliquent à toute évaluation ultérieure.
+    \item Le panneau « Settings » permet d'ajuster la correspondance CVSS-probabilité (logistique avec $k$ et $x_0$, ou linéaire héritée déconseillée), les poids d'exposition, de correctif et d'impact, les poids de propagation par type de relation, ainsi que les multiplicateurs de pare-feu, de protocole, de confiance et de technique MITRE.
+    \item Ces réglages sont persistés côté serveur (\texttt{GET}/\texttt{PUT /settings}, réinitialisation via \texttt{POST /settings/reset}) et s'appliquent à toute évaluation ultérieure.
 \end{itemize}
 
-\begin{notebox}[Astuce]
-Un raccourci clavier (touche \texttt{r}) permet de lancer l'évaluation dès que les données sont disponibles.
+\begin{notebox}[Raccourcis clavier]
+Un raccourci clavier (touche \texttt{r}) permet de lancer l'évaluation dès que les données sont disponibles ; la touche \texttt{/} place le focus sur la recherche.
 \end{notebox}
 
 \subsection{Exécution de l'évaluation bayésienne}
 \forcereset{6}
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
-    \item Un clic sur « Lancer l'évaluation » envoie la topologie et les preuves différentes de \emph{Unknown} à \texttt{POST /analyze}.
-    \item Le moteur construit le réseau bayésien, calcule les probabilités intrinsèques de chaque actif, dérive les CPT selon le modèle Noisy-OR, attribue une probabilité de propagation à chaque relation, puis exécute une inférence exacte (Variable Elimination) tenant compte des preuves.
-    \item Le résultat produit un score de risque par actif ainsi qu'un ou plusieurs chemins d'attaque candidats, chacun assorti d'un score combinant le poids de propagation et le risque de la cible.
+    \item Un clic sur « Run assessment » envoie la topologie et les preuves différentes de \emph{Unknown} à \texttt{POST /analyze}.
+    \item Le moteur construit le réseau bayésien, calcule les probabilités intrinsèques de chaque actif, dérive les CPT selon le modèle Noisy-OR, attribue un poids causal à chaque relation, puis exécute une inférence exacte (Variable Elimination) tenant compte des preuves.
+    \item Le résultat produit un indice de risque par actif, un ou plusieurs chemins d'attaque candidats (chacun assorti d'un score combinant la probabilité minimale le long du chemin et le risque de la cible), ainsi que les statistiques agrégées de l'installation.
 \end{itemize}
 
 \subsection{Exploration des résultats}
@@ -747,7 +967,7 @@ Le résultat alimente plusieurs vues synchronisées du tableau de bord : un grap
 
 \subsection{Export des livrables}
 \forcereset{4}
-Deux exports sont proposés à l'issue de l'analyse : un registre des risques au format CSV, triable et exploitable dans un tableur, et un rapport PDF de synthèse destiné aux décideurs. Ces fichiers sont générés côté serveur à partir du dernier résultat d'analyse et sont accessibles via \texttt{GET /reports/\{fichier\}}.
+Deux exports sont proposés à l'issue de l'analyse : un registre des risques au format CSV (avec BOM UTF-8 pour compatibilité Excel), triable et exploitable dans un tableur, et un rapport PDF de synthèse destiné aux décideurs, utilisant les mêmes seuils de risque que l'API et l'interface. Ces fichiers sont générés côté serveur à partir du dernier résultat d'analyse et sont accessibles via \texttt{GET /reports}.
 
 \newpage
 
@@ -762,16 +982,24 @@ Deux exports sont proposés à l'issue de l'analyse : un registre des risques au
 Le frontend, développé en React et TypeScript, constitue une application monopage (\emph{Single Page Application}) responsable de l'ensemble des interactions utilisateur : import de topologie, sélection des preuves, configuration des paramètres, déclenchement de l'analyse et exploration des résultats. Il communique exclusivement avec le backend via des appels HTTP vers l'API REST.
 
 \subsection{Backend}
-Le backend, développé en Python avec FastAPI, expose les routes REST nécessaires à l'ensemble du workflow (import de topologie, gestion des réglages, déclenchement de l'analyse, génération et téléchargement des rapports). Il valide systématiquement les données entrantes via Pydantic avant tout traitement et orchestre l'appel au moteur bayésien.
+Le backend, développé en Python avec FastAPI, expose les routes REST nécessaires à l'ensemble du workflow (import de topologie, gestion des réglages, déclenchement de l'analyse, génération et téléchargement des rapports). Il valide systématiquement les données entrantes via Pydantic avant tout traitement et orchestre l'appel au moteur d'analyse.
 
 \subsection{Base de données}
-La persistance repose sur SQLite en développement (fichier unique, sans serveur ni configuration), via l'ORM SQLAlchemy 2.0, avec une possibilité de bascule vers PostgreSQL en production. Neuf tables structurent le schéma : projets, actifs, connexions, nœuds bayésiens, CPT, résultats d'inférence, scores de risque, rapports et paramètres.
+La persistance repose sur SQLite en développement (fichier unique, sans serveur ni configuration), via l'ORM SQLAlchemy 2.0, avec une bascule possible vers PostgreSQL en production via la variable d'environnement \texttt{ICS\_DB\_URL}. Les migrations de schéma sont versionnées par \textbf{Alembic} ; la migration initiale définit neuf tables : \texttt{projects}, \texttt{assets}, \texttt{connections}, \texttt{bayesian\_nodes}, \texttt{cpts}, \texttt{inference\_results}, \texttt{risk\_results}, \texttt{reports} et \texttt{application\_settings}. L'initialisation est automatique et protégée contre les doublons ; en cas d'indisponibilité de la base, le pipeline d'analyse fonctionne en mode dégradé avec les réglages par défaut en mémoire.
 
 \subsection{API}
-L'API REST FastAPI constitue le point d'entrée unique du backend. Chaque étape du workflow (chapitre~16) correspond à une route dédiée, typée et documentée automatiquement (OpenAPI), ce qui garantit un contrat de données explicite entre le frontend et le backend.
+L'API REST FastAPI constitue le point d'entrée unique du backend. Chaque étape du workflow (chapitre~16) correspond à une route dédiée, typée et documentée automatiquement (OpenAPI), ce qui garantit un contrat de données explicite entre le frontend et le backend. Les routes principales sont : \texttt{GET /} (état de santé), \texttt{POST /upload-topology} et \texttt{POST /upload-topology-file} (import), \texttt{POST /analyze} (évaluation), \texttt{GET}/\texttt{PUT /settings} et \texttt{POST /settings/reset} (réglages), \texttt{GET /datasets} et \texttt{GET /datasets/\{dataset\_name\}} (jeux de données de référence), et \texttt{GET /reports} (livrables).
 
-\subsection{Moteur bayésien}
-Le moteur bayésien regroupe les modules responsables de la construction du graphe, du calcul des probabilités, de la génération des CPT et de l'inférence (cf. diagramme de classes, figure~\ref{fig:classes}). Il s'appuie sur la bibliothèque \texttt{pgmpy} pour l'inférence exacte par Variable Elimination, ce qui évite le développement d'un moteur probabiliste maison et garantit la correction algorithmique des résultats produits.
+\subsection{Moteur d'analyse}
+Le moteur d'analyse regroupe les modules responsables de la construction du graphe, du calcul des probabilités, de la génération des CPT, de l'inférence, du calcul des risques et des chemins d'attaque (cf. diagramme de classes, figure~\ref{fig:classes}). Il s'appuie sur la bibliothèque \texttt{pgmpy} pour l'inférence exacte par Variable Elimination, ce qui évite le développement d'un moteur probabiliste maison et garantit la correction algorithmique des résultats produits.
+
+\subsection{Sécurité}
+Le framework intègre plusieurs mécanismes de durcissement, vérifiés par une suite de tests dédiée :
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item \textbf{Sécurité des téléversements} : liste blanche d'extensions, limites de taille, limites d'expansion des archives zip, protection contre les entités XML (\emph{XXE}), gestion sûre des fichiers temporaires et défense contre les traversées de chemin.
+    \item \textbf{Authentification optionnelle} : clé API (variable \texttt{ICS\_API\_KEY}), limitation de débit et traçage par identifiant de requête.
+    \item \textbf{Erreurs structurées} : aucune trace d'exécution (\emph{traceback}) brute n'est jamais exposée aux clients.
+\end{itemize}
 
 % ============================================================
 % 18. CHOIX TECHNOLOGIQUES
@@ -785,7 +1013,7 @@ Le moteur bayésien regroupe les modules responsables de la construction du grap
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
     \item \textbf{React} : bibliothèque JavaScript fondée sur une architecture en composants, permettant la réutilisabilité du code, le rendu dynamique de l'interface et la mise à jour des vues sans rechargement complet de la page.
     \item \textbf{TypeScript} : langage fortement typé, utilisé pour définir explicitement les modèles de données (topologie, résultats d'inférence, preuves), ce qui réduit les erreurs de développement et améliore la maintenabilité.
-    \item \textbf{Vite} : outil de développement offrant un serveur très rapide grâce au rechargement à chaud (Hot Module Replacement) et une compilation optimisée pour la production.
+    \item \textbf{Vite} : outil de développement offrant un serveur très rapide grâce au rechargement à chaud (Hot Module Replacement) et une compilation optimisée pour la production ; un proxy de développement achemine les appels \texttt{/api} vers le backend.
     \item \textbf{Tailwind CSS} : framework CSS utilitaire permettant de construire rapidement une interface moderne, responsive et homogène, en limitant le CSS personnalisé.
     \item \textbf{@xyflow/react} : bibliothèque spécialisée dans la visualisation et la manipulation interactive de graphes (zoom, déplacement, sélection de nœuds), utilisée pour la représentation du réseau bayésien.
     \item \textbf{Recharts} : bibliothèque de visualisation utilisée pour représenter graphiquement les probabilités et les distributions de risque.
@@ -817,7 +1045,7 @@ Le moteur bayésien regroupe les modules responsables de la construction du grap
 \subsection{Exports et versionnement}
 \forcereset{4}
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
-    \item \textbf{CSV} : registre des risques, ouvrable et triable dans un tableur.
+    \item \textbf{CSV} : registre des risques, ouvrable et triable dans un tableur (encodage UTF-8 avec BOM).
     \item \textbf{JSON} : format interne d'audit pour le graphe, les CPT et les probabilités \emph{a posteriori}.
     \item \textbf{PDF} : rapport de synthèse lisible par un décideur.
     \item \textbf{Git / GitHub} : historique local et collaboration.
@@ -829,7 +1057,7 @@ Le moteur bayésien regroupe les modules responsables de la construction du grap
 \label{tab:technologies}
 \rowcolors{2}{lightgray}{white}
 \setlength{\tabcolsep}{10pt}
-\begin{tabular}{>{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}p{3.5cm}}
+\begin{tabular}{>{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{3.2cm} >{\raggedright\arraybackslash}p{3.0cm} >{\raggedright\arraybackslash}p{3.2cm}}
 \toprule
 \rowcolor{primary}
 \textcolor{white}{\textbf{Technologie}} & \textcolor{white}{\textbf{Pourquoi}} & \textcolor{white}{\textbf{Alternative}} & \textcolor{white}{\textbf{Motif du choix}} \\
@@ -898,7 +1126,7 @@ L'acteur unique du système est l'analyste de risque. Les cas d'utilisation couv
 \newpage
 \subsection{Diagramme de classes}
 \forcereset{8}
-Le modèle de données distingue les entités Asset, Relationship, Evidence et Settings. Le moteur de calcul est découpé en modules spécialisés — GraphBuilder, ProbabilityEngine, CPTGenerator, InferenceEngine, RiskCalculator et AttackPathFinder — dont la sortie finale, AnalysisResult, agrège les probabilités \emph{a posteriori}, les CPT, les scores de risque et les chemins d'attaque. Chaque module transmet son résultat au suivant, jusqu'au calcul final réalisé par AttackPathFinder à partir des scores de risque.
+Le modèle de données distingue les entités Asset, Relationship, Evidence et Settings. Le moteur de calcul est découpé en modules spécialisés --- GraphBuilder, ProbabilityEngine, CPTGenerator, InferenceEngine, RiskCalculator, AttackPathFinder et SensitivityAnalyzer --- dont la sortie finale, AnalysisResult, agrège les probabilités \emph{a posteriori}, les CPT, les scores de risque et les chemins d'attaque. Chaque module transmet son résultat au suivant, jusqu'au calcul final réalisé par AttackPathFinder à partir des scores de risque.
 
 \begin{figure}[H]
 \centering
@@ -946,7 +1174,7 @@ Le modèle de données distingue les entités Asset, Relationship, Evidence et S
 \newpage
 \subsection{Diagramme de séquence}
 \forcereset{10}
-Le scénario nominal complet enchaîne le chargement de la topologie (preset ou fichier), le marquage des preuves, l'exécution de l'évaluation, la consultation des résultats et l'export des livrables. Le backend orchestre le moteur bayésien et renvoie une réponse JSON unique, à partir de laquelle le frontend met à jour l'ensemble des vues synchronisées.
+Le scénario nominal complet enchaîne le chargement de la topologie (fichier), le marquage des preuves, l'exécution de l'évaluation, la consultation des résultats et l'export des livrables. Le backend orchestre le moteur d'analyse et renvoie une réponse JSON unique, à partir de laquelle le frontend met à jour l'ensemble des vues synchronisées.
 
 \begin{figure}[H]
 \centering
@@ -977,16 +1205,16 @@ Le scénario nominal complet enchaîne le chargement de la topologie (preset ou 
 \draw[lifeline] (\xapi,\ytop-0.6) -- (\xapi,\ybottom);
 \draw[lifeline] (\xengine,\ytop-0.6) -- (\xengine,\ybottom);
 
-\draw[arrow] (\xuser,-1.8) -- (\xfront,-1.8) node[midway, above, msg] {1. Charger topologie (preset/fichier)};
-\draw[arrow] (\xfront,-3.4) -- (\xapi,-3.4) node[midway, above, msg] {2. POST /upload-topology(-file)};
-\draw[returnarrow] (\xapi,-4.8) -- (\xfront,-4.8) node[midway, below, msg] {3. 200 OK (topologie active)};
+\draw[arrow] (\xuser,-1.8) -- (\xfront,-1.8) node[midway, above, msg] {1. Charger une topologie (fichier)};
+\draw[arrow] (\xfront,-3.4) -- (\xapi,-3.4) node[midway, above, msg] {2. POST /upload-topology-file};
+\draw[returnarrow] (\xapi,-4.8) -- (\xfront,-4.8) node[midway, below, msg] {3. 200 OK (topologie validée + résumé)};
 \draw[arrow] (\xuser,-6.4) -- (\xfront,-6.4) node[midway, above, msg] {4. Marquer les preuves par actif};
 \draw[arrow] (\xfront,-8.0) -- (\xapi,-8.0) node[midway, above, msg] {5. POST /analyze (topologie + preuves)};
 \draw[arrow] (\xapi,-9.6) -- (\xengine,-9.6) node[midway, above, msg] {6. Construire le graphe / générer CPT / inférer};
 \draw[returnarrow] (\xengine,-11.2) -- (\xapi,-11.2) node[midway, below, msg] {7. Postérieurs, CPT, risques, chemins};
 \draw[returnarrow] (\xapi,-12.8) -- (\xfront,-12.8) node[midway, below, msg] {8. Réponse JSON (AnalysisResult)};
 \draw[arrow] (\xuser,-14.4) -- (\xfront,-14.4) node[midway, above, msg] {9. Consulter graphe / tableau de bord};
-\draw[arrow] (\xfront,-16.0) -- (\xapi,-16.0) node[midway, above, msg] {10. GET /reports/risk\_table.csv};
+\draw[arrow] (\xfront,-16.0) -- (\xapi,-16.0) node[midway, above, msg] {10. GET /reports};
 \draw[returnarrow] (\xapi,-17.6) -- (\xfront,-17.6) node[midway, below, msg] {11. Fichier CSV / PDF};
 \end{tikzpicture}%
 }
@@ -1006,16 +1234,30 @@ Le scénario nominal complet enchaîne le chargement de la topologie (preset ou 
 L'implémentation suit fidèlement l'architecture et la conception présentées aux chapitres précédents. Seules les fonctionnalités effectivement présentes dans le projet sont décrites ci-après.
 
 \subsection{Backend}
-Le backend Python/FastAPI implémente les modules du moteur bayésien conformément au diagramme de classes (figure~\ref{fig:classes}) : \texttt{GraphBuilder} construit le graphe orienté à partir des actifs et relations importés ; \texttt{ProbabilityEngine} calcule les probabilités intrinsèques ; \texttt{CPTGenerator} applique le modèle Noisy-OR pour dériver automatiquement les CPT ; \texttt{InferenceEngine} exécute l'inférence exacte via \texttt{pgmpy} ; \texttt{RiskCalculator} calcule et classe les scores de risque ; \texttt{AttackPathFinder} identifie les chemins d'attaque les plus critiques. Les routes REST (\texttt{/upload-topology}, \texttt{/upload-topology-file}, \texttt{/datasets/\{nom\}}, \texttt{/settings}, \texttt{/analyze}, \texttt{/reports/\{fichier\}}) exposent ces traitements au frontend, avec validation systématique des entrées via Pydantic.
+Le backend Python/FastAPI implémente les modules du moteur d'analyse conformément au diagramme de classes (figure~\ref{fig:classes}) :
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item \texttt{cvss.py} : moteur CVSS v3.1 officiel --- analyse des vecteurs et calcul des scores de base avec les équations FIRST, normalisation des listes de vulnérabilités (CVE + vecteur + attribution de source) et score effectif (maximum).
+    \item \texttt{probability.py} : probabilités intrinsèques --- correspondance logistique CVSS-probabilité, ajustement additif log-odds, modèles humain et physique.
+    \item \texttt{cpt\_generator.py} : génération des CPT par le modèle Noisy-OR (forme fermée).
+    \item \texttt{inference.py} : inférence exacte par Variable Elimination via \texttt{pgmpy}, assainissement des preuves et détection des preuves impossibles.
+    \item \texttt{risk.py} : indice de risque, classification par seuils et statistiques agrégées.
+    \item \texttt{attack\_paths.py} : chemins d'attaque orientés selon le DAG, score de chemin $\min_i P(\text{nœud}_i = 1 \mid \text{preuves}) \times \text{indice de risque de la cible}$ (modèle produit alternatif via la variable \texttt{ATTACK\_PATH\_SCORING}).
+    \item \texttt{sensitivity.py} : analyse de sensibilité un-à-un des paramètres ($k$, $x_0$, poids de propagation, multiplicateurs d'exposition/correctif) et de leurs effets sur les probabilités et les risques.
+    \item \texttt{importers.py} : import multi-format (JSON, YAML, CSV, Excel, GraphML, AML, XML, VSDX/VDX) avec les contrôles de sécurité des téléversements.
+    \item \texttt{topology.py} et \texttt{assets.py} : validation non destructive de la topologie et normalisation du schéma interne.
+    \item \texttt{api.py} et \texttt{api\_adapter.py} : routes REST et orchestration du pipeline d'évaluation.
+    \item \texttt{cli.py} : interface en ligne de commande (\texttt{ics-risk}), point d'entrée du serveur (\texttt{ics-risk-api}).
+\end{itemize}
+Les routes REST \texttt{/upload-topology}, \texttt{/upload-topology-file}, \texttt{/datasets}, \texttt{/settings}, \texttt{/analyze} et \texttt{/reports} exposent ces traitements au frontend, avec validation systématique des entrées via Pydantic.
 
 \subsection{Base de données}
-La couche de persistance repose sur SQLAlchemy 2.0 avec un modèle Repository découplant l'accès aux données de la couche métier. Les neuf tables définies par la migration Alembic initiale couvrent l'ensemble du cycle de vie d'une analyse : projets, actifs, connexions, nœuds bayésiens, CPT, résultats d'inférence, scores de risque, rapports et paramètres. L'initialisation de la base est automatique et protégée contre les doublons.
+La couche de persistance repose sur SQLAlchemy 2.0 avec un modèle Repository découplant l'accès aux données de la couche métier. Les neuf tables définies par la migration Alembic initiale couvrent l'ensemble du cycle de vie d'une analyse : \texttt{projects}, \texttt{assets}, \texttt{connections}, \texttt{bayesian\_nodes}, \texttt{cpts}, \texttt{inference\_results}, \texttt{risk\_results}, \texttt{reports} et \texttt{application\_settings}. L'initialisation de la base est automatique et protégée contre les doublons ; le pipeline dégrade gracieusement si la base est indisponible.
 
 \subsection{Frontend}
-Le frontend React/TypeScript implémente l'ensemble des vues du workflow décrit au chapitre~16 : import de topologie, panneau de preuves, panneau de réglages, déclaration de l'évaluation, graphe interactif (\texttt{@xyflow/react}), tableau de bord synthétique et graphiques (\texttt{Recharts}), table des CPT filtrable, et boutons d'export. La communication avec le backend s'appuie exclusivement sur l'API \texttt{fetch} native.
+Le frontend React/TypeScript implémente l'ensemble des vues du workflow décrit au chapitre~16 : import de topologie (avec remplacement et retrait du fichier sans rechargement), panneau de preuves, panneau de réglages, lancement de l'évaluation, graphe interactif (\texttt{@xyflow/react}), tableau de bord synthétique et graphiques (\texttt{Recharts}), table des CPT filtrable, et boutons d'export. La communication avec le backend s'appuie exclusivement sur l'API \texttt{fetch} native.
 
 \subsection{Jeux de données de référence}
-Quatre jeux de données prédéfinis permettent de tester le framework sur des topologies représentatives de secteurs industriels différents : SWaT (traitement de l'eau — banc d'essai académique), automatisation du bâtiment, poste électrique (\emph{Power Substation}) et traitement de l'eau générique. Ces jeux de données servent également de base aux tests de validation du moteur.
+Quatre jeux de données permettent de tester le framework sur des topologies représentatives de secteurs industriels différents : SWaT (traitement de l'eau --- banc d'essai académique), automatisation du bâtiment, poste électrique (\emph{Power Substation}) et traitement de l'eau générique. Ces jeux de données servent également de base aux tests de validation du moteur, ainsi qu'au bouton « Sample topology » de l'interface.
 
 % ============================================================
 % 21. INTERFACE UTILISATEUR
@@ -1025,16 +1267,16 @@ Quatre jeux de données prédéfinis permettent de tester le framework sur des t
 \forcereset{6}
 
 \subsection{Import de topologie}
-L'interface propose deux modes d'import : la sélection d'un jeu de données prédéfini dans une liste déroulante, ou le téléversement d'un fichier JSON, YAML ou CSV. Le résultat de la validation (succès ou erreur détaillée) est affiché immédiatement.
+L'interface propose un parcours d'import unique et explicite : glisser-déposer ou sélection d'un fichier de topologie, puis validation immédiate. Une fois le fichier chargé, un panneau de revue affiche le nom du fichier, un badge de validité et le résumé structurel (actifs, relations, zones), avec deux actions : \textbf{Replace file} (remplacer par un autre fichier, y compris le même fichier, sans rechargement de page) et \textbf{Remove} (revenir à l'état vide). Une section repliable \emph{Supported topology representations} rappelle les formats acceptés sans encombrer la carte principale. Un bouton « Sample topology » télécharge un jeu de données de référence pour faciliter la prise en main.
 
 \subsection{Preuves et paramètres}
-Un panneau dédié permet de marquer l'état de chaque actif (\emph{Unknown}, \emph{Compromised}, \emph{Safe}). Un second panneau, « Settings », centralise les poids utilisés par le moteur : poids CVSS, d'exposition, de correctif et d'impact, poids de propagation par type de relation, et multiplicateurs de pare-feu. Ces réglages sont persistés et réutilisés d'une analyse à l'autre.
+Un panneau dédié permet de marquer l'état de chaque actif (\emph{Unknown}, \emph{Compromised}, \emph{Safe}). Un second panneau, « Settings », centralise les poids utilisés par le moteur : correspondance CVSS-probabilité ($k$, $x_0$), poids d'exposition, de correctif et d'impact, poids de propagation par type de relation, et multiplicateurs de pare-feu, de protocole, de confiance et de technique MITRE. Ces réglages sont persistés et réutilisés d'une analyse à l'autre.
 
 \subsection{Graphe interactif}
 Le graphe interactif, construit avec \texttt{@xyflow/react}, positionne les nœuds par couches selon un parcours en largeur (BFS) et les colore selon la probabilité \emph{a posteriori} ou le type d'actif. Le chemin d'attaque critique identifié par le moteur est mis en évidence visuellement, et un panneau de détails affiche, pour le nœud sélectionné, sa probabilité intrinsèque, sa probabilité \emph{a posteriori}, son rang de risque et son appartenance ou non au chemin d'attaque.
 
 \subsection{Résultats et CPT}
-Le tableau de bord synthétique présente le risque global de l'installation, son niveau, le top 5 des actifs les plus à risque, le chemin d'attaque prioritaire et la liste complète des chemins identifiés, complétés par un graphique en barres des probabilités \emph{a posteriori} et un graphique en secteurs de répartition des niveaux de risque. Les tables de probabilités conditionnelles générées par le modèle Noisy-OR sont consultables et filtrables par nom d'actif.
+Le tableau de bord synthétique présente le risque global de l'installation, son niveau, le top 5 des actifs les plus à risque, le chemin d'attaque prioritaire et la liste complète des chemins identifiés, complétés par un graphique en barres des probabilités \emph{a posteriori} et un graphique en secteurs de répartition des niveaux de risque. Les tables de probabilités conditionnelles générées par le modèle Noisy-OR sont consultables et filtrables par nom d'actif. Une analyse de sensibilité permet en outre de quantifier l'influence des paramètres sur les résultats.
 
 \subsection{Exports}
 Deux boutons d'export permettent de télécharger le registre des risques au format CSV et le rapport de synthèse au format PDF, tous deux générés côté serveur à partir du dernier résultat d'analyse.
@@ -1053,17 +1295,22 @@ La chaîne de traitement complète, depuis l'import de la topologie jusqu'à l'e
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    step/.style={rectangle, draw=primary!70, fill=primary!8, minimum width=6.2cm, minimum height=0.85cm, align=center, rounded corners, thick, font=\small\sffamily},
-    arrow/.style={-{Stealth[scale=1.2]}, thick, draw=secondary}
+    pstep/.style={rectangle, draw=primary!70, fill=primary!8, minimum width=6.4cm, minimum height=0.82cm, align=center, rounded corners, thick, font=\small\sffamily},
+    arrow/.style={-{Stealth[scale=1.15]}, thick, draw=secondary}
 ]
-\def\steplabels{{"1. Import de la topologie","2. Validation (DAG, champs requis)","3. Construction du graphe orienté","4. Calcul des probabilités intrinsèques","5. Calcul des probabilités de propagation","6. Génération automatique des CPT (Noisy-OR)","7. Construction du réseau bayésien","8. Inférence bayésienne (Variable Elimination)","9. Calcul des risques","10. Classement des actifs et chemins d'attaque","11. Visualisation et export"}}
-\foreach \i in {0,...,10} {
-    \pgfmathsetmacro{\y}{-\i*1.15}
-    \pgfmathtruncatemacro{\idx}{\i}
-    \node[step] (s\i) at (0,\y) {\pgfmathparse{\steplabels[\idx]}\pgfmathresult};
-}
-\foreach \i [evaluate=\i as \j using \i+1] in {0,...,9} {
-    \draw[arrow] (s\i.south) -- (s\j.north);
+\node[pstep] (s1) at (0,0) {1. Import de la topologie (multi-format)};
+\node[pstep] (s2) at (0,-1.15) {2. Validation (DAG, champs requis)};
+\node[pstep] (s3) at (0,-2.3) {3. Construction du graphe orienté};
+\node[pstep] (s4) at (0,-3.45) {4. Probabilités intrinsèques (logistique + log-odds)};
+\node[pstep] (s5) at (0,-4.6) {5. Poids causaux Noisy-OR par relation};
+\node[pstep] (s6) at (0,-5.75) {6. Génération automatique des CPT (Noisy-OR)};
+\node[pstep] (s7) at (0,-6.9) {7. Construction du réseau bayésien};
+\node[pstep] (s8) at (0,-8.05) {8. Inférence bayésienne (Variable Elimination)};
+\node[pstep] (s9) at (0,-9.2) {9. Calcul des indices de risque};
+\node[pstep] (s10) at (0,-10.35) {10. Classement des actifs et chemins d'attaque};
+\node[pstep] (s11) at (0,-11.5) {11. Visualisation, sensibilité et export};
+\foreach \i in {1,...,10} {
+    \draw[arrow] (s\i.south) -- (s\the\numexpr\i+1\relax.north);
 }
 \end{tikzpicture}
 \caption{Pipeline complet de calcul du framework}
@@ -1071,17 +1318,17 @@ La chaîne de traitement complète, depuis l'import de la topologie jusqu'à l'e
 \end{figure}
 
 \begin{enumerate}
-    \item \textbf{Import} : la topologie est reçue au format JSON, YAML ou CSV, ou sélectionnée parmi les jeux de données prédéfinis.
-    \item \textbf{Validation} : le graphe est vérifié orienté acyclique ; les champs requis par type d'actif sont contrôlés.
+    \item \textbf{Import} : la topologie est reçue au format JSON, YAML, CSV, Excel, GraphML, XML/AML ou Visio, ou sélectionnée parmi les jeux de données de référence.
+    \item \textbf{Validation} : le graphe est vérifié orienté acyclique ; les champs requis par type d'actif sont contrôlés ; les avertissements de normalisation sont remontés.
     \item \textbf{Construction du graphe orienté} : \texttt{GraphBuilder} transforme les actifs et relations validés en graphe orienté (\texttt{NetworkX}).
-    \item \textbf{Calcul des probabilités intrinsèques} : \texttt{ProbabilityEngine} applique la formule $P_{\text{base}} = \frac{\text{CVSS}}{10} \times F_{\text{exposition}} \times F_{\text{patch}}$ à chaque actif.
-    \item \textbf{Calcul des probabilités de propagation} : une probabilité $P_{\text{propagation}}$ est attribuée à chaque relation selon son type, ses protocoles et la présence d'un pare-feu.
-    \item \textbf{Génération automatique des CPT} : \texttt{CPTGenerator} applique le modèle Noisy-OR $P(X) = 1-(1-P_{\text{base}})\prod_i(1-p_i)$ pour dériver la CPT complète de chaque nœud, sans saisie manuelle.
+    \item \textbf{Probabilités intrinsèques} : \texttt{ProbabilityEngine} applique la correspondance logistique $P_0 = \dfrac{1}{1 + e^{-k(\text{CVSS}-x_0)}}$ puis l'ajustement additif log-odds des facteurs de contexte.
+    \item \textbf{Poids causaux} : un poids Noisy-OR est attribué à chaque relation selon son type, ses protocoles et la présence d'un pare-feu.
+    \item \textbf{Génération automatique des CPT} : \texttt{CPTGenerator} applique le modèle Noisy-OR $P(X{=}1 \mid S) = 1-(1-P_{\text{base}})\prod_{i \in S}(1-w_i)$ pour dériver la CPT complète de chaque nœud, sans saisie manuelle.
     \item \textbf{Construction du réseau bayésien} : le graphe, enrichi des CPT, devient un réseau bayésien complet (\texttt{pgmpy}).
-    \item \textbf{Inférence bayésienne} : \texttt{InferenceEngine} exécute l'algorithme Variable Elimination à partir des preuves fournies, produisant les probabilités \emph{a posteriori}.
-    \item \textbf{Calcul des risques} : \texttt{RiskCalculator} applique $\text{Risque} = P_{\text{posterior}} \times \text{Impact}$ à chaque actif.
+    \item \textbf{Inférence bayésienne} : \texttt{InferenceEngine} exécute l'algorithme Variable Elimination à partir des preuves fournies, produisant les probabilités \emph{a posteriori} ; les preuves impossibles sont détectées en amont.
+    \item \textbf{Calcul des risques} : \texttt{RiskCalculator} calcule l'indice de risque (produit de la probabilité \emph{a posteriori} et de l'impact normalisé) pour chaque actif.
     \item \textbf{Classement et chemins d'attaque} : les actifs sont classés par risque décroissant ; \texttt{AttackPathFinder} identifie les chemins d'attaque candidats et leur score de criticité.
-    \item \textbf{Visualisation et export} : les résultats alimentent le tableau de bord interactif et sont exportables en CSV (registre des risques) et PDF (rapport de synthèse).
+    \item \textbf{Visualisation, sensibilité et export} : les résultats alimentent le tableau de bord interactif, une analyse de sensibilité paramétrique, et sont exportables en CSV (registre des risques) et PDF (rapport de synthèse).
 \end{enumerate}
 
 Chaque étape ne dépend que du résultat de la précédente, ce qui garantit la traçabilité complète du calcul : à tout moment, un analyste peut retrouver la probabilité intrinsèque, la CPT et la probabilité \emph{a posteriori} ayant conduit au score de risque final d'un actif donné.
@@ -1098,7 +1345,7 @@ Chaque étape ne dépend que du résultat de la précédente, ce qui garantit la
 Le prototype développé démontre la faisabilité de bout en bout de l'approche proposée. Sur chacun des quatre jeux de données de référence (SWaT, automatisation du bâtiment, poste électrique, traitement de l'eau), le framework :
 
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
-    \item importe et valide correctement la topologie fournie, quel que soit le format d'entrée (JSON, YAML, CSV) ;
+    \item importe et valide correctement la topologie fournie, quel que soit le format d'entrée (JSON, YAML, CSV, Excel, GraphML, XML/AML, Visio) ;
     \item construit automatiquement le réseau bayésien complet, sans intervention manuelle sur les CPT ;
     \item exécute l'inférence bayésienne en un temps compatible avec une utilisation interactive, pour des topologies de taille représentative d'une installation ICS de complexité modérée ;
     \item produit un classement des actifs par risque et identifie des chemins d'attaque cohérents avec la structure du graphe et les preuves fournies ;
@@ -1106,6 +1353,40 @@ Le prototype développé démontre la faisabilité de bout en bout de l'approche
 \end{itemize}
 
 L'interface permet à un analyste de faire varier les preuves observées (par exemple, marquer un poste d'ingénierie comme compromis) et d'observer immédiatement la réévaluation des probabilités \emph{a posteriori} des équipements en aval, ce qui illustre concrètement l'intérêt de l'approche bayésienne par rapport à une évaluation statique du risque. Le mécanisme Noisy-OR permet en outre de traiter des nœuds comportant un nombre de parents pour lequel une saisie manuelle des CPT serait devenue impraticable, validant ainsi l'un des objectifs spécifiques du projet.
+
+\subsection{Stratégie et couverture des tests}
+Le framework est soumis à une suite de tests automatisés couvrant l'ensemble de la chaîne de calcul :
+
+\begin{table}[H]
+\centering
+\caption{Couverture des tests automatisés par catégorie}
+\label{tab:tests}
+\rowcolors{2}{lightgray}{white}
+\begin{tabularx}{\textwidth}{p{5.2cm} X}
+\toprule
+\textbf{Catégorie} & \textbf{Couverture} \\
+\midrule
+Moteur CVSS & correction des équations officielles v3.1 (scores de référence) \\
+Probabilités & correspondance CVSS-probabilité, log-odds, modèles humain et physique \\
+Propagation & poids causaux, multiplicateurs de pare-feu et de protocole \\
+CPT Noisy-OR & vérification des tables générées contre la forme fermée \\
+Inférence & postérieurs, preuves, diagnostics de preuves impossibles \\
+Risque & indice, seuils dynamiques, statistiques agrégées \\
+Topologie & validation non destructive, avertissements, rejet des cycles \\
+Formats d'import & JSON, YAML, CSV, Excel, GraphML, XML, AML, VSDX/VDX \\
+Sécurité des téléversements & limites de taille, extensions, XML, chemins \\
+Sensibilité & perturbation un-à-un des paramètres \\
+Performance & benchmarks sur 10/25/50/100 nœuds \\
+Persistance & comportement en cas d'indisponibilité de la base, sauvegarde des réglages \\
+Exports & registre CSV et rapport PDF \\
+API & scénarios de bout en bout au niveau HTTP \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Concrètement, la suite backend compte \textbf{221 tests} (pytest), la suite frontend \textbf{31 tests} unitaires (Vitest + Testing Library) couvrant réglages, preuves, risque, topologie et résultats, et \textbf{3 scénarios de bout en bout} (Playwright) exécutés dans un navigateur Chromium réel : parcours d'évaluation complet (import $\rightarrow$ validation $\rightarrow$ évaluation $\rightarrow$ preuves $\rightarrow$ réévaluation $\rightarrow$ export), remplacement/retrait de fichier de topologie, et comportement de la section repliable ainsi que la mise en page sur écrans étroits. Une intégration continue (GitHub Actions) exécute les tests backend (tests, lint, typage), les tests et le build frontend, ainsi que la suite E2E à chaque poussée.
+
+\newpage
 
 % ============================================================
 % 24. LIMITES
@@ -1115,11 +1396,15 @@ L'interface permet à un analyste de faire varier les preuves observées (par ex
 \forcereset{6}
 
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
-    \item \textbf{Hypothèse Noisy-OR} : le modèle suppose l'indépendance des causes de compromission entre parents, ce qui simplifie la génération des CPT mais peut ne pas refléter parfaitement certaines dépendances conjointes réelles (par exemple, une compromission nécessitant la combinaison simultanée de deux accès).
-    \item \textbf{Calibration des probabilités} : les probabilités intrinsèques et de propagation reposent sur des facteurs (CVSS, exposition, correctif, pondérations par type de relation) dont les valeurs par défaut n'ont pas été confrontées à des données de terrain à grande échelle.
-    \item \textbf{Application mono-utilisateur} : le prototype actuel ne comporte ni authentification ni gestion multi-utilisateurs, ce qui limite son usage à un contexte de démonstration ou d'analyse individuelle.
-    \item \textbf{Jeux de données de référence} : les topologies utilisées pour les tests, bien que représentatives, restent des jeux de données de taille modérée ; le comportement du moteur sur des infrastructures industrielles de très grande taille n'a pas été évalué.
-    \item \textbf{Absence de journalisation} : aucune traçabilité des actions de l'analyste (audit trail) n'est actuellement implémentée, ce qui serait nécessaire pour un déploiement en environnement industriel réel.
+    \item \textbf{Absence de calibration empirique} : aucun paramètre n'est calibré sur des données réelles. Toutes les valeurs par défaut ($k$, $x_0$, poids de propagation, multiplicateurs) sont des jugements d'experts, des valeurs cohérentes avec la littérature ou des défauts du framework ; une organisation doit les calibrer contre ses propres données d'incident.
+    \item \textbf{Pas de récupération automatisée de vulnérabilités} : les données de vulnérabilités sont fournies par l'analyste. Le framework ne récupère pas les scores CVSS à jour depuis le NVD ou un autre service externe ; le champ \texttt{source} est une simple métadonnée d'attribution.
+    \item \textbf{Hypothèse Noisy-OR} : le modèle suppose l'indépendance des causes de compromission entre parents, ce qui simplifie la génération des CPT mais peut ne pas refléter parfaitement certaines dépendances conjointes réelles (par exemple, une compromission nécessitant la combinaison simultanée de deux accès). Par ailleurs, le \emph{leak} (cause spontanée) est assimilé à la probabilité intrinsèque : le risque de cause commune résiduel n'est pas paramétré séparément.
+    \item \textbf{États binaires uniquement} : les nœuds ne possèdent que deux états (\emph{sain} / \emph{compromis}) ; les états continus ou multi-niveaux (ex. dégradation partielle) ne sont pas modélisés.
+    \item \textbf{Preuves certaines} : les preuves sont appliquées comme des états certains ; les preuves incertaines ou partielles (ex. un détecteur avec un taux de fausses alarmes) ne sont pas modélisées.
+    \item \textbf{Inférence exacte} : l'élimination de variables peut ne pas passer à l'échelle pour des réseaux très vastes ou de grande largeur d'arbre ; des benchmarks mesurent les temps d'exécution sur des topologies de 10 à 100 nœuds.
+    \item \textbf{Indice de risque relatif} : l'indice de risque est une mesure de \emph{classement}, pas une probabilité, pas une perte annuelle estimée (ALE) et pas une perte monétaire ; aucune valorisation financière n'est modélisée ni rapportée.
+    \item \textbf{Application mono-utilisateur} : l'authentification par clé API est optionnelle, mais il n'existe ni gestion multi-utilisateurs ni journalisation des actions de l'analyste (piste d'audit), ce qui limite un déploiement en environnement industriel réel.
+    \item \textbf{Taille des jeux de données} : les topologies utilisées pour les tests, bien que représentatives, restent de taille modérée ; le comportement du moteur sur des infrastructures industrielles de très grande taille n'a pas été évalué en conditions réelles.
 \end{itemize}
 
 % ============================================================
@@ -1130,12 +1415,13 @@ L'interface permet à un analyste de faire varier les preuves observées (par ex
 \forcereset{6}
 
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item \textbf{Calibration à partir de données de terrain} : confronter les probabilités intrinsèques et les poids de propagation à des données réelles (historique d'incidents, résultats d'audits) afin de remplacer les défauts experts par des valeurs estimées.
+    \item \textbf{Intégration de sources de vulnérabilités} : automatiser la récupération des scores CVSS à jour depuis des bases externes (NVD, flux de sécurité) tout en conservant la séparation explicite entre score de sévérité et probabilité.
     \item \textbf{Enrichissement des jeux de données de référence} : intégrer de nouveaux secteurs industriels et des topologies de plus grande taille pour évaluer la scalabilité du moteur d'inférence.
-    \item \textbf{Confrontation à des données de terrain} : calibrer les probabilités intrinsèques et de propagation à partir de données réelles (historique d'incidents, résultats d'audits) plutôt que de valeurs par défaut.
-    \item \textbf{Authentification et journalisation} : ajouter une gestion multi-utilisateurs, une authentification et une journalisation des actions pour permettre un déploiement en environnement industriel réel.
-    \item \textbf{Extension du modèle probabiliste} : explorer des modèles allant au-delà de l'hypothèse Noisy-OR pour représenter des dépendances conjointes entre causes de compromission.
+    \item \textbf{Extension du modèle probabiliste} : états multi-niveaux ou continus, preuves incertaines (avec vraisemblance), et modèles allant au-delà de l'hypothèse Noisy-OR pour représenter des dépendances conjointes entre causes de compromission.
     \item \textbf{Réseaux bayésiens dynamiques} : faire évoluer le modèle vers une représentation temporelle du risque, permettant de suivre son évolution dans la durée plutôt qu'à un instant donné.
-    \item \textbf{Intégration avec des sources de vulnérabilités} : automatiser la récupération des scores CVSS à jour depuis des bases de vulnérabilités externes.
+    \item \textbf{Inférence approchée} : évaluer des algorithmes approchés (échantillonnage) pour passer à l'échelle sur des infrastructures industrielles très vastes.
+    \item \textbf{Authentification, journalisation et audit} : ajouter une gestion multi-utilisateurs, un contrôle d'accès basé sur les rôles et une journalisation des actions pour permettre un déploiement en environnement industriel réel.
 \end{itemize}
 
 \newpage
@@ -1147,13 +1433,13 @@ L'interface permet à un analyste de faire varier les preuves observées (par ex
 \markboth{Conclusion générale}{Conclusion générale}
 \forcereset{7}
 
-Ce projet de fin d'études a permis de concevoir et de développer un framework générique transformant une topologie ICS hétérogène en un réseau bayésien exploitable pour l'évaluation quantitative du risque cyber. La démarche retenue combine des fondements théoriques solides — probabilités conditionnelles, théorème de Bayes, modèle Noisy-OR et algorithme Variable Elimination — à une implémentation logicielle complète, couvrant l'ensemble de la chaîne depuis l'import d'une topologie jusqu'à l'export des livrables destinés à un décideur.
+Ce stage de fin d'année a permis de concevoir et de développer un framework générique transformant une topologie ICS hétérogène en un réseau bayésien exploitable pour l'évaluation quantitative du risque cyber. La démarche retenue combine des fondements théoriques solides --- probabilités conditionnelles, théorème de Bayes, scoring CVSS v3.1, modèle Noisy-OR et algorithme Variable Elimination --- à une implémentation logicielle complète, couvrant l'ensemble de la chaîne depuis l'import d'une topologie jusqu'à l'export des livrables destinés à un décideur.
 
-Le framework permet le calcul automatique des probabilités intrinsèques de chaque actif, la génération automatique des tables de probabilités conditionnelles par modèle Noisy-OR — évitant ainsi l'explosion combinatoire liée à leur saisie manuelle —, le classement des actifs par niveau de risque, et l'identification de chemins d'attaque plausibles à partir de la structure du réseau. L'application Web développée rend cette chaîne de calcul accessible sans écriture de code, avec une traçabilité complète : preuves explicites, paramètres de pondération ajustables et tables de probabilités conditionnelles consultables à chaque étape.
+Le framework permet le calcul automatique des probabilités intrinsèques de chaque actif (par une correspondance logistique explicite et assumée du score de sévérité CVSS), la génération automatique des tables de probabilités conditionnelles par modèle Noisy-OR --- évitant ainsi l'explosion combinatoire liée à leur saisie manuelle ---, le classement des actifs par un indice de risque borné, et l'identification de chemins d'attaque plausibles à partir de la structure du réseau. L'application Web développée rend cette chaîne de calcul accessible sans écriture de code, avec une traçabilité complète : preuves explicites, paramètres de pondération ajustables, tables de probabilités conditionnelles consultables et analyse de sensibilité à chaque étape.
 
-Les choix technologiques retenus — FastAPI et \texttt{pgmpy} côté serveur, React et TypeScript côté client, SQLite/SQLAlchemy pour la persistance — offrent une base modulaire, testable et extensible. Les résultats obtenus sur les quatre jeux de données de référence démontrent la faisabilité de l'approche et la cohérence des résultats produits avec la structure des topologies étudiées.
+Les choix technologiques retenus --- FastAPI et \texttt{pgmpy} côté serveur, React et TypeScript côté client, SQLite/SQLAlchemy pour la persistance --- offrent une base modulaire, testable et extensible. Les résultats obtenus sur les quatre jeux de données de référence, corroborés par une suite automatisée de plus de 250 tests (backend, frontend et navigateur), démontrent la faisabilité de l'approche et la cohérence des résultats produits avec la structure des topologies étudiées.
 
-Ce travail ouvre plusieurs perspectives d'approfondissement, notamment la calibration des probabilités à partir de données de terrain, l'extension du modèle au-delà de l'hypothèse Noisy-OR, et l'ajout des mécanismes d'authentification et de journalisation nécessaires à un déploiement en environnement industriel réel. Il constitue néanmoins, dans son état actuel, une démonstration convaincante de l'apport des réseaux bayésiens à l'évaluation quantitative et dynamique du risque dans les systèmes de contrôle industriels.
+Ce travail ouvre plusieurs perspectives d'approfondissement, notamment la calibration des probabilités à partir de données de terrain, l'extension du modèle au-delà de l'hypothèse Noisy-OR, l'intégration de sources de vulnérabilités externes et l'ajout des mécanismes d'authentification et de journalisation nécessaires à un déploiement en environnement industriel réel. Il constitue néanmoins, dans son état actuel, une démonstration convaincante de l'apport des réseaux bayésiens à l'évaluation quantitative et dynamique du risque dans les systèmes de contrôle industriels.
 
 \newpage
 
@@ -1166,26 +1452,44 @@ Ce travail ouvre plusieurs perspectives d'approfondissement, notamment la calibr
 \bibitem{pearl1988}
 J. Pearl, \emph{Probabilistic Reasoning in Intelligent Systems: Networks of Plausible Inference}. Morgan Kaufmann, 1988.
 
+\bibitem{fenton2012}
+N. E. Fenton, M. Neil, \emph{Risk Assessment and Decision Analysis with Bayesian Networks}. CRC Press, 2012.
+
+\bibitem{koller2009}
+D. Koller, N. Friedman, \emph{Probabilistic Graphical Models: Principles and Techniques}. MIT Press, 2009.
+
+\bibitem{gelman2020}
+A. Gelman, J. B. Carlin, H. S. Stern, D. B. Dunson, A. Vehtari, D. B. Rubin, \emph{Bayesian Data Analysis} (3rd ed.). Chapman \& Hall/CRC, 2020.
+
 \bibitem{schneier1999}
 B. Schneier, ``Attack Trees,'' \emph{Dr. Dobb's Journal}, 1999.
 
 \bibitem{poolsappasit2012}
 N. Poolsappasit, R. Dewri, I. Ray, ``Dynamic Security Risk Management Using Bayesian Attack Graphs,'' \emph{IEEE Transactions on Dependable and Secure Computing}, vol. 9, no. 1, 2012.
 
-\bibitem{mitre-attck-ics}
-MITRE Corporation, \emph{MITRE ATT\&CK for Industrial Control Systems}.
-
-\bibitem{nist800-82}
-K. Stouffer, V. Pillitteri, S. Lightman, M. Abrams, A. Hahn, \emph{Guide to Industrial Control Systems (ICS) Security}, NIST Special Publication 800-82, National Institute of Standards and Technology.
-
-\bibitem{iso27005}
-ISO/IEC 27005, \emph{Information technology — Security techniques — Information security risk management}, International Organization for Standardization.
+\bibitem{spring2021}
+J. Spring, E. Hatleback, A. Manion, D. Shic, ``Practical Bayesian analysis of CVSS scores,'' ACM CCS Workshop on Cyber-Physical Systems Security, 2021.
 
 \bibitem{cvss}
-FIRST.org, \emph{Common Vulnerability Scoring System (CVSS) — Specification Document}.
+FIRST.org, \emph{Common Vulnerability Scoring System (CVSS) v3.1 --- Specification Document} et \emph{CVSS v3.1 User Guide}. \url{https://www.first.org/cvss/}
 
-\bibitem{koller2009}
-D. Koller, N. Friedman, \emph{Probabilistic Graphical Models: Principles and Techniques}. MIT Press, 2009.
+\bibitem{nist800-30}
+Joint Task Force, \emph{Guide for Conducting Risk Assessments}, NIST Special Publication 800-30 Rev. 1, National Institute of Standards and Technology.
+
+\bibitem{nist800-41}
+K. Scarfone, P. Hoffman, \emph{Guidelines on Firewalls and Firewall Policy}, NIST Special Publication 800-41, National Institute of Standards and Technology.
+
+\bibitem{nist800-82}
+K. Stouffer, V. Pillitteri, S. Lightman, M. Abrams, A. Hahn, \emph{Guide to Industrial Control Systems (ICS) Security}, NIST Special Publication 800-82 Rev. 3, National Institute of Standards and Technology.
+
+\bibitem{iec62443}
+IEC 62443-3-3, \emph{Industrial communication networks --- Network and system security --- System security requirements and security levels}, International Electrotechnical Commission.
+
+\bibitem{iso27005}
+ISO/IEC 27005, \emph{Information technology --- Security techniques --- Information security risk management}, International Organization for Standardization.
+
+\bibitem{mitre-attck-ics}
+MITRE Corporation, \emph{MITRE ATT\&CK for Industrial Control Systems}.
 
 \bibitem{pgmpy}
 A. Ankan, A. Panda, ``pgmpy: Probabilistic Graphical Models using Python,'' \emph{Proceedings of the 14th Python in Science Conference}, 2015.
@@ -1202,7 +1506,7 @@ A. Ankan, A. Panda, ``pgmpy: Probabilistic Graphical Models using Python,'' \emp
 \markboth{Annexes}{Annexes}
 \forcereset{6}
 
-\subsection{Planification du projet — diagramme de Gantt}
+\subsection{Planification du projet --- diagramme de Gantt}
 \forcereset{6}
 Le projet a été planifié sur 6,5 semaines (1er juillet -- 15 août 2026). Le développement du backend et du frontend s'est partiellement chevauché afin de fiabiliser le contrat de données entre les deux composants ; l'intégration, les tests et la rédaction du rapport se sont déroulés en fin de cycle, avec un recouvrement permettant d'absorber les ajustements nécessaires.
 
@@ -1264,18 +1568,29 @@ Développement du moteur backend & 13/07/2026 & 24/07/2026 & 12 j & Implémenter
 Développement de l'API FastAPI & 20/07/2026 & 29/07/2026 & 10 j & Exposer les routes REST typées et la validation Pydantic \\
 Développement du frontend React & 27/07/2026 & 07/08/2026 & 12 j & Construire le tableau de bord, le graphe interactif et les graphiques \\
 Intégration frontend / backend & 08/08/2026 & 11/08/2026 & 4 j & Brancher l'interface sur l'API et fiabiliser les échanges JSON \\
-Tests et validation & 10/08/2026 & 13/08/2026 & 4 j & Valider les jeux de données prédéfinis et les scénarios de preuves \\
-Rédaction du rapport et de la documentation & 12/08/2026 & 15/08/2026 & 4 j & Finaliser le rapport technique et la documentation utilisateur \\
+Tests et validation & 10/08/2026 & 13/08/2026 & 4 j & Valider les jeux de données de référence et les scénarios de preuves \\
+Rédaction du rapport et de la documentation & 12/08/2026 & 15/08/2026 & 4 j & Finaliser le rapport et la documentation \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \subsection{Schéma de la base de données}
-Le schéma relationnel du projet comporte neuf tables : projets, actifs, connexions, nœuds bayésiens, CPT, résultats d'inférence, scores de risque, rapports et paramètres, définies par la migration Alembic initiale (\texttt{alembic/versions/3f1fade8e943\_initial\_schema.py}).
+Le schéma relationnel du projet comporte neuf tables, définies par la migration Alembic initiale (\texttt{alembic/versions/3f1fade8e943\_initial\_schema.py}) :
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item \texttt{projects} : projets d'analyse (nom, description, secteur, horodatages).
+    \item \texttt{assets} : actifs (nom, type, zone, fournisseur, version de firmware, exposition, correctif, criticité, exigences AIC, probabilité intrinsèque, position).
+    \item \texttt{connections} : relations orientées (source, destination, type, poids de propagation).
+    \item \texttt{bayesian\_nodes} : nœuds du réseau bayésien (nom, type, métadonnées JSON).
+    \item \texttt{cpts} : tables de probabilités conditionnelles (nœud, table JSON).
+    \item \texttt{inference\_results} : probabilités \emph{a posteriori} par actif et horodatage.
+    \item \texttt{risk\_results} : vraisemblance, impact, score de risque et niveau.
+    \item \texttt{reports} : fichiers générés (nom, chemin, type, date).
+    \item \texttt{application\_settings} : paramètres clé/valeur (poids, multiplicateurs, seuils).
+\end{itemize}
 
 \subsection{Jeux de données de référence utilisés pour les tests}
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
-    \item SWaT (\emph{Secure Water Treatment}) — banc d'essai académique de traitement de l'eau.
+    \item SWaT (\emph{Secure Water Treatment}) --- banc d'essai académique de traitement de l'eau.
     \item Automatisation du bâtiment (\emph{Building Automation}).
     \item Poste électrique (\emph{Power Substation}).
     \item Traitement de l'eau générique (\emph{Water Treatment}).

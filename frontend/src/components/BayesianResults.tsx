@@ -4,12 +4,16 @@ import { EmptyState, KvRow } from './ui'
 
 export default function BayesianResults({
   result,
+  embedded = false,
 }: {
   result: ResultPayload | null
+  // When embedded, the panel drops its card chrome and title so it can live
+  // inside a parent disclosure (Network Viewer → Bayesian Results). All
+  // content and logic are identical.
+  embedded?: boolean
 }) {
-  return (
-    <div className="card card-pad">
-      <h2 className="card-title">Bayesian Results</h2>
+  const body = (
+    <>
       <p className="card-subtitle">
         Run context and model outputs. Evidence is what you supplied;
         probabilities and rankings are calculated from that evidence and the
@@ -54,6 +58,16 @@ export default function BayesianResults({
           />
         )}
       </div>
+    </>
+  )
+
+  if (embedded) {
+    return <div>{body}</div>
+  }
+  return (
+    <div className="card card-pad">
+      <h2 className="card-title">Bayesian Results</h2>
+      {body}
     </div>
   )
 }

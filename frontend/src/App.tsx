@@ -25,8 +25,6 @@ import NetworkViewer from './components/NetworkViewer'
 import NodeDetails from './components/NodeDetails'
 import ResultsDashboard from './components/ResultsDashboard'
 import ProbabilityChart from './components/ProbabilityChart'
-import RiskPieChart from './components/RiskPieChart'
-import BayesianResults from './components/BayesianResults'
 import CptSection from './components/CptSection'
 import ReportsSection from './components/ReportsSection'
 import { Card } from './components/ui'
@@ -115,6 +113,7 @@ export default function App() {
   const [colorMode, setColorMode] = useState<'risk' | 'kind'>('risk')
   const [showAttackPath, setShowAttackPath] = useState(true)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [reportsOpen, setReportsOpen] = useState(false)
   const [serverSettings, setServerSettings] =
     useState<CoreSettings>(defaultCoreSettings)
   const [draftSettings, setDraftSettings] =
@@ -273,6 +272,17 @@ export default function App() {
       impact: Number(item.impact ?? 0),
     }))
   }, [result])
+
+  // Number of assets pinned by evidence — shown in the collapsible Evidence
+  // Selection summary inside the topology card so the state is visible even
+  // while the section is collapsed.
+  const markedEvidenceCount = useMemo(
+    () =>
+      Object.values(evidence).filter(
+        (state) => state === 'Compromised' || state === 'Safe',
+      ).length,
+    [evidence],
+  )
 
   const edgeList = useMemo(() => {
     if (result?.graph?.edges?.length) {
@@ -598,6 +608,30 @@ export default function App() {
             Settings {settingsDirty ? '•' : ''}
           </button>
         }
+        reportsButton={
+          <button
+            onClick={() => setReportsOpen((open) => !open)}
+            className="btn btn-secondary btn-sm"
+            aria-expanded={reportsOpen}
+            title="Download the risk register and assessment report"
+          >
+            <svg
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <path d="M14 2v6h6" />
+              <path d="M16 13H8M16 17H8M10 9H8" />
+            </svg>
+            Reports
+          </button>
+        }
         apiOnline={apiOnline}
       >
         {settingsOpen ? (
@@ -611,6 +645,13 @@ export default function App() {
             onSave={() => void saveSettings()}
             onReset={() => void resetSettings()}
           />
+        ) : null}
+        {/* Aligned with the Settings panel: full-width within the max-w-7xl
+            header container, below the title row. */}
+        {reportsOpen ? (
+          <div className="mx-auto mt-4 max-w-7xl">
+            <ReportsSection available={Boolean(result)} />
+          </div>
         ) : null}
       </Header>
 
@@ -627,13 +668,46 @@ export default function App() {
           onRunAssessment={() => void runAssessment()}
           // Restrict the file picker to the formats the backend truly supports
           accept={TOPOLOGY_ACCEPT}
-        />
-
-        <EvidencePanel
-          assets={assets}
-          evidence={evidence}
-          onUpdateEvidence={updateEvidence}
-        />
+        >
+          {/* Evidence Selection — the optional second step of the topology
+              workflow, embedded in the same card and collapsed by default so
+              the upload path stays the focal point. The summary shows how
+              many assets are already marked, even while collapsed. */}
+          <details className="details-card disclosure-no-marker mt-4">
+            <summary className="details-summary">
+              <span className="flex items-center gap-2.5">
+                <svg
+                  className="details-chevron h-4 w-4 shrink-0 text-slate-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+                <span className="text-sm font-semibold text-slate-100">
+                  Evidence Selection
+                </span>
+              </span>
+              <span className="hidden text-xs font-normal text-slate-500 sm:inline">
+                {markedEvidenceCount > 0
+                  ? `${markedEvidenceCount} of ${assets.length} assets marked`
+                  : 'optional — pin asset states before running'}
+              </span>
+            </summary>
+            <div className="details-panel border-t border-slate-800 px-4 py-3">
+              <EvidencePanel
+                assets={assets}
+                evidence={evidence}
+                onUpdateEvidence={updateEvidence}
+                embedded
+              />
+            </div>
+          </details>
+        </TopologySection>
 
         <section className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
           <NetworkViewer
@@ -654,6 +728,7 @@ export default function App() {
             onSearchChange={setNodeQuery}
             onColorModeChange={setColorMode}
             onAttackPathToggle={() => setShowAttackPath((v) => !v)}
+            result={result}
           />
 
           <NodeDetails
@@ -690,12 +765,8 @@ export default function App() {
           <ProbabilityChart
             chartData={chartData}
             setSelectedNode={setSelectedNode}
+            pieData={pieData}
           />
-        </section>
-
-        <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-          <RiskPieChart pieData={pieData} />
-          <BayesianResults result={result} />
         </section>
 
         <CptSection
@@ -703,8 +774,6 @@ export default function App() {
           cptQuery={cptQuery}
           onCptQueryChange={setCptQuery}
         />
-
-        <ReportsSection available={Boolean(result)} />
       </main>
     </div>
   )

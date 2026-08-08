@@ -10,14 +10,18 @@ import { EmptyState } from './ui'
 
 export default function RiskPieChart({
   pieData,
+  embedded = false,
 }: {
   pieData: Array<{ name: string; value: number }>
+  // When embedded, the chart drops its card chrome so it can live inside the
+  // Compromise probability card, directly below the probability graph.
+  embedded?: boolean
 }) {
   const hasData = pieData.some((entry) => entry.value > 0)
   const total = pieData.reduce((sum, entry) => sum + entry.value, 0)
 
   return (
-    <div className="card card-pad">
+    <div className={embedded ? undefined : 'card card-pad'}>
       <h2 className="card-title">Risk Ranking</h2>
       <p className="card-subtitle">
         Distribution of assets across risk levels, classified with the active
