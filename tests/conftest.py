@@ -13,6 +13,7 @@ from typing import Generator
 import pytest
 
 from backend.database.config import dispose_engine, initialize_database
+from backend.settings import reset_settings_state
 
 
 @pytest.fixture(autouse=True)
@@ -23,9 +24,11 @@ def temp_db() -> Generator[None, None, None]:
         old_db_url = os.environ.get("ICS_DB_URL")
         os.environ["ICS_DB_URL"] = f"sqlite:///{db_path}"
         dispose_engine()
+        reset_settings_state()
         initialize_database()
         yield
         dispose_engine()
+        reset_settings_state()
         if old_db_url is not None:
             os.environ["ICS_DB_URL"] = old_db_url
         else:

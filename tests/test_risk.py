@@ -92,6 +92,65 @@ class TestRiskLevel:
         assert risk_level_for(0.249) == "Low"
 
 
+class TestDynamicThresholds:
+    """Risk thresholds are configurable and every consumer must agree."""
+
+    def test_thresholds_change_classification(self) -> None:
+        from backend.settings import reset_settings, update_settings
+
+        try:
+            # Extremely low thresholds: low values classify as High/Moderate.
+            update_settings({
+                "risk_thresholds": {"critical": 0.1, "high": 0.05, "moderate": 0.01}
+            })
+            assert risk_level_for(0.08) == "High"
+            assert risk_level_for(0.03) == "Moderate"
+            assert risk_level_for(0.005) == "Low"
+
+            # Extremely high thresholds: almost everything is Low.
+            update_settings({
+                "risk_thresholds": {"critical": 0.9, "high": 0.8, "moderate": 0.7}
+            })
+            assert risk_level_for(0.75) == "Moderate"
+            assert risk_level_for(0.5) == "Low"
+        finally:
+            reset_settings()
+
+    def test_build_risk_table_uses_active_thresholds(self) -> None:
+        from backend.settings import reset_settings, update_settings
+
+        try:
+            update_settings({"risk_thresholds": {"critical": 0.3, "high": 0.2, "moderate": 0.1}})
+            df = build_risk_table(
+                {"A": 0.25}, {"A": {"consequence_severity": 10.0, "scope": 5}}
+            )
+            # risk = 0.25 * 1.4 = 0.35 >= 0.3 -> Critical under the new scale.
+            assert df.iloc[0]["risk_level"] == "Critical"
+        finally:
+            reset_settings()
+
+    def test_get_risk_thresholds_matches_settings(self) -> None:
+        from backend.risk import get_risk_thresholds
+        from backend.settings import get_settings
+
+        thresholds = get_risk_thresholds()
+        assert thresholds == get_settings()["risk_thresholds"]
+
+    def test_pdf_risk_color_uses_configured_thresholds(self) -> None:
+        """The PDF report colouring must follow the active thresholds, not
+        hardcoded 0.75/0.50/0.25 values."""
+        from backend.pdf_reports import _risk_color
+        from backend.settings import reset_settings, update_settings
+
+        try:
+            update_settings({"risk_thresholds": {"critical": 0.2, "high": 0.1, "moderate": 0.05}})
+            # 0.3 is Critical under the new scale -> rose (critical) colour.
+            color = _risk_color(0.3)
+            assert color.hexval().lower() in ("#fb7185", "0xfb7185")
+        finally:
+            reset_settings()
+
+
 class TestWriteRiskTable:
     """CSV export of risk table."""
 

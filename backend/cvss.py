@@ -231,10 +231,17 @@ def normalize_vulnerability(raw: Any, context: str) -> dict[str, Any]:
 
     Accepted forms:
       - a string: a CVSS v3.1 vector ("CVSS:3.1/AV:N/...")
-      - a dict:   {"cve_id": "...", "vector": "...", "score": 8.8, "source": "NVD"}
+      - a dict:   {"cve_id": "...", "vector": "...", "score": 8.8,
+                   "source": "analyst-supplied"}
 
     When a vector is provided it is authoritative: the official Base Score is
     computed from it.  A numeric score is used only when no vector is given.
+
+    ``source`` is descriptive provenance metadata ONLY.  It is preserved
+    verbatim and never used to fetch data: this framework does NOT retrieve
+    vulnerability data from NVD or any other service.  Vulnerability records
+    are analyst-supplied; ``source`` documents where the analyst obtained
+    them (e.g. "analyst-supplied", "NVD reference", "vendor advisory").
     """
     vuln: dict[str, Any] = {}
     if isinstance(raw, str):
@@ -249,16 +256,16 @@ def normalize_vulnerability(raw: Any, context: str) -> dict[str, Any]:
     elif isinstance(raw, dict):
         cve_id = raw.get("cve_id") or raw.get("cve") or raw.get("id")
         if cve_id:
-            cve_id = str(cve_id).strip()
-            if not _CVE_RE.match(cve_id):
+            cve_id_text = str(cve_id).strip()
+            if not _CVE_RE.match(cve_id_text):
                 raise ValueError(
-                    f"{context}: invalid CVE identifier {cve_id!r}. Expected 'CVE-YYYY-NNNN'."
+                    f"{context}: invalid CVE identifier {cve_id_text!r}. Expected 'CVE-YYYY-NNNN'."
                 )
-            vuln["cve_id"] = cve_id.upper()
-        vector = raw.get("vector") or raw.get("cvss_vector") or raw.get("cvss3_vector")
+            vuln["cve_id"] = cve_id_text.upper()
+        vector_raw = raw.get("vector") or raw.get("cvss_vector") or raw.get("cvss3_vector")
         score = raw.get("score", raw.get("cvss_score", raw.get("cvss", raw.get("base_score"))))
-        if vector:
-            vuln["vector"] = str(vector).strip()
+        if vector_raw:
+            vuln["vector"] = str(vector_raw).strip()
         elif score is not None:
             vuln["score"] = _parse_score(score, context)
         else:

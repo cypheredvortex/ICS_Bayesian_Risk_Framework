@@ -13,7 +13,7 @@ class OutputsTests(unittest.TestCase):
     """Test output file writers."""
 
     def setUp(self):
-        self.assets, self.relationships = load_topology("data/swat_example.json")
+        self.assets, self.relationships, _warnings = load_topology("data/swat_example.json")
         self.model, self.edge_weights = build_graph_skeleton(
             self.relationships, node_ids=self.assets.keys()
         )

@@ -161,5 +161,25 @@ def get_patch_weight() -> float:
     return float(get_settings().get("patch_weight", 1.0))
 
 
+def get_exposure_multipliers() -> dict[bool, float]:
+    """Exposure multipliers (true=internet-facing, false=not exposed)."""
+    settings = get_settings()
+    raw = settings.get("exposure_multipliers", {})
+    return {
+        True: float(raw.get("true", M_EXPOSURE[True])),
+        False: float(raw.get("false", M_EXPOSURE[False])),
+    }
+
+
+def get_patch_multipliers() -> dict[bool, float]:
+    """Patch multipliers (true=fully patched, false=unpatched)."""
+    settings = get_settings()
+    raw = settings.get("patch_multipliers", {})
+    return {
+        True: float(raw.get("true", M_PATCH[True])),
+        False: float(raw.get("false", M_PATCH[False])),
+    }
+
+
 def get_impact_weight() -> float:
     return float(get_settings().get("impact_weight", 1.0))

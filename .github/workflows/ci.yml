@@ -43,7 +43,6 @@ jobs:
 
       - name: Type check with mypy
         run: mypy backend/ --ignore-missing-imports
-        continue-on-error: true
 
       - name: Run tests with pytest
         run: python -m pytest tests/ -v --tb=short --cov=backend --cov-report=term-missing --cov-report=xml
@@ -54,3 +53,77 @@ jobs:
           file: ./coverage.xml
           fail_ci_if_error: false
 
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check and build
+        run: npm run build
+
+      - name: Run unit tests (Vitest + Testing Library)
+        run: npm test
+
+  e2e:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ..
+          sudo apt-get update && sudo apt-get install -y graphviz graphviz-dev
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Start backend and frontend
+        run: |
+          python -m uvicorn backend.api:app --host 127.0.0.1 --port 8000 &
+          npm run dev -- --host 127.0.0.1 --port 5173 &
+          npx wait-on http://127.0.0.1:8000/ http://127.0.0.1:5173
+
+      - name: Run Playwright E2E (browser workflow)
+        run: CI=1 npx playwright test
+
+      - name: Upload Playwright artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: frontend/test-results
+          retention-days: 7

@@ -11,7 +11,8 @@ import {
   defaultTopology,
   defaultCoreSettings,
 } from './constants'
-import { parseErrorDetail } from './utils'
+import { parseErrorBody, parseErrorDetail, riskLevelFor } from './utils'
+import type { RiskThresholds } from './types'
 import Toasts from './components/Toasts'
 import ConfirmDialog from './components/ConfirmDialog'
 import Header from './components/Header'
@@ -26,6 +27,63 @@ import RiskPieChart from './components/RiskPieChart'
 import BayesianResults from './components/BayesianResults'
 import CptSection from './components/CptSection'
 import ReportsSection from './components/ReportsSection'
+
+// Merge the server-side settings payload into a complete CoreSettings,
+// falling back to framework defaults for any key the API does not return.
+// This keeps the frontend free of its own copies of cvss parameters and
+// risk thresholds: whatever the backend says is authoritative.
+function mergeSettingsFromApi(data: Record<string, unknown>): CoreSettings {
+  const logistic = (data.cvss_logistic_params as
+    | { k?: number; x0?: number }
+    | undefined) ?? {}
+  const thresholds = (data.risk_thresholds as
+    | Partial<RiskThresholds>
+    | undefined) ?? {}
+  return {
+    exposure_weight: Number(
+      data.exposure_weight ?? defaultCoreSettings.exposure_weight,
+    ),
+    patch_weight: Number(
+      data.patch_weight ?? defaultCoreSettings.patch_weight,
+    ),
+    impact_weight: Number(
+      data.impact_weight ?? defaultCoreSettings.impact_weight,
+    ),
+    cvss_mapping:
+      data.cvss_mapping === 'linear' ? 'linear' : 'logistic',
+    cvss_logistic_params: {
+      k: Number(logistic.k ?? defaultCoreSettings.cvss_logistic_params.k),
+      x0: Number(logistic.x0 ?? defaultCoreSettings.cvss_logistic_params.x0),
+    },
+    propagation_weights: {
+      ...defaultCoreSettings.propagation_weights,
+      ...(data.propagation_weights as Record<string, number> | undefined),
+    },
+    firewall_multipliers: {
+      true: Number(
+        (
+          data.firewall_multipliers as Record<string, number> | undefined
+        )?.true ?? defaultCoreSettings.firewall_multipliers.true,
+      ),
+      false: Number(
+        (
+          data.firewall_multipliers as Record<string, number> | undefined
+        )?.false ?? defaultCoreSettings.firewall_multipliers.false,
+      ),
+    },
+    risk_thresholds: {
+      critical: Number(
+        thresholds.critical ?? defaultCoreSettings.risk_thresholds.critical,
+      ),
+      high: Number(
+        thresholds.high ?? defaultCoreSettings.risk_thresholds.high,
+      ),
+      moderate: Number(
+        thresholds.moderate ?? defaultCoreSettings.risk_thresholds.moderate,
+      ),
+    },
+  }
+}
 
 export default function App() {
   const [topology, setTopology] = useState<TopologyPayload>(defaultTopology)
@@ -76,33 +134,7 @@ export default function App() {
         if (!response.ok)
           throw new Error(await parseErrorDetail(response, 'Could not load settings.'))
         const data = (await response.json()) as Record<string, unknown>
-        const merged: CoreSettings = {
-          exposure_weight: Number(
-            data.exposure_weight ?? defaultCoreSettings.exposure_weight,
-          ),
-          patch_weight: Number(
-            data.patch_weight ?? defaultCoreSettings.patch_weight,
-          ),
-          impact_weight: Number(
-            data.impact_weight ?? defaultCoreSettings.impact_weight,
-          ),
-          propagation_weights: {
-            ...defaultCoreSettings.propagation_weights,
-            ...(data.propagation_weights as Record<string, number> | undefined),
-          },
-          firewall_multipliers: {
-            true: Number(
-              (
-                data.firewall_multipliers as Record<string, number> | undefined
-              )?.true ?? defaultCoreSettings.firewall_multipliers.true,
-            ),
-            false: Number(
-              (
-                data.firewall_multipliers as Record<string, number> | undefined
-              )?.false ?? defaultCoreSettings.firewall_multipliers.false,
-            ),
-          },
-        }
+        const merged: CoreSettings = mergeSettingsFromApi(data)
         setServerSettings(merged)
         setDraftSettings(merged)
       } catch {
@@ -207,7 +239,7 @@ export default function App() {
       return result.graph.edges.map((edge) => ({
         source: edge.source,
         target: edge.target,
-        label: `${edge.rel_type}${edge.firewalled ? ' 🔒' : ''}${typeof edge.weight === 'number' ? ` (${edge.weight.toFixed(2)})` : ''}`,
+        label: `${edge.rel_type}${edge.firewalled ? ' 🔒' : ''}${typeof edge.weight === 'number' ? ` w=${edge.weight.toFixed(2)}` : ''}`,
       }))
     }
     return topology.relationships.map(
@@ -252,26 +284,19 @@ export default function App() {
     return new Set(nodeIds.filter((id) => id.toLowerCase().includes(query)))
   }, [nodeQuery, nodeIds])
 
-  // Risk level thresholds mirror the backend (risk.py): the risk index is
-  // P(compromised) x normalised consequence impact, bounded ~[0, 1.4].
-  const RISK_LEVELS = {
-    critical: { min: 0.75, color: '#fb7185' },
-    high: { min: 0.5, color: '#f59e0b' },
-    moderate: { min: 0.25, color: '#38bdf8' },
-    low: { min: 0, color: '#34d399' },
-  } as const
+  // Active risk thresholds come from the backend (serverSettings). The
+  // risk index is P(compromised) x normalised consequence impact, bounded
+  // ~[0, 1.4]; the exact class boundaries are whatever the backend uses.
+  const riskThresholds = serverSettings.risk_thresholds
 
   const pieData = useMemo(() => {
     const counts = { critical: 0, high: 0, moderate: 0, low: 0 }
     for (const item of result?.risk_scores ?? []) {
       const risk = Number(item.risk ?? 0)
-      if (risk >= RISK_LEVELS.critical.min) counts.critical += 1
-      else if (risk >= RISK_LEVELS.high.min) counts.high += 1
-      else if (risk >= RISK_LEVELS.moderate.min) counts.moderate += 1
-      else counts.low += 1
+      counts[riskLevelFor(risk, riskThresholds)] += 1
     }
     return Object.entries(counts).map(([name, value]) => ({ name, value }))
-  }, [result])
+  }, [result, riskThresholds])
 
   const persistTopology = async (payload: TopologyPayload) => {
     const response = await fetch(`${API_BASE_URL}/upload-topology`, {
@@ -421,13 +446,34 @@ export default function App() {
         body: JSON.stringify(payload),
       })
       if (!response.ok) {
-        throw new Error(
-          await parseErrorDetail(response, 'Assessment request failed.'),
+        // Impossible/contradictory evidence must be surfaced as a clear
+        // diagnostic, never as a silent all-zero result.
+        const { message, errorCode, affectedNodes } = await parseErrorBody(
+          response,
+          'Assessment request failed.',
         )
+        if (errorCode === 'IMPOSSIBLE_EVIDENCE') {
+          const nodes = affectedNodes?.length
+            ? ` Affected nodes: ${affectedNodes.join(', ')}.`
+            : ''
+          pushToast(`Impossible evidence detected. ${message}${nodes}`, 'error')
+        } else {
+          pushToast(message, 'error')
+        }
+        return
       }
       const data = (await response.json()) as ResultPayload
       setResult(data)
       setSelectedNode(data.graph.nodes[0]?.id ?? null)
+      // Surface non-destructive topology warnings so input changes are never
+      // silent.
+      const warnings = data.summary?.topology_warnings ?? []
+      if (warnings.length) {
+        pushToast(
+          `Topology note: ${warnings.slice(0, 2).join(' ')}`,
+          'info',
+        )
+      }
       pushToast(
         'Assessment complete — results are now on the dashboard.',
         'success',
@@ -458,18 +504,7 @@ export default function App() {
         )
       }
       const data = (await response.json()) as Record<string, unknown>
-      const merged: CoreSettings = {
-        ...draftSettings,
-        exposure_weight: Number(
-          data.exposure_weight ?? draftSettings.exposure_weight,
-        ),
-        patch_weight: Number(
-          data.patch_weight ?? draftSettings.patch_weight,
-        ),
-        impact_weight: Number(
-          data.impact_weight ?? draftSettings.impact_weight,
-        ),
-      }
+      const merged: CoreSettings = mergeSettingsFromApi(data)
       setServerSettings(merged)
       setDraftSettings(merged)
       pushToast(
@@ -500,33 +535,7 @@ export default function App() {
         )
       }
       const data = (await response.json()) as Record<string, unknown>
-      const merged: CoreSettings = {
-        exposure_weight: Number(
-          data.exposure_weight ?? defaultCoreSettings.exposure_weight,
-        ),
-        patch_weight: Number(
-          data.patch_weight ?? defaultCoreSettings.patch_weight,
-        ),
-        impact_weight: Number(
-          data.impact_weight ?? defaultCoreSettings.impact_weight,
-        ),
-        propagation_weights: {
-          ...defaultCoreSettings.propagation_weights,
-          ...(data.propagation_weights as Record<string, number> | undefined),
-        },
-        firewall_multipliers: {
-          true: Number(
-            (
-              data.firewall_multipliers as Record<string, number> | undefined
-            )?.true ?? defaultCoreSettings.firewall_multipliers.true,
-          ),
-          false: Number(
-            (
-              data.firewall_multipliers as Record<string, number> | undefined
-            )?.false ?? defaultCoreSettings.firewall_multipliers.false,
-          ),
-        },
-      }
+      const merged: CoreSettings = mergeSettingsFromApi(data)
       setServerSettings(merged)
       setDraftSettings(merged)
       pushToast('Settings reset to framework defaults.', 'success')
@@ -644,6 +653,7 @@ export default function App() {
               result={result}
               chartData={chartData}
               riskRanking={riskRanking}
+              thresholds={serverSettings.risk_thresholds}
               setSelectedNode={setSelectedNode}
             />
           ) : (

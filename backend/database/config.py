@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Iterator
 
 from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 from sqlalchemy.pool import StaticPool
 
@@ -15,8 +16,8 @@ DB_DIR.mkdir(parents=True, exist_ok=True)
 
 DEFAULT_DB_URL = os.getenv("ICS_DB_URL", f"sqlite:///{(DB_DIR / 'ICSRiskFramework.db').as_posix()}")
 
-_engine = None
-_SessionLocal = None
+_engine: Engine | None = None
+_SessionLocal: sessionmaker[Session] | None = None
 _initialized = False
 
 
@@ -37,7 +38,7 @@ def get_db_url() -> str:
     return raw_url
 
 
-def _create_engine() -> object:
+def _create_engine() -> Engine:
     db_url = get_db_url()
     connect_args = {"check_same_thread": False} if db_url.startswith("sqlite") else {}
     poolclass = StaticPool if db_url.startswith("sqlite") else None
@@ -53,8 +54,9 @@ def get_session_factory() -> sessionmaker[Session]:
     global _SessionLocal
     if _SessionLocal is None:
         global _engine
-        _engine = _create_engine()
-        _SessionLocal = sessionmaker(bind=_engine, autoflush=False, autocommit=False, future=True)
+        engine = _create_engine()
+        _engine = engine
+        _SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
     return _SessionLocal
 
 
@@ -111,6 +113,7 @@ def initialize_database() -> None:
 
     # Ensure the engine/session factory exists before creating tables.
     get_session_factory()
+    assert _engine is not None
     Base.metadata.create_all(bind=_engine)
 
     with session_scope() as session:

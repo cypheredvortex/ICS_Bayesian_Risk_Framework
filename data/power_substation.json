@@ -15,7 +15,7 @@
         {
           "cve_id": "CVE-2014-0160",
           "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
-          "source": "NVD"
+          "source": "analyst-supplied"
         }
       ]
     },
@@ -37,7 +37,7 @@
         {
           "cve_id": "CVE-2014-6271",
           "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
-          "source": "NVD"
+          "source": "analyst-supplied"
         }
       ]
     },

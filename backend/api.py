@@ -34,6 +34,7 @@ from sqlalchemy import text as sa_text
 
 from backend.assets import load_topology, load_topology_from_bytes
 from backend.api_adapter import analyze, OUTPUT_DIR
+from backend.inference import ImpossibleEvidenceError
 from backend.database.config import initialize_database, get_db_url, get_session_factory
 from backend.logging_config import configure_logging, get_request_id, set_request_id
 from backend.pdf_reports import generate_pdf_report
@@ -156,7 +157,9 @@ app.middleware("http")(_request_id_middleware)
 
 # Rate limiting
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.add_exception_handler(
+    RateLimitExceeded, _rate_limit_exceeded_handler  # type: ignore[arg-type]
+)
 
 
 # ---- Exception handlers ----
@@ -168,6 +171,7 @@ async def http_exception_handler(request: Request, exc: HTTPException) -> JSONRe
             detail=exc.detail,
             error_code=f"HTTP_{exc.status_code}",
             request_id=get_request_id(),
+            affected_nodes=None,
         ).model_dump(),
     )
 
@@ -181,6 +185,7 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
             detail="An internal error occurred. Please try again later.",
             error_code="INTERNAL_ERROR",
             request_id=get_request_id(),
+            affected_nodes=None,
         ).model_dump(),
     )
 
@@ -196,8 +201,10 @@ def healthcheck():
         session.execute(sa_text("select 1"))
         session.close()
         db_status = "connected"
-    except Exception as exc:
-        db_status = f"error: {exc}"
+    except Exception:
+        # Controlled status only: never leak connection internals (URLs,
+        # paths, driver messages) into the response.
+        db_status = "error"
 
     routes = sorted(
         [
@@ -228,7 +235,7 @@ def healthcheck():
 def upload_topology(request: Request, payload: TopologyUploadRequest):
     """Validate a topology payload. Returns parsed counts but does NOT store server-side state."""
     try:
-        assets, relationships = load_topology(payload.topology)
+        assets, relationships, warnings = load_topology(payload.topology)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
@@ -236,6 +243,7 @@ def upload_topology(request: Request, payload: TopologyUploadRequest):
         message="Topology validated successfully",
         asset_count=len(assets),
         relationship_count=len(relationships),
+        warnings=warnings,
     )
 
 
@@ -259,7 +267,9 @@ async def upload_topology_file(request: Request, file: UploadFile = File(...)):
             detail=f"File too large. Maximum allowed size is {MAX_UPLOAD_SIZE_MB} MB.",
         )
     try:
-        assets, relationships = load_topology_from_bytes(content, file.filename or "topology.json")
+        assets, relationships, warnings = load_topology_from_bytes(
+            content, Path(file.filename or "topology.json").name
+        )
     except json.JSONDecodeError as exc:
         raise HTTPException(status_code=400, detail=f"Invalid JSON: {exc}") from exc
     except yaml.YAMLError as exc:
@@ -274,10 +284,11 @@ async def upload_topology_file(request: Request, file: UploadFile = File(...)):
         "relationships": [list(rel) for rel in relationships],
     }
     return UploadTopologyFileResponse(
-        message=f"Topology file '{file.filename}' validated successfully",
+        message=f"Topology file '{Path(file.filename or 'topology.json').name}' validated successfully",
         asset_count=len(assets),
         relationship_count=len(relationships),
         topology=topology,
+        warnings=warnings,
     )
 
 
@@ -301,6 +312,18 @@ def analyze_endpoint(
             [entry.model_dump() for entry in payload.evidence],
             write_outputs=True,
             output_dir=OUTPUT_DIR,
+        )
+    except ImpossibleEvidenceError as exc:
+        # Structured diagnostic: zero-probability evidence must never silently
+        # produce a normal-looking (all-zero) result.
+        return JSONResponse(
+            status_code=400,
+            content=ErrorResponse(
+                detail=str(exc),
+                error_code="IMPOSSIBLE_EVIDENCE",
+                request_id=get_request_id(),
+                affected_nodes=exc.affected_nodes,
+            ).model_dump(),
         )
     except ValueError as exc:
         # Validation and modeling errors are client errors: report the

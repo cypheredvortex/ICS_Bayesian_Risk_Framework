@@ -53,6 +53,11 @@ frontend/vite.config.d.ts
 frontend/vite.config.js
 frontend/dist/
 
+# Playwright artifacts
+frontend/test-results/
+frontend/playwright-report/
+frontend/blob-report/
+
 # Python test / coverage
 .pytest_cache/
 htmlcov/

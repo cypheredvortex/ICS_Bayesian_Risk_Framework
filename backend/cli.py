@@ -17,8 +17,15 @@ from backend.enrichment import enrich_graph
 from backend.graph_builder import build_graph_skeleton, graph_to_dict
 from backend.probability import compute_base_probs
 from backend.cpt_generator import cpts_to_dict, parameterize
-from backend.inference import compute_posteriors_with_evidence
-from backend.risk import build_risk_table, write_risk_table, risk_level_for, compute_aggregate_risk
+from backend.inference import (
+    ImpossibleEvidenceError,
+    check_evidence_feasibility,
+    compute_posteriors_with_evidence,
+)
+from backend.risk import (
+    build_risk_table, write_risk_table, risk_level_for, compute_aggregate_risk,
+    get_risk_thresholds,
+)
 from backend.outputs import (
     write_graph_image, write_graph_json, write_cpts_json,
     write_posteriors_json, write_metrics_json, write_summary_txt,
@@ -34,14 +41,21 @@ def run(
     evidence: dict | None = None,
     output_dir: str | Path | None = None,
     write_outputs: bool = False,
+    persist: bool = True,
 ) -> dict:
-    """Reusable framework entry point."""
+    """Reusable framework entry point.
+
+    Args:
+        persist: When False the database persistence step is skipped
+            (used by benchmarks and sensitivity analysis, where the
+            database would otherwise dominate the measured time).
+    """
     import time
 
     if evidence is None:
         evidence = {}
 
-    assets, relationships = load_topology(topology)
+    assets, relationships, topology_warnings = load_topology(topology)
     normalized = enrich_graph(assets, relationships)
     assets = normalized["assets"]
     relationships = normalized["relationships"]
@@ -51,6 +65,19 @@ def run(
     base_probs = compute_base_probs(assets)
     model = parameterize(model, edge_weights, base_probs)
     build_time_seconds = time.perf_counter() - build_start
+
+    # Detect zero-probability (impossible) evidence BEFORE producing normal
+    # risk results so the analyst never receives a misleading all-zero output.
+    impossible_nodes = check_evidence_feasibility(model, base_probs, evidence)
+    if impossible_nodes:
+        raise ImpossibleEvidenceError(
+            "The supplied evidence is impossible under the current model: "
+            f"P({impossible_nodes[0]}=1 | other evidence) is exactly 0 because this "
+            f"asset has base compromise probability 0 and its parents cannot raise it. "
+            f"Affected nodes: {impossible_nodes}. Review or remove this evidence before "
+            "running the assessment.",
+            affected_nodes=impossible_nodes,
+        )
 
     inference_start = time.perf_counter()
     posteriors, evidence_used = compute_posteriors_with_evidence(model, evidence)
@@ -90,6 +117,10 @@ def run(
             "topology": str(topology) if not isinstance(topology, dict) else "inline-topology",
             "asset_count": len(assets),
             "relationship_count": len(relationships),
+            "topology_warnings": topology_warnings,
+            # Active risk thresholds so every consumer (UI, reports) reads the
+            # same values the backend used for classification.
+            "risk_thresholds": get_risk_thresholds(),
             "evidence_used": evidence_used,
             # Network-level risk = worst-case single-asset risk index.
             "overall_risk": aggregate["max_risk"],
@@ -159,21 +190,22 @@ def run(
             "summary": str(out_dir / "summary.txt"),
         }
 
-    try:
-        initialize_database()
-        persistence_service = AssessmentPersistenceService()
-        project_name = _project_name_for(topology)
-        persistence_service.persist_analysis_run(
-            topology={"assets": assets, "relationships": relationships},
-            evidence=evidence,
-            analysis_result=result,
-            project_name=project_name,
-            topology_source=str(topology) if not isinstance(topology, dict) else "inline-topology",
-        )
-        result["persistence"] = {"saved": True, "project_name": project_name}
-    except Exception as exc:
-        logger.exception("Assessment persistence failed")
-        result["persistence"] = {"saved": False, "error": str(exc)}
+    if persist:
+        try:
+            initialize_database()
+            persistence_service = AssessmentPersistenceService()
+            project_name = _project_name_for(topology)
+            persistence_service.persist_analysis_run(
+                topology={"assets": assets, "relationships": relationships},
+                evidence=evidence,
+                analysis_result=result,
+                project_name=project_name,
+                topology_source=str(topology) if not isinstance(topology, dict) else "inline-topology",
+            )
+            result["persistence"] = {"saved": True, "project_name": project_name}
+        except Exception as exc:
+            logger.exception("Assessment persistence failed")
+            result["persistence"] = {"saved": False, "error": str(exc)}
 
     return result
 

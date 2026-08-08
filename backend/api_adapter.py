@@ -16,22 +16,30 @@ def analyze(
     """Translate HTTP input into the framework call."""
     evidence_map: dict[str, int] = {}
     for item in evidence or []:
+        asset = item.get("asset", "")
         state = item.get("state", "Unknown")
         if state in (1, "1"):
-            evidence_map[item["asset"]] = 1
+            value = 1
         elif state in (0, "0"):
-            evidence_map[item["asset"]] = 0
+            value = 0
         elif isinstance(state, str) and state.strip().lower() == "compromised":
-            evidence_map[item["asset"]] = 1
+            value = 1
         elif isinstance(state, str) and state.strip().lower() == "safe":
-            evidence_map[item["asset"]] = 0
+            value = 0
         elif isinstance(state, str) and state.strip().lower() == "unknown":
             continue
         else:
             raise ValueError(
-                f"Evidence state for '{item.get('asset', 'unknown')}' must be "
+                f"Evidence state for '{asset or 'unknown'}' must be "
                 "Unknown, Compromised, Safe, 0, or 1."
             )
+        if asset in evidence_map and evidence_map[asset] != value:
+            raise ValueError(
+                f"Contradictory evidence for asset '{asset}': both state "
+                f"{evidence_map[asset]} and state {value} were supplied. "
+                "Each asset can be assigned at most one state."
+            )
+        evidence_map[asset] = value
 
     result = run_framework(
         topology=topology,
@@ -51,4 +59,8 @@ def analyze(
         "evidence_used": result["evidence_used"],
         "timings": result["timings"],
         "artifacts": result.get("artifacts", {}),
+        # Persistence status: whether the analysis run could be stored.  A
+        # False value means the assessment itself succeeded but the database
+        # was unavailable.
+        "persistence": result.get("persistence", {"saved": False}),
     }

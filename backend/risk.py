@@ -86,6 +86,17 @@ def _thresholds() -> dict[str, float]:
     }
 
 
+def get_risk_thresholds() -> dict[str, float]:
+    """Return the *active* risk-level thresholds.
+
+    This is the single source of truth for risk-level classification: the
+    PDF report colouring, the CLI, and (via ``/settings``) the frontend all
+    consume these values so that a change in ``risk_thresholds`` propagates
+    everywhere.  See ``backend/settings.py`` for the configurable defaults.
+    """
+    return _thresholds()
+
+
 def m_scope(attrs: dict) -> float:
     """Scope multiplier: 1 + (scope-1)*0.1.
 
@@ -160,7 +171,7 @@ def write_risk_table(df: pd.DataFrame, path: str | Path = "output/risk_table.csv
     return path
 
 
-def compute_aggregate_risk(df: pd.DataFrame) -> dict[str, float]:
+def compute_aggregate_risk(df: pd.DataFrame) -> dict[str, Any]:
     """Compute defensible aggregate risk statistics.
 
     The network-level risk is the worst-case single-asset risk index
@@ -178,18 +189,19 @@ def compute_aggregate_risk(df: pd.DataFrame) -> dict[str, float]:
             "asset_count": number of assets assessed,
         }
     """
-    empty = {
+    empty_level_counts: dict[str, int] = {"critical": 0, "high": 0, "moderate": 0, "low": 0}
+    empty: dict[str, Any] = {
         "max_risk": 0.0,
         "mean_risk": 0.0,
         "median_risk": 0.0,
-        "level_counts": {"critical": 0, "high": 0, "moderate": 0, "low": 0},
+        "level_counts": empty_level_counts,
         "asset_count": 0,
     }
     if df.empty:
         return empty
 
     risk_values = df["risk"].astype(float)
-    level_counts = {
+    level_counts: dict[str, int] = {
         level: int((df["risk_level"] == level.title()).sum())
         for level in ("critical", "high", "moderate", "low")
     }

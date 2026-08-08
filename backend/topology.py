@@ -284,13 +284,13 @@ def normalize_relationship(raw: dict | list | tuple) -> tuple | None:
     if not isinstance(raw, dict):
         return None
 
-    source = raw.get("source") or raw.get("src") or raw.get("from") or raw.get("source_asset")
-    target = raw.get("target") or raw.get("dst") or raw.get("to") or raw.get("destination_asset")
-    if source is None or target is None:
+    source_raw = raw.get("source") or raw.get("src") or raw.get("from") or raw.get("source_asset")
+    target_raw = raw.get("target") or raw.get("dst") or raw.get("to") or raw.get("destination_asset")
+    if source_raw is None or target_raw is None:
         return None
 
-    source = _normalize_text(source)
-    target = _normalize_text(target)
+    source = _normalize_text(source_raw)
+    target = _normalize_text(target_raw)
     rel_type = _normalize_text(raw.get("type") or raw.get("rel_type") or raw.get("relationship_type") or DEFAULT_REL_TYPE)
     if not rel_type:
         rel_type = DEFAULT_REL_TYPE
@@ -299,56 +299,78 @@ def normalize_relationship(raw: dict | list | tuple) -> tuple | None:
     # silently becomes a generic "connects-to" edge.
 
     firewalled = _normalize_bool(raw.get("firewalled") or raw.get("protected") or raw.get("is_firewalled"), False)
-    metadata: dict[str, Any] = {}
+    metadata_dict: dict[str, Any] = {}
     if protocol := raw.get("protocol"):
-        metadata["protocol"] = _normalize_text(protocol)
+        metadata_dict["protocol"] = _normalize_text(protocol)
     if trust := raw.get("trust"):
-        metadata["trust_level"] = _normalize_text(trust)
+        metadata_dict["trust_level"] = _normalize_text(trust)
     if trust := raw.get("trust_level"):
-        metadata["trust_level"] = _normalize_text(trust)
+        metadata_dict["trust_level"] = _normalize_text(trust)
     if mitre := raw.get("mitre") or raw.get("mitre_technique"):
-        metadata["mitre_technique"] = _normalize_text(mitre)
+        metadata_dict["mitre_technique"] = _normalize_text(mitre)
     if "metadata" in raw and isinstance(raw["metadata"], dict):
-        metadata.update(raw["metadata"])
-    return source, target, rel_type, firewalled, metadata
+        metadata_dict.update(raw["metadata"])
+    return source, target, rel_type, firewalled, metadata_dict
 
 
-def _asset_collection_from_dict(raw: dict) -> dict[str, dict]:
+def _asset_collection_from_dict(raw: dict, warnings: list[str] | None = None) -> dict[str, dict]:
     assets: dict[str, dict] = {}
     if isinstance(raw, dict):
         for key, value in raw.items():
-            if isinstance(value, dict):
-                normalized = normalize_asset(value)
-                if normalized and normalized["id"]:
-                    assets[normalized["id"]] = normalized
-    return assets
-
-
-def _asset_collection_from_list(raw: list) -> dict[str, dict]:
-    assets: dict[str, dict] = {}
-    for item in raw:
-        if isinstance(item, dict):
-            normalized = normalize_asset(item)
+            if not isinstance(value, dict):
+                if warnings is not None:
+                    warnings.append(
+                        f"asset '{key}' was skipped because its attributes are not an object."
+                    )
+                continue
+            normalized = normalize_asset(value)
             if normalized and normalized["id"]:
                 assets[normalized["id"]] = normalized
+            elif warnings is not None:
+                warnings.append(
+                    f"asset '{key}' was skipped because it has no usable identifier."
+                )
     return assets
 
 
-def _relationship_collection_from_list(raw: list) -> list[tuple]:
+def _asset_collection_from_list(raw: list, warnings: list[str] | None = None) -> dict[str, dict]:
+    assets: dict[str, dict] = {}
+    for item in raw:
+        if not isinstance(item, dict):
+            if warnings is not None:
+                warnings.append(
+                    "an asset record was skipped because it is not an object."
+                )
+            continue
+        normalized = normalize_asset(item)
+        if normalized and normalized["id"]:
+            assets[normalized["id"]] = normalized
+        elif warnings is not None:
+            warnings.append(
+                f"asset record {item!r} was skipped because it has no usable identifier."
+            )
+    return assets
+
+
+def _relationship_collection_from_list(raw: list, warnings: list[str] | None = None) -> list[tuple]:
     relationships: list[tuple] = []
     for item in raw:
         rel = normalize_relationship(item)
         if rel:
             relationships.append(rel)
+        elif warnings is not None:
+            warnings.append(
+                f"relationship {item!r} was skipped because it is malformed (missing source or target)."
+            )
     return relationships
 
 
-def parse_generic_json(raw: Any) -> dict[str, Any]:
+def parse_generic_json(raw: Any, warnings: list[str] | None = None) -> dict[str, Any]:
     assets: dict[str, dict] = {}
     relationships: list[tuple] = []
 
     if isinstance(raw, list):
-        assets = _asset_collection_from_list(raw)
+        assets = _asset_collection_from_list(raw, warnings)
         return {"assets": assets, "relationships": relationships}
 
     if not isinstance(raw, dict):
@@ -359,16 +381,16 @@ def parse_generic_json(raw: Any) -> dict[str, Any]:
         if key in raw:
             candidate = raw[key]
             if isinstance(candidate, dict):
-                assets = _asset_collection_from_dict(candidate)
+                assets = _asset_collection_from_dict(candidate, warnings)
             elif isinstance(candidate, list):
-                assets = _asset_collection_from_list(candidate)
+                assets = _asset_collection_from_list(candidate, warnings)
             if assets:
                 break
 
     if not assets:
         for key, candidate in raw.items():
             if isinstance(candidate, list) and candidate and isinstance(candidate[0], dict):
-                candidate_assets = _asset_collection_from_list(candidate)
+                candidate_assets = _asset_collection_from_list(candidate, warnings)
                 if candidate_assets:
                     assets = candidate_assets
                     break
@@ -376,7 +398,7 @@ def parse_generic_json(raw: Any) -> dict[str, Any]:
     rel_keys = ["relationships", "edges", "links", "connections", "connections_list", "paths"]
     for key in rel_keys:
         if key in raw and isinstance(raw[key], list):
-            relationships = _relationship_collection_from_list(raw[key])
+            relationships = _relationship_collection_from_list(raw[key], warnings)
             if relationships:
                 break
 
@@ -386,13 +408,23 @@ def parse_generic_json(raw: Any) -> dict[str, Any]:
     return {"assets": assets, "relationships": relationships}
 
 
-def validate_graph(assets: dict[str, dict], relationships: list[tuple], source_label: str) -> list[tuple]:
+def validate_graph(
+    assets: dict[str, dict],
+    relationships: list[tuple],
+    source_label: str,
+    warnings: list[str] | None = None,
+) -> list[tuple]:
     """Validate a normalized topology and return the cleaned relationship list.
 
-    Self-loops and duplicate edges are removed with a warning (they add no
-    causal information and usually come from spreadsheet authoring mistakes).
-    References to unknown assets, unknown relationship types, and cycles are
-    rejected with actionable error messages.
+    Self-loops and duplicate edges are removed with an explicit warning (they
+    add no causal information and usually come from spreadsheet authoring
+    mistakes).  References to unknown assets, unknown relationship types, and
+    cycles are rejected with actionable error messages.
+
+    Args:
+        warnings: Optional list that receives human-readable notes for every
+            relationship that was normalized away, so the analyst is always
+            informed instead of seeing silent input changes.
     """
     if not assets:
         raise ValueError(f"{source_label}: no assets found in the topology.")
@@ -416,19 +448,25 @@ def validate_graph(assets: dict[str, dict], relationships: list[tuple], source_l
             raise ValueError(f"Relationship ({source} -> {target}): firewalled must be a boolean.")
         if source == target:
             # Self-loops provide no useful Bayesian dependency and often come
-            # from CSV/Excel authoring mistakes. Log and skip instead of
+            # from CSV/Excel authoring mistakes. Warn and skip instead of
             # hard-failing the entire upload so users can correct inputs
             # without losing their session.
-            logger.warning(
-                "%s: relationship (%s -> %s) is a self-loop and was removed.",
-                source_label, source, target,
+            message = (
+                f"{source_label}: relationship ({source} -> {target}) is a self-loop "
+                "and was removed."
             )
+            logger.warning(message)
+            if warnings is not None:
+                warnings.append(message)
             continue
         if (source, target) in seen_edges:
-            logger.warning(
-                "%s: duplicate relationship (%s -> %s) was removed.",
-                source_label, source, target,
+            message = (
+                f"{source_label}: duplicate relationship ({source} -> {target}) was "
+                "removed."
             )
+            logger.warning(message)
+            if warnings is not None:
+                warnings.append(message)
             continue
         seen_edges.add((source, target))
         clean_relationships.append(rel)

@@ -131,6 +131,12 @@ _REL_FIELD_MAP = {
 
 
 def load_topology(path: str | Path | dict) -> dict[str, Any]:
+    """Load and normalize a topology from a path or inline dict.
+
+    Returns ``{"assets", "relationships", "warnings"}`` where ``warnings`` is
+    a list of human-readable notes about records that were normalized or
+    skipped (e.g. self-loops, duplicate edges, unidentifiable assets).
+    """
     if isinstance(path, dict):
         return _normalize_topology(path, "inline topology")
 
@@ -146,7 +152,7 @@ def load_topology_from_bytes(content: bytes, filename: str) -> dict[str, Any]:
     elif suffix == ".csv":
         raw = _parse_csv_bytes(content)
     elif suffix == ".xlsx":
-        raw = _parse_excel_bytes(content)
+        raw = _parse_excel_bytes(content, filename)
     elif suffix == ".graphml":
         raw = _parse_graphml_bytes(content)
     elif suffix in {".xml", ".aml"}:
@@ -163,6 +169,30 @@ def load_topology_from_bytes(content: bytes, filename: str) -> dict[str, Any]:
             ".json, .yaml, .yml, .csv, .xlsx, .graphml, .xml, .aml, .vsdx, .vdx"
         )
     return _normalize_topology(raw, filename)
+
+
+def _check_archive_expansion_limit(content: bytes, filename: str) -> None:
+    """Reject zip-based uploads (xlsx/vsdx) that would decompress too far.
+
+    A small zip can contain gigabytes of uncompressed data (zip bomb).  The
+    API-level size limit covers the compressed payload; this check bounds the
+    *uncompressed* total before any parser reads the archive.
+    """
+    max_expansion = int(
+        os.getenv("MAX_ARCHIVE_EXPANSION_MB", "200")
+    ) * 1024 * 1024
+    try:
+        with zipfile.ZipFile(io.BytesIO(content)) as archive:
+            total = sum(info.file_size for info in archive.infolist())
+            if total > max_expansion:
+                raise ValueError(
+                    f"{filename}: the archive expands to {total / (1024 * 1024):.1f} MB "
+                    f"uncompressed, exceeding the {max_expansion // (1024 * 1024)} MB "
+                    "expansion limit. This file is rejected as a potential archive bomb."
+                )
+    except zipfile.BadZipFile:
+        # Not a zip at all: let the real parser produce the format error.
+        return
 
 
 def _load_file(path: Path) -> dict[str, Any]:
@@ -206,7 +236,7 @@ def _split_csv_groups(rows: list[list[str]]) -> list[list[list[str]]]:
     return groups
 
 
-def _parse_csv_group(rows: list[list[str]]) -> tuple[dict[str, dict], list[tuple]]:
+def _parse_csv_group(rows: list[list[str]]) -> tuple[dict[str, dict], list[Any]]:
     if not rows:
         return {}, []
 
@@ -215,7 +245,7 @@ def _parse_csv_group(rows: list[list[str]]) -> tuple[dict[str, dict], list[tuple
     has_rel_header = any(field in header for field in _REL_HEADERS)
 
     assets: dict[str, dict] = {}
-    relationships: list[tuple] = []
+    relationships: list[Any] = []
     for row in rows[1:]:
         if not any(cell for cell in row):
             continue
@@ -249,7 +279,7 @@ def _parse_csv_bytes(content: bytes) -> dict[str, Any]:
 
     groups = _split_csv_groups(rows)
     assets: dict[str, dict] = {}
-    relationships: list[tuple] = []
+    relationships: list[Any] = []
     for group in groups:
         group_assets, group_rels = _parse_csv_group(group)
         assets.update(group_assets)
@@ -295,7 +325,8 @@ def _parse_csv_row_to_relationship(row: list[str], header: list[str]) -> dict[st
     return raw if raw.get("source") and raw.get("target") else None
 
 
-def _parse_excel_bytes(content: bytes) -> dict[str, Any]:
+def _parse_excel_bytes(content: bytes, filename: str = "topology.xlsx") -> dict[str, Any]:
+    _check_archive_expansion_limit(content, filename)
     try:
         import openpyxl
     except ImportError as exc:
@@ -305,7 +336,7 @@ def _parse_excel_bytes(content: bytes) -> dict[str, Any]:
 
     workbook = openpyxl.load_workbook(io.BytesIO(content), read_only=True, data_only=True)
     assets: dict[str, dict] = {}
-    relationships: list[tuple] = []
+    relationships: list[Any] = []
     for sheet in workbook.worksheets:
         rows = []
         for row in sheet.iter_rows(values_only=True):
@@ -326,7 +357,7 @@ def _parse_excel_bytes(content: bytes) -> dict[str, Any]:
 def _parse_graphml_bytes(content: bytes) -> dict[str, Any]:
     graph = nx.read_graphml(io.BytesIO(content))
     assets: dict[str, dict] = {}
-    relationships: list[tuple] = []
+    relationships: list[Any] = []
     _PROMOTED_NODE_ATTRS = {
         "label", "name", "kind", "type", "vendor", "model", "zone", "ip",
         # Security attributes: promote so they reach normalize_asset's strict
@@ -406,7 +437,7 @@ def _parse_generic_xml(content: bytes) -> dict[str, Any]:
         return raw
 
     assets: dict[str, dict] = {}
-    relationships: list[tuple] = []
+    relationships: list[Any] = []
     asset_nodes: list[ET.Element] = []
     rel_nodes: list[ET.Element] = []
 
@@ -452,7 +483,7 @@ def _parse_aml_bytes(content: bytes) -> dict[str, Any]:
     text = content.decode("utf-8-sig", errors="replace")
     root = ET.fromstring(text)
     assets: dict[str, dict] = {}
-    relationships: list[tuple] = []
+    relationships: list[Any] = []
 
     def strip_ns(tag: str) -> str:
         return tag[tag.find("}") + 1 :] if "}" in tag else tag
@@ -463,7 +494,7 @@ def _parse_aml_bytes(content: bytes) -> dict[str, Any]:
             name = element.get("Name") or element.get("ID") or element.get("NameLong")
             if not name:
                 continue
-            raw = {"id": name, "name": name}
+            raw: dict[str, Any] = {"id": name, "name": name}
             for child in element:
                 child_tag = strip_ns(child.tag)
                 if child_tag == "Attribute" and child.get("Name") == "Manufacturer":
@@ -558,8 +589,9 @@ def _parse_vdx_bytes(content: bytes) -> dict[str, Any]:
                 raw["patched"] = parts[5]
             if len(parts) > 6:
                 raw["consequence_severity"] = parts[6]
-            if raw.get("id"):
-                assets[raw["id"]] = raw
+            asset_id = raw.get("id")
+            if asset_id:
+                assets[asset_id] = raw
             continue
 
         # Fallback: try shape custom properties (Prop elements)
@@ -595,6 +627,7 @@ def _parse_vdx_bytes(content: bytes) -> dict[str, Any]:
 
 def _parse_vsdx_bytes(content: bytes, filename: str) -> dict[str, Any]:
     """Parse Visio .vsdx (Open XML) files."""
+    _check_archive_expansion_limit(content, filename)
     if vsdx is None:
         raise ImportError(
             "vsdx library is required to parse .vsdx files. Install with: pip install vsdx"
@@ -614,7 +647,7 @@ def _parse_vsdx_bytes(content: bytes, filename: str) -> dict[str, Any]:
             ) from exc
 
         assets: dict[str, dict] = {}
-        relationships: list[tuple] = []
+        relationships: list[Any] = []
 
         for page in doc.pages:
             for shape in page.shapes:
@@ -659,8 +692,9 @@ def _parse_vsdx_bytes(content: bytes, filename: str) -> dict[str, Any]:
                             raw["patched"] = parts[5]
                         if len(parts) > 6:
                             raw["consequence_severity"] = parts[6]
-                        if raw.get("id"):
-                            assets[raw["id"]] = raw
+                        asset_id = raw.get("id")
+                        if asset_id:
+                            assets[asset_id] = raw
                         continue
 
                 if props.get("ID") or props.get("id") or props.get("Name"):
@@ -689,10 +723,10 @@ def _parse_vsdx_bytes(content: bytes, filename: str) -> dict[str, Any]:
                         if not name.lower().endswith('.xml'):
                             continue
                         try:
-                            raw = zf.read(name).decode('utf-8', errors='ignore')
+                            xml_text = zf.read(name).decode('utf-8', errors='ignore')
                         except Exception:
                             continue
-                        for m in re.finditer(r"(asset|relationship),([^<\r\n]+)", raw, flags=re.IGNORECASE):
+                        for m in re.finditer(r"(asset|relationship),([^<\r\n]+)", xml_text, flags=re.IGNORECASE):
                             parts = [p.strip() for p in m.group(2).split(',')]
                             if m.group(1).lower() == 'asset':
                                 aid = parts[0] if parts else None
@@ -739,33 +773,69 @@ def _normalize_topology(raw: Any, source_label: str) -> dict[str, Any]:
     if not isinstance(raw, dict):
         raise ValueError(f"{source_label}: topology payload must be an object.")
 
+    warnings: list[str] = []
+
     if "assets" in raw and "relationships" in raw:
         assets_raw = raw["assets"]
         relationships_raw = raw["relationships"]
     else:
-        inferred = parse_generic_json(raw)
+        inferred = parse_generic_json(raw, warnings)
         assets_raw = inferred["assets"]
         relationships_raw = inferred["relationships"]
 
     assets: dict[str, dict] = {}
     if isinstance(assets_raw, dict):
         for node_id, attrs in assets_raw.items():
-            if isinstance(attrs, dict):
-                normalized = normalize_asset({**attrs, "id": node_id})
-                if normalized:
-                    assets[normalized["id"]] = normalized
+            if not isinstance(attrs, dict):
+                warnings.append(
+                    f"{source_label}: asset '{node_id}' was skipped because its "
+                    "attributes are not an object."
+                )
+                continue
+            normalized = normalize_asset({**attrs, "id": node_id})
+            if normalized:
+                assets[normalized["id"]] = normalized
+            else:
+                warnings.append(
+                    f"{source_label}: asset '{node_id}' was skipped because it has "
+                    "no usable identifier."
+                )
     elif isinstance(assets_raw, list):
         for item in assets_raw:
+            if not isinstance(item, dict):
+                warnings.append(
+                    f"{source_label}: an asset record was skipped because it is "
+                    "not an object."
+                )
+                continue
             normalized = normalize_asset(item)
             if normalized:
                 assets[normalized["id"]] = normalized
+            else:
+                warnings.append(
+                    f"{source_label}: asset record {item!r} was skipped because it "
+                    "has no usable identifier."
+                )
+    elif assets_raw:
+        raise ValueError(
+            f"{source_label}: 'assets' must be an object or a list of objects."
+        )
 
     relationships: list[tuple] = []
     if isinstance(relationships_raw, list):
         for item in relationships_raw:
-            normalized = normalize_relationship(item)
-            if normalized:
-                relationships.append(normalized)
+            rel_normalized = normalize_relationship(item)
+            if rel_normalized:
+                relationships.append(rel_normalized)
+            else:
+                warnings.append(
+                    f"{source_label}: relationship {item!r} was skipped because it "
+                    "is malformed (missing source or target)."
+                )
+    elif relationships_raw:
+        raise ValueError(
+            f"{source_label}: 'relationships' must be a list."
+        )
 
-    relationships = validate_graph(assets, relationships, source_label)
-    return {"assets": assets, "relationships": relationships}
+    relationships = validate_graph(assets, relationships, source_label, warnings)
+    return {"assets": assets, "relationships": relationships, "warnings": warnings}

@@ -33,9 +33,11 @@ class TestSelfLoops:
             {"a": {"kind": "device"}},
             [["a", "a", "connects-to", False]],
         )
-        assets, rels = load_topology(topology)
+        assets, rels, warnings = load_topology(topology)
         assert assets == {"a": {"id": "a", "name": "a", "kind": "device"}}
         assert rels == []
+        # The removal is never silent: the analyst receives a warning.
+        assert any("self-loop" in w for w in warnings)
 
 
 class TestDuplicateEdges:
@@ -47,6 +49,16 @@ class TestDuplicateEdges:
         ]
         cleaned = validate_graph(assets, rels, "test")
         assert len(cleaned) == 1
+
+    def test_duplicate_edges_report_a_warning(self):
+        assets = {"a": {"kind": "device"}, "b": {"kind": "device"}}
+        rels = [
+            ("a", "b", "connects-to", False, {}),
+            ("a", "b", "connects-to", False, {}),
+        ]
+        warnings: list[str] = []
+        validate_graph(assets, rels, "test", warnings)
+        assert any("duplicate" in w for w in warnings)
 
 
 class TestCycles:
@@ -148,7 +160,7 @@ class TestEndToEndValidation:
             },
             [],
         )
-        assets, rels = load_topology(topology)
+        assets, rels, _warnings = load_topology(topology)
         assert assets["scada"]["cvss_type"] == pytest.approx(10.0)
 
     def test_invalid_cvss_in_payload_rejected(self):

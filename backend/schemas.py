@@ -93,6 +93,10 @@ class UploadTopologyResponse(BaseModel):
     message: str = Field(..., description="Status message")
     asset_count: int = Field(..., description="Number of assets parsed", ge=0)
     relationship_count: int = Field(..., description="Number of relationships parsed", ge=0)
+    warnings: list[str] = Field(
+        default_factory=list,
+        description="Non-destructive normalization notices (e.g. self-loops, duplicate edges, skipped unidentifiable records)",
+    )
 
 
 class UploadTopologyFileResponse(UploadTopologyResponse):
@@ -108,4 +112,8 @@ class ErrorResponse(BaseModel):
     detail: str = Field(..., description="Error detail message")
     error_code: str | None = Field(None, description="Machine-readable error code")
     request_id: str | None = Field(None, description="Request ID for tracing")
+    affected_nodes: list[str] | None = Field(
+        None,
+        description="Evidence nodes involved in an IMPOSSIBLE_EVIDENCE diagnostic",
+    )
 

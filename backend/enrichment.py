@@ -89,9 +89,9 @@ def _infer_human_role(name: str, metadata: dict[str, Any]) -> str:
         if any(token in name_text for token in tokens):
             return role
     if metadata and isinstance(metadata, dict):
-        role = metadata.get("role") or metadata.get("position")
-        if isinstance(role, str) and role.strip():
-            return role.strip().lower()
+        candidate_role = metadata.get("role") or metadata.get("position")
+        if isinstance(candidate_role, str) and candidate_role.strip():
+            return candidate_role.strip().lower()
     return _DEFAULT_HUMAN_ROLE
 
 
@@ -131,7 +131,8 @@ def enrich_asset(raw: dict[str, Any]) -> dict[str, Any]:
     asset = dict(raw)
     asset_id = asset.get("id") or asset.get("name")
     name = _normalize_text(asset.get("name") or asset_id or "")
-    metadata = asset.get("metadata") if isinstance(asset.get("metadata"), dict) else {}
+    raw_metadata = asset.get("metadata")
+    metadata: dict[str, Any] = raw_metadata if isinstance(raw_metadata, dict) else {}
 
     if "kind" not in asset or asset["kind"] not in {"device", "human", "physical"}:
         asset["kind"] = infer_asset_kind(name, asset)
@@ -178,7 +179,8 @@ def enrich_relationship(raw: tuple | dict[str, Any]) -> tuple:
         target = raw.get("target")
         rel_type = raw.get("type") or raw.get("rel_type") or DEFAULT_REL_TYPE
         firewalled = bool(raw.get("firewalled", False))
-        metadata = raw.get("metadata", {}) if isinstance(raw.get("metadata", dict)) else {}
+        raw_metadata = raw.get("metadata")
+        metadata = raw_metadata if isinstance(raw_metadata, dict) else {}
         metadata.setdefault("protocol", raw.get("protocol"))
         metadata.setdefault("trust_level", raw.get("trust_level") or raw.get("trust"))
         metadata.setdefault("mitre_technique", raw.get("mitre_technique") or raw.get("mitre"))

@@ -3,6 +3,11 @@ assets.py - Public wrapper for normalized ICS topology ingestion.
 
 This module preserves the old backend.assets public API while delegating to
 backend.importers for format-agnostic normalization and topology extraction.
+
+Both functions return ``(assets, relationships, warnings)`` where ``warnings``
+is a list of human-readable notes about records that were normalized away
+(self-loops, duplicate edges, unidentifiable assets) so the analyst is always
+informed instead of seeing silent input changes.
 """
 
 from pathlib import Path
@@ -14,11 +19,11 @@ from backend.importers import load_topology as _load_topology, load_topology_fro
 # Public API
 # ----------------------------------------------------------------------
 
-def load_topology(path: str | Path | dict) -> tuple[dict, list]:
+def load_topology(path: str | Path | dict) -> tuple[dict, list, list[str]]:
     normalized = _load_topology(path)
-    return normalized["assets"], normalized["relationships"]
+    return normalized["assets"], normalized["relationships"], normalized.get("warnings", [])
 
 
-def load_topology_from_bytes(content: bytes, filename: str) -> tuple[dict, list]:
+def load_topology_from_bytes(content: bytes, filename: str) -> tuple[dict, list, list[str]]:
     normalized = _load_topology_from_bytes(content, filename)
-    return normalized["assets"], normalized["relationships"]
+    return normalized["assets"], normalized["relationships"], normalized.get("warnings", [])

@@ -316,7 +316,7 @@ Enfin, une mention particulière est adressée à ma famille, dont le soutien mo
 \begin{abstractbox}
 Les systèmes de contrôle industriels (ICS) pilotent des procédés physiques dont la compromission peut avoir des conséquences graves en matière de sûreté, d'environnement et d'économie. L'évaluation du risque cyber ne peut se limiter à une liste de vulnérabilités : elle doit intégrer la topologie, les dépendances, les protections, l'incertitude et les observations.
 
-Le présent projet propose un framework qui transforme une architecture ICS en un réseau bayésien discret. Il calcule des probabilités intrinsèques de compromission et paramètre automatiquement les tables de probabilités conditionnelles (CPT) via un modèle Noisy-OR, en attribuant une probabilité de propagation pour chaque relation. L'inférence exacte tient compte des preuves et classe les actifs par risque.
+Le présent projet propose un framework qui transforme une architecture ICS en un réseau bayésien discret. Il calcule des probabilités intrinsèques de compromission et paramètre automatiquement les tables de probabilités conditionnelles (CPT) via un modèle Noisy-OR, en attribuant un poids causal Noisy-OR à chaque relation (et non une probabilité conditionnelle au sens strict). L'inférence exacte tient compte des preuves et classe les actifs par risque.
 
 Une application Web permet d'importer une topologie (JSON, YAML, CSV, Excel, GraphML, XML/AML, VSDX, VDX), de sélectionner des preuves, d'exécuter l'analyse, d'inspecter le réseau et les tables de probabilités conditionnelles, et de télécharger un registre des risques ainsi qu'un rapport PDF. Le prototype est fonctionnel, modulaire, testable et configurable pour s'adapter à des contextes industriels réels.
 \end{abstractbox}
@@ -332,7 +332,7 @@ Une application Web permet d'importer une topologie (JSON, YAML, CSV, Excel, Gra
 \begin{abstractbox}
 Industrial Control Systems (ICS) drive physical processes whose compromise can lead to severe safety, environmental, and economic consequences. Cybersecurity risk assessment cannot be reduced to a mere list of vulnerabilities; it must account for topology, dependencies, protections, uncertainty, and observations.
 
-This project introduces a framework that transforms an ICS architecture into a discrete Bayesian network. It computes intrinsic compromise probabilities and automatically populates Conditional Probability Tables (CPTs) using a Noisy-OR model, assigning a propagation probability to each relationship. Exact inference incorporates evidence and ranks assets by risk.
+This project introduces a framework that transforms an ICS architecture into a discrete Bayesian network. It computes intrinsic compromise probabilities and automatically populates Conditional Probability Tables (CPTs) using a Noisy-OR model, assigning a Noisy-OR causal weight to each relationship (not a literal conditional probability). Exact inference incorporates evidence and ranks assets by risk.
 
 A web application enables users to import a network topology (JSON, YAML, CSV, Excel, GraphML, XML/AML, VSDX, VDX), select evidence, execute the risk analysis, inspect the Bayesian network and its conditional probability tables, and download a risk register along with a PDF report. The prototype is functional, modular, testable, and configurable, allowing it to be adapted to real-world industrial environments.
 \end{abstractbox}
@@ -453,10 +453,12 @@ En cas d'échec, le message d'erreur (champ detail de FastAPI) est affiché dans
     \item Le panneau « Settings » permet d'ajuster :
         \begin{itemize}
             \item Poids d'exposition, de correctif et d'impact.
-            \item Poids de propagation par type de relation (controls, monitors, actuates, connects-to, programs / operates).
+            \item Poids de propagation (poids causaux Noisy-OR) par type de relation (controls, monitors, actuates, connects-to, programs / operates).
             \item Multiplicateurs pour lien pare-feuté ou non.
+            \item Mappage CVSS $\rightarrow$ probabilité (logistique recommandé, linéaire hérité) et paramètres logistiques $k$ et $x_0$.
+            \item Seuils de risque (critical / high / moderate), source unique de vérité partagée entre le backend, le PDF et le tableau de bord.
         \end{itemize}
-    \item Ces réglages sont persistés côté serveur (GET/PUT /settings) et s'appliquent à toute évaluation ultérieure.
+    \item Ces réglages sont validés et persistés côté serveur (GET/PUT /settings) et s'appliquent à toute évaluation ultérieure.
 \end{itemize}
 
 \subsection{Exécution de l'évaluation bayésienne}
@@ -841,6 +843,102 @@ Rédaction du rapport et de la documentation & 12/08/2026 & 15/08/2026 & 4 j & F
 \newpage
 
 % ============================================================
+% MÉTHODOLOGIE SCIENTIFIQUE
+% ============================================================
+\section{Méthodologie scientifique}
+\markboth{Méthodologie scientifique}{Méthodologie scientifique}
+\forcereset{6}
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Cette section expose les fondements mathématiques du framework et distingue explicitement ce qui est \textbf{exact}, ce qui est \textbf{modélisé} et ce qui reste une \textbf{hypothèse non calibrée}.
+    \item Référence : \texttt{docs/model-assumptions.md} et \texttt{docs/parameter-provenance.md} (table complète de provenance des paramètres).
+\end{itemize}
+
+\subsection{CVSS et données de vulnérabilités}
+\forcereset{4}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Le moteur \texttt{backend/cvss.py} implémente les \textbf{équations officielles FIRST CVSS v3.1} : Impact $= 6{,}42\times ISS$ (périmètre inchangé) ou $7{,}52\times(ISS-0{,}029)-3{,}25\times(ISS-0{,}02)^{15}$ (périmètre modifié), Exploitabilité $= 8{,}22\times AV\times AC\times PR\times UI$, Base $=\mathrm{Roundup}(\min(Impact+Exploitabilit\acute{e}, 10))$.
+    \item Les données de vulnérabilités sont \textbf{fournies par l'analyste} : le framework n'interroge \textbf{aucun} service externe (notamment pas NVD) à l'exécution. Le champ \texttt{source} (ex. \texttt{"NVD"}) est une \textbf{métadonnée d'attribution} : il signifie « vecteur publié à l'origine par NVD et saisi par un analyste », jamais « NVD a été interrogé ».
+    \item Chaque vecteur est parsé et validé avant calcul ; le score effectif d'un actif est le \textbf{maximum} sur ses vulnérabilités.
+\end{itemize}
+
+\subsection{Probabilité intrinsèque}
+\forcereset{4}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Le score CVSS est une \textbf{métrique de sévérité} (0--10), pas une probabilité. Le mappage linéaire $P = CVSS/10$ est statistiquement indéfendable et n'est conservé que comme option héritée (déconseillée).
+    \item Le mappage par défaut est \textbf{logistique} : $P_0 = 1/(1+e^{-k\cdot(CVSS-x_0)})$, avec $k=0{,}8$ et $x_0=5{,}0$ par défaut. $P_0\approx0{,}02$ à CVSS 0 (risque résiduel), $\approx0{,}50$ à CVSS 5, $\approx0{,}98$ à CVSS 10.
+    \item Les facteurs contextuels (exposition, correctifs, protocole, confiance, technique MITRE) sont combinés \textbf{additivement dans l'espace log-odds} : $\mathrm{logit}(P)=\mathrm{logit}(P_0)+\sum_i w_i\ln(M_i)$, où $w_i$ sont des poids configurables.
+    \item Les probabilités sont bornées par $[10^{-6}, 0{,}9995]$ (\texttt{P\_BASE\_CAP}) afin d'éviter les 0/1 exacts.
+    \item \textbf{Non calibré :} $k$, $x_0$ et tous les multiplicateurs sont des \textbf{jugements d'expert / valeurs par défaut du framework}, pas des valeurs issues de données d'incidents. Ils sont configurables (Settings).
+\end{itemize}
+
+\subsection{Propagation et modèle Noisy-OR}
+\forcereset{4}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Chaque arête porte un \textbf{poids causal Noisy-OR} $w\in[0,1]$, et non la probabilité conditionnelle littérale $P(\text{cible}=1\mid\text{source}=1)$.
+    \item Pour un seul parent actif : $P(\text{cible}=1\mid\text{parent}=1)=1-(1-\text{leak})(1-w)$, où \texttt{leak} est la probabilité intrinsèque de la cible.
+    \item Avec plusieurs parents actifs : $P(\text{noeud}=1\mid S)=1-(1-\text{leak})\prod_{i\in S}(1-w_i)$ (hypothèse d'indépendance conditionnelle canonique du Noisy-OR).
+    \item Un lien pare-feuté applique un multiplicateur configurable (défaut 0{,}30, cohérent avec NIST SP 800-41 : ~70\,\% de réduction).
+\end{itemize}
+
+\subsection{Inférence bayésienne et preuves}
+\forcereset{4}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Le DAG est converti en réseau bayésien discret (pgmpy), nœuds binaires (0 = sain, 1 = compromis), CPT dérivées du modèle Noisy-OR.
+    \item L'inférence est \textbf{exacte} (élimination de variables). Les preuves « Compromised » / « Safe » sont traitées comme certaines (probabilité 1).
+    \item Une preuve \textbf{impossible} (probabilité exactement nulle sous le modèle, ex. un actif avec \texttt{p\_base\_override: 0} déclaré compromis) est détectée \textbf{avant} l'inférence et renvoyée sous forme de diagnostic structuré \texttt{IMPOSSIBLE\_EVIDENCE} avec les nœuds concernés — jamais affichée comme un résultat normal nul.
+\end{itemize}
+
+\subsection{Indice de risque}
+\forcereset{4}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Impact $=$ (sévérité/10) $\times$ multiplicateur de périmètre ; Indice de risque $= P(\text{compromis}\mid\text{preuves})\times$ Impact.
+    \item L'indice est une \textbf{mesure analytique de classement bornée} ($\approx[0;1{,}4]$). Il n'est \textbf{pas} une probabilité, ni une perte financière attendue (ALE), ni un score standardisé universel.
+    \item Les niveaux de risque (Low/Moderate/High/Critical) découlent d'un \textbf{jeu de seuils unique et configurable} (défauts 0{,}25 / 0{,}50 / 0{,}75), partagé entre le backend, les couleurs du PDF et le tableau de bord — aucun seuil n'est codé en dur dans l'interface.
+\end{itemize}
+
+\subsection{Provenance des paramètres et analyse de sensibilité}
+\forcereset{4}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item La table complète de provenance (signification, valeur par défaut, plage, source, classification, statut de calibration, configurabilité, sensibilité) est fournie dans \texttt{docs/parameter-provenance.md}.
+    \item \textbf{Aucun paramètre n'est empiriquement calibré} dans ce dépôt. Les classifications utilisées : jugement d'expert, dérivé de la littérature (NIST SP 800-41/800-82, IEC 62443), valeur par défaut du framework.
+    \item Le module \texttt{backend/sensitivity.py} implémente une \textbf{analyse de sensibilité} un-paramètre-à-la-fois sur $k$, $x_0$, les poids de propagation et les multiplicateurs d'exposition/correctif, en mesurant l'effet sur la probabilité intrinsèque, la postérieure, l'indice de risque et le risque réseau.
+    \item Cette analyse ne produit \textbf{pas} d'intervalles de confiance : elle répond à la question « de combien bougerait la sortie si cette hypothèse changeait de $X$ ? ». Modifier les hypothèses du modèle modifie les sorties — c'est précisément ce que la sensibilité rend explicite.
+\end{itemize}
+
+\subsection{Limites connues}
+\forcereset{4}
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item Absence de calibration empirique ; paramètres à ajuster par chaque organisation.
+    \item Pas d'interrogation NVD : les vulnérabilités sont fournies par l'analyste.
+    \item Inférence exacte : la complexité dépend de la largeur arborescente du graphe (repères mesurés dans \texttt{tests/test\_performance.py}, 10/25/50/100 nœuds).
+    \item États binaires uniquement ; pas de nœuds continus ni multi-états.
+    \item Preuves certaines uniquement (pas de preuve partielle/incertaine).
+    \item Le paramètre \texttt{leak} du Noisy-OR est assimilé à la probabilité intrinsèque (le risque de cause commune résiduel n'est pas paramétré séparément).
+    \item Pas de valorisation monétaire.
+\end{itemize}
+
+\newpage
+
+% ============================================================
+% TESTS ET VALIDATION
+% ============================================================
+\section{Tests et validation}
+\markboth{Tests et validation}{Tests et validation}
+\forcereset{6}
+
+\begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
+    \item \textbf{Backend (pytest)} : environ 220 tests couvrant CVSS (vecteurs officiels FIRST), probabilités, propagation, CPT Noisy-OR, inférence, preuves (y compris diagnostics de preuves impossibles), risque et seuils dynamiques, validation de topologie non destructive, tous les formats d'import, sécurité des fichiers (bombe zip, entités XML), analyse de sensibilité, benchmarks de performance (10/25/50/100 nœuds), panne de base de données, persistance, rapports et flux API de bout en bout.
+    \item \textbf{Lint et typage} : Ruff (zéro violation) et mypy (zéro erreur sur \texttt{backend/}, sans \texttt{continue-on-error} dans la CI).
+    \item \textbf{Frontend (Vitest + Testing Library)} : 26 tests couvrant les paramètres (chargement, sauvegarde, seuils dynamiques, réglages CVSS, configuration invalide), les preuves (inconnu/sûr/compromis, preuve invalide, relance), le risque (classification par seuils dynamiques, distinction probabilité/risque), la topologie (fichier valide, extension non supportée, topologie malformée, échec de validation backend) et les résultats (probabilités, postérieurs, poids de propagation, CPT, impact, risque, états vide/chargement/erreur).
+    \item \textbf{E2E navigateur (Playwright)} : un vrai navigateur Chromium exécute le parcours complet — chargement d'une topologie, évaluation, affichage du réseau, sélection d'un actif, inspection des métriques et CPT, application de preuves, relance de l'inférence, vérification de l'évolution des postérieurs et des risques, export du registre CSV.
+    \item \textbf{Sécurité} : limites de taille et d'extension des fichiers, limites d'expansion des archives, protection des entités XML, gestion sûre des fichiers temporaires, anti-traversée de chemin, réponses d'erreur structurées sans traceback.
+    \item \textbf{Déploiement} : Docker Compose (frontend nginx $\rightarrow$ API $\rightarrow$ base de données) avec health checks ; configuration pilotée par variables d'environnement, aucun secret commis.
+\end{itemize}
+
+\newpage
+
+% ============================================================
 % CONCLUSION
 % ============================================================
 \section{Conclusion}
@@ -857,11 +955,13 @@ Rédaction du rapport et de la documentation & 12/08/2026 & 15/08/2026 & 4 j & F
             \item Tables de probabilités conditionnelles consultables.
         \end{itemize}
     \item Les choix technologiques (FastAPI + pgmpy côté serveur, React + TypeScript côté client) offrent une base modulaire et testable.
+    \item \textbf{Honnêteté scientifique :} tous les paramètres par défaut (logistique $k$, $x_0$, multiplicateurs, seuils de risque) sont des \textbf{jugements d'expert ou valeurs par défaut du framework}, et \textbf{non} des valeurs calibrées empiriquement. Le framework le déclare explicitement (\texttt{docs/model-assumptions.md}, \texttt{docs/parameter-provenance.md}), rend chaque paramètre configurable et fournit une analyse de sensibilité pour quantifier l'effet des hypothèses sur les sorties.
     \item Perspectives :
         \begin{itemize}
-            \item Enrichissement des jeux de données de référence.
-            \item Confrontation du modèle à des données de terrain.
+            \item Enrichissement des jeux de données de référence (vulnérabilités sourcées par l'analyste).
+            \item Confrontation du modèle à des données de terrain et calibration des paramètres.
             \item Ajout d'authentification et de journalisation pour un déploiement en environnement industriel réel.
+            \item Extension à des preuves incertaines et à des états multi-niveaux.
         \end{itemize}
 \end{itemize}
 

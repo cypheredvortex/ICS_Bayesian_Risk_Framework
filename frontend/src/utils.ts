@@ -6,18 +6,32 @@ export function getRiskTone(level: string) {
 }
 
 export function getProbabilityColor(probability: number) {
+  // Visualization scale for *posterior probabilities* (not risk levels).
   if (probability >= 0.7) return '#fb7185'
   if (probability >= 0.45) return '#f59e0b'
   if (probability >= 0.2) return '#38bdf8'
   return '#34d399'
 }
 
+// Risk-level classification. Mirrors backend/risk.py: the classification is
+// driven entirely by the active thresholds (single source of truth from the
+// backend settings), never by hardcoded constants.
+export function riskLevelFor(
+  risk: number,
+  thresholds: { critical: number; high: number; moderate: number },
+): 'critical' | 'high' | 'moderate' | 'low' {
+  if (risk >= thresholds.critical) return 'critical'
+  if (risk >= thresholds.high) return 'high'
+  if (risk >= thresholds.moderate) return 'moderate'
+  return 'low'
+}
+
 export function formatProbability(value: number) {
   return Number(value).toFixed(3)
 }
 
-export function formatEvidence(evidence: Record<string, number>) {
-  const entries = Object.entries(evidence)
+export function formatEvidence(evidence?: Record<string, number> | null) {
+  const entries = Object.entries(evidence ?? {})
   if (!entries.length) return 'None — probabilities use the topology and configured assumptions.'
   return entries
     .map(([asset, state]) => `${asset}: ${state === 1 ? 'Compromised' : 'Safe'}`)
@@ -31,14 +45,39 @@ export async function parseErrorDetail(
   response: Response,
   fallback: string,
 ): Promise<string> {
+  return (await parseErrorBody(response, fallback)).message
+}
+
+// Structured variant of parseErrorDetail that also exposes the machine-
+// readable error_code and affected_nodes (used by the IMPOSSIBLE_EVIDENCE
+// diagnostic from /analyze).
+export async function parseErrorBody(
+  response: Response,
+  fallback: string,
+): Promise<{
+  message: string
+  errorCode?: string
+  affectedNodes?: string[]
+}> {
   const raw = await response.text()
   try {
-    const parsed = JSON.parse(raw)
-    if (typeof parsed?.detail === 'string') return parsed.detail
-    if (parsed?.detail) return JSON.stringify(parsed.detail)
-    return raw || fallback
+    const parsed = JSON.parse(raw) as Record<string, unknown>
+    let message = fallback
+    if (typeof parsed?.detail === 'string') message = parsed.detail
+    else if (parsed?.detail) message = JSON.stringify(parsed.detail)
+    else if (raw) message = raw
+    return {
+      message,
+      errorCode:
+        typeof parsed?.error_code === 'string'
+          ? parsed.error_code
+          : undefined,
+      affectedNodes: Array.isArray(parsed?.affected_nodes)
+        ? (parsed.affected_nodes as unknown[]).map(String)
+        : undefined,
+    }
   } catch {
-    return raw || fallback
+    return { message: raw || fallback }
   }
 }
 

@@ -223,9 +223,12 @@ const NetworkViewer = forwardRef<
         {colorMode === 'risk'
           ? 'blue (lower posterior probability) → amber → rose (higher posterior probability)'
           : 'purple = human, blue = device, amber = physical process'}. 📌
-        marks evidence-pinned assets. An attack path is a calculated sequence of
-        directed links from a likely entry point to a high-risk asset; it is not
-        proof that an attack occurred.
+        marks evidence-pinned assets. Edge labels show the relationship type
+        and its <strong className="text-slate-400">Noisy-OR causal weight w</strong> —
+        a modelling parameter, not a conditional probability. For one active
+        parent, P(target = 1 | parent = 1) = 1 − (1 − leak)·(1 − w). An attack
+        path is a calculated sequence of directed links from a likely entry
+        point to a high-risk asset; it is not proof that an attack occurred.
         {showAttackPath && attackPathNodes.size
           ? ' The rose outline shows the highest-scoring calculated path in this assessment.'
           : ''}

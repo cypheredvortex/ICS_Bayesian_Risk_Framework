@@ -85,6 +85,7 @@ def configure_logging() -> None:
     level = getattr(logging, LOG_LEVEL, logging.INFO)
 
     # Choose formatter based on LOG_FORMAT
+    formatter: logging.Formatter
     if LOG_FORMAT == "json":
         formatter = StructuredFormatter()
     else:

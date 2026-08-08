@@ -6,12 +6,16 @@ without restarting the process. Thread-safe via threading.Lock.
 """
 
 import json
+import logging
 import threading
+from contextlib import contextmanager
 from copy import deepcopy
 from typing import Any
 
 from backend.database.config import initialize_database
 from backend.database.services import AssessmentPersistenceService
+
+logger = logging.getLogger(__name__)
 
 DEFAULT_SETTINGS: dict[str, Any] = {
     # CVSS is a severity score (0-10), not a probability. The logistic mapping
@@ -24,6 +28,12 @@ DEFAULT_SETTINGS: dict[str, Any] = {
     "exposure_weight": 1.0,
     "patch_weight": 1.0,
     "impact_weight": 1.0,
+    # Exposure / patch multipliers applied through the additive log-odds
+    # model (backend/probability.py).  Framework defaults live in
+    # backend/config.py (M_EXPOSURE / M_PATCH); making them configurable lets
+    # an organisation calibrate these effects against its own data.
+    "exposure_multipliers": {"true": 1.3, "false": 0.3},
+    "patch_multipliers": {"true": 0.9, "false": 1.2},
     "propagation_weights": {
         "controls": 0.70,
         "monitors": 0.20,
@@ -69,18 +79,41 @@ DEFAULT_SETTINGS: dict[str, Any] = {
 }
 
 _SCALAR_WEIGHT_KEYS = ("exposure_weight", "patch_weight", "impact_weight")
-_TABLE_KEYS = ("propagation_weights", "protocol_multipliers", "trust_multipliers", "mitre_multipliers")
+_TABLE_KEYS = (
+    "propagation_weights",
+    "protocol_multipliers",
+    "trust_multipliers",
+    "mitre_multipliers",
+    "exposure_multipliers",
+    "patch_multipliers",
+)
 
 _runtime_settings: dict[str, Any] = deepcopy(DEFAULT_SETTINGS)
 _settings_lock = threading.Lock()
 _initialized_db = False
+_db_available = False
 
 
-def _ensure_db_initialized() -> None:
-    global _initialized_db
+def _ensure_db_initialized() -> bool:
+    """Initialise the persistence layer exactly once.
+
+    Returns True when the database is usable.  On failure the process keeps
+    running with in-memory default settings (degraded mode): the analysis
+    pipeline must never be blocked by an unavailable persistence layer.
+    """
+    global _initialized_db, _db_available
     if not _initialized_db:
-        initialize_database()
+        try:
+            initialize_database()
+            _db_available = True
+        except Exception:
+            logger.exception(
+                "Database unavailable; running with in-memory default settings "
+                "(settings will not be persisted)"
+            )
+            _db_available = False
         _initialized_db = True
+    return _db_available
 
 
 def _parse_db_value(key: str, raw: str) -> Any:
@@ -102,11 +135,28 @@ def _parse_db_value(key: str, raw: str) -> Any:
     return raw
 
 
+def _persist_runtime_settings() -> None:
+    """Write the current runtime settings into the database."""
+    service = AssessmentPersistenceService()
+    for key, value in _runtime_settings.items():
+        if isinstance(value, dict):
+            service.save_settings(key, json.dumps(value))
+        elif isinstance(value, float):
+            service.save_settings(key, str(value))
+        else:
+            service.save_settings(key, str(value))
+
+
 def get_settings() -> dict[str, Any]:
     with _settings_lock:
-        _ensure_db_initialized()
-        service = AssessmentPersistenceService()
-        db_settings = service.get_settings()
+        if not _ensure_db_initialized():
+            return deepcopy(_runtime_settings)
+        try:
+            service = AssessmentPersistenceService()
+            db_settings = service.get_settings()
+        except Exception:
+            logger.exception("Could not read persisted settings; using in-memory values")
+            return deepcopy(_runtime_settings)
         if db_settings:
             merged = deepcopy(DEFAULT_SETTINGS)
             for key, value in db_settings.items():
@@ -124,15 +174,43 @@ def update_settings(updates: dict[str, Any]) -> dict[str, Any]:
         _deep_merge(merged, updates)
         _validate_settings(merged)
         _runtime_settings = merged
-        service = AssessmentPersistenceService()
-        for key, value in merged.items():
-            if isinstance(value, dict):
-                service.save_settings(key, json.dumps(value))
-            elif isinstance(value, float):
-                service.save_settings(key, str(value))
-            else:
-                service.save_settings(key, str(value))
+        if _db_available:
+            _persist_runtime_settings()
         return deepcopy(_runtime_settings)
+
+
+@contextmanager
+def temporary_settings(overrides: dict[str, Any]):
+    """Temporarily override runtime settings for the duration of the context.
+
+    Intended for offline sensitivity analysis and tests.  The overrides are
+    persisted (so ``get_settings`` -- which prefers the database -- returns
+    them) and the previous state is fully restored on exit, including the
+    persisted copy.  NOTE: the settings store is process-global, so this
+    helper must not be used concurrently with live API requests.
+    """
+    global _runtime_settings
+    with _settings_lock:
+        original = deepcopy(_runtime_settings)
+        merged = deepcopy(_runtime_settings)
+        _deep_merge(merged, overrides)
+        _validate_settings(merged)
+        _runtime_settings = merged
+        if _db_available:
+            try:
+                _persist_runtime_settings()
+            except Exception:
+                logger.exception("Could not persist temporary settings")
+    try:
+        yield
+    finally:
+        with _settings_lock:
+            _runtime_settings = original
+            if _db_available:
+                try:
+                    _persist_runtime_settings()
+                except Exception:
+                    logger.exception("Could not restore persisted settings")
 
 
 def reset_settings() -> dict[str, Any]:
@@ -140,15 +218,25 @@ def reset_settings() -> dict[str, Any]:
         _ensure_db_initialized()
         global _runtime_settings
         _runtime_settings = deepcopy(DEFAULT_SETTINGS)
-        service = AssessmentPersistenceService()
-        for key, value in _runtime_settings.items():
-            if isinstance(value, dict):
-                service.save_settings(key, json.dumps(value))
-            elif isinstance(value, float):
-                service.save_settings(key, str(value))
-            else:
-                service.save_settings(key, str(value))
+        if _db_available:
+            try:
+                _persist_runtime_settings()
+            except Exception:
+                logger.exception("Could not persist reset settings")
         return deepcopy(_runtime_settings)
+
+
+def reset_settings_state() -> None:
+    """Reset the in-memory settings store and persistence flags.
+
+    Used by the test suite between tests that deliberately break the
+    database, so later tests start from a clean state.
+    """
+    global _runtime_settings, _initialized_db, _db_available
+    with _settings_lock:
+        _runtime_settings = deepcopy(DEFAULT_SETTINGS)
+        _initialized_db = False
+        _db_available = False
 
 
 def _deep_merge(base: dict, updates: dict) -> None:
@@ -207,6 +295,16 @@ def _validate_settings(settings: dict[str, Any]) -> None:
             "'firewall_multipliers.true' (firewalled) cannot exceed 'firewall_multipliers.false' "
             "(not firewalled) -- a firewall must never be configured to increase propagated risk."
         )
+
+    for table_key in ("exposure_multipliers", "patch_multipliers"):
+        table = settings.get(table_key, {})
+        if not isinstance(table, dict):
+            raise ValueError(f"'{table_key}' must be an object.")
+        for label, value in table.items():
+            if value is not None and (not isinstance(value, (int, float)) or value < 0):
+                raise ValueError(
+                    f"'{table_key}.{label}' must be a non-negative number, got {value!r}."
+                )
 
     # Validate risk thresholds if present
     risk_thresholds = settings.get("risk_thresholds", {})

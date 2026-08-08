@@ -78,7 +78,7 @@ def test_analyze_pipeline_produces_expected_artifacts(client):
                     {
                         "cve_id": "CVE-2021-44228",
                         "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H",
-                        "source": "NVD",
+                        "source": "analyst-supplied",
                     }
                 ],
             }

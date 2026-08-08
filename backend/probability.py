@@ -62,18 +62,19 @@ References
 import math
 
 from backend.config import (
-    M_EXPOSURE, M_PATCH, M_PRIVILEGE, R_PHISHING,
+    M_PRIVILEGE, R_PHISHING, P_BASE_CAP,
     get_exposure_weight, get_patch_weight, get_cvss_mapping, get_cvss_logistic_params,
+    get_exposure_multipliers, get_patch_multipliers,
 )
 from backend.settings import get_settings
 
 # ---------------------------------------------------------------------------
 # Literature-backed defaults
 # ---------------------------------------------------------------------------
-P_BASE_CAP = 0.9995   # Soft cap: probabilities are never exactly 0 or 1
-# because that would make Bayesian updating irreversible (Pearl, 1988).
-# We use 0.9995 rather than 1.0 to leave room for evidence to *reduce*
-# a probability when new mitigating information arrives.
+# P_BASE_CAP is defined in backend/config.py.  Soft cap: probabilities are
+# never exactly 0 or 1 because that would make Bayesian updating irreversible
+# (Pearl, 1988). We use 0.9995 rather than 1.0 to leave room for evidence to
+# *reduce* a probability when new mitigating information arrives.
 
 _LOGISTIC_DEFAULT_K = 0.8
 _LOGISTIC_DEFAULT_X0 = 5.0
@@ -185,8 +186,12 @@ def _device_base_prob(attrs: dict) -> float:
     patched = bool(attrs.get("patched", False))
 
     factors: list[tuple[float, float]] = []
-    factors.append((M_EXPOSURE[exposed], get_exposure_weight()))
-    factors.append((M_PATCH[patched], get_patch_weight()))
+    # Exposure / patch multipliers come from settings (configurable), falling
+    # back to the framework defaults in config.py (M_EXPOSURE / M_PATCH).
+    exposure_mult = get_exposure_multipliers()
+    patch_mult = get_patch_multipliers()
+    factors.append((exposure_mult[exposed], get_exposure_weight()))
+    factors.append((patch_mult[patched], get_patch_weight()))
 
     # Optional: protocol, trust, mitre multipliers if present on the asset
     # (these are normally edge attributes, but can be asset-level defaults)

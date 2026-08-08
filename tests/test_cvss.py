@@ -100,10 +100,12 @@ def test_normalize_vulnerabilities_from_vectors():
 
 def test_normalize_vulnerabilities_with_cve_and_score():
     vulns = normalize_vulnerabilities(
-        [{"cve_id": "CVE-2021-44228", "score": 9.5, "source": "NVD"}], "asset-x"
+        [{"cve_id": "CVE-2021-44228", "score": 9.5, "source": "analyst-supplied"}], "asset-x"
     )
     assert vulns[0]["cve_id"] == "CVE-2021-44228"
     assert vulns[0]["score"] == 9.5
+    # source is descriptive metadata only; it is preserved, never fetched.
+    assert vulns[0]["source"] == "analyst-supplied"
 
 
 def test_normalize_vulnerabilities_vector_is_authoritative():

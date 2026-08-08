@@ -1,10 +1,16 @@
 import { formatProbability, formatEvidence, getRiskTone } from '../utils'
-import type { ResultPayload } from '../types'
+import type { ResultPayload, RiskThresholds } from '../types'
+
+function formatThresholdScale(t: RiskThresholds): string {
+  const f = (value: number) => value.toFixed(2)
+  return `Low < ${f(t.moderate)} · Moderate ${f(t.moderate)}–${f(t.high)} · High ${f(t.high)}–${f(t.critical)} · Critical ≥ ${f(t.critical)}`
+}
 
 export default function ResultsDashboard({
   result,
   chartData,
   riskRanking,
+  thresholds,
   setSelectedNode,
 }: {
   result: ResultPayload
@@ -16,6 +22,7 @@ export default function ResultsDashboard({
     severity: number
     impact: number
   }>
+  thresholds: RiskThresholds
   setSelectedNode: (id: string) => void
 }) {
   return (
@@ -41,9 +48,8 @@ export default function ResultsDashboard({
               {result.summary.risk_level}
             </p>
             <p className="mt-1 text-xs">
-              Risk index = posterior probability × normalised impact. Scale:{' '}
-              Low {'<'} 0.25 · Moderate 0.25–0.49 · High 0.50–0.74 ·
-              Critical ≥ 0.75
+              Risk index = posterior probability × normalised impact. Active
+              scale (from settings): {formatThresholdScale(thresholds)}
             </p>
           </div>
         </div>

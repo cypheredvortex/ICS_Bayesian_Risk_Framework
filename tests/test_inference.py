@@ -18,7 +18,7 @@ class InferenceTests(unittest.TestCase):
 
     def setUp(self):
         """Load test topology and build model."""
-        self.assets, self.relationships = load_topology("data/swat_example.json")
+        self.assets, self.relationships, _warnings = load_topology("data/swat_example.json")
         self.model, self.edge_weights = build_graph_skeleton(
             self.relationships, node_ids=self.assets.keys()
         )

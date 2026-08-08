@@ -19,7 +19,9 @@ export default function CptSection({
           </h2>
           <p className="mt-1 text-sm text-slate-400">
             Inspect each node's generated Noisy-OR CPT. Each row is P(node
-            compromised | parent states).
+            compromised | parent states) = 1 − (1 − leak) · Π(1 − wᵢ) over the
+            active parents, where leak is the node's intrinsic probability and
+            wᵢ are the edge causal weights.
           </p>
         </div>
         <input

@@ -134,14 +134,21 @@ def _build_header_footer(canvas, doc):
 
 
 def _risk_color(risk_value: float) -> colors.Color:
-    """Return a color based on the risk value threshold."""
-    if risk_value >= 0.75:
-        return COLOR_RISK_CRITICAL
-    if risk_value >= 0.5:
-        return COLOR_RISK_HIGH
-    if risk_value >= 0.25:
-        return COLOR_RISK_MODERATE
-    return COLOR_RISK_LOW
+    """Return a color based on the *configured* risk thresholds.
+
+    Uses ``backend.risk.risk_level_for`` so the PDF always agrees with the
+    risk register, the CLI and the frontend -- there is exactly one
+    threshold definition (``risk_thresholds`` in settings).
+    """
+    from backend.risk import risk_level_for
+
+    level = risk_level_for(float(risk_value)).lower()
+    return {
+        "critical": COLOR_RISK_CRITICAL,
+        "high": COLOR_RISK_HIGH,
+        "moderate": COLOR_RISK_MODERATE,
+        "low": COLOR_RISK_LOW,
+    }[level]
 
 
 def _format_pct(value: float | None) -> str:

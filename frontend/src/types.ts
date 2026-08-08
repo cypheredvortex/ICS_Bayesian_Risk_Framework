@@ -23,6 +23,20 @@ export type GraphEdge = {
   mitre?: string | null
 }
 
+export type ResultSummary = {
+  topology: string
+  asset_count: number
+  relationship_count: number
+  topology_warnings?: string[]
+  risk_thresholds?: RiskThresholds
+  evidence_used: Record<string, number>
+  overall_risk: number
+  risk_level: string
+  highest_risk_assets: string[]
+  overall_risk_basis?: string
+  aggregate_risk?: Record<string, unknown>
+}
+
 export type ResultPayload = {
   assets?: Record<string, Record<string, unknown>>
   graph: {
@@ -37,32 +51,36 @@ export type ResultPayload = {
   >
   risk_scores: Array<Record<string, unknown>>
   attack_paths: Array<Record<string, unknown>>
-  summary: {
-    topology: string
-    asset_count: number
-    relationship_count: number
-    evidence_used: Record<string, number>
-    overall_risk: number
-    risk_level: string
-    highest_risk_assets: string[]
-    overall_risk_basis?: string
-    aggregate_risk?: Record<string, unknown>
-  }
+  summary: ResultSummary
   evidence_used: Record<string, number>
   timings?: {
     total_time_seconds?: number
   }
 }
 
-// Mirrors the fields backend/settings.py actually exposes. Kept as a
-// subset - protocol/trust/mitre multiplier tables exist server-side too
-// but aren't editable here to keep the panel usable.
+// Active risk-level thresholds (single source of truth: backend settings).
+// The backend classifies with these values and every consumer (dashboard,
+// pie chart, PDF) reads them from the same place.
+export type RiskThresholds = {
+  critical: number
+  high: number
+  moderate: number
+}
+
+// Mirrors the fields backend/settings.py actually exposes. protocol/
+// trust/mitre multiplier tables exist server-side too but aren't editable
+// in the panel to keep it usable.
 export type CoreSettings = {
   exposure_weight: number
   patch_weight: number
   impact_weight: number
+  // CVSS is a severity score; the mapping to an intrinsic probability is an
+  // explicit modelling assumption (logistic | linear legacy).
+  cvss_mapping: 'logistic' | 'linear'
+  cvss_logistic_params: { k: number; x0: number }
   propagation_weights: Record<string, number>
   firewall_multipliers: Record<'true' | 'false', number>
+  risk_thresholds: RiskThresholds
 }
 
 export type ToastItem = {
