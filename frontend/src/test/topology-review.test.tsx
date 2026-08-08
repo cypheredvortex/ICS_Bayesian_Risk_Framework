@@ -58,41 +58,6 @@ describe('Topology pre-analysis review', () => {
     restore()
   })
 
-  it('derives a structural summary for preset datasets served as raw JSON', async () => {
-    const user = userEvent.setup()
-    const restore = installFetchMock([
-      { url: '/settings', method: 'GET', json: defaultSettingsPayload },
-      {
-        url: '/datasets/power_substation',
-        method: 'GET',
-        json: {
-          assets: {
-            plc_a: { kind: 'device', zone: 'Level 0' },
-            hmi_a: { kind: 'device', zone: 'Level 2' },
-          },
-          relationships: [['plc_a', 'hmi_a', 'connects-to', false]],
-        },
-      },
-      {
-        url: '/upload-topology',
-        method: 'POST',
-        json: { asset_count: 2, relationship_count: 1, warnings: [] },
-      },
-    ])
-    render(<App />)
-    const select = await screen.findByLabelText('Select a predefined dataset')
-    await user.selectOptions(select, 'power_substation')
-
-    // Preset datasets have no backend summary: the app derives one from the
-    // returned topology and shows detected zones before analysis. The text
-    // "Preset dataset" also labels the dataset selector, so match broadly.
-    expect(
-      (await screen.findAllByText('Preset dataset')).length,
-    ).toBeGreaterThan(0)
-    expect(await screen.findByText('Level 0 · 1')).toBeInTheDocument()
-    expect(screen.getByText('Level 2 · 1')).toBeInTheDocument()
-    restore()
-  })
 })
 
 describe('deriveTopologySummary', () => {

@@ -202,6 +202,25 @@
     @apply flex cursor-pointer items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-slate-100 transition-colors hover:bg-slate-800/70;
   }
 
+  /* ---------- Disclosure chevron & panel animation ---------- */
+  /* Custom chevron replaces the native summary marker (native one hidden via
+     .disclosure-no-marker) and rotates while the panel is open. */
+  .details-chevron {
+    @apply transition-transform duration-150;
+  }
+  details[open] > summary .details-chevron {
+    transform: rotate(90deg);
+  }
+  .disclosure-no-marker summary {
+    list-style: none;
+  }
+  .disclosure-no-marker summary::-webkit-details-marker {
+    display: none;
+  }
+  .details-panel {
+    animation: details-panel-in 160ms ease-out;
+  }
+
   /* ---------- Progress bar ---------- */
   .progress-track {
     @apply h-1.5 w-full overflow-hidden rounded-full bg-slate-800;
@@ -218,8 +237,27 @@
   }
 }
 
-/* ---------- Range inputs (premium sliders) ---------- */
-input[type='range'] {
+@keyframes details-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .details-panel {
+    animation: none;
+  }
+  .details-chevron {
+    transition: none;
+  }
+}
+
+/* ---------- Range inputs (premium sliders) ---------- */input[type='range'] {
   -webkit-appearance: none;
   appearance: none;
   height: 22px;

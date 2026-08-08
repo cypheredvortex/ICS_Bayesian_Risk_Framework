@@ -2,8 +2,8 @@ export type AssetState = 'Unknown' | 'Compromised' | 'Safe'
 
 // Relationships from the backend always come back as 5-element arrays
 // (source, target, rel_type, firewalled, metadata) once they've passed
-// through assets.py's normalizer. Preset dataset files on disk may only
-// have 4 elements, so metadata is optional here.
+// through assets.py's normalizer. Some topology sources (e.g. hand-written
+// data files) may only have 4 elements, so metadata is optional here.
 export type Relationship = [string, string, string, boolean, Record<string, unknown>?]
 
 export type TopologyPayload = {
@@ -13,8 +13,8 @@ export type TopologyPayload = {
 
 // Structural summary computed by the backend from the *normalized* topology
 // so the pre-analysis review shows only what the framework actually knows.
-// The frontend also derives an equivalent summary client-side from preset
-// datasets (same normalized data, no backend round-trip required).
+// The frontend can derive an equivalent summary client-side as a fallback
+// when an upload response omits it.
 export type TopologySummary = {
   zones: Record<string, number>
   assets_without_zone: number
@@ -44,7 +44,7 @@ export type TopologyReviewInfo = {
   relationshipCount: number
   warnings: string[]
   summary: TopologySummary
-  source: 'upload' | 'preset'
+  source: 'upload'
 }
 
 export type GraphNode = { id: string; kind?: string }

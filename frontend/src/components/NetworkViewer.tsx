@@ -299,7 +299,7 @@ const NetworkViewer = forwardRef<
         ) : (
           <EmptyState
             title="No topology to display yet"
-            hint="Upload a topology file or load a preset dataset to populate the network."
+            hint="Upload a topology file to populate the network."
           />
         )}
       </div>

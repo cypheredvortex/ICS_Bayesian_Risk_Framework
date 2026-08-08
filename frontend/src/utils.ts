@@ -43,10 +43,9 @@ export function formatBytes(bytes: number): string {
 }
 
 // Derive the structural summary client-side from a normalized topology
-// payload. Used for preset datasets (the /datasets endpoint returns raw JSON)
-// and as a graceful fallback when an upload response omits `summary`. It
-// reads the exact same normalized fields the backend computes its summary
-// from, so it never reports information the data does not contain.
+// payload. Used as a graceful fallback when an upload response omits
+// `summary`. It reads the exact same normalized fields the backend computes
+// its summary from, so it never reports information the data does not contain.
 export function deriveTopologySummary(
   topology: {
     assets: Record<string, Record<string, unknown>>

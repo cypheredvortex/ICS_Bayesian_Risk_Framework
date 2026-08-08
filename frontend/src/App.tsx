@@ -17,7 +17,6 @@ import {
 import { deriveTopologySummary, parseErrorBody, parseErrorDetail, riskLevelFor } from './utils'
 import type { RiskThresholds } from './types'
 import Toasts from './components/Toasts'
-import ConfirmDialog from './components/ConfirmDialog'
 import Header from './components/Header'
 import SettingsPanel from './components/SettingsPanel'
 import TopologySection from './components/TopologySection'
@@ -109,8 +108,6 @@ export default function App() {
   const [evidence, setEvidence] = useState<Record<string, AssetState>>({})
   const [result, setResult] = useState<ResultPayload | null>(null)
   const [uploadedFileName, setUploadedFileName] = useState('')
-  const [selectedDataset, setSelectedDataset] = useState('swat_example')
-  const [pendingDataset, setPendingDataset] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [selectedNode, setSelectedNode] = useState<string | null>(null)
   const [nodeQuery, setNodeQuery] = useState('')
@@ -341,16 +338,12 @@ export default function App() {
     return Object.entries(counts).map(([name, value]) => ({ name, value }))
   }, [result, riskThresholds])
 
-  const persistTopology = async (payload: TopologyPayload) => {
-    const response = await fetch(`${API_BASE_URL}/upload-topology`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topology: payload }),
-    })
-    if (!response.ok) {
-      throw new Error(await parseErrorDetail(response, 'Topology upload failed.'))
-    }
-    return response.json()
+  // Clear everything derived from an analysis so no stale assessment,
+  // selection or evidence outlives the topology that produced it.
+  const resetDerivedState = () => {
+    setResult(null)
+    setSelectedNode(null)
+    setEvidence({})
   }
 
   const applyTopology = (
@@ -361,9 +354,7 @@ export default function App() {
     setReview(reviewInfo)
     setUploadedFileName(sourceName)
     setTopology(parsed)
-    setResult(null)
-    setSelectedNode(null)
-    setEvidence({})
+    resetDerivedState()
   }
 
   const handleFileUpload = async (
@@ -432,57 +423,13 @@ export default function App() {
     }
   }
 
-  const hasUnsavedEvidence = Object.keys(evidence).some(
-    (key) => evidence[key] !== 'Unknown',
-  )
-
-  const requestPresetChange = (datasetName: string) => {
-    if (datasetName === selectedDataset) return
-    if (hasUnsavedEvidence) {
-      setPendingDataset(datasetName)
-      return
-    }
-    void loadPresetTopology(datasetName)
-  }
-
-  const loadPresetTopology = async (datasetName: string) => {
-    setSelectedDataset(datasetName)
-    setPendingDataset(null)
-    pushToast(`Loading the ${datasetName.replace(/_/g, ' ')} preset dataset…`)
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/datasets/${datasetName}`)
-      if (!response.ok) {
-        throw new Error(
-          await parseErrorDetail(response, 'Preset dataset could not be loaded.'),
-        )
-      }
-      const dataset = (await response.json()) as TopologyPayload
-      if (!dataset.assets || !dataset.relationships) {
-        throw new Error('Preset dataset payload is invalid.')
-      }
-      applyTopology(dataset, `${datasetName}.json`, {
-        fileName: `${datasetName}.json`,
-        formatLabel: 'JSON',
-        assetCount: Object.keys(dataset.assets).length,
-        relationshipCount: dataset.relationships.length,
-        warnings: [],
-        summary: deriveTopologySummary(dataset),
-        source: 'preset',
-      })
-      await persistTopology(dataset)
-      pushToast(
-        `${datasetName.replace(/_/g, ' ')} preset loaded successfully.`,
-        'success',
-      )
-    } catch (caughtError) {
-      pushToast(
-        caughtError instanceof Error
-          ? caughtError.message
-          : 'Failed to load the preset dataset.',
-        'error',
-      )
-    }
+  const removeTopology = () => {
+    // Returning to the empty state clears everything derived from the
+    // previous topology: review/validation data, results and evidence.
+    setReview(null)
+    setUploadedFileName('')
+    setTopology(defaultTopology)
+    resetDerivedState()
   }
 
   const updateEvidence = (asset: string, state: AssetState) => {
@@ -628,12 +575,6 @@ export default function App() {
     <div className="min-h-screen text-slate-100">
       <Toasts items={toasts} onDismiss={dismissToast} />
 
-      <ConfirmDialog
-        pendingDataset={pendingDataset}
-        onCancel={() => setPendingDataset(null)}
-        onConfirm={() => void loadPresetTopology(pendingDataset!)}
-      />
-
       <Header
         settingsButton={
           <button
@@ -675,15 +616,14 @@ export default function App() {
 
       <main className="mx-auto max-w-7xl space-y-6 p-4 sm:p-6">
         <TopologySection
-          selectedDataset={selectedDataset}
           uploadedFileName={uploadedFileName}
           review={review}
           parsing={parsing}
           apiOnline={apiOnline}
           loading={loading}
           hasAssets={Object.keys(topology.assets).length > 0}
-          onDatasetChange={requestPresetChange}
           onFileUpload={handleFileUpload}
+          onRemoveTopology={removeTopology}
           onRunAssessment={() => void runAssessment()}
           // Restrict the file picker to the formats the backend truly supports
           accept={TOPOLOGY_ACCEPT}

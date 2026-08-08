@@ -2,8 +2,8 @@ import { test, expect } from '@playwright/test'
 
 // Full browser workflow: upload topology -> validate -> run assessment ->
 // inspect network & metrics -> apply evidence -> rerun -> verify posterior
-// and risk changes -> export a report. Uses the SWAT preset so the test is
-// independent of any example file on disk.
+// and risk changes -> export a report. Uploads the SWAT example topology
+// from the repository's data directory.
 test('full assessment workflow', async ({ page }) => {
   await page.goto('/')
 
@@ -14,14 +14,15 @@ test('full assessment workflow', async ({ page }) => {
   await expect(page.getByLabel('Logistic slope k')).toBeVisible()
   await settingsButton.click() // close
 
-  // --- Load the SWAT preset dataset ---
-  // The SWAT option is the initial selection, so switch away and back to
-  // trigger the change handler that fetches the dataset from the backend.
-  const datasetSelect = page.getByLabel('Select a predefined dataset')
-  await datasetSelect.selectOption('power_substation')
-  await datasetSelect.selectOption('swat_example')
+  // --- Upload the SWAT example topology file ---
+  await page.setInputFiles(
+    'input[aria-label="Upload a topology file"]',
+    '../data/swat_example.json',
+  )
   await expect(page.getByText(/Active topology:/)).toBeVisible()
-  await expect(page.getByText(/\d+ assets/)).toBeVisible()
+  // "N connections" only appears in the status bar — the upload toast says
+  // "N relationships", so this assertion stays unambiguous.
+  await expect(page.getByText(/\d+ connections/)).toBeVisible()
 
   // --- Run the assessment ---
   await page.getByRole('button', { name: 'Run assessment' }).click()

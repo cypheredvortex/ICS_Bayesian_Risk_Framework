@@ -39,13 +39,6 @@ export const kindColors: Record<string, string> = {
   physical: '#f59e0b',
 }
 
-export const datasets = [
-  { value: 'swat_example', label: 'SWAT Example' },
-  { value: 'building_automation', label: 'Building Automation' },
-  { value: 'power_substation', label: 'Power Substation' },
-  { value: 'water_treatment', label: 'Water Treatment' },
-]
-
 // File extensions accepted by the file picker (must match backend/importers.py).
 export const TOPOLOGY_ACCEPT =
   '.json,.yaml,.yml,.csv,.xlsx,.graphml,.xml,.aml,.vsdx,.vdx'
