@@ -1,11 +1,12 @@
 import {
   Cell,
-  Legend,
   Pie,
   PieChart,
   ResponsiveContainer,
   Tooltip,
 } from 'recharts'
+import { riskLevelMeta } from '../constants'
+import { EmptyState } from './ui'
 
 export default function RiskPieChart({
   pieData,
@@ -13,10 +14,15 @@ export default function RiskPieChart({
   pieData: Array<{ name: string; value: number }>
 }) {
   const hasData = pieData.some((entry) => entry.value > 0)
+  const total = pieData.reduce((sum, entry) => sum + entry.value, 0)
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-      <h2 className="text-xl font-semibold">Risk Ranking</h2>
+    <div className="card card-pad">
+      <h2 className="card-title">Risk Ranking</h2>
+      <p className="card-subtitle">
+        Distribution of assets across risk levels, classified with the active
+        thresholds from settings.
+      </p>
       <div className="mt-4 h-72 w-full">
         {hasData ? (
           <ResponsiveContainer width="100%" height="100%">
@@ -28,58 +34,61 @@ export default function RiskPieChart({
                 innerRadius={58}
                 outerRadius={96}
                 paddingAngle={3}
+                stroke="#0f172a"
+                strokeWidth={2}
                 label={false}
                 labelLine={false}
               >
-                <Cell fill="#fb7185" />
-                <Cell fill="#f59e0b" />
-                <Cell fill="#38bdf8" />
-                <Cell fill="#34d399" />
+                {pieData.map((entry) => {
+                  const meta =
+                    riskLevelMeta[entry.name as keyof typeof riskLevelMeta]
+                  return <Cell key={entry.name} fill={meta?.hex ?? '#475569'} />
+                })}
               </Pie>
               <Tooltip
                 formatter={(value: number) => [`${value} assets`, 'Count']}
                 contentStyle={{
                   background: '#0f172a',
-                  border: '1px solid rgba(56, 189, 248, 0.25)',
+                  borderRadius: '10px',
+                  border: '1px solid #1e293b',
                   color: '#f8fafc',
+                  fontSize: '12px',
                 }}
                 labelStyle={{ color: '#f8fafc', fontWeight: 700 }}
                 itemStyle={{ color: '#f8fafc' }}
               />
-              <Legend wrapperStyle={{ color: '#e2e8f0' }} />
             </PieChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex h-full items-center justify-center text-sm text-slate-500">
-            Run an assessment to see the risk-level breakdown.
-          </div>
+          <EmptyState
+            title="No risk distribution"
+            hint="Run an assessment to see the risk-level breakdown."
+          />
         )}
       </div>
       {hasData ? (
         <div
-          className="mt-2 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs"
+          className="mt-2 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs"
           aria-label="Risk level counts"
         >
-          {pieData.map((entry, index) => (
-            <span key={entry.name} className="whitespace-nowrap text-slate-200">
-              <span
-                className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full"
-                style={{
-                  backgroundColor: [
-                    '#fb7185',
-                    '#f59e0b',
-                    '#38bdf8',
-                    '#34d399',
-                  ][index],
-                }}
-              />
-              {entry.name[0].toUpperCase() + entry.name.slice(1)}:{' '}
-              {entry.value}
-            </span>
-          ))}
+          {pieData.map((entry) => {
+            const meta = riskLevelMeta[entry.name as keyof typeof riskLevelMeta]
+            return (
+              <span key={entry.name} className="whitespace-nowrap text-slate-300">
+                <span
+                  className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full"
+                  style={{ backgroundColor: meta?.hex ?? '#475569' }}
+                />
+                {meta?.label ?? entry.name}: {entry.value}
+                <span className="text-slate-500">
+                  {' '}
+                  ({total ? Math.round((entry.value / total) * 100) : 0}%)
+                </span>
+              </span>
+            )
+          })}
         </div>
       ) : null}
     </div>
   )
 }
-

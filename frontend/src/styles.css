@@ -2,11 +2,290 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: dark;
-  font-family: Inter, system-ui, sans-serif;
+/* ============================================================
+   ICS Risk Assessment Framework — design system
+   Dark, restrained, technical. Slate base + cyan signal.
+   Numerical/technical values use JetBrains Mono.
+   ============================================================ */
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    --app-bg: #020617;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1200px 500px at 70% -10%, rgba(34, 211, 238, 0.06), transparent 60%),
+      radial-gradient(900px 420px at 10% -10%, rgba(129, 140, 248, 0.05), transparent 55%),
+      var(--app-bg);
+    color: #e2e8f0;
+  }
+
+  ::selection {
+    background: rgba(34, 211, 238, 0.28);
+    color: #f8fafc;
+  }
+
+  /* Visible, consistent keyboard focus everywhere */
+  :focus-visible {
+    outline: 2px solid rgba(34, 211, 238, 0.9);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* Slim dark scrollbars */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #334155 transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 8px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
 }
 
-body {
-  margin: 0;
+@layer components {
+  /* ---------- Cards ---------- */
+  .card {
+    @apply rounded-2xl border border-slate-800 bg-slate-900/90 shadow-card backdrop-blur-sm;
+  }
+  .card-pad {
+    @apply p-5 sm:p-6;
+  }
+  .card-title {
+    @apply text-lg font-semibold tracking-tight text-slate-100;
+  }
+  .card-subtitle {
+    @apply mt-1.5 text-sm leading-relaxed text-slate-400;
+  }
+  .section-label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition-all duration-150 select-none;
+  }
+  .btn:disabled {
+    @apply cursor-not-allowed opacity-40;
+  }
+  .btn-primary {
+    @apply border-transparent bg-cyan-500 text-slate-950 shadow-[0_2px_12px_rgba(34,211,238,0.25)] hover:bg-cyan-400 active:bg-cyan-600;
+  }
+  .btn-secondary {
+    @apply border-slate-700 bg-slate-900 text-slate-200 hover:border-slate-500 hover:bg-slate-800 active:bg-slate-800/70;
+  }
+  .btn-ghost {
+    @apply border-transparent bg-transparent text-slate-300 hover:bg-slate-800/80 hover:text-slate-100;
+  }
+  .btn-danger {
+    @apply border-transparent bg-rose-500/90 text-white hover:bg-rose-400 active:bg-rose-600;
+  }
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  /* ---------- Badges & status pills ---------- */
+  .badge {
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-0.5 text-[11px] font-semibold tracking-wide;
+  }
+  .badge-cyan {
+    @apply border-cyan-500/30 bg-cyan-500/10 text-cyan-300;
+  }
+  .badge-slate {
+    @apply border-slate-700 bg-slate-800/80 text-slate-300;
+  }
+  .badge-emerald {
+    @apply border-emerald-500/30 bg-emerald-500/10 text-emerald-300;
+  }
+  .badge-amber {
+    @apply border-amber-500/30 bg-amber-500/10 text-amber-300;
+  }
+  .badge-rose {
+    @apply border-rose-500/30 bg-rose-500/10 text-rose-300;
+  }
+  .badge-violet {
+    @apply border-violet-500/30 bg-violet-500/10 text-violet-300;
+  }
+
+  .status-dot {
+    @apply inline-block h-2 w-2 shrink-0 rounded-full;
+  }
+  .status-dot-ok {
+    @apply bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)];
+  }
+  .status-dot-warn {
+    @apply bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.7)];
+  }
+  .status-dot-err {
+    @apply bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.7)];
+  }
+  .status-dot-idle {
+    @apply bg-slate-600;
+  }
+
+  /* ---------- Form fields ---------- */
+  .field {
+    @apply w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 transition-colors outline-none placeholder:text-slate-500 focus:border-cyan-500/70;
+  }
+  .field-sm {
+    @apply px-2.5 py-1.5 text-xs;
+  }
+  .field-label {
+    @apply mb-1.5 block text-xs font-medium text-slate-400;
+  }
+
+  /* ---------- Metric / key-value rows ---------- */
+  .kv-row {
+    @apply flex items-start justify-between gap-4 py-1.5;
+  }
+  .kv-label {
+    @apply text-[13px] leading-snug text-slate-400;
+  }
+  .kv-value {
+    @apply text-right font-mono text-[13px] font-semibold tracking-tight text-slate-100;
+  }
+
+  /* ---------- Stat blocks ---------- */
+  .stat-card {
+    @apply rounded-xl border border-slate-800 bg-slate-950/60 p-4;
+  }
+  .stat-label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500;
+  }
+  .stat-value {
+    @apply mt-2 font-mono text-2xl font-semibold tracking-tight text-slate-100;
+  }
+  .stat-hint {
+    @apply mt-1 text-xs leading-relaxed text-slate-500;
+  }
+
+  /* ---------- Topology dropzone ---------- */
+  .dropzone {
+    @apply flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-slate-700 bg-slate-950/50 px-6 py-10 text-center transition-all duration-200 hover:border-cyan-500/50 hover:bg-slate-900/60;
+  }
+  .dropzone-active {
+    @apply border-cyan-400 bg-cyan-500/5;
+  }
+
+  /* ---------- Tables ---------- */
+  .table-th {
+    @apply sticky top-0 bg-slate-800/95 p-3 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400;
+  }
+  .table-td {
+    @apply border-t border-slate-800 p-3 text-[13px] text-slate-300;
+  }
+
+  /* ---------- Details / expandable ---------- */
+  .details-card {
+    @apply overflow-hidden rounded-xl border border-slate-800 bg-slate-950/60;
+  }
+  .details-summary {
+    @apply flex cursor-pointer items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-slate-100 transition-colors hover:bg-slate-800/70;
+  }
+
+  /* ---------- Progress bar ---------- */
+  .progress-track {
+    @apply h-1.5 w-full overflow-hidden rounded-full bg-slate-800;
+  }
+  .progress-fill {
+    @apply h-full rounded-full bg-gradient-to-r from-cyan-500 to-cyan-400 transition-[width] duration-500;
+  }
+}
+
+@layer utilities {
+  .text-mono-value {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ---------- Range inputs (premium sliders) ---------- */
+input[type='range'] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 22px;
+  background: transparent;
+  cursor: pointer;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 5px;
+  border-radius: 9999px;
+  background: #1e293b;
+}
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -4.5px;
+  height: 14px;
+  width: 14px;
+  border-radius: 9999px;
+  background: #22d3ee;
+  border: 2px solid #0f172a;
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.6), 0 2px 6px rgba(0, 0, 0, 0.5);
+  transition: transform 120ms ease;
+}
+input[type='range']::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+input[type='range']::-moz-range-track {
+  height: 5px;
+  border-radius: 9999px;
+  background: #1e293b;
+}
+input[type='range']::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  border-radius: 9999px;
+  background: #22d3ee;
+  border: 2px solid #0f172a;
+  box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.6);
+}
+input[type='range']:focus-visible {
+  outline: none;
+}
+input[type='range']:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.4), 0 0 0 1px rgba(34, 211, 238, 0.9);
+}
+input[type='range']:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.4), 0 0 0 1px rgba(34, 211, 238, 0.9);
+}
+
+/* React Flow canvas chrome */
+.react-flow__controls {
+  border-radius: 10px !important;
+  overflow: hidden;
+  border: 1px solid #1e293b;
+  box-shadow: 0 4px 16px rgba(2, 6, 23, 0.5);
+}
+.react-flow__controls-button {
+  background: #0f172a !important;
+  border-bottom: 1px solid #1e293b !important;
+  fill: #94a3b8 !important;
+}
+.react-flow__controls-button:hover {
+  background: #1e293b !important;
+}
+.react-flow__minimap {
+  border: 1px solid #1e293b;
+  border-radius: 10px;
+  overflow: hidden;
 }

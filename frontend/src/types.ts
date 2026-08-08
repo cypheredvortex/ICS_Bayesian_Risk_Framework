@@ -11,6 +11,42 @@ export type TopologyPayload = {
   relationships: Relationship[]
 }
 
+// Structural summary computed by the backend from the *normalized* topology
+// so the pre-analysis review shows only what the framework actually knows.
+// The frontend also derives an equivalent summary client-side from preset
+// datasets (same normalized data, no backend round-trip required).
+export type TopologySummary = {
+  zones: Record<string, number>
+  assets_without_zone: number
+  kinds: Record<string, number>
+  relationship_types: Record<string, number>
+  firewalled_relationships: number
+  field_coverage: Record<string, number>
+}
+
+// Full /upload-topology-file response: parsed topology + counts + review data.
+export type TopologyUploadResult = {
+  message: string
+  asset_count: number
+  relationship_count: number
+  warnings: string[]
+  summary?: TopologySummary | null
+  topology: TopologyPayload
+}
+
+// Review data shown in the Topology Assessment workspace before analysis:
+// what was parsed, what the backend flagged, and the structural summary.
+export type TopologyReviewInfo = {
+  fileName: string
+  fileSize?: number
+  formatLabel: string
+  assetCount: number
+  relationshipCount: number
+  warnings: string[]
+  summary: TopologySummary
+  source: 'upload' | 'preset'
+}
+
 export type GraphNode = { id: string; kind?: string }
 export type GraphEdge = {
   source: string

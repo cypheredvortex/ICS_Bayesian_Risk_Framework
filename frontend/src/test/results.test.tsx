@@ -57,7 +57,9 @@ describe('Results states', () => {
     render(<App />)
     await uploadSmallTopology(user)
     await user.click(screen.getByRole('button', { name: 'Run assessment' }))
-    expect(await screen.findByText('Running…')).toBeInTheDocument()
+    expect(
+      await screen.findByText(/Running Bayesian assessment/),
+    ).toBeInTheDocument()
     release?.()
     await waitFor(() =>
       expect(
@@ -192,6 +194,7 @@ describe('NodeDetails', () => {
           },
         ]}
         attackPathNodes={new Set()}
+        edgeList={[{ source: 'plc_1', target: 'hmi_1', label: 'connects-to' }]}
       />,
     )
     expect(screen.getByText('CVSS (effective)')).toBeInTheDocument()
@@ -216,6 +219,7 @@ describe('NodeDetails', () => {
         result={null}
         riskRanking={[]}
         attackPathNodes={new Set()}
+        edgeList={[]}
       />,
     )
     expect(screen.getByText(/Select a node in the network/)).toBeInTheDocument()

@@ -9,6 +9,7 @@ import {
   YAxis,
 } from 'recharts'
 import { getProbabilityColor, formatProbability } from '../utils'
+import { EmptyState } from './ui'
 
 export default function ProbabilityChart({
   chartData,
@@ -18,9 +19,9 @@ export default function ProbabilityChart({
   setSelectedNode: (id: string) => void
 }) {
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-      <h2 className="text-xl font-semibold">Compromise probability by asset</h2>
-      <p className="mt-1 text-sm text-slate-400">
+    <div className="card card-pad">
+      <h2 className="card-title">Compromise probability by asset</h2>
+      <p className="card-subtitle">
         Posterior probability for each asset after the current evidence is
         applied. This chart shows probability, not the risk score.
       </p>
@@ -31,48 +32,51 @@ export default function ProbabilityChart({
               data={chartData}
               margin={{ top: 10, right: 12, left: 0, bottom: 24 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
               <XAxis
                 dataKey="asset"
-                tick={{ fill: '#e2e8f0', fontSize: 12 }}
+                tick={{ fill: '#94a3b8', fontSize: 11 }}
                 angle={-24}
                 textAnchor="end"
                 height={52}
-                axisLine={{ stroke: '#64748b' }}
-                tickLine={{ stroke: '#64748b' }}
+                axisLine={{ stroke: '#334155' }}
+                tickLine={{ stroke: '#334155' }}
               />
               <YAxis
                 domain={[0, 1]}
-                tick={{ fill: '#cbd5e1', fontSize: 12 }}
+                tick={{ fill: '#94a3b8', fontSize: 11 }}
+                tickFormatter={(value: number) => value.toFixed(2)}
                 label={{
                   value: 'Posterior probability (0–1)',
                   angle: -90,
                   position: 'insideLeft',
-                  fill: '#f8fafc',
-                  fontSize: 13,
-                  fontWeight: 700,
+                  fill: '#94a3b8',
+                  fontSize: 11,
+                  fontWeight: 600,
                 }}
-                axisLine={{ stroke: '#64748b' }}
-                tickLine={{ stroke: '#64748b' }}
+                axisLine={{ stroke: '#334155' }}
+                tickLine={{ stroke: '#334155' }}
               />
               <Tooltip
+                cursor={{ fill: 'rgba(148, 163, 184, 0.08)' }}
                 formatter={(value: number) => [
                   formatProbability(value),
                   'Posterior probability',
                 ]}
-                labelStyle={{ color: '#e2e8f0' }}
+                labelStyle={{ color: '#e2e8f0', fontWeight: 700 }}
                 itemStyle={{ color: '#f8fafc', fontWeight: 700 }}
                 contentStyle={{
                   background: '#0f172a',
-                  borderRadius: '12px',
-                  border: '1px solid rgba(56, 189, 248, 0.25)',
+                  borderRadius: '10px',
+                  border: '1px solid #1e293b',
                   color: '#f8fafc',
+                  fontSize: '12px',
                 }}
               />
               <Bar
                 dataKey="probability"
                 name="Posterior Probability"
-                radius={[6, 6, 0, 0]}
+                radius={[5, 5, 0, 0]}
                 onClick={(entry: { asset: string }) =>
                   setSelectedNode(entry.asset)
                 }
@@ -88,12 +92,12 @@ export default function ProbabilityChart({
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex h-full items-center justify-center text-sm text-slate-500">
-            Run an assessment to populate this chart.
-          </div>
+          <EmptyState
+            title="No probability data"
+            hint="Run an assessment to populate this chart."
+          />
         )}
       </div>
     </div>
   )
 }
-

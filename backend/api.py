@@ -34,6 +34,7 @@ from sqlalchemy import text as sa_text
 
 from backend.assets import load_topology, load_topology_from_bytes
 from backend.api_adapter import analyze, OUTPUT_DIR
+from backend.topology import build_topology_summary
 from backend.inference import ImpossibleEvidenceError
 from backend.database.config import initialize_database, get_db_url, get_session_factory
 from backend.logging_config import configure_logging, get_request_id, set_request_id
@@ -244,6 +245,7 @@ def upload_topology(request: Request, payload: TopologyUploadRequest):
         asset_count=len(assets),
         relationship_count=len(relationships),
         warnings=warnings,
+        summary=build_topology_summary(assets, relationships),
     )
 
 
@@ -289,6 +291,7 @@ async def upload_topology_file(request: Request, file: UploadFile = File(...)):
         relationship_count=len(relationships),
         topology=topology,
         warnings=warnings,
+        summary=build_topology_summary(assets, relationships),
     )
 
 

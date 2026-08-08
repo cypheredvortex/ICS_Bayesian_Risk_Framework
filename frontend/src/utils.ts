@@ -30,6 +30,85 @@ export function formatProbability(value: number) {
   return Number(value).toFixed(3)
 }
 
+export function formatBytes(bytes: number): string {
+  if (!Number.isFinite(bytes) || bytes <= 0) return '—'
+  const units = ['B', 'KB', 'MB', 'GB']
+  let value = bytes
+  let unit = 0
+  while (value >= 1024 && unit < units.length - 1) {
+    value /= 1024
+    unit += 1
+  }
+  return `${value.toFixed(unit === 0 ? 0 : 1)} ${units[unit]}`
+}
+
+// Derive the structural summary client-side from a normalized topology
+// payload. Used for preset datasets (the /datasets endpoint returns raw JSON)
+// and as a graceful fallback when an upload response omits `summary`. It
+// reads the exact same normalized fields the backend computes its summary
+// from, so it never reports information the data does not contain.
+export function deriveTopologySummary(
+  topology: {
+    assets: Record<string, Record<string, unknown>>
+    relationships: Array<unknown[]>
+  },
+): {
+  zones: Record<string, number>
+  assets_without_zone: number
+  kinds: Record<string, number>
+  relationship_types: Record<string, number>
+  firewalled_relationships: number
+  field_coverage: Record<string, number>
+} {
+  const zones: Record<string, number> = {}
+  const kinds: Record<string, number> = {}
+  const relationshipTypes: Record<string, number> = {}
+  const coverage: Record<string, number> = {
+    cvss_type: 0,
+    exposed: 0,
+    patched: 0,
+    consequence_severity: 0,
+    zone: 0,
+    vulnerabilities: 0,
+  }
+  let zoned = 0
+
+  for (const attrs of Object.values(topology.assets)) {
+    const kind = String(attrs?.kind ?? 'device')
+    kinds[kind] = (kinds[kind] ?? 0) + 1
+    const zone = attrs?.zone
+    if (zone) {
+      const name = String(zone)
+      zones[name] = (zones[name] ?? 0) + 1
+      zoned += 1
+    }
+    for (const field of Object.keys(coverage)) {
+      const value = attrs?.[field]
+      if (field === 'vulnerabilities') {
+        if (Array.isArray(value) && value.length) coverage[field] += 1
+      } else if (value !== undefined && value !== null && value !== '') {
+        coverage[field] += 1
+      }
+    }
+  }
+
+  let firewalled = 0
+  for (const rel of topology.relationships) {
+    const type = rel.length > 2 && rel[2] ? String(rel[2]) : 'connects-to'
+    relationshipTypes[type] = (relationshipTypes[type] ?? 0) + 1
+    if (rel.length > 3 && rel[3]) firewalled += 1
+  }
+
+  return {
+    zones,
+    assets_without_zone: Math.max(0, Object.keys(topology.assets).length - zoned),
+    kinds,
+    relationship_types: relationshipTypes,
+    firewalled_relationships: firewalled,
+    field_coverage: coverage,
+  }
+}
+
 export function formatEvidence(evidence?: Record<string, number> | null) {
   const entries = Object.entries(evidence ?? {})
   if (!entries.length) return 'None — probabilities use the topology and configured assumptions.'

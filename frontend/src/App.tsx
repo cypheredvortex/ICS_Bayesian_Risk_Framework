@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { AssetState } from './types'
+import type { AssetState, TopologyReviewInfo, TopologyUploadResult } from './types'
 import type {
   TopologyPayload,
   ResultPayload,
@@ -8,10 +8,13 @@ import type {
 } from './types'
 import {
   API_BASE_URL,
+  TOPOLOGY_ACCEPT,
+  TOPOLOGY_ACCEPT_RE,
   defaultTopology,
   defaultCoreSettings,
+  topologyFormats,
 } from './constants'
-import { parseErrorBody, parseErrorDetail, riskLevelFor } from './utils'
+import { deriveTopologySummary, parseErrorBody, parseErrorDetail, riskLevelFor } from './utils'
 import type { RiskThresholds } from './types'
 import Toasts from './components/Toasts'
 import ConfirmDialog from './components/ConfirmDialog'
@@ -27,6 +30,7 @@ import RiskPieChart from './components/RiskPieChart'
 import BayesianResults from './components/BayesianResults'
 import CptSection from './components/CptSection'
 import ReportsSection from './components/ReportsSection'
+import { Card } from './components/ui'
 
 // Merge the server-side settings payload into a complete CoreSettings,
 // falling back to framework defaults for any key the API does not return.
@@ -85,6 +89,21 @@ function mergeSettingsFromApi(data: Record<string, unknown>): CoreSettings {
   }
 }
 
+function formatLabelFor(fileName: string): string {
+  const extension = '.' + (fileName.split('.').pop()?.toLowerCase() ?? '')
+  for (const fmt of topologyFormats) {
+    if (fmt.ext.toLowerCase().split(' / ').includes(extension)) {
+      // Return the single extension when the family has several (e.g.
+      // '.json' instead of 'JSON / YAML') so the badge stays precise.
+      const single = fmt.label
+        .split(' / ')
+        .find((part) => part.toLowerCase() === extension)
+      return single ?? fmt.label
+    }
+  }
+  return extension.slice(1).toUpperCase()
+}
+
 export default function App() {
   const [topology, setTopology] = useState<TopologyPayload>(defaultTopology)
   const [evidence, setEvidence] = useState<Record<string, AssetState>>({})
@@ -105,6 +124,11 @@ export default function App() {
     useState<CoreSettings>(defaultCoreSettings)
   const [settingsLoading, setSettingsLoading] = useState(false)
   const [toasts, setToasts] = useState<ToastItem[]>([])
+
+  // Topology Assessment workspace state
+  const [review, setReview] = useState<TopologyReviewInfo | null>(null)
+  const [parsing, setParsing] = useState(false)
+  const [apiOnline, setApiOnline] = useState<boolean | null>(null)
 
   const searchInputRef = useRef<HTMLInputElement>(null)
   const toastCounter = useRef(0)
@@ -143,6 +167,25 @@ export default function App() {
       }
     }
     void loadSettings()
+  }, [])
+
+  // Lightweight API reachability check (polled) for the header status pill.
+  useEffect(() => {
+    let cancelled = false
+    const check = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/`)
+        if (!cancelled) setApiOnline(response.ok)
+      } catch {
+        if (!cancelled) setApiOnline(false)
+      }
+    }
+    void check()
+    const interval = window.setInterval(check, 30_000)
+    return () => {
+      cancelled = true
+      window.clearInterval(interval)
+    }
   }, [])
 
   // keyboard shortcuts: "/" focuses node search, "r" runs the assessment
@@ -310,7 +353,12 @@ export default function App() {
     return response.json()
   }
 
-  const applyTopology = (parsed: TopologyPayload, sourceName: string) => {
+  const applyTopology = (
+    parsed: TopologyPayload,
+    sourceName: string,
+    reviewInfo: TopologyReviewInfo,
+  ) => {
+    setReview(reviewInfo)
     setUploadedFileName(sourceName)
     setTopology(parsed)
     setResult(null)
@@ -325,8 +373,7 @@ export default function App() {
     if (!file) return
 
     // Support the full set of backend-supported topology formats
-    const supported = /\.(json|ya?ml|csv|xlsx|graphml|xml|aml|vsdx|vdx)$/i.test(file.name)
-    if (!supported) {
+    if (!TOPOLOGY_ACCEPT_RE.test(file.name)) {
       pushToast(
         'Unsupported file type. Upload a .json, .yaml/.yml, .csv, .xlsx, .graphml, .xml, .aml, .vsdx, or .vdx topology file.',
         'error',
@@ -335,7 +382,7 @@ export default function App() {
       return
     }
 
-    // The backend's /upload-topology-file endpoint handles many formats
+    setParsing(true)
     const formData = new FormData()
     formData.append('file', file)
 
@@ -349,26 +396,41 @@ export default function App() {
           await parseErrorDetail(response, 'Topology file upload failed.'),
         )
       }
-      const data = (await response.json()) as {
-        topology: TopologyPayload
-        asset_count: number
-        relationship_count: number
-      }
-      applyTopology(data.topology, file.name)
+      const data = (await response.json()) as TopologyUploadResult
+      const summary = data.summary ?? deriveTopologySummary(data.topology)
+      applyTopology(data.topology, file.name, {
+        fileName: file.name,
+        fileSize: file.size,
+        formatLabel: formatLabelFor(file.name),
+        assetCount: data.asset_count,
+        relationshipCount: data.relationship_count,
+        warnings: data.warnings ?? [],
+        summary,
+        source: 'upload',
+      })
       pushToast(
         `Loaded ${file.name}: ${data.asset_count} assets, ${data.relationship_count} relationships.`,
         'success',
       )
+      // Surface non-destructive normalization notices (self-loops removed,
+      // duplicate edges collapsed, unidentifiable records skipped) so input
+      // changes are never silent.
+      if (data.warnings?.length) {
+        pushToast(
+          `Topology note: ${data.warnings.slice(0, 2).join(' ')}`,
+          'info',
+        )
+      }
     } catch (caughtError) {
       pushToast(
         caughtError instanceof Error ? caughtError.message : 'Invalid topology file.',
         'error',
       )
     } finally {
+      setParsing(false)
       event.target.value = ''
     }
   }
-
 
   const hasUnsavedEvidence = Object.keys(evidence).some(
     (key) => evidence[key] !== 'Unknown',
@@ -399,7 +461,15 @@ export default function App() {
       if (!dataset.assets || !dataset.relationships) {
         throw new Error('Preset dataset payload is invalid.')
       }
-      applyTopology(dataset, `${datasetName}.json`)
+      applyTopology(dataset, `${datasetName}.json`, {
+        fileName: `${datasetName}.json`,
+        formatLabel: 'JSON',
+        assetCount: Object.keys(dataset.assets).length,
+        relationshipCount: dataset.relationships.length,
+        warnings: [],
+        summary: deriveTopologySummary(dataset),
+        source: 'preset',
+      })
       await persistTopology(dataset)
       pushToast(
         `${datasetName.replace(/_/g, ' ')} preset loaded successfully.`,
@@ -555,7 +625,7 @@ export default function App() {
     JSON.stringify(serverSettings) !== JSON.stringify(draftSettings)
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100">
+    <div className="min-h-screen text-slate-100">
       <Toasts items={toasts} onDismiss={dismissToast} />
 
       <ConfirmDialog
@@ -568,17 +638,26 @@ export default function App() {
         settingsButton={
           <button
             onClick={() => setSettingsOpen((open) => !open)}
-            className="rounded-full border border-slate-700 bg-slate-950 px-4 py-2 text-sm text-slate-200 hover:border-cyan-500/50 hover:text-cyan-200"
+            className="btn btn-secondary btn-sm"
             aria-expanded={settingsOpen}
           >
+            <svg
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+              <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z" />
+            </svg>
             Settings {settingsDirty ? '•' : ''}
           </button>
         }
-        apiIndicator={
-          <div className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm text-cyan-200">
-            Backend API: {API_BASE_URL}
-          </div>
-        }
+        apiOnline={apiOnline}
       >
         {settingsOpen ? (
           <SettingsPanel
@@ -594,19 +673,20 @@ export default function App() {
         ) : null}
       </Header>
 
-      <main className="mx-auto max-w-7xl space-y-6 p-6">
+      <main className="mx-auto max-w-7xl space-y-6 p-4 sm:p-6">
         <TopologySection
           selectedDataset={selectedDataset}
           uploadedFileName={uploadedFileName}
-          assetCount={Object.keys(topology.assets).length}
-          relationshipCount={topology.relationships.length}
+          review={review}
+          parsing={parsing}
+          apiOnline={apiOnline}
           loading={loading}
           hasAssets={Object.keys(topology.assets).length > 0}
           onDatasetChange={requestPresetChange}
           onFileUpload={handleFileUpload}
           onRunAssessment={() => void runAssessment()}
           // Restrict the file picker to the formats the backend truly supports
-          accept=".json,.yaml,.yml,.csv,.xlsx,.graphml,.xml,.aml,.vsdx,.vdx"
+          accept={TOPOLOGY_ACCEPT}
         />
 
         <EvidencePanel
@@ -615,7 +695,7 @@ export default function App() {
           onUpdateEvidence={updateEvidence}
         />
 
-        <section className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
+        <section className="grid gap-6 xl:grid-cols-[1.3fr_0.7fr]">
           <NetworkViewer
             ref={searchInputRef}
             nodeIds={nodeIds}
@@ -644,6 +724,7 @@ export default function App() {
             result={result}
             riskRanking={riskRanking}
             attackPathNodes={attackPathNodes}
+            edgeList={edgeList}
           />
         </section>
 
@@ -657,13 +738,13 @@ export default function App() {
               setSelectedNode={setSelectedNode}
             />
           ) : (
-            <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-              <h2 className="text-xl font-semibold">Results Dashboard</h2>
-              <p className="mt-4 text-slate-400">
+            <Card>
+              <h2 className="card-title">Results Dashboard</h2>
+              <p className="card-subtitle">
                 No assessment results yet. Load a topology, optionally mark
                 evidence, then run the assessment.
               </p>
-            </div>
+            </Card>
           )}
 
           <ProbabilityChart
@@ -688,4 +769,3 @@ export default function App() {
     </div>
   )
 }
-

@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import logging
 import re
+from collections import Counter
 from typing import Any
 
 import networkx as nx
@@ -506,4 +507,67 @@ def relationship_to_dict(rel: tuple) -> dict[str, Any]:
         "type": rel_type,
         "firewalled": firewalled,
         "metadata": metadata,
+    }
+
+
+def build_topology_summary(
+    assets: dict[str, dict], relationships: list[tuple]
+) -> dict[str, Any]:
+    """Compute a structural summary of a normalized topology for analyst review.
+
+    This is computed from the *normalized* assets/relationships the backend
+    already validated, so every number it reports is something the framework
+    actually knows (never fabricated). It powers the pre-analysis review step
+    in the UI: zone inventory, asset-kind mix, relationship-type mix, and
+    per-asset field coverage so missing security attributes are visible
+    before an assessment is run.
+
+    Args:
+        assets: normalized asset map (``id -> attrs``).
+        relationships: normalized relationship tuples
+            ``(source, target, rel_type, firewalled, metadata)``.
+
+    Returns:
+        A dict with ``zones``, ``assets_without_zone``, ``kinds``,
+        ``relationship_types``, ``firewalled_relationships`` and
+        ``field_coverage`` keys.
+    """
+    kinds: Counter[str] = Counter()
+    zones: Counter[str] = Counter()
+    rel_types: Counter[str] = Counter()
+
+    field_coverage = {
+        "cvss_type": 0,
+        "exposed": 0,
+        "patched": 0,
+        "consequence_severity": 0,
+        "zone": 0,
+        "vulnerabilities": 0,
+    }
+    for attrs in assets.values():
+        kinds[str(attrs.get("kind", "device"))] += 1
+        zone = attrs.get("zone")
+        if zone:
+            zones[str(zone)] += 1
+        for field in field_coverage:
+            if field == "vulnerabilities":
+                if attrs.get("vulnerabilities"):
+                    field_coverage[field] += 1
+            elif attrs.get(field) is not None:
+                field_coverage[field] += 1
+
+    firewalled_relationships = 0
+    for rel in relationships:
+        rel_type = rel[2] if len(rel) > 2 else DEFAULT_REL_TYPE
+        rel_types[str(rel_type)] += 1
+        if len(rel) > 3 and rel[3]:
+            firewalled_relationships += 1
+
+    return {
+        "zones": dict(sorted(zones.items())),
+        "assets_without_zone": max(0, len(assets) - sum(zones.values())),
+        "kinds": {k: kinds[k] for k in sorted(kinds)},
+        "relationship_types": dict(sorted(rel_types.items())),
+        "firewalled_relationships": firewalled_relationships,
+        "field_coverage": field_coverage,
     }

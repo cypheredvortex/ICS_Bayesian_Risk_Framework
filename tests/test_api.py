@@ -147,5 +147,76 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(body["asset_count"], len(body["topology"]["assets"]))
 
 
+    def test_upload_topology_returns_structural_summary(self):
+        """The upload response must include a structural summary computed from
+        the normalized data: zones, kinds, relationship types, firewalled
+        edges and per-field coverage - so the UI can show a pre-analysis
+        review without fabricating anything."""
+        topology = {
+            "assets": {
+                "plc_1": {
+                    "kind": "device",
+                    "cvss_type": 7.5,
+                    "exposed": True,
+                    "patched": False,
+                    "consequence_severity": 8.0,
+                    "zone": "Level 1",
+                },
+                "hmi_1": {
+                    "kind": "device",
+                    "cvss_type": 5.0,
+                    "consequence_severity": 5.0,
+                },
+                "operator_1": {
+                    "kind": "human",
+                    "role": "operator",
+                    "awareness": 0.4,
+                    "consequence_severity": 2.0,
+                },
+            },
+            "relationships": [
+                ["hmi_1", "plc_1", "connects-to", True],
+                ["operator_1", "hmi_1", "controls", False],
+            ],
+        }
+        response = self.client.post("/upload-topology", json={"topology": topology})
+        self.assertEqual(response.status_code, 200, response.text)
+        summary = response.json()["summary"]
+        self.assertEqual(summary["zones"], {"Level 1": 1})
+        self.assertEqual(summary["assets_without_zone"], 2)
+        self.assertEqual(summary["kinds"], {"device": 2, "human": 1})
+        self.assertEqual(
+            summary["relationship_types"], {"connects-to": 1, "controls": 1}
+        )
+        self.assertEqual(summary["firewalled_relationships"], 1)
+        coverage = summary["field_coverage"]
+        self.assertEqual(coverage["cvss_type"], 2)
+        self.assertEqual(coverage["exposed"], 1)
+        self.assertEqual(coverage["patched"], 1)
+        self.assertEqual(coverage["consequence_severity"], 3)
+        self.assertEqual(coverage["zone"], 1)
+
+    def test_upload_topology_file_returns_structural_summary(self):
+        response = self.client.post(
+            "/upload-topology-file",
+            files={
+                "file": (
+                    "topology.json",
+                    b"""{"assets": {"plc_1": {"kind": "device", "zone": "Level 0"}},
+ "relationships": [["plc_1", "plc_1", "connects-to", false]]}""",
+                    "application/json",
+                )
+            },
+        )
+        self.assertEqual(response.status_code, 200, response.text)
+        body = response.json()
+        self.assertIn("summary", body)
+        self.assertEqual(body["summary"]["zones"], {"Level 0": 1})
+        self.assertEqual(body["summary"]["assets_without_zone"], 0)
+        # Self-loop removed by validation, so the relationship count drops.
+        self.assertEqual(body["relationship_count"], 0)
+        self.assertTrue(any("self-loop" in w for w in body["warnings"]))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -19,7 +19,7 @@ export default function SettingsPanel({
   const { risk_thresholds: t } = draftSettings
 
   return (
-    <div className="mx-auto mt-4 max-w-7xl rounded-xl border border-slate-800 bg-slate-950/80 p-5">
+    <div className="mx-auto mt-4 max-w-7xl rounded-2xl border border-slate-800 bg-slate-950/80 p-5 shadow-card">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-300">
@@ -35,14 +35,14 @@ export default function SettingsPanel({
           <button
             onClick={onReset}
             disabled={settingsLoading}
-            className="rounded-md border border-slate-600 px-3 py-1.5 text-xs text-slate-200 hover:bg-slate-800 disabled:opacity-50"
+            className="btn btn-secondary btn-sm"
           >
             Reset to defaults
           </button>
           <button
             onClick={onSave}
             disabled={settingsLoading || !settingsDirty}
-            className="rounded-md bg-cyan-500 px-3 py-1.5 text-xs font-semibold text-slate-950 hover:bg-cyan-400 disabled:cursor-not-allowed disabled:opacity-50"
+            className="btn btn-primary btn-sm"
           >
             {settingsLoading ? 'Saving…' : settingsDirty ? 'Save changes' : 'Saved'}
           </button>
@@ -76,7 +76,7 @@ export default function SettingsPanel({
                   [key]: Number(event.target.value),
                 }))
               }
-              className="mt-2 w-full accent-cyan-500"
+              className="mt-2 w-full"
               aria-label={label}
             />
           </label>
@@ -87,7 +87,7 @@ export default function SettingsPanel({
         <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-400">
           CVSS → probability mapping (modelling assumption)
         </h4>
-        <p className="mt-1 max-w-3xl text-xs text-slate-500">
+        <p className="mt-1 max-w-3xl text-xs leading-relaxed text-slate-500">
           CVSS Base Score is a <em>severity</em> metric (0–10), not a
           probability. The framework converts it into an intrinsic compromise
           probability with P₀ = 1 / (1 + exp(−k·(CVSS − x₀))), where k is the
@@ -113,7 +113,7 @@ export default function SettingsPanel({
                   cvss_mapping: event.target.value === 'linear' ? 'linear' : 'logistic',
                 }))
               }
-              className="mt-2 w-full rounded-md border border-slate-700 bg-slate-950 px-2 py-1.5 text-slate-100 outline-none focus:border-cyan-500"
+              className="field mt-2"
               aria-label="CVSS to probability mapping method"
             >
               <option value="logistic">logistic (recommended)</option>
@@ -142,7 +142,7 @@ export default function SettingsPanel({
                   },
                 }))
               }
-              className="mt-2 w-full accent-cyan-500"
+              className="mt-2 w-full"
               aria-label="Logistic slope k"
             />
           </label>
@@ -168,7 +168,7 @@ export default function SettingsPanel({
                   },
                 }))
               }
-              className="mt-2 w-full accent-cyan-500"
+              className="mt-2 w-full"
               aria-label="Logistic midpoint x0"
             />
           </label>
@@ -179,7 +179,7 @@ export default function SettingsPanel({
         <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-400">
           Risk thresholds (single source of truth)
         </h4>
-        <p className="mt-1 max-w-3xl text-xs text-slate-500">
+        <p className="mt-1 max-w-3xl text-xs leading-relaxed text-slate-500">
           The same thresholds drive the backend classification, the PDF report
           colours and this dashboard — they are not hardcoded anywhere else.
           Sliders keep the required ordering critical &gt; high &gt; moderate;
@@ -208,7 +208,7 @@ export default function SettingsPanel({
                   },
                 }))
               }
-              className="mt-2 w-full accent-cyan-500"
+              className="mt-2 w-full"
               aria-label="Critical risk threshold"
             />
           </label>
@@ -234,7 +234,7 @@ export default function SettingsPanel({
                   },
                 }))
               }
-              className="mt-2 w-full accent-cyan-500"
+              className="mt-2 w-full"
               aria-label="High risk threshold"
             />
           </label>
@@ -260,7 +260,7 @@ export default function SettingsPanel({
                   },
                 }))
               }
-              className="mt-2 w-full accent-cyan-500"
+              className="mt-2 w-full"
               aria-label="Moderate risk threshold"
             />
           </label>
@@ -271,7 +271,7 @@ export default function SettingsPanel({
         <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-400">
           Noisy-OR causal weight by relationship type
         </h4>
-        <p className="mt-1 max-w-3xl text-xs text-slate-500">
+        <p className="mt-1 max-w-3xl text-xs leading-relaxed text-slate-500">
           Each directed edge carries a causal weight w (not a conditional
           probability). For a single active parent, P(target = 1 | parent = 1)
           = 1 − (1 − leak)·(1 − w), where leak is the target's intrinsic
@@ -304,7 +304,7 @@ export default function SettingsPanel({
                       },
                     }))
                   }
-                  className="mt-2 w-full accent-cyan-500"
+                  className="mt-2 w-full"
                   aria-label={`Causal weight for ${relType}`}
                 />
               </label>
@@ -317,7 +317,7 @@ export default function SettingsPanel({
         <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-400">
           Firewall multiplier
         </h4>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
           A firewall can only reduce propagated risk, never increase it — the
           "firewalled" slider is capped at the "not firewalled" value.
         </p>
@@ -356,7 +356,7 @@ export default function SettingsPanel({
                       },
                     }))
                   }
-                  className="mt-2 w-full accent-cyan-500"
+                  className="mt-2 w-full"
                   aria-label={`Firewall multiplier when ${flag}`}
                 />
               </label>
@@ -365,11 +365,11 @@ export default function SettingsPanel({
         </div>
       </div>
 
-      <details className="mt-6 rounded-lg border border-slate-800 bg-slate-950/60 p-3 text-xs text-slate-400">
-        <summary className="cursor-pointer font-semibold text-cyan-200">
+      <details className="details-card mt-6">
+        <summary className="details-summary">
           Default values (framework defaults)
         </summary>
-        <pre className="mt-2 overflow-x-auto text-slate-300">
+        <pre className="overflow-x-auto border-t border-slate-800 p-3 text-xs leading-relaxed text-slate-300">
           {JSON.stringify(defaultCoreSettings, null, 2)}
         </pre>
       </details>

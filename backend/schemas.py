@@ -97,6 +97,13 @@ class UploadTopologyResponse(BaseModel):
         default_factory=list,
         description="Non-destructive normalization notices (e.g. self-loops, duplicate edges, skipped unidentifiable records)",
     )
+    summary: dict[str, Any] | None = Field(
+        None,
+        description="Structural summary of the normalized topology: zones, asset kinds, "
+        "relationship types, firewalled edges and per-field attribute coverage. "
+        "Computed from the validated data so the analyst can review what was "
+        "detected before running an assessment.",
+    )
 
 
 class UploadTopologyFileResponse(UploadTopologyResponse):

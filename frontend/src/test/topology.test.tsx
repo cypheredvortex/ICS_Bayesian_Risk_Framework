@@ -26,9 +26,10 @@ describe('Topology upload', () => {
       await screen.findByText(/Loaded my_topology.json: 1 assets, 0 relationships/),
     ).toBeInTheDocument()
     // "Active topology:" is a label followed by a <strong> filename; check
-    // both parts since the text is split across nested elements.
+    // both parts since the text is split across nested elements. The
+    // filename also appears in the review panel, so match any occurrence.
     expect(screen.getByText(/Active topology:/)).toBeInTheDocument()
-    expect(screen.getByText('my_topology.json')).toBeInTheDocument()
+    expect(screen.getAllByText('my_topology.json').length).toBeGreaterThan(0)
     restore()
   })
 

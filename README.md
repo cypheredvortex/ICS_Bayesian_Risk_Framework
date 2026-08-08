@@ -46,8 +46,10 @@ assessment of ICS environments:
 - **Impossible evidence is never silently accepted.** Zero-probability
   evidence returns a structured `IMPOSSIBLE_EVIDENCE` diagnostic.
 
-Authoritative documents: [`docs/model-assumptions.md`](docs/model-assumptions.md)
-and [`docs/parameter-provenance.md`](docs/parameter-provenance.md).
+Authoritative documents: [`docs/model-assumptions.md`](docs/model-assumptions.md),
+[`docs/parameter-provenance.md`](docs/parameter-provenance.md) and
+[`docs/topology-ingestion.md`](docs/topology-ingestion.md) (supported topology
+representations, format semantics and the analyst upload workflow).
 
 ---
 
@@ -246,6 +248,12 @@ its attributes; `relationships` lists directed links between assets.
 - CSV/Excel/GraphML/XML/AML/VSDX/VDX equivalents are converted into this
   normalized schema.
 
+Each supported representation has distinct real-world semantics (native,
+inventory, interchange, visualization/conversion) — they are **not** treated
+as equivalent. See [`docs/topology-ingestion.md`](docs/topology-ingestion.md)
+for the format-by-format assessment and the upload → review → analyze
+workflow.
+
 ---
 
 ## Configuration
@@ -404,7 +412,7 @@ route for investigation prioritisation; it is not proof of a real intrusion.
 ### Backend
 
 ```bash
-python -m pytest tests/ -q          # 219 tests
+python -m pytest tests/ -q          # 221 tests
 ruff check .                        # lint
 mypy backend/ --ignore-missing-imports   # type check (must pass in CI)
 ```

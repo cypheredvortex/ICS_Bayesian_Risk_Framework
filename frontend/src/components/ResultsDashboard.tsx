@@ -1,5 +1,7 @@
 import { formatProbability, formatEvidence, getRiskTone } from '../utils'
 import type { ResultPayload, RiskThresholds } from '../types'
+import { riskLevelMeta } from '../constants'
+import { Badge } from './ui'
 
 function formatThresholdScale(t: RiskThresholds): string {
   const f = (value: number) => value.toFixed(2)
@@ -25,53 +27,72 @@ export default function ResultsDashboard({
   thresholds: RiskThresholds
   setSelectedNode: (id: string) => void
 }) {
+  const levelMeta =
+    riskLevelMeta[result.summary.risk_level as keyof typeof riskLevelMeta] ??
+    riskLevelMeta.low
+
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-      <h2 className="text-xl font-semibold">Results Dashboard</h2>
+    <div className="card card-pad">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 className="card-title">Results Dashboard</h2>
+          <p className="card-subtitle">
+            Decision-ready outputs from the latest assessment run.
+          </p>
+        </div>
+        <Badge tone={result.summary.evidence_used && Object.keys(result.summary.evidence_used).length ? 'cyan' : 'slate'}>
+          {formatEvidence(result.summary.evidence_used).split(' — ')[0]}
+        </Badge>
+      </div>
+
       <div className="mt-4 space-y-4">
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="rounded-xl bg-slate-800 p-4">
-            <p className="text-sm text-slate-400">Overall Risk (worst case)</p>
-            <p className="mt-2 text-2xl font-semibold text-cyan-300">
+          <div className="stat-card">
+            <p className="stat-label">Overall Risk (worst case)</p>
+            <p className="stat-value text-cyan-300">
               {formatProbability(result.summary.overall_risk)}
             </p>
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="stat-hint">
               {result.summary.overall_risk_basis ??
                 'Highest single-asset risk index in the topology.'}
             </p>
           </div>
-          <div
-            className={`rounded-xl border p-4 ${getRiskTone(result.summary.risk_level)}`}
-          >
-            <p className="text-sm">Risk Level</p>
-            <p className="mt-2 text-2xl font-semibold uppercase">
+          <div className={`stat-card border ${getRiskTone(result.summary.risk_level)}`}>
+            <p className="stat-label">Risk Level</p>
+            <p className="stat-value uppercase" style={{ color: levelMeta.hex }}>
               {result.summary.risk_level}
             </p>
-            <p className="mt-1 text-xs">
+            <p className="stat-hint">
               Risk index = posterior probability × normalised impact. Active
               scale (from settings): {formatThresholdScale(thresholds)}
             </p>
           </div>
         </div>
 
-        <div className="rounded-xl bg-slate-800 p-4">
-          <h3 className="font-semibold">Posterior probabilities</h3>
-          <p className="mt-1 text-xs text-slate-400">
+        <div className="stat-card">
+          <h3 className="font-semibold text-slate-200">Posterior probabilities</h3>
+          <p className="mt-1 text-xs text-slate-500">
             Estimated compromise probability after evidence propagates through
             the Bayesian network.
           </p>
-          <div className="mt-3 max-h-56 space-y-2 overflow-y-auto pr-1 text-sm">
+          <div className="mt-3 max-h-64 space-y-1.5 overflow-y-auto pr-1">
             {chartData.map(({ asset, probability, pinned }) => (
               <button
                 key={asset}
                 onClick={() => setSelectedNode(asset)}
-                className="flex w-full items-center justify-between rounded-lg bg-slate-900/70 px-3 py-2 text-left hover:bg-slate-900"
+                className="flex w-full items-center gap-3 rounded-lg bg-slate-900/70 px-3 py-2 text-left transition hover:bg-slate-900"
               >
-                <span>
+                <span className="w-36 truncate font-mono text-sm text-slate-200">
                   {asset}
                   {pinned ? ' 📌' : ''}
                 </span>
-                <span className="font-medium text-cyan-200">
+                <span className="progress-track flex-1" aria-hidden="true">
+                  <span
+                    className="progress-fill"
+                    style={{ width: `${Math.min(100, probability * 100)}%` }}
+                  />
+                </span>
+                <span className="w-12 shrink-0 text-right font-mono text-sm font-semibold text-cyan-200">
                   {formatProbability(probability)}
                 </span>
               </button>
@@ -79,26 +100,28 @@ export default function ResultsDashboard({
           </div>
         </div>
 
-        <div className="rounded-xl bg-slate-800 p-4">
-          <h3 className="font-semibold">Top high-risk assets</h3>
-          <p className="mt-1 text-xs text-slate-400">
+        <div className="stat-card">
+          <h3 className="font-semibold text-slate-200">Top high-risk assets</h3>
+          <p className="mt-1 text-xs text-slate-500">
             Risk index = posterior probability × normalised consequence impact
             (severity/10 × scope). Probability and impact are shown separately
             so the product is transparent.
           </p>
-          <div className="mt-3 space-y-2 text-sm">
+          <div className="mt-3 space-y-1.5 text-sm">
             {riskRanking.map((entry) => (
               <button
                 key={entry.asset}
                 onClick={() => setSelectedNode(entry.asset)}
-                className="flex w-full items-center justify-between gap-2 rounded-lg bg-slate-900/70 px-3 py-2 text-left hover:bg-slate-900"
+                className="flex w-full items-center justify-between gap-2 rounded-lg bg-slate-900/70 px-3 py-2 text-left transition hover:bg-slate-900"
               >
-                <span className="truncate">{entry.asset}</span>
-                <span className="whitespace-nowrap font-medium text-slate-300">
+                <span className="truncate font-mono text-sm text-slate-200">
+                  {entry.asset}
+                </span>
+                <span className="whitespace-nowrap font-mono text-xs text-slate-400">
                   P {formatProbability(entry.probability)} ×{' '}
                   {formatProbability(entry.impact)}
-                  <span className="ml-2 text-rose-300">=
-                    {formatProbability(entry.risk)}
+                  <span className="ml-2 font-semibold text-rose-300">
+                    = {formatProbability(entry.risk)}
                   </span>
                 </span>
               </button>
@@ -106,29 +129,26 @@ export default function ResultsDashboard({
           </div>
         </div>
 
-        <div className="rounded-xl bg-slate-800 p-4">
-          <h3 className="font-semibold">Highest-priority attack path</h3>
-          <p className="mt-3 break-words text-sm text-slate-300">
-            {result.attack_paths?.length
-              ? `${((result.attack_paths[0].path as string[] | undefined) ?? []).join(' → ')}`
-              : 'No path was calculated. Mark an entry asset as Compromised to analyse a specific scenario.'}
-          </p>
+        <div className="stat-card">
+          <h3 className="font-semibold text-slate-200">
+            Highest-priority attack path
+          </h3>
           {result.attack_paths?.length ? (
             <>
-              <p className="mt-2 text-xs text-slate-400">
-                Score{' '}
-                {formatProbability(
-                  Number(result.attack_paths[0].score ?? 0),
-                )}
+              <p className="mt-2 break-words font-mono text-sm leading-relaxed text-slate-200">
+                {((result.attack_paths[0].path as string[] | undefined) ?? []).join(' → ')}
+              </p>
+              <p className="mt-2 text-xs text-slate-500">
+                Score {formatProbability(Number(result.attack_paths[0].score ?? 0))}
                 : this modelled route combines link propagation weights and
                 destination risk. It prioritises investigation; it is not proof
                 of a real intrusion.
               </p>
-              <details className="mt-3 rounded-lg border border-slate-700 bg-slate-950/60 p-3">
-                <summary className="cursor-pointer text-sm font-semibold text-cyan-200">
+              <details className="details-card mt-3">
+                <summary className="details-summary">
                   All calculated attack paths ({result.attack_paths.length})
                 </summary>
-                <ol className="mt-3 max-h-64 space-y-2 overflow-y-auto pr-1 text-xs text-slate-300">
+                <ol className="max-h-64 space-y-2 overflow-y-auto border-t border-slate-800 p-3 pr-1 text-xs text-slate-300">
                   {result.attack_paths.map((path, index) => (
                     <li
                       key={`${String(path.source ?? 'source')}-${index}`}
@@ -144,17 +164,21 @@ export default function ResultsDashboard({
                     </li>
                   ))}
                 </ol>
-                <p className="mt-2 text-xs text-slate-400">
+                <p className="mt-2 text-xs text-slate-500">
                   Ordered by score. The list includes every route meeting the
                   model's minimum propagation threshold and maximum-depth
                   safeguards.
                 </p>
               </details>
             </>
-          ) : null}
+          ) : (
+            <p className="mt-2 text-sm text-slate-400">
+              No path was calculated. Mark an entry asset as Compromised to
+              analyse a specific scenario.
+            </p>
+          )}
         </div>
       </div>
     </div>
   )
 }
-

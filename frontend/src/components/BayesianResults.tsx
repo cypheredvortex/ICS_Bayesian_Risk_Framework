@@ -1,5 +1,6 @@
 import { formatEvidence } from '../utils'
 import type { ResultPayload } from '../types'
+import { EmptyState, KvRow } from './ui'
 
 export default function BayesianResults({
   result,
@@ -7,46 +8,52 @@ export default function BayesianResults({
   result: ResultPayload | null
 }) {
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900 p-6">
-      <h2 className="text-xl font-semibold">Bayesian Results</h2>
-      <p className="mt-1 text-sm text-slate-400">
+    <div className="card card-pad">
+      <h2 className="card-title">Bayesian Results</h2>
+      <p className="card-subtitle">
         Run context and model outputs. Evidence is what you supplied;
         probabilities and rankings are calculated from that evidence and the
         topology.
       </p>
-      <div className="mt-4 rounded-xl bg-slate-950/80 p-4 text-sm">
+      <div className="mt-4">
         {result ? (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Evidence used</span>
-              <span className="max-w-[65%] text-right font-semibold text-white">
-                {formatEvidence(result.evidence_used)}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Assets</span>
-              <span className="font-semibold text-white">
-                {result.summary.asset_count}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Connections</span>
-              <span className="font-semibold text-white">
-                {result.summary.relationship_count}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-400">Run time</span>
-              <span className="font-semibold text-white">
-                {Number(result.timings?.total_time_seconds ?? 0).toFixed(3)}s
-              </span>
+          <div className="rounded-xl border border-slate-800 bg-slate-950/60 px-4 py-3">
+            <div className="mt-1">
+              <KvRow
+                label="Evidence used"
+                value={
+                  <span className="max-w-[280px] break-words text-right">
+                    {formatEvidence(result.evidence_used)}
+                  </span>
+                }
+              />
+              <KvRow label="Assets" value={result.summary.asset_count} />
+              <KvRow
+                label="Connections"
+                value={result.summary.relationship_count}
+              />
+              <KvRow
+                label="Run time"
+                value={`${Number(result.timings?.total_time_seconds ?? 0).toFixed(3)}s`}
+                tone="cyan"
+              />
+              <KvRow
+                label="Topology"
+                value={
+                  <span className="max-w-[280px] truncate">
+                    {result.summary.topology}
+                  </span>
+                }
+              />
             </div>
           </div>
         ) : (
-          <p className="text-slate-400">No assessment results available.</p>
+          <EmptyState
+            title="No assessment results"
+            hint="Run an assessment to see the model context and outputs here."
+          />
         )}
       </div>
     </div>
   )
 }
-
