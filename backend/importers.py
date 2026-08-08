@@ -12,8 +12,6 @@ import io
 import json
 import os
 import re
-import shutil
-import subprocess
 import tempfile
 import zipfile
 import xml.etree.ElementTree as ET
@@ -43,12 +41,20 @@ _SUPPORTED_EXTENSIONS = {
     ".csv",
     ".xlsx",
     ".vsdx",
-    ".vsd",
     ".vdx",
     ".graphml",
     ".xml",
     ".aml",
 }
+
+_VSDX_SUPPORT_MESSAGE = (
+    "Legacy binary Visio .vsd files cannot be parsed natively. "
+    "Convert the file to a supported format first:\n"
+    "  1. In Microsoft Visio: File > Save As > .vsdx\n"
+    "  2. With LibreOffice: soffice --headless --convert-to vsdx your_file.vsd\n"
+    "  3. Export the diagram to JSON, CSV, or GraphML from Visio and upload that.\n"
+    "Supported formats: .json, .yaml, .yml, .csv, .xlsx, .graphml, .xml, .aml, .vsdx, .vdx"
+)
 
 _ASSET_HEADERS = {
     "id",
@@ -89,6 +95,20 @@ _ASSET_FIELD_MAP = {
     "ip": "ip",
     "protocols": "protocols",
     "metadata": "metadata",
+    # Cybersecurity attributes (must reach normalize_asset for strict
+    # validation; previously these CSV columns were silently dropped).
+    "cvss_type": "cvss_type",
+    "cvss": "cvss_type",
+    "exposed": "exposed",
+    "patched": "patched",
+    "consequence_severity": "consequence_severity",
+    "consequence": "consequence_severity",
+    "impact": "consequence_severity",
+    "scope": "scope",
+    "p_base_override": "p_base_override",
+    "awareness": "awareness",
+    "privilege": "privilege",
+    "role": "role",
 }
 
 _REL_FIELD_MAP = {
@@ -133,27 +153,28 @@ def load_topology_from_bytes(content: bytes, filename: str) -> dict[str, Any]:
         raw = _parse_aml_bytes(content)
     elif suffix == ".vdx":
         raw = _parse_vdx_bytes(content)
-    elif suffix in {".vsdx", ".vsd"}:
+    elif suffix == ".vsd":
+        raise ValueError(_VSDX_SUPPORT_MESSAGE)
+    elif suffix == ".vsdx":
         raw = _parse_vsdx_bytes(content, filename)
     else:
         raise ValueError(
             f"Unsupported topology format '{suffix}'. Supported formats: "
-            ".json, .yaml, .yml, .csv, .xlsx, .vsdx, .vsd, .vdx, .graphml, .xml, .aml"
+            ".json, .yaml, .yml, .csv, .xlsx, .graphml, .xml, .aml, .vsdx, .vdx"
         )
     return _normalize_topology(raw, filename)
 
 
 def _load_file(path: Path) -> dict[str, Any]:
     suffix = path.suffix.lower()
-    if suffix in {
-        ".json", ".yaml", ".yml", ".csv", ".xlsx",
-        ".vsdx", ".vsd", ".vdx", ".graphml", ".xml", ".aml",
-    }:
+    if suffix in _SUPPORTED_EXTENSIONS or suffix == ".vsd":
+        # .vsd is routed through load_topology_from_bytes so users get the
+        # actionable conversion guidance rather than a generic format error.
         with open(path, "rb") as handle:
             return load_topology_from_bytes(handle.read(), path.name)
     raise ValueError(
         f"Unsupported topology format '{suffix}'. Supported formats: "
-        ".json, .yaml, .yml, .csv, .xlsx, .vsdx, .vsd, .vdx, .graphml, .xml, .aml"
+        ".json, .yaml, .yml, .csv, .xlsx, .graphml, .xml, .aml, .vsdx, .vdx"
     )
 
 
@@ -306,8 +327,16 @@ def _parse_graphml_bytes(content: bytes) -> dict[str, Any]:
     graph = nx.read_graphml(io.BytesIO(content))
     assets: dict[str, dict] = {}
     relationships: list[tuple] = []
+    _PROMOTED_NODE_ATTRS = {
+        "label", "name", "kind", "type", "vendor", "model", "zone", "ip",
+        # Security attributes: promote so they reach normalize_asset's strict
+        # validation instead of being silently buried in metadata.
+        "cvss_type", "cvss", "exposed", "patched",
+        "consequence_severity", "consequence", "scope", "awareness",
+        "privilege", "role", "p_base_override", "vulnerabilities",
+    }
     for node, data in graph.nodes(data=True):
-        raw = {
+        raw: dict[str, Any] = {
             "id": node,
             "name": data.get("label") or data.get("name") or node,
             "kind": data.get("kind") or data.get("type"),
@@ -315,7 +344,30 @@ def _parse_graphml_bytes(content: bytes) -> dict[str, Any]:
             "model": data.get("model"),
             "zone": data.get("zone"),
             "ip": data.get("ip"),
-            "metadata": {k: v for k, v in data.items() if k not in {"label", "name", "kind", "type", "vendor", "model", "zone", "ip"}},
+        }
+        # Promote security attributes so they reach normalize_asset's strict
+        # validation instead of being silently buried in metadata.  Only keys
+        # actually present in the file are set (a bare None would be rejected
+        # by the strict validators).
+        promoted: dict[str, Any] = {
+            "cvss_type": data.get("cvss_type", data.get("cvss")),
+            "exposed": data.get("exposed"),
+            "patched": data.get("patched"),
+            "consequence_severity": data.get(
+                "consequence_severity", data.get("consequence")
+            ),
+            "scope": data.get("scope"),
+            "awareness": data.get("awareness"),
+            "privilege": data.get("privilege"),
+            "role": data.get("role"),
+            "p_base_override": data.get("p_base_override"),
+            "vulnerabilities": data.get("vulnerabilities"),
+        }
+        for key, value in promoted.items():
+            if value is not None:
+                raw[key] = value
+        raw["metadata"] = {
+            k: v for k, v in data.items() if k not in _PROMOTED_NODE_ATTRS
         }
         assets[node] = raw
 
@@ -445,44 +497,6 @@ def _parse_aml_bytes(content: bytes) -> dict[str, Any]:
     return {"assets": assets, "relationships": relationships}
 
 
-def _try_libreoffice_convert_vsd(content: bytes) -> bytes | None:
-    """Attempt to convert .vsd (binary) to .vsdx via LibreOffice headless mode.
-
-    Returns the converted .vsdx bytes, or None if LibreOffice is unavailable
-    or conversion fails.
-    """
-    if not shutil.which("soffice"):
-        return None
-
-    with tempfile.NamedTemporaryFile(suffix=".vsd", delete=False) as in_tmp:
-        in_tmp.write(content)
-        in_path = in_tmp.name
-
-    out_dir = tempfile.mkdtemp()
-    try:
-        subprocess.run(
-            ["soffice", "--headless", "--convert-to", "vsdx", "--outdir", out_dir, in_path],
-            check=True,
-            capture_output=True,
-            timeout=60,
-        )
-        out_path = Path(out_dir) / (Path(in_path).stem + ".vsdx")
-        if out_path.exists():
-            return out_path.read_bytes()
-    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, FileNotFoundError):
-        pass
-    finally:
-        try:
-            os.unlink(in_path)
-        except OSError:
-            pass
-        try:
-            shutil.rmtree(out_dir)
-        except OSError:
-            pass
-    return None
-
-
 def _parse_vdx_bytes(content: bytes) -> dict[str, Any]:
     """Parse Visio 2003-2010 XML (.vdx) format.
 
@@ -580,29 +594,11 @@ def _parse_vdx_bytes(content: bytes) -> dict[str, Any]:
 
 
 def _parse_vsdx_bytes(content: bytes, filename: str) -> dict[str, Any]:
-    """Parse Visio .vsdx (Open XML) or converted .vsd files."""
+    """Parse Visio .vsdx (Open XML) files."""
     if vsdx is None:
         raise ImportError(
             "vsdx library is required to parse .vsdx files. Install with: pip install vsdx"
         )
-
-    suffix = Path(filename).suffix.lower()
-
-    # --- Handle legacy .vsd (binary) via LibreOffice conversion ---
-    if suffix == ".vsd":
-        converted = _try_libreoffice_convert_vsd(content)
-        if converted is None:
-            raise ValueError(
-                "Legacy .vsd (binary Visio) files cannot be parsed directly. "
-                "LibreOffice (soffice) was not found on this system to perform automatic conversion.\n\n"
-                "To upload this file, convert it first:\n"
-                "  1. Open in Microsoft Visio and Save As → .vsdx\n"
-                "  2. Or install LibreOffice and run:\n"
-                "       soffice --headless --convert-to vsdx your_file.vsd\n"
-                "  3. Or export from Visio to GraphML, JSON, or CSV and upload that instead."
-            )
-        content = converted
-        filename = Path(filename).stem + ".vsdx"
 
     with tempfile.NamedTemporaryFile(suffix=".vsdx", delete=False) as tmp:
         tmp.write(content)
@@ -771,5 +767,5 @@ def _normalize_topology(raw: Any, source_label: str) -> dict[str, Any]:
             if normalized:
                 relationships.append(normalized)
 
-    validate_graph(assets, relationships, source_label)
+    relationships = validate_graph(assets, relationships, source_label)
     return {"assets": assets, "relationships": relationships}

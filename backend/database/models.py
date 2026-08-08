@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from sqlalchemy import (
-    JSON, Column, DateTime, ForeignKey, Index, Integer, String, Text,
+    JSON, DateTime, ForeignKey, Index, Integer, String, Text,
     UniqueConstraint, Float,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship

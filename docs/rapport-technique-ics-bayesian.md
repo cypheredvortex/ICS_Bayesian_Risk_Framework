@@ -39,7 +39,7 @@ Le framework accepte une topologie structurée, valide ses actifs et relations, 
 ### 1.2 Fonctionnalités livrées
 
 - modélisation d'actifs humains, techniques et physiques ;
-- import de topologies JSON, YAML ou CSV, et jeux de données prédéfinis ;
+- import de topologies JSON, YAML, CSV, Excel, GraphML, XML/AML, VSDX ou VDX, et jeux de données prédéfinis ;
 - représentation pondérée des dépendances et des contrôles ;
 - calcul automatique de probabilités de base et de CPT ;
 - inférence bayésienne à partir de preuves « Compromised » ou « Safe » ;
@@ -105,9 +105,11 @@ Le CSV est privilégié pour un registre ouvrable et triable dans un tableur. Le
 
 La chaîne suivante établit une trace claire entre l'architecture importée et le résultat présenté.
 
-1. **Chargement des actifs.** `assets.py` lit JSON, YAML ou CSV, normalise la structure et vérifie les champs requis par type d'actif. Un équipement contient notamment CVSS, exposition et état de correctif ; un humain contient rôle, sensibilisation et privilège.
+1. **Chargement des actifs.** `assets.py` lit JSON, YAML, CSV, Excel, GraphML, XML/AML, VSDX ou VDX, normalise la structure et vérifie strictement les champs par type d'actif (plages CVSS [0,10], sévérité de conséquence [0,10], sensibilisation [0,1], etc.). Un équipement porte une liste de vulnérabilités (CVE + vecteur CVSS) et/ou un score CVSS effectif ; un humain contient rôle, sensibilisation et privilège.
+
+   Les vecteurs CVSS v3.1 sont interprétés par `cvss.py`, qui implémente les équations officielles de base de FIRST (score de base = Roundup(min(Impact + Exploitabilité, 10)), avec les sous-scores Impact et Exploitabilité standard). Le score effectif d'un actif est le maximum sur ses vulnérabilités. CVSS est un score de sévérité, jamais confondu avec une probabilité.
 2. **Construction du graphe.** `graph_builder.py` crée un graphe orienté. Chaque relation reçoit un poids initial selon son type (`controls`, `actuates`, `connects-to`, etc.), ajusté par le pare-feu, le protocole, le niveau de confiance et un identifiant MITRE éventuellement fourni.
-3. **Probabilités de base.** `probability.py` estime la probabilité intrinsèque. Pour un équipement, elle combine CVSS, exposition et correctif ; pour un humain, risque de phishing, sensibilisation et privilège ; pour un actif physique, une valeur explicite peut être fournie. La valeur est plafonnée à 0,95.
+3. **Probabilités de base.** `probability.py` estime la probabilité intrinsèque via une hypothèse de modélisation explicite : une courbe logistique calibrée `P₀ = 1/(1 + exp(−k·(CVSS − x₀)))` (paramètres k et x₀ configurables) transforme le score de sévérité CVSS en probabilité de compromission intrinsèque, jamais exactement 0 ni 1. Pour un humain, risque de phishing, sensibilisation et privilège ; pour un actif physique, une valeur explicite peut être fournie. Les facteurs de contexte (exposition, correctif, privilège) s'appliquent dans le domaine des log-odds.
 4. **Génération des CPT.** `cpt_generator.py` paramètre chaque nœud. Pour un nœud sans parent, la CPT est sa probabilité de base. Sinon le modèle *Noisy-OR* évite de définir manuellement les `2^k` cas tout en conservant une CPT complète :
 
    `P(N=1 | Pa) = 1 - (1 - P_base(N)) × Π(1 - w_i)` pour les parents compromis.
@@ -115,7 +117,7 @@ La chaîne suivante établit une trace claire entre l'architecture importée et 
 5. **Réseau bayésien.** Les CPT sont attachées au modèle pgmpy et `check_model()` vérifie la cohérence probabiliste.
 6. **Inférence.** `inference.py` nettoie les preuves, refuse les nœuds inconnus et interroge `VariableElimination` pour obtenir `P(actif compromis | preuves)`.
 7. **Propagation et chemins.** Les poids de liens permettent de classer les chemins partant d'une preuve compromise, ou des sources du graphe en l'absence de preuve, vers les actifs risqués.
-8. **Calcul du risque.** `risk.py` calcule un impact à partir de la sévérité de conséquence et du périmètre, puis `risque = probabilité postérieure × impact`. Le tableau est trié par risque décroissant.
+8. **Calcul du risque.** `risk.py` calcule un impact normalisé `(sévérité/10) × multiplicateur de périmètre`, puis `indice de risque = probabilité postérieure × impact`. L'indice reste donc borné (~[0, 1,4]) et est clairement distingué de la probabilité et de l'impact dans l'interface. Les seuils de niveau (Critique ≥ 0,75 ; Élevé ≥ 0,50 ; Modéré ≥ 0,25 ; Faible < 0,25) sont configurables. Le risque réseau est l'indice maximal sur les actifs ; moyenne, médiane et répartition par niveau complètent le résumé. Le tableau est trié par risque décroissant.
 9. **Visualisation.** L'API renvoie graphe, postérieurs, CPT, classement, chemins et résumé. Le frontend les rend sous forme de tableau de bord et prépare les deux exports décisionnels.
 
 ## 5. Description des modules principaux
@@ -280,4 +282,4 @@ Pour un automate avec une probabilité de base de 0,10 et deux parents compromis
 | SCADA | Système de supervision et d'acquisition de données. |
 | CPT/CPD | Table/distribution de probabilités conditionnelles. |
 | API REST | Interface HTTP reposant sur des ressources et verbes standardisés. |
-| CVSS | Score standard de sévérité de vulnérabilité. |
+| CVSS | *Common Vulnerability Scoring System*, score standard de sévérité de vulnérabilité (v3.1 ici). |

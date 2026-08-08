@@ -318,7 +318,7 @@ Les systèmes de contrôle industriels (ICS) pilotent des procédés physiques d
 
 Le présent projet propose un framework qui transforme une architecture ICS en un réseau bayésien discret. Il calcule des probabilités intrinsèques de compromission et paramètre automatiquement les tables de probabilités conditionnelles (CPT) via un modèle Noisy-OR, en attribuant une probabilité de propagation pour chaque relation. L'inférence exacte tient compte des preuves et classe les actifs par risque.
 
-Une application Desktop mono-utilisateur permet d'importer une topologie (JSON, YAML, CSV), de sélectionner des preuves, d'exécuter l'analyse, d'inspecter le réseau et de télécharger un registre des risques ainsi qu'un rapport PDF. Le prototype est fonctionnel, modulaire, testable et configurable pour s'adapter à des contextes industriels réels.
+Une application Web permet d'importer une topologie (JSON, YAML, CSV, Excel, GraphML, XML/AML, VSDX, VDX), de sélectionner des preuves, d'exécuter l'analyse, d'inspecter le réseau et les tables de probabilités conditionnelles, et de télécharger un registre des risques ainsi qu'un rapport PDF. Le prototype est fonctionnel, modulaire, testable et configurable pour s'adapter à des contextes industriels réels.
 \end{abstractbox}
 
 % ============================================================
@@ -334,7 +334,7 @@ Industrial Control Systems (ICS) drive physical processes whose compromise can l
 
 This project introduces a framework that transforms an ICS architecture into a discrete Bayesian network. It computes intrinsic compromise probabilities and automatically populates Conditional Probability Tables (CPTs) using a Noisy-OR model, assigning a propagation probability to each relationship. Exact inference incorporates evidence and ranks assets by risk.
 
-A single-user desktop application enables users to import a network topology (JSON, YAML, CSV), select evidence, execute the risk analysis, inspect the Bayesian network, and download a risk register along with a PDF report. The prototype is functional, modular, testable, and configurable, allowing it to be adapted to real-world industrial environments.
+A web application enables users to import a network topology (JSON, YAML, CSV, Excel, GraphML, XML/AML, VSDX, VDX), select evidence, execute the risk analysis, inspect the Bayesian network and its conditional probability tables, and download a risk register along with a PDF report. The prototype is functional, modular, testable, and configurable, allowing it to be adapted to real-world industrial environments.
 \end{abstractbox}
 
 % ============================================================
@@ -392,7 +392,7 @@ A single-user desktop application enables users to import a network topology (JS
 \begin{contributionbox}
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip, topsep=2pt]
     \item Modélisation d'actifs humains, techniques et physiques.
-    \item Import de topologies JSON, YAML ou CSV + jeux de données prédéfinis.
+    \item Import de topologies JSON, YAML, CSV, Excel, GraphML, XML/AML, VSDX, VDX + jeux de données prédéfinis.
     \item Pondération des dépendances et des contrôles.
     \item Calcul automatique des probabilités de base, des CPT et des probabilités de propagation.
     \item Inférence bayésienne à partir de preuves « Compromised » ou « Safe ».
@@ -434,7 +434,7 @@ Raccourci clavier (touche r) pour lancer l'évaluation une fois les données dis
     \item Deux chemins de chargement :
         \begin{itemize}
             \item GET /datasets/\{nom\} pour un preset, republié via POST /upload-topology.
-            \item POST /upload-topology-file pour un fichier .json, .yaml/.yml ou .csv (backend seul parse et valide).
+            \item POST /upload-topology-file pour un fichier .json, .yaml/.yml, .csv, .xlsx, .graphml, .xml/.aml, .vsdx ou .vdx (le backend seul parse et valide).
         \end{itemize}
     \item La validation côté serveur vérifie le graphe orienté acyclique et les champs requis par type d'actif.
     \item Changer de preset alors que des preuves existent déclenche une confirmation (réinitialisation de la topologie, des preuves et du résultat).
@@ -452,7 +452,7 @@ En cas d'échec, le message d'erreur (champ detail de FastAPI) est affiché dans
     \item Les preuves sont conservées côté client sous forme lisible, puis converties en couples \{asset, state\} (valeurs 0/1) à l'envoi.
     \item Le panneau « Settings » permet d'ajuster :
         \begin{itemize}
-            \item Poids CVSS, d'exposition, de correctif et d'impact.
+            \item Poids d'exposition, de correctif et d'impact.
             \item Poids de propagation par type de relation (controls, monitors, actuates, connects-to, programs / operates).
             \item Multiplicateurs pour lien pare-feuté ou non.
         \end{itemize}
@@ -668,7 +668,7 @@ fetch & Client HTTP natif & Axios & Besoin couvert sans ajouter de dépendance \
 \node[class] (probaengine) at (-1,-2) {ProbabilityEngine\\\dividerline + compute\_base\_probs()};
 
 \node[class] (cptgen) at (4,2) {CPTGenerator\\\dividerline + generate\_cpt()\\(Noisy-OR)};
-\node[class] (settings) at (4,-2) {Settings\\\dividerline - poids CVSS,\\exposition, propagation};
+\node[class] (settings) at (4,-2) {Settings\\\dividerline - poids exposition,\\correctif, propagation};
 
 \node[class] (inference) at (9,2) {InferenceEngine\\\dividerline + run\_inference()\\(pgmpy)};
 

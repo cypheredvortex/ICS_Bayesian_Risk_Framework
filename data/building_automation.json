@@ -16,10 +16,16 @@
     },
     "building_mgmt_system": {
       "kind": "device",
-      "cvss_type": 6.5,
       "exposed": true,
       "patched": false,
-      "consequence_severity": 5
+      "consequence_severity": 5,
+      "vulnerabilities": [
+        {
+          "cve_id": "CVE-2014-0160",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+          "source": "NVD"
+        }
+      ]
     },
     "hvac_controller": {
       "kind": "device",

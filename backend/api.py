@@ -16,9 +16,12 @@ import json
 import logging
 import os
 import uuid
+import xml.etree.ElementTree as ET
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
+
+import yaml
 
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile, Depends, Security
 from fastapi.middleware.cors import CORSMiddleware
@@ -65,7 +68,7 @@ DATASET_FILES: dict[str, Path] = {
 CORS_ORIGINS = [o.strip() for o in os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",") if o.strip()]
 MAX_UPLOAD_SIZE_MB = int(os.getenv("MAX_UPLOAD_SIZE_MB", "50"))
 MAX_UPLOAD_BYTES = MAX_UPLOAD_SIZE_MB * 1024 * 1024
-API_VERSION = "1.0.1"
+API_VERSION = "1.1.0"
 RATE_LIMIT_PER_MINUTE = int(os.getenv("RATE_LIMIT_PER_MINUTE", "60"))
 API_KEY = os.getenv("ICS_API_KEY", "")  # Set to enable authentication
 
@@ -240,7 +243,7 @@ def upload_topology(request: Request, payload: TopologyUploadRequest):
     "/upload-topology-file",
     response_model=UploadTopologyFileResponse,
     tags=["Topologies"],
-    summary="Upload topology from file (JSON, YAML, CSV, Excel, GraphML, XML/AML, or VSDX)",
+    summary="Upload topology from file (JSON, YAML, CSV, Excel, GraphML, XML/AML, VSDX, or VDX)",
 )
 @limiter.limit(f"{RATE_LIMIT_PER_MINUTE}/minute")
 async def upload_topology_file(request: Request, file: UploadFile = File(...)):
@@ -257,10 +260,14 @@ async def upload_topology_file(request: Request, file: UploadFile = File(...)):
         )
     try:
         assets, relationships = load_topology_from_bytes(content, file.filename or "topology.json")
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
     except json.JSONDecodeError as exc:
         raise HTTPException(status_code=400, detail=f"Invalid JSON: {exc}") from exc
+    except yaml.YAMLError as exc:
+        raise HTTPException(status_code=400, detail=f"Invalid YAML: {exc}") from exc
+    except ET.ParseError as exc:
+        raise HTTPException(status_code=400, detail=f"Invalid XML/AML: {exc}") from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
     topology = {
         "assets": assets,
@@ -296,9 +303,12 @@ def analyze_endpoint(
             output_dir=OUTPUT_DIR,
         )
     except ValueError as exc:
+        # Validation and modeling errors are client errors: report the
+        # actionable message as a 400.
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Assessment execution failed: {exc}") from exc
+    # Any other failure is deliberately NOT exposed to the client (no internal
+    # detail leakage): the global exception handler returns a generic
+    # INTERNAL_ERROR response while logging the full traceback.
 
     try:
         generate_pdf_report(result, REPORT_FILES["assessment.pdf"])

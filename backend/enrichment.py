@@ -9,20 +9,20 @@ from __future__ import annotations
 
 from typing import Any
 
-from backend.topology import infer_asset_kind, infer_asset_zone
+from backend.topology import DEFAULT_REL_TYPE, infer_asset_kind, infer_asset_zone
 
 _DEFAULT_DEVICE_CVSS = 5.0
 _DEFAULT_DEVICE_EXPOSED = True
 _DEFAULT_DEVICE_PATCHED = False
-_DEFAULT_DEVICE_CONSEQUENCE = 1.0
+_DEFAULT_DEVICE_CONSEQUENCE = 5.0
 
 _DEFAULT_HUMAN_ROLE = "operator"
 _DEFAULT_HUMAN_AWARENESS = 0.35
 _DEFAULT_HUMAN_PRIVILEGE = "standard"
-_DEFAULT_HUMAN_CONSEQUENCE = 0.5
+_DEFAULT_HUMAN_CONSEQUENCE = 3.0
 
 _DEFAULT_PHYSICAL_P_BASE = 0.01
-_DEFAULT_PHYSICAL_CONSEQUENCE = 0.1
+_DEFAULT_PHYSICAL_CONSEQUENCE = 4.0
 
 _VENDOR_PATTERNS = {
     "siemens": "Siemens",

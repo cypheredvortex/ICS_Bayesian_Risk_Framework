@@ -43,7 +43,7 @@ class TestNoisyOrCPT:
     def test_child_node_has_parents(self, model_and_weights, assets) -> None:
         model, weights = model_and_weights
         base_probs = compute_base_probs(assets)
-        cpd = noisy_or_cpt("B", model, weights, base_probs)
+        noisy_or_cpt("B", model, weights, base_probs)
         assert len(list(model.get_parents("B"))) == 1
 
     def test_all_parents_active_increases_probability(self, model_and_weights, assets) -> None:

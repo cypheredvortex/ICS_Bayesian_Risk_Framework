@@ -1,4 +1,3 @@
-import pytest
 
 from backend.probability import _human_base_prob
 

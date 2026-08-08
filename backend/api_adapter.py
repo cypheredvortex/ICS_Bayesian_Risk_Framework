@@ -40,6 +40,7 @@ def analyze(
         write_outputs=write_outputs,
     )
     return {
+        "assets": result["assets"],
         "graph": result["graph"],
         "base_probabilities": result["base_probabilities"],
         "posteriors": result["posteriors"],

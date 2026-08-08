@@ -4,50 +4,51 @@ risk.py — Risk index computation and ranking.
 Methodology
 -----------
 The quantity computed here is a **relative risk index**, not an absolute
-quantitative risk measure (e.g. Annual Loss Expectancy).  It is designed
-for *ranking* assets so that analysts can prioritise investigation and
-mitigation effort.
+quantitative risk measure (e.g. Annual Loss Expectancy or monetary
+exposure).  It is designed for *ranking* assets so that analysts can
+prioritise investigation and mitigation effort.
 
-Risk Index  =  P(Compromised | evidence)  ×  Impact
+    Risk Index  =  P(Compromised | evidence)  ×  Consequence Impact
 
-Impact      =  consequence_severity  ×  scope_multiplier  ×  impact_weight
+    Consequence Impact = (consequence_severity / 10) × scope_multiplier
+                                                      × impact_weight
 
 where
 • P(Compromised | evidence) is the posterior probability from the
-  Bayesian network inference (Variable Elimination).
-• consequence_severity is a user-supplied asset attribute (0–10 scale).
-• scope_multiplier captures the blast-radius of a compromise:
-      scope_mult = 1 + (scope − 1) × 0.1
-  (scope = 1 → 1.0, scope = 5 → 1.4).
-• impact_weight is a user-configurable calibration knob.
+  Bayesian network inference (Variable Elimination).  It is a genuine
+  probability in [0, 1].
+• consequence_severity is a user-supplied asset attribute on a 0–10
+  scale (10 = catastrophic loss of availability/safety for the
+  process).  Dividing by 10 normalises it to [0, 1].
+• scope_multiplier captures the blast radius of a compromise:
+      scope_mult = 1 + (scope − 1) × 0.1     (scope ∈ [1, 5] → [1.0, 1.4])
+• impact_weight is an organisation-level calibration knob.
+
+Because Impact is normalised, the Risk Index lives in a bounded,
+interpretable range (≈ [0, 1.4] at maximum scope).  The Risk Index is
+NOT a probability: it is a product of a probability and a normalised
+consequence score, and the UI reports Probability, Impact and Risk as
+separate columns.
 
 Risk-Level Thresholds
 ---------------------
-The default thresholds are *calibration placeholders*.  An organisation
-should tune them against its own risk appetite and historical incident
-data.  The defaults are:
+The default thresholds are calibration placeholders tuned so that a
+typical ICS topology produces a usable spread across four levels.  They
+are NOT derived from a formal standard — ISO 27005 and NIST SP 800-30
+use qualitative likelihood/impact matrices — and an organisation should
+tune them against its own risk appetite:
 
-    Critical  ≥ 1.50
-    High      ≥ 0.80
-    Moderate  ≥ 0.30
-    Low       <  0.30
-
-These defaults are chosen so that a typical ICS topology with severity
-in [1, 10] and posterior probabilities in [0, 1] produces a usable
-spread across the four levels.  They are NOT derived from a formal
-standard because no published standard provides calibrated thresholds
-for Bayesian posterior × severity products; ISO 27005 and NIST SP 800-30
-use qualitative likelihood/impact matrices instead.
+    Critical  ≥ 0.75
+    High      ≥ 0.50
+    Moderate  ≥ 0.25
+    Low       <  0.25
 
 Overall Network Risk
 --------------------
-We report two aggregate statistics:
-1. **max_risk** — the highest single-asset risk index (worst-case).
-2. **weighted_mean_risk** — mean risk index weighted by consequence
-   severity, giving higher influence to business-critical assets.
-
-The previous "mean of top 5" metric has been removed because it is
-not statistically justified and is sensitive to topology size.
+The network-level risk is the **worst-case single-asset risk index**
+(max_risk) — the riskiest asset in the topology — which is defensible
+and size-independent.  Mean and median risk indices are also reported,
+plus the count of assets in each risk level.
 
 References
 ----------
@@ -67,9 +68,9 @@ from backend.config import get_impact_weight
 # Thresholds — user-configurable via settings.py
 # ---------------------------------------------------------------------------
 _DEFAULT_THRESHOLDS = {
-    "critical": 1.50,
-    "high": 0.80,
-    "moderate": 0.30,
+    "critical": 0.75,
+    "high": 0.50,
+    "moderate": 0.25,
 }
 
 
@@ -127,7 +128,9 @@ def build_risk_table(posteriors: dict[str, float], assets: dict[str, dict]) -> p
         prob = float(posteriors.get(asset_id, 0.0))
         severity = float(attrs.get("consequence_severity", 0.0) or 0.0)
         scope_mult = m_scope(attrs)
-        impact = severity * scope_mult * impact_weight
+        # Normalise the 0-10 consequence severity to [0, 1] so the risk index
+        # stays bounded and is never confused with a raw severity.
+        impact = (severity / 10.0) * scope_mult * impact_weight
         risk_index = prob * impact
 
         rows.append({
@@ -160,39 +163,41 @@ def write_risk_table(df: pd.DataFrame, path: str | Path = "output/risk_table.csv
 def compute_aggregate_risk(df: pd.DataFrame) -> dict[str, float]:
     """Compute defensible aggregate risk statistics.
 
+    The network-level risk is the worst-case single-asset risk index
+    (``max_risk``) — the riskiest asset in the topology.  ``mean_risk``,
+    ``median_risk`` and the per-level asset counts give context without
+    double-counting severity (severity is already embedded in each asset's
+    risk index).
+
     Returns:
         {
-            "max_risk": maximum single-asset risk index,
-            "weighted_mean_risk": severity-weighted mean risk index,
+            "max_risk": worst-case single-asset risk index,
             "mean_risk": arithmetic mean risk index,
             "median_risk": median risk index,
+            "level_counts": {critical, high, moderate, low} asset counts,
             "asset_count": number of assets assessed,
         }
     """
+    empty = {
+        "max_risk": 0.0,
+        "mean_risk": 0.0,
+        "median_risk": 0.0,
+        "level_counts": {"critical": 0, "high": 0, "moderate": 0, "low": 0},
+        "asset_count": 0,
+    }
     if df.empty:
-        return {
-            "max_risk": 0.0,
-            "weighted_mean_risk": 0.0,
-            "mean_risk": 0.0,
-            "median_risk": 0.0,
-            "asset_count": 0,
-        }
+        return empty
 
     risk_values = df["risk"].astype(float)
-    severities = df["severity"].astype(float)
-
-    max_risk = float(risk_values.max())
-    mean_risk = float(risk_values.mean())
-    median_risk = float(risk_values.median())
-
-    # Severity-weighted mean: business-critical assets count more
-    total_sev = severities.sum()
-    weighted_mean_risk = float((risk_values * severities).sum() / total_sev) if total_sev > 0 else mean_risk
+    level_counts = {
+        level: int((df["risk_level"] == level.title()).sum())
+        for level in ("critical", "high", "moderate", "low")
+    }
 
     return {
-        "max_risk": round(max_risk, 6),
-        "weighted_mean_risk": round(weighted_mean_risk, 6),
-        "mean_risk": round(mean_risk, 6),
-        "median_risk": round(median_risk, 6),
+        "max_risk": round(float(risk_values.max()), 6),
+        "mean_risk": round(float(risk_values.mean()), 6),
+        "median_risk": round(float(risk_values.median()), 6),
+        "level_counts": level_counts,
         "asset_count": int(len(df)),
     }

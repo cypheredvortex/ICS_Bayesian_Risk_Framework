@@ -60,11 +60,10 @@ References
 """
 
 import math
-from typing import Dict
 
 from backend.config import (
     M_EXPOSURE, M_PATCH, M_PRIVILEGE, R_PHISHING,
-    get_cvss_weight, get_exposure_weight, get_patch_weight,
+    get_exposure_weight, get_patch_weight, get_cvss_mapping, get_cvss_logistic_params,
 )
 from backend.settings import get_settings
 
@@ -163,20 +162,23 @@ def base_prob(node_id: str, attrs: dict) -> float:
 
 
 def _device_base_prob(attrs: dict) -> float:
-    """Device compromise probability from CVSS and context factors."""
-    cvss = float(attrs.get("cvss_type", 0.0))
-    settings = get_settings()
-    mapping = settings.get("cvss_mapping", "logistic")
+    """Device compromise probability from CVSS and context factors.
 
-    # --- Step 1: CVSS → prior probability ---
+    `cvss_type` is the asset's *effective* CVSS v3.1 Base Score (the maximum
+    over its vulnerabilities, see backend/cvss.py).  CVSS is a severity score,
+    not a probability: the mapping below is an explicit modelling assumption
+    (logistic calibration curve), documented and configurable.
+    """
+    cvss = float(attrs.get("cvss_type", 0.0) or 0.0)
+    mapping = get_cvss_mapping()
+
+    # --- Step 1: CVSS (severity) -> prior probability (modelling assumption) ---
     if mapping == "linear":
         p0 = _cvss_to_prob_linear(cvss)
     else:
-        # Default: logistic (scientifically preferred)
-        params = settings.get("cvss_logistic_params", {})
-        k = float(params.get("k", _LOGISTIC_DEFAULT_K))
-        x0 = float(params.get("x0", _LOGISTIC_DEFAULT_X0))
-        p0 = _cvss_to_prob_logistic(cvss, k, x0)
+        # Default: calibrated logistic (scientifically preferred)
+        params = get_cvss_logistic_params()
+        p0 = _cvss_to_prob_logistic(cvss, params["k"], params["x0"])
 
     # --- Step 2: Context adjustment via additive log-odds ---
     exposed = bool(attrs.get("exposed", True))
@@ -188,14 +190,14 @@ def _device_base_prob(attrs: dict) -> float:
 
     # Optional: protocol, trust, mitre multipliers if present on the asset
     # (these are normally edge attributes, but can be asset-level defaults)
-    for key, table, weight_key in (
-        ("protocol", get_settings().get("protocol_multipliers", {}), 1.0),
-        ("trust", get_settings().get("trust_multipliers", {}), 1.0),
-        ("mitre", get_settings().get("mitre_multipliers", {}), 1.0),
+    for key, table in (
+        ("protocol", get_settings().get("protocol_multipliers", {})),
+        ("trust", get_settings().get("trust_multipliers", {})),
+        ("mitre", get_settings().get("mitre_multipliers", {})),
     ):
         val = attrs.get(key)
         if val and str(val).lower() in table:
-            factors.append((table[str(val).lower()], float(weight_key)))
+            factors.append((table[str(val).lower()], 1.0))
 
     return _apply_context_log_odds(p0, factors)
 

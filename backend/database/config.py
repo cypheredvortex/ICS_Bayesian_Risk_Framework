@@ -109,7 +109,8 @@ def initialize_database() -> None:
 
     from backend.database.models import ApplicationSetting
 
-    factory = get_session_factory()
+    # Ensure the engine/session factory exists before creating tables.
+    get_session_factory()
     Base.metadata.create_all(bind=_engine)
 
     with session_scope() as session:

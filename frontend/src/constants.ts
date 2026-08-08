@@ -10,7 +10,6 @@ export const defaultTopology: TopologyPayload = {
 export const assetStateOrder: AssetState[] = ['Unknown', 'Compromised', 'Safe']
 
 export const defaultCoreSettings: CoreSettings = {
-  cvss_weight: 1.0,
   exposure_weight: 1.0,
   patch_weight: 1.0,
   impact_weight: 1.0,

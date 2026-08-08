@@ -10,7 +10,7 @@ export default function TopologySection({
   onDatasetChange,
   onFileUpload,
   onRunAssessment,
-  accept=".json,.yaml,.yml,.csv,.xlsx,.graphml,.xml,.aml,.vsdx,.vsd"
+  accept=".json,.yaml,.yml,.csv,.xlsx,.graphml,.xml,.aml,.vsdx,.vdx"
 }: {
   selectedDataset: string
   uploadedFileName: string
@@ -84,7 +84,7 @@ export default function TopologySection({
           </span>
         ) : (
           <span className="text-slate-400">
-            Select a preset or upload a .json, .yaml/.yml, .csv, .xlsx, .graphml, .xml, .aml, or .vsdx topology file to begin.
+            Select a preset or upload a .json, .yaml/.yml, .csv, .xlsx, .graphml, .xml, .aml, .vsdx, or .vdx topology file to begin.
           </span>
         )}
       </div>

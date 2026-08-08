@@ -91,9 +91,10 @@ def run(
             "asset_count": len(assets),
             "relationship_count": len(relationships),
             "evidence_used": evidence_used,
-            "overall_risk": aggregate["weighted_mean_risk"],
-            "overall_risk_basis": "severity-weighted mean risk index",
-            "risk_level": risk_level_for(aggregate["weighted_mean_risk"]).lower(),
+            # Network-level risk = worst-case single-asset risk index.
+            "overall_risk": aggregate["max_risk"],
+            "overall_risk_basis": "worst-case single-asset risk index (max over assets)",
+            "risk_level": risk_level_for(aggregate["max_risk"]).lower(),
             "highest_risk_assets": risk_table.head(5)["asset"].tolist(),
             "critical_attack_path": attack_paths[0] if attack_paths else None,
             "aggregate_risk": aggregate,
@@ -120,7 +121,7 @@ def run(
         write_risk_table(result["risk_table"], path=out_dir / "risk_table.csv")
         write_metrics_json(
             {
-                "framework_version": "1.0.1",
+                "framework_version": "1.1.0",
                 "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
                 "topology": str(topology) if not isinstance(topology, dict) else "inline-topology",
                 "asset_count": len(result["assets"]),

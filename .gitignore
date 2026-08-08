@@ -37,6 +37,9 @@ backend/data/*.db
 output/
 !output/.gitkeep
 
+# Regenerated validation artifacts (scratch tooling, not tests)
+tests/validation_report.json
+
 # Node
 node_modules/
 npm-debug.log*

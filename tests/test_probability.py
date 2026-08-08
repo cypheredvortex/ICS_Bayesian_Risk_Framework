@@ -18,10 +18,13 @@ class TestDeviceBaseProb:
         prob = _device_base_prob(attrs)
         assert prob > 0.5
 
-    def test_cvss_zero_returns_zero_base(self) -> None:
+    def test_cvss_zero_returns_small_nonzero_base(self) -> None:
+        # The logistic CVSS -> probability mapping is deliberately never
+        # exactly 0: an asset with no known severe vulnerability can still
+        # be compromised (unknown/zero-day vulnerabilities, misconfiguration).
         attrs = {"kind": "device", "cvss_type": "0.0", "exposed": False, "patched": True}
         prob = _device_base_prob(attrs)
-        assert prob == pytest.approx(0.0, abs=1e-10)
+        assert 0.0 < prob < 0.1
 
 
 class TestHumanBaseProb:

@@ -77,9 +77,6 @@ export default function App() {
           throw new Error(await parseErrorDetail(response, 'Could not load settings.'))
         const data = (await response.json()) as Record<string, unknown>
         const merged: CoreSettings = {
-          cvss_weight: Number(
-            data.cvss_weight ?? defaultCoreSettings.cvss_weight,
-          ),
           exposure_weight: Number(
             data.exposure_weight ?? defaultCoreSettings.exposure_weight,
           ),
@@ -200,6 +197,8 @@ export default function App() {
       asset: String(item.asset ?? 'unknown'),
       risk: Number(item.risk ?? 0),
       probability: Number(item['P(compromised|evidence)'] ?? 0),
+      severity: Number(item.severity ?? 0),
+      impact: Number(item.impact ?? 0),
     }))
   }, [result])
 
@@ -253,13 +252,22 @@ export default function App() {
     return new Set(nodeIds.filter((id) => id.toLowerCase().includes(query)))
   }, [nodeQuery, nodeIds])
 
+  // Risk level thresholds mirror the backend (risk.py): the risk index is
+  // P(compromised) x normalised consequence impact, bounded ~[0, 1.4].
+  const RISK_LEVELS = {
+    critical: { min: 0.75, color: '#fb7185' },
+    high: { min: 0.5, color: '#f59e0b' },
+    moderate: { min: 0.25, color: '#38bdf8' },
+    low: { min: 0, color: '#34d399' },
+  } as const
+
   const pieData = useMemo(() => {
     const counts = { critical: 0, high: 0, moderate: 0, low: 0 }
     for (const item of result?.risk_scores ?? []) {
       const risk = Number(item.risk ?? 0)
-      if (risk >= 1.5) counts.critical += 1
-      else if (risk >= 0.8) counts.high += 1
-      else if (risk >= 0.3) counts.moderate += 1
+      if (risk >= RISK_LEVELS.critical.min) counts.critical += 1
+      else if (risk >= RISK_LEVELS.high.min) counts.high += 1
+      else if (risk >= RISK_LEVELS.moderate.min) counts.moderate += 1
       else counts.low += 1
     }
     return Object.entries(counts).map(([name, value]) => ({ name, value }))
@@ -292,10 +300,10 @@ export default function App() {
     if (!file) return
 
     // Support the full set of backend-supported topology formats
-    const supported = /\.(json|ya?ml|csv|xlsx|graphml|xml|aml|vsdx|vsd)$/i.test(file.name)
+    const supported = /\.(json|ya?ml|csv|xlsx|graphml|xml|aml|vsdx|vdx)$/i.test(file.name)
     if (!supported) {
       pushToast(
-        'Unsupported file type. Upload a .json, .yaml/.yml, .csv, .xlsx, .graphml, .xml, .aml, .vsdx, or .vsd topology file.',
+        'Unsupported file type. Upload a .json, .yaml/.yml, .csv, .xlsx, .graphml, .xml, .aml, .vsdx, or .vdx topology file.',
         'error',
       )
       event.target.value = ''
@@ -452,9 +460,6 @@ export default function App() {
       const data = (await response.json()) as Record<string, unknown>
       const merged: CoreSettings = {
         ...draftSettings,
-        cvss_weight: Number(
-          data.cvss_weight ?? draftSettings.cvss_weight,
-        ),
         exposure_weight: Number(
           data.exposure_weight ?? draftSettings.exposure_weight,
         ),
@@ -496,9 +501,6 @@ export default function App() {
       }
       const data = (await response.json()) as Record<string, unknown>
       const merged: CoreSettings = {
-        cvss_weight: Number(
-          data.cvss_weight ?? defaultCoreSettings.cvss_weight,
-        ),
         exposure_weight: Number(
           data.exposure_weight ?? defaultCoreSettings.exposure_weight,
         ),
@@ -594,8 +596,8 @@ export default function App() {
           onDatasetChange={requestPresetChange}
           onFileUpload={handleFileUpload}
           onRunAssessment={() => void runAssessment()}
-          // ✅ New prop: restrict file picker to these extensions
-          accept=".json,.yaml,.yml,.csv,.xlsx,.graphml,.xml,.aml,.vsdx"
+          // Restrict the file picker to the formats the backend truly supports
+          accept=".json,.yaml,.yml,.csv,.xlsx,.graphml,.xml,.aml,.vsdx,.vdx"
         />
 
         <EvidencePanel

@@ -47,6 +47,19 @@ class TestBuildRiskTable:
         df = build_risk_table(posteriors, assets)
         assert df.iloc[0]["asset"] == "Asset_A"
         assert df.iloc[1]["asset"] == "Asset_B"
+        # Risk Index = P x (severity/10) x scope_multiplier
+        impact_a = (3.0 / 10.0) * 1.1
+        impact_b = (1.0 / 10.0) * 1.0
+        assert df.iloc[0]["risk"] == pytest.approx(0.9 * impact_a)
+        assert df.iloc[1]["risk"] == pytest.approx(0.1 * impact_b)
+
+    def test_risk_index_never_exceeds_bounded_range(self) -> None:
+        posteriors = {"X": 1.0}
+        assets = {"X": {"consequence_severity": 10.0, "scope": 5}}
+        df = build_risk_table(posteriors, assets)
+        # Impact = 1.0 * 1.4 = 1.4; Risk Index bounded above by ~1.4
+        assert df.iloc[0]["impact"] == pytest.approx(1.4)
+        assert df.iloc[0]["risk"] == pytest.approx(1.4)
 
     def test_empty_posteriors_returns_empty_table(self) -> None:
         df = build_risk_table({}, {})
@@ -60,42 +73,37 @@ class TestBuildRiskTable:
 
 
 class TestRiskLevel:
-    """Risk level classification."""
+    """Risk level classification on the normalised risk index scale."""
 
     def test_critical_threshold(self) -> None:
-        assert risk_level_for(2.0) == "Critical"
-        assert risk_level_for(1.5) == "Critical"
+        assert risk_level_for(0.9) == "Critical"
+        assert risk_level_for(0.75) == "Critical"
 
     def test_high_threshold(self) -> None:
-        assert risk_level_for(1.0) == "High"
-        assert risk_level_for(0.8) == "High"
+        assert risk_level_for(0.6) == "High"
+        assert risk_level_for(0.5) == "High"
 
     def test_moderate_threshold(self) -> None:
-        assert risk_level_for(0.5) == "Moderate"
-        assert risk_level_for(0.3) == "Moderate"
+        assert risk_level_for(0.4) == "Moderate"
+        assert risk_level_for(0.25) == "Moderate"
 
     def test_low_below_moderate(self) -> None:
         assert risk_level_for(0.0) == "Low"
-        assert risk_level_for(0.29) == "Low"
+        assert risk_level_for(0.249) == "Low"
 
 
 class TestWriteRiskTable:
     """CSV export of risk table."""
 
     def test_writes_csv_with_rank_and_risk_level(self, tmp_path) -> None:
-        df = pd.DataFrame({
-            "asset": ["Asset_A"],
-            "P(compromised|evidence)": [0.75],
-            "severity": [2.0],
-            "scope_mult": [1.0],
-            "impact": [2.0],
-            "risk": [1.5],
-        })
+        # Build a realistic register via build_risk_table so the Rank and
+        # risk_level columns actually exist.
+        df = build_risk_table({"Asset_A": 1.0}, {"Asset_A": {"consequence_severity": 8.0, "scope": 1}})
         path = write_risk_table(df, tmp_path / "risk_table.csv")
         assert path.exists()
         content = path.read_text(encoding="utf-8-sig")
         assert "Rank" in content
-        assert "Risk Level" in content
+        assert "risk_level" in content
         assert "Critical" in content
 
     def test_empty_df_creates_header_only(self, tmp_path) -> None:

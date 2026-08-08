@@ -139,8 +139,18 @@ def get_mitre_multipliers() -> dict[str, float]:
     return merged
 
 
-def get_cvss_weight() -> float:
-    return float(get_settings().get("cvss_weight", 1.0))
+def get_cvss_mapping() -> str:
+    """Return the configured CVSS -> probability mapping ('logistic' | 'linear')."""
+    return str(get_settings().get("cvss_mapping", "logistic"))
+
+
+def get_cvss_logistic_params() -> dict[str, float]:
+    """Return the logistic calibration parameters {k, x0}."""
+    raw = get_settings().get("cvss_logistic_params", {})
+    return {
+        "k": float(raw.get("k", 0.8)),
+        "x0": float(raw.get("x0", 5.0)),
+    }
 
 
 def get_exposure_weight() -> float:

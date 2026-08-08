@@ -14,9 +14,6 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import cm, mm
 from reportlab.platypus import (
-    Frame,
-    PageBreak,
-    PageTemplate,
     Paragraph,
     SimpleDocTemplate,
     Spacer,
@@ -138,11 +135,11 @@ def _build_header_footer(canvas, doc):
 
 def _risk_color(risk_value: float) -> colors.Color:
     """Return a color based on the risk value threshold."""
-    if risk_value >= 1.5:
+    if risk_value >= 0.75:
         return COLOR_RISK_CRITICAL
-    if risk_value >= 0.8:
+    if risk_value >= 0.5:
         return COLOR_RISK_HIGH
-    if risk_value >= 0.3:
+    if risk_value >= 0.25:
         return COLOR_RISK_MODERATE
     return COLOR_RISK_LOW
 
@@ -204,10 +201,10 @@ def generate_pdf_report(
     risk_level = str(summary.get("risk_level", "unknown")).title()
     overall_risk = summary.get("overall_risk", "—")
     story.append(Paragraph(
-        f"This report presents the results of a quantitative Bayesian risk assessment "
-        f"for an Industrial Control System (ICS) environment. The assessment uses a "
-        f"Bayesian network model to compute compromise probabilities and risk scores "
-        f"based on the system topology, asset attributes, and any observed evidence.",
+        "This report presents the results of a quantitative Bayesian risk assessment "
+        "for an Industrial Control System (ICS) environment. The assessment uses a "
+        "Bayesian network model to compute compromise probabilities and risk scores "
+        "based on the system topology, asset attributes, and any observed evidence.",
         styles["Body"],
     ))
 
@@ -245,8 +242,9 @@ def generate_pdf_report(
     # ---- Risk Register ----
     story.append(Paragraph("Risk Register", styles["SectionHeading"]))
     story.append(Paragraph(
-        "Assets ranked by risk score (posterior probability × consequence impact). "
-        "Higher scores indicate higher priority for investigation or treatment.",
+        "Assets ranked by risk index (posterior probability × normalised "
+        "consequence impact). Higher scores indicate higher priority for "
+        "investigation or treatment.",
         styles["Body"],
     ))
 

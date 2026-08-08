@@ -9,7 +9,13 @@ export default function ResultsDashboard({
 }: {
   result: ResultPayload
   chartData: Array<{ asset: string; probability: number; pinned: boolean }>
-  riskRanking: Array<{ asset: string; risk: number; probability: number }>
+  riskRanking: Array<{
+    asset: string
+    risk: number
+    probability: number
+    severity: number
+    impact: number
+  }>
   setSelectedNode: (id: string) => void
 }) {
   return (
@@ -18,14 +24,13 @@ export default function ResultsDashboard({
       <div className="mt-4 space-y-4">
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="rounded-xl bg-slate-800 p-4">
-            <p className="text-sm text-slate-400">Overall Risk</p>
+            <p className="text-sm text-slate-400">Overall Risk (worst case)</p>
             <p className="mt-2 text-2xl font-semibold text-cyan-300">
               {formatProbability(result.summary.overall_risk)}
             </p>
             <p className="mt-1 text-xs text-slate-400">
-              Average risk of the top 5 highest-risk assets — this stays
-              comparable across topologies of different sizes, unlike a raw
-              total.
+              {result.summary.overall_risk_basis ??
+                'Highest single-asset risk index in the topology.'}
             </p>
           </div>
           <div
@@ -36,8 +41,9 @@ export default function ResultsDashboard({
               {result.summary.risk_level}
             </p>
             <p className="mt-1 text-xs">
-              Same scale as the per-asset chart below: Low {'<'} 0.30 · Moderate
-              0.30–0.799 · High 0.80–1.499 · Critical ≥ 1.50
+              Risk index = posterior probability × normalised impact. Scale:{' '}
+              Low {'<'} 0.25 · Moderate 0.25–0.49 · High 0.50–0.74 ·
+              Critical ≥ 0.75
             </p>
           </div>
         </div>
@@ -70,19 +76,24 @@ export default function ResultsDashboard({
         <div className="rounded-xl bg-slate-800 p-4">
           <h3 className="font-semibold">Top high-risk assets</h3>
           <p className="mt-1 text-xs text-slate-400">
-            Priorities by risk score: posterior probability × configured
-            consequence impact.
+            Risk index = posterior probability × normalised consequence impact
+            (severity/10 × scope). Probability and impact are shown separately
+            so the product is transparent.
           </p>
           <div className="mt-3 space-y-2 text-sm">
             {riskRanking.map((entry) => (
               <button
                 key={entry.asset}
                 onClick={() => setSelectedNode(entry.asset)}
-                className="flex w-full items-center justify-between rounded-lg bg-slate-900/70 px-3 py-2 text-left hover:bg-slate-900"
+                className="flex w-full items-center justify-between gap-2 rounded-lg bg-slate-900/70 px-3 py-2 text-left hover:bg-slate-900"
               >
-                <span>{entry.asset}</span>
-                <span className="font-medium text-rose-300">
-                  {formatProbability(entry.risk)}
+                <span className="truncate">{entry.asset}</span>
+                <span className="whitespace-nowrap font-medium text-slate-300">
+                  P {formatProbability(entry.probability)} ×{' '}
+                  {formatProbability(entry.impact)}
+                  <span className="ml-2 text-rose-300">=
+                    {formatProbability(entry.risk)}
+                  </span>
                 </span>
               </button>
             ))}

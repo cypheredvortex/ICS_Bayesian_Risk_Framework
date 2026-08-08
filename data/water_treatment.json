@@ -23,10 +23,16 @@
     },
     "scada_server": {
       "kind": "device",
-      "cvss_type": 7.0,
       "exposed": false,
       "patched": true,
-      "consequence_severity": 7
+      "consequence_severity": 7,
+      "vulnerabilities": [
+        {
+          "cve_id": "CVE-2021-44228",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H",
+          "source": "NVD"
+        }
+      ]
     },
     "plc_dosing": {
       "kind": "device",

@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from backend.database.config import Base
 from backend.database.models import (
-    ApplicationSetting, Asset, BayesianNode, Connection,
+    ApplicationSetting, Asset, Connection,
     CPT, InferenceResult, Project, Report, RiskResult,
 )
 

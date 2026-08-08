@@ -7,7 +7,7 @@ from typing import Any
 
 from sqlalchemy.orm import Session, selectinload
 
-from backend.database.config import get_session_factory, initialize_database, session_scope
+from backend.database.config import get_session_factory, initialize_database
 from backend.database.models import ApplicationSetting, Asset, Project
 from backend.database.repositories import (
     ApplicationSettingRepository, AssetRepository, ConnectionRepository,

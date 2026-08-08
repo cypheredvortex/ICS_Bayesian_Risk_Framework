@@ -49,7 +49,6 @@ export default function SettingsPanel({
       <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
         {(
           [
-            ['cvss_weight', 'CVSS weight', 0, 2],
             ['exposure_weight', 'Exposure weight', 0, 2],
             ['patch_weight', 'Patch weight', 0, 2],
             ['impact_weight', 'Impact weight', 0, 2],

@@ -1,6 +1,5 @@
 """Tests for the graph builder module."""
 
-import pytest
 
 from backend.graph_builder import edge_weight, build_graph_skeleton, graph_to_dict
 

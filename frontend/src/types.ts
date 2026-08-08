@@ -24,6 +24,7 @@ export type GraphEdge = {
 }
 
 export type ResultPayload = {
+  assets?: Record<string, Record<string, unknown>>
   graph: {
     nodes: GraphNode[]
     edges: GraphEdge[]
@@ -44,6 +45,8 @@ export type ResultPayload = {
     overall_risk: number
     risk_level: string
     highest_risk_assets: string[]
+    overall_risk_basis?: string
+    aggregate_risk?: Record<string, unknown>
   }
   evidence_used: Record<string, number>
   timings?: {
@@ -52,10 +55,9 @@ export type ResultPayload = {
 }
 
 // Mirrors the fields backend/settings.py actually exposes. Kept as a
-// subset — protocol/trust/mitre multiplier tables exist server-side too
+// subset - protocol/trust/mitre multiplier tables exist server-side too
 // but aren't editable here to keep the panel usable.
 export type CoreSettings = {
-  cvss_weight: number
   exposure_weight: number
   patch_weight: number
   impact_weight: number

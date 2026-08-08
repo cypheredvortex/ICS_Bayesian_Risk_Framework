@@ -72,17 +72,19 @@ class ApiTests(unittest.TestCase):
         self.assertTrue(body["detail"].startswith("Invalid XML/AML:"))
         self.assertIn("request_id", body)
 
-    def test_upload_topology_file_accepts_vsd_extension(self):
+    def test_upload_topology_file_rejects_legacy_vsd_with_guidance(self):
+        # Legacy binary .vsd files cannot be parsed natively. The API must
+        # reject them with an actionable conversion message rather than
+        # claiming support that does not exist.
         path = Path(__file__).resolve().parent / "validation_files" / "topology.vsdx"
         with path.open("rb") as handle:
             response = self.client.post(
                 "/upload-topology-file",
                 files={"file": ("topology.vsd", handle, "application/octet-stream")},
             )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
         body = response.json()
-        self.assertIn("message", body)
-        self.assertEqual(body["asset_count"], len(body["topology"]["assets"]))
+        self.assertIn("Legacy binary Visio .vsd files cannot be parsed natively", body["detail"])
 
     def test_upload_topology_file_accepts_vsdx_files(self):
         path = Path(__file__).resolve().parent / "validation_files" / "topology.vsdx"

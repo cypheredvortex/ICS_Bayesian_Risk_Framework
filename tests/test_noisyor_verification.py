@@ -1,4 +1,3 @@
-import itertools
 from pgmpy.models import DiscreteBayesianNetwork as BayesianNetwork
 from pgmpy.inference import VariableElimination
 

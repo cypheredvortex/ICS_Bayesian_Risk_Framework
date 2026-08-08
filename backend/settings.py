@@ -14,7 +14,13 @@ from backend.database.config import initialize_database
 from backend.database.services import AssessmentPersistenceService
 
 DEFAULT_SETTINGS: dict[str, Any] = {
-    "cvss_weight": 1.0,
+    # CVSS is a severity score (0-10), not a probability. The logistic mapping
+    # below is an explicit, configurable modelling assumption that turns a
+    # severity score into an intrinsic compromise probability (see
+    # backend/probability.py). Parameters (k, x0) allow organisation-level
+    # calibration against incident data.
+    "cvss_mapping": "logistic",
+    "cvss_logistic_params": {"k": 0.8, "x0": 5.0},
     "exposure_weight": 1.0,
     "patch_weight": 1.0,
     "impact_weight": 1.0,
@@ -56,13 +62,13 @@ DEFAULT_SETTINGS: dict[str, Any] = {
         "T0866": 1.05,
     },
     "risk_thresholds": {
-        "critical": 1.50,
-        "high": 0.80,
-        "moderate": 0.30,
+        "critical": 0.75,
+        "high": 0.50,
+        "moderate": 0.25,
     },
 }
 
-_SCALAR_WEIGHT_KEYS = ("cvss_weight", "exposure_weight", "patch_weight", "impact_weight")
+_SCALAR_WEIGHT_KEYS = ("exposure_weight", "patch_weight", "impact_weight")
 _TABLE_KEYS = ("propagation_weights", "protocol_multipliers", "trust_multipliers", "mitre_multipliers")
 
 _runtime_settings: dict[str, Any] = deepcopy(DEFAULT_SETTINGS)
@@ -83,7 +89,7 @@ def _parse_db_value(key: str, raw: str) -> Any:
     Dict values are stored as JSON strings. Scalars are stored as plain strings.
     Falls back to the default value if parsing fails.
     """
-    if key in _TABLE_KEYS or key == "firewall_multipliers" or key == "risk_thresholds":
+    if key in _TABLE_KEYS or key in ("firewall_multipliers", "risk_thresholds", "cvss_logistic_params"):
         try:
             return json.loads(raw)
         except (json.JSONDecodeError, TypeError):
@@ -158,6 +164,23 @@ def _validate_settings(settings: dict[str, Any]) -> None:
         value = settings.get(key)
         if value is not None and (not isinstance(value, (int, float)) or value < 0):
             raise ValueError(f"'{key}' must be a non-negative number, got {value!r}.")
+
+    mapping = settings.get("cvss_mapping")
+    if mapping is not None and mapping not in ("logistic", "linear"):
+        raise ValueError(
+            f"'cvss_mapping' must be 'logistic' or 'linear', got {mapping!r}."
+        )
+
+    logistic_params = settings.get("cvss_logistic_params")
+    if logistic_params is not None:
+        if not isinstance(logistic_params, dict):
+            raise ValueError("'cvss_logistic_params' must be an object.")
+        k = logistic_params.get("k")
+        x0 = logistic_params.get("x0")
+        if k is not None and (not isinstance(k, (int, float)) or k <= 0):
+            raise ValueError(f"'cvss_logistic_params.k' must be a positive number, got {k!r}.")
+        if x0 is not None and (not isinstance(x0, (int, float)) or not (0 <= x0 <= 10)):
+            raise ValueError(f"'cvss_logistic_params.x0' must be in [0, 10], got {x0!r}.")
 
     for table_key in _TABLE_KEYS:
         table = settings.get(table_key, {})

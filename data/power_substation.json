@@ -8,10 +8,16 @@
     },
     "utility_scada": {
       "kind": "device",
-      "cvss_type": 6.5,
       "exposed": true,
       "patched": true,
-      "consequence_severity": 6
+      "consequence_severity": 6,
+      "vulnerabilities": [
+        {
+          "cve_id": "CVE-2014-0160",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+          "source": "NVD"
+        }
+      ]
     },
     "substation_lan": {
       "kind": "device",
@@ -23,11 +29,17 @@
 
     "rtu_primary": {
       "kind": "device",
-      "cvss_type": 8.5,
       "exposed": false,
       "patched": false,
       "consequence_severity": 8,
-      "scope": 4
+      "scope": 4,
+      "vulnerabilities": [
+        {
+          "cve_id": "CVE-2014-6271",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+          "source": "NVD"
+        }
+      ]
     },
     "rtu_backup": {
       "kind": "device",

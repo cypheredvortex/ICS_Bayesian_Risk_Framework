@@ -5,12 +5,16 @@ Defines the normalized internal representation used by the Bayesian engine.
 
 from __future__ import annotations
 
+import logging
 import re
 from typing import Any
 
 import networkx as nx
 
 from backend.config import get_propagation_weights
+from backend.cvss import effective_cvss_score, normalize_vulnerabilities
+
+logger = logging.getLogger(__name__)
 
 VALID_KINDS = {"device", "human", "physical"}
 DEFAULT_REL_TYPE = "connects-to"
@@ -40,9 +44,8 @@ _COMMON_HUMAN_KEYWORDS = [
     "engineer",
     "admin",
     "user",
-    "workstation",
-    "console",
-    "panel",
+    "staff",
+    "person",
 ]
 
 _COMMON_PHYSICAL_KEYWORDS = [
@@ -97,21 +100,65 @@ def _normalize_float(value: Any, default: float = 0.0) -> float:
         return default
 
 
-def infer_asset_kind(name: str, raw: dict | None = None) -> str:
+def _strict_float(value: Any, context: str, field: str, lo: float, hi: float) -> float:
+    """Parse a numeric attribute strictly, raising a useful error when invalid."""
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        raise ValueError(
+            f"{context}: '{field}' must be a number, got {value!r}."
+        ) from None
+    if not (lo <= number <= hi):
+        raise ValueError(
+            f"{context}: '{field}' must be in [{lo}, {hi}], got {number}."
+        )
+    return number
+
+
+def _strict_bool(value: Any, context: str, field: str) -> bool:
+    """Parse a boolean attribute strictly when explicitly provided."""
+    if isinstance(value, bool):
+        return value
+    text = _normalize_text(value).lower()
+    if text in {"1", "true", "yes", "y", "on"}:
+        return True
+    if text in {"0", "false", "no", "n", "off"}:
+        return False
+    raise ValueError(
+        f"{context}: '{field}' must be a boolean, got {value!r}."
+    )
+
+
+def _name_tokens(name: str) -> set[str]:
+    """Whole-word tokens from an asset name (underscores/hyphens split).
+
+    Matching whole tokens instead of substrings avoids collisions such as
+    'engineer' matching 'engineering' or 'operator' matching 'operator_console'
+    incorrectly.
+    """
     candidate = _normalize_text(name).lower()
-    for token in _COMMON_HUMAN_KEYWORDS:
-        if token in candidate:
-            return "human"
-    for token in _COMMON_PHYSICAL_KEYWORDS:
-        if token in candidate:
-            return "physical"
-    for token in _COMMON_DEVICE_KEYWORDS:
-        if token in candidate:
-            return "device"
+    return {token for token in re.split(r"[^a-z0-9]+", candidate) if token}
+
+
+def infer_asset_kind(name: str, raw: dict | None = None) -> str:
+    """Infer an asset kind from its name using whole-token keyword matching.
+
+    This is a heuristic fallback only: an explicit 'kind'/'type' attribute in
+    the source data always wins.  The heuristic prioritises unambiguous human
+    role words, then physical-process vocabulary, then ICS device vocabulary.
+    """
     if raw is not None:
         kind = raw.get("kind") or raw.get("type") or raw.get("category")
         if isinstance(kind, str) and kind.strip().lower() in VALID_KINDS:
             return kind.strip().lower()
+
+    tokens = _name_tokens(name)
+    if tokens & set(_COMMON_HUMAN_KEYWORDS):
+        return "human"
+    if tokens & set(_COMMON_PHYSICAL_KEYWORDS):
+        return "physical"
+    if tokens & set(_COMMON_DEVICE_KEYWORDS):
+        return "device"
     return "device"
 
 
@@ -174,28 +221,47 @@ def normalize_asset(raw: dict) -> dict | None:
     if metadata := raw.get("metadata"):
         attrs["metadata"] = metadata
 
+    context = f"asset '{asset_id}'"
+
     if kind == "device":
-        if "cvss_type" in raw:
-            attrs["cvss_type"] = _normalize_float(raw["cvss_type"])
+        # A vulnerability list (CVE + CVSS vector/score) is authoritative for
+        # the asset's effective CVSS base score.  The legacy single-number
+        # `cvss_type` field is kept as a shortcut for one implicit
+        # vulnerability.
+        if "vulnerabilities" in raw:
+            try:
+                vulns = normalize_vulnerabilities(raw["vulnerabilities"], context)
+            except ValueError:
+                raise  # already contextualized
+            attrs["vulnerabilities"] = vulns
+            attrs["cvss_type"] = effective_cvss_score(vulns)
+        elif "cvss_type" in raw:
+            attrs["cvss_type"] = _strict_float(raw["cvss_type"], context, "cvss_type", 0.0, 10.0)
         if "exposed" in raw:
-            attrs["exposed"] = _normalize_bool(raw["exposed"])
+            attrs["exposed"] = _strict_bool(raw["exposed"], context, "exposed")
         if "patched" in raw:
-            attrs["patched"] = _normalize_bool(raw["patched"])
+            attrs["patched"] = _strict_bool(raw["patched"], context, "patched")
         if "consequence_severity" in raw:
-            attrs["consequence_severity"] = _normalize_float(raw["consequence_severity"])
+            attrs["consequence_severity"] = _strict_float(
+                raw["consequence_severity"], context, "consequence_severity", 0.0, 10.0
+            )
     elif kind == "human":
         attrs["role"] = _normalize_text(raw.get("role") or raw.get("position") or "guest").lower()
         if "awareness" in raw:
-            attrs["awareness"] = _normalize_float(raw["awareness"])
+            attrs["awareness"] = _strict_float(raw["awareness"], context, "awareness", 0.0, 1.0)
         if "privilege" in raw:
             attrs["privilege"] = _normalize_text(raw["privilege"]).lower()
         if "consequence_severity" in raw:
-            attrs["consequence_severity"] = _normalize_float(raw["consequence_severity"])
+            attrs["consequence_severity"] = _strict_float(
+                raw["consequence_severity"], context, "consequence_severity", 0.0, 10.0
+            )
     elif kind == "physical":
         if "p_base_override" in raw:
-            attrs["p_base_override"] = _normalize_float(raw["p_base_override"])
+            attrs["p_base_override"] = _strict_float(raw["p_base_override"], context, "p_base_override", 0.0, 1.0)
         if "consequence_severity" in raw:
-            attrs["consequence_severity"] = _normalize_float(raw["consequence_severity"])
+            attrs["consequence_severity"] = _strict_float(
+                raw["consequence_severity"], context, "consequence_severity", 0.0, 10.0
+            )
 
     return attrs
 
@@ -228,9 +294,9 @@ def normalize_relationship(raw: dict | list | tuple) -> tuple | None:
     rel_type = _normalize_text(raw.get("type") or raw.get("rel_type") or raw.get("relationship_type") or DEFAULT_REL_TYPE)
     if not rel_type:
         rel_type = DEFAULT_REL_TYPE
-    supported_types = set(get_propagation_weights().keys())
-    if rel_type not in supported_types:
-        rel_type = DEFAULT_REL_TYPE
+    # NOTE: unknown relationship types are deliberately NOT rewritten here.
+    # validate_graph() rejects them with an actionable error so a typo never
+    # silently becomes a generic "connects-to" edge.
 
     firewalled = _normalize_bool(raw.get("firewalled") or raw.get("protected") or raw.get("is_firewalled"), False)
     metadata: dict[str, Any] = {}
@@ -320,12 +386,22 @@ def parse_generic_json(raw: Any) -> dict[str, Any]:
     return {"assets": assets, "relationships": relationships}
 
 
-def validate_graph(assets: dict[str, dict], relationships: list[tuple], source_label: str) -> None:
+def validate_graph(assets: dict[str, dict], relationships: list[tuple], source_label: str) -> list[tuple]:
+    """Validate a normalized topology and return the cleaned relationship list.
+
+    Self-loops and duplicate edges are removed with a warning (they add no
+    causal information and usually come from spreadsheet authoring mistakes).
+    References to unknown assets, unknown relationship types, and cycles are
+    rejected with actionable error messages.
+    """
     if not assets:
         raise ValueError(f"{source_label}: no assets found in the topology.")
 
     node_ids = set(assets.keys())
     supported_types = set(get_propagation_weights().keys())
+    clean_relationships: list[tuple] = []
+    seen_edges: set[tuple[str, str]] = set()
+
     for rel in relationships:
         source, target, rel_type, firewalled, metadata = rel
         if source not in node_ids:
@@ -343,18 +419,23 @@ def validate_graph(assets: dict[str, dict], relationships: list[tuple], source_l
             # from CSV/Excel authoring mistakes. Log and skip instead of
             # hard-failing the entire upload so users can correct inputs
             # without losing their session.
-            import logging
-
-            logging.getLogger(__name__).warning(
-                "Relationship (%s -> %s): self-loop removed during validation.",
-                source,
-                target,
+            logger.warning(
+                "%s: relationship (%s -> %s) is a self-loop and was removed.",
+                source_label, source, target,
             )
             continue
+        if (source, target) in seen_edges:
+            logger.warning(
+                "%s: duplicate relationship (%s -> %s) was removed.",
+                source_label, source, target,
+            )
+            continue
+        seen_edges.add((source, target))
+        clean_relationships.append(rel)
 
     graph = nx.DiGraph()
     graph.add_nodes_from(node_ids)
-    for source, target, *_ in relationships:
+    for source, target, *_ in clean_relationships:
         graph.add_edge(source, target)
 
     if graph.number_of_nodes() > 1 and graph.number_of_edges() == 0:
@@ -370,13 +451,13 @@ def validate_graph(assets: dict[str, dict], relationships: list[tuple], source_l
             # Multiple disconnected components are allowed for Bayesian
             # analysis; they simply represent independent submodels. Log a
             # warning to inform users but do not reject the topology.
-            import logging
-
-            logging.getLogger(__name__).warning(
+            logger.warning(
                 "%s: topology contains %d disconnected subgraphs; proceeding with analysis.",
                 source_label,
                 len(non_singleton),
             )
+
+    return clean_relationships
 
 
 def relationship_to_dict(rel: tuple) -> dict[str, Any]:

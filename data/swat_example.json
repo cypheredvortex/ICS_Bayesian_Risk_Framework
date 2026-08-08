@@ -22,10 +22,16 @@
     },
     "scada": {
       "kind": "device",
-      "cvss_type": 8.0,
       "exposed": true,
       "patched": true,
-      "consequence_severity": 7
+      "consequence_severity": 7,
+      "vulnerabilities": [
+        {
+          "cve_id": "CVE-2021-44228",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H",
+          "source": "NVD"
+        }
+      ]
     },
     "industrial_network": {
       "kind": "device",
@@ -76,10 +82,16 @@
 
     "historian": {
       "kind": "device",
-      "cvss_type": 6.5,
       "exposed": false,
       "patched": true,
-      "consequence_severity": 5
+      "consequence_severity": 5,
+      "vulnerabilities": [
+        {
+          "cve_id": "CVE-2014-0160",
+          "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+          "source": "NVD"
+        }
+      ]
     }
   },
 
