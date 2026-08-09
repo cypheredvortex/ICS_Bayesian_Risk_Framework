@@ -304,6 +304,24 @@ def draw_network_topology(canonical: dict, out_path: Path) -> None:
 # distinguish intended title/sub-text inside a box from real collisions.
 BOX_TEXT_OWNERSHIP: dict[int, set[int]] = {}
 
+# Readability / spacing pass: every element is stretched away from the canvas
+# centre (5, 5) so boxes, sensors and bands gain breathing room while keeping
+# their relative topology.  Box dimensions scale with the same factors, so the
+# larger boxes and larger fonts read clearly without re-laying-out every
+# diagram by hand.
+SCALE_X = 1.14
+SCALE_Y = 1.20
+
+
+def _tx(x: float) -> float:
+    """Stretch an x coordinate away from the centre."""
+    return 5.0 + (x - 5.0) * SCALE_X
+
+
+def _ty(y: float) -> float:
+    """Stretch a y coordinate away from the centre."""
+    return 5.0 + (y - 5.0) * SCALE_Y
+
 
 def _proc_box(
     ax,
@@ -316,12 +334,14 @@ def _proc_box(
     *,
     facecolor: str = "#DCE9F7",
     edgecolor: str = "#2C5F8A",
-    title_size: float = 13,
-    sub_size: float = 9.5,
+    title_size: float = 15,
+    sub_size: float = 11,
     text_color: str = "#1a1a1a",
     zorder: int = 4,
     rounded: bool = True,
 ):
+    x, y = _tx(x), _ty(y)
+    w, h = w * SCALE_X, h * SCALE_Y
     boxstyle = "round,pad=0.01" if rounded else "square,pad=0"
     rect = FancyBboxPatch(
         (x - w / 2, y - h / 2),
@@ -330,7 +350,7 @@ def _proc_box(
         boxstyle=boxstyle,
         facecolor=facecolor,
         edgecolor=edgecolor,
-        linewidth=1.6,
+        linewidth=2.0,
         zorder=zorder,
     )
     ax.add_patch(rect)
@@ -338,22 +358,22 @@ def _proc_box(
     if title:
         t1 = ax.text(
             x,
-            y + (0.12 if sub else 0.0),
-            _wrap(title, 16),
+            y + (0.14 if sub else 0.0),
+            _wrap(title, 14),
             fontsize=title_size,
             fontweight="bold",
             ha="center",
             va="center",
             color=text_color,
             zorder=zorder + 1,
-            linespacing=1.15,
+            linespacing=1.2,
         )
         owners.add(id(t1))
     if sub:
         t2 = ax.text(
             x,
-            y - 0.30,
-            _wrap(sub, 22),
+            y - 0.38,
+            _wrap(sub, 26),
             fontsize=sub_size,
             ha="center",
             va="center",
@@ -371,16 +391,16 @@ def _process_arrow(
     p2: tuple[float, float],
     *,
     color: str = "#1F6FB2",
-    lw: float = 2.6,
+    lw: float = 3.2,
     style: str = "-|>",
     zorder: int = 3,
 ):
     ax.add_patch(
         FancyArrowPatch(
-            p1,
-            p2,
+            (_tx(p1[0]), _ty(p1[1])),
+            (_tx(p2[0]), _ty(p2[1])),
             arrowstyle=style,
-            mutation_scale=18,
+            mutation_scale=22,
             linewidth=lw,
             color=color,
             zorder=zorder,
@@ -396,14 +416,14 @@ def _signal(
     p2: tuple[float, float],
     *,
     color: str = "#6B7280",
-    lw: float = 1.1,
+    lw: float = 1.4,
     style: str = "-",
     zorder: int = 2,
 ):
     ax.add_patch(
         FancyArrowPatch(
-            p1,
-            p2,
+            (_tx(p1[0]), _ty(p1[1])),
+            (_tx(p2[0]), _ty(p2[1])),
             arrowstyle="-",
             linewidth=lw,
             color=color,
@@ -416,22 +436,25 @@ def _signal(
 
 
 def _sensor_marker(ax, x: float, y: float, label: str, color: str = "#E9B949") -> None:
+    x, y = _tx(x), _ty(y)
     ax.add_patch(
         mpatches.RegularPolygon(
             (x, y),
             numVertices=4,
-            radius=0.16,
+            radius=0.20,
             orientation=0.785,
             facecolor=color,
             edgecolor="#5a4a12",
-            linewidth=1.2,
+            linewidth=1.5,
             zorder=5,
         )
     )
-    ax.text(x, y - 0.32, _wrap(label, 18), fontsize=7.5, ha="center", va="top", color="#3a3a3a", zorder=6)
+    ax.text(x, y - 0.40, _wrap(label, 16), fontsize=9.5, ha="center", va="top", color="#333333", zorder=6)
 
 
 def _layer_band(ax, x: float, y: float, w: float, h: float, label: str, color: str) -> None:
+    x, y = _tx(x), _ty(y)
+    w, h = w * SCALE_X, h * SCALE_Y
     ax.add_patch(
         Rectangle(
             (x - w / 2, y - h / 2),
@@ -440,17 +463,17 @@ def _layer_band(ax, x: float, y: float, w: float, h: float, label: str, color: s
             facecolor=color,
             alpha=0.10,
             edgecolor=color,
-            linewidth=1.5,
+            linewidth=1.8,
             linestyle=(0, (4, 3)),
             zorder=0,
         )
     )
     # rotated label in a left gutter, clear of all boxes
     ax.text(
-        x - w / 2 - 0.68,
+        x - w / 2 - 0.75 * SCALE_X,
         y,
         label,
-        fontsize=11.5,
+        fontsize=13.5,
         fontweight="bold",
         color=color,
         ha="center",
@@ -458,23 +481,24 @@ def _layer_band(ax, x: float, y: float, w: float, h: float, label: str, color: s
         rotation=90,
         zorder=6,
         clip_on=False,
-        bbox=dict(facecolor="white", alpha=0.85, edgecolor="none", pad=2),
+        bbox=dict(facecolor="white", alpha=0.9, edgecolor="none", pad=2),
     )
 
 
 def _finish(fig, ax, path: Path, title: str, subtitle: str) -> None:
-    ax.set_xlim(-1.0, 10)
-    ax.set_ylim(0, 10)
+    # The stretch moves content beyond the original 0..10 window.
+    ax.set_xlim(-1.8, 11.8)
+    ax.set_ylim(-0.8, 11.0)
     ax.set_aspect("equal")
     ax.set_axis_off()
-    fig.suptitle(title, fontsize=30, fontweight="bold", y=0.99, color="#111111")
-    fig.text(0.5, 0.93, subtitle, fontsize=13.5, ha="center", color="#555555")
-    fig.savefig(path, dpi=288, bbox_inches="tight", facecolor="white", pad_inches=0.4)
+    fig.suptitle(title, fontsize=34, fontweight="bold", y=0.992, color="#111111")
+    fig.text(0.5, 0.928, subtitle, fontsize=15.5, ha="center", color="#555555")
+    fig.savefig(path, dpi=300, bbox_inches="tight", facecolor="white", pad_inches=0.5)
     plt.close(fig)
 
 
 def draw_water_system(canonical: dict, out_path: Path) -> None:
-    fig, ax = plt.subplots(figsize=(19.2, 10.8))
+    fig, ax = plt.subplots(figsize=(25.6, 14.4))
     # --- layers ---
     _layer_band(ax, 2.1, 8.0, 3.6, 2.4, "SUPERVISORY & CONTROL ROOM", "#845ef7")
     _layer_band(ax, 7.3, 8.0, 5.0, 2.4, "CONTROL NETWORK (Purdue L2)", "#4C78A8")
@@ -541,7 +565,7 @@ def draw_water_system(canonical: dict, out_path: Path) -> None:
 
 
 def draw_substation_system(canonical: dict, out_path: Path) -> None:
-    fig, ax = plt.subplots(figsize=(19.2, 10.8))
+    fig, ax = plt.subplots(figsize=(25.6, 14.4))
     _layer_band(ax, 2.0, 7.9, 3.4, 2.6, "UTILITY CONTROL CENTER", "#e599f7")
     _layer_band(ax, 8.2, 8.0, 3.4, 2.4, "SUBSTATION LAN (IEC 61850)", "#ffd43b")
     _layer_band(ax, 5.0, 3.7, 9.6, 5.9, "HIGH-VOLTAGE PROCESS / PROTECTION", "#ff922b")
@@ -606,7 +630,7 @@ def draw_substation_system(canonical: dict, out_path: Path) -> None:
 
 
 def draw_manufacturing_system(canonical: dict, out_path: Path) -> None:
-    fig, ax = plt.subplots(figsize=(19.2, 10.8))
+    fig, ax = plt.subplots(figsize=(25.6, 14.4))
     _layer_band(ax, 2.0, 8.0, 3.4, 2.4, "SUPERVISORY (MES / ERP / SCADA)", "#4dabf7")
     _layer_band(ax, 7.5, 8.0, 4.6, 2.4, "SHOP FLOOR NETWORK", "#845ef7")
     _layer_band(ax, 5.0, 4.0, 9.6, 6.4, "PRODUCTION LINE (WELDING → ASSEMBLY → QC → PACK)", "#2E9E6B")
@@ -658,7 +682,7 @@ def draw_manufacturing_system(canonical: dict, out_path: Path) -> None:
 
 
 def draw_pipeline_system(canonical: dict, out_path: Path) -> None:
-    fig, ax = plt.subplots(figsize=(19.2, 10.8))
+    fig, ax = plt.subplots(figsize=(25.6, 14.4))
     _layer_band(ax, 2.0, 8.0, 3.4, 2.4, "PIPELINE CONTROL CENTER", "#ff6b6b")
     _layer_band(ax, 5.0, 4.0, 9.6, 6.4, "PIPELINE (PUMP STATIONS • VALVE SITES • METERING)", "#2E9E6B")
 
@@ -674,22 +698,22 @@ def draw_pipeline_system(canonical: dict, out_path: Path) -> None:
     ax.text(9.75, pipeline_y, "flow →", fontsize=12, color="#1F6FB2", va="center", zorder=2)
 
     # stations
-    _proc_box(ax, 4.9, 7.3, 1.7, 1.0, "Pump Station A", "PUMP-001 • PUMP-002\nVFD-001 • VALVE-001", facecolor="#D8EFDA")
+    _proc_box(ax, 4.9, 7.3, 1.8, 1.1, "Pump Station A", "PUMP-001 • VFD-001", facecolor="#D8EFDA")
     _proc_box(ax, 4.9, 5.9, 1.4, 0.8, "RTU A", "PIPE-RTU-001", facecolor="#DCE9F7")
     _proc_box(ax, 7.0, 7.3, 1.7, 1.0, "Block Valve Site", "VALVE-003", facecolor="#D8EFDA")
     _proc_box(ax, 7.0, 5.9, 1.4, 0.8, "RTU Valve", "PIPE-RTU-003", facecolor="#DCE9F7")
-    _proc_box(ax, 9.0, 7.3, 1.6, 1.0, "Pump Station B", "PUMP-003 • VFD-002\nVALVE-002", facecolor="#D8EFDA")
+    _proc_box(ax, 9.0, 7.3, 1.8, 1.1, "Pump Station B", "PUMP-003 • VFD-002", facecolor="#D8EFDA")
     _proc_box(ax, 9.0, 5.9, 1.4, 0.8, "RTU B", "PIPE-RTU-002", facecolor="#DCE9F7")
 
-    _proc_box(ax, 7.0, 2.4, 1.7, 1.0, "Custody Transfer\nMetering", "SENSOR-007 • SENSOR-008", facecolor="#D8EFDA")
-    _proc_box(ax, 7.0, 1.1, 1.4, 0.8, "RTU Metering", "PIPE-RTU-004", facecolor="#DCE9F7")
+    _proc_box(ax, 7.0, 2.4, 2.0, 1.15, "Custody Transfer\nMetering", "SENSOR-007 • SENSOR-008", facecolor="#D8EFDA")
+    _proc_box(ax, 7.0, 1.3, 1.4, 0.8, "RTU Metering", "PIPE-RTU-004", facecolor="#DCE9F7")
 
-    _sensor_marker(ax, 4.9, 4.4, "Pressure\nSENSOR-001")
-    _sensor_marker(ax, 5.5, 4.4, "Flow\nSENSOR-002")
-    _sensor_marker(ax, 6.1, 4.4, "Temp\nSENSOR-003")
-    _sensor_marker(ax, 8.1, 4.4, "Pressure\nSENSOR-004")
-    _sensor_marker(ax, 8.7, 4.4, "Flow\nSENSOR-005")
-    _sensor_marker(ax, 7.0, 3.9, "Pressure\nSENSOR-006")
+    _sensor_marker(ax, 4.5, 4.6, "Pressure\nSENSOR-001")
+    _sensor_marker(ax, 5.6, 4.6, "Flow\nSENSOR-002")
+    _sensor_marker(ax, 6.8, 4.6, "Temp\nSENSOR-003")
+    _sensor_marker(ax, 8.2, 4.6, "Pressure\nSENSOR-004")
+    _sensor_marker(ax, 9.2, 4.6, "Flow\nSENSOR-005")
+    _sensor_marker(ax, 7.0, 3.8, "Pressure\nSENSOR-006")
 
     # SCADA -> RTU comm links (DNP3)
     _signal(ax, (2.95, 7.4), (4.2, 7.4), color="#ff6b6b", style=(0, (5, 3)))
@@ -713,7 +737,7 @@ def draw_pipeline_system(canonical: dict, out_path: Path) -> None:
 
 
 def draw_chemical_system(canonical: dict, out_path: Path) -> None:
-    fig, ax = plt.subplots(figsize=(19.2, 10.8))
+    fig, ax = plt.subplots(figsize=(25.6, 14.4))
     _layer_band(ax, 2.0, 8.0, 3.4, 2.4, "CONTROL ROOM (DCS)", "#845ef7")
     _layer_band(ax, 5.0, 4.0, 9.6, 6.4, "PROCESS UNITS (REACTOR • DISTILLATION • STORAGE)", "#2E9E6B")
 
@@ -723,36 +747,36 @@ def draw_chemical_system(canonical: dict, out_path: Path) -> None:
     _proc_box(ax, 2.0, 6.2, 1.9, 0.8, "DCS Switch", "CHEM-DCS-SW-001", facecolor="#DCE9F7")
 
     # process train
-    _proc_box(ax, 5.3, 8.5, 1.5, 0.9, "FEEDSTOCK", "", facecolor="#BFE3C0", edgecolor="#2F7D32")
-    _process_arrow(ax, (6.05, 8.05), (6.05, 7.4), color="#1F6FB2")
-    _proc_box(ax, 5.3, 6.9, 1.6, 1.0, "Reactor", "TC-001 • PT-001 • LT-001\nCV-001", facecolor="#D8EFDA")
-    _proc_box(ax, 7.3, 6.9, 1.5, 0.9, "DCS Controller\n(Reactor)", "CHEM-DCS-CTRL-001", facecolor="#DCE9F7")
-    _process_arrow(ax, (6.1, 6.4), (6.1, 5.6), color="#1F6FB2")
-    _proc_box(ax, 5.3, 5.1, 1.7, 1.0, "Distillation\nColumn", "TC-002 • PT-002 • FT-001\nCV-002", facecolor="#D8EFDA")
-    _proc_box(ax, 7.3, 5.1, 1.7, 0.9, "DCS Controller\n(Distillation)", "CHEM-DCS-CTRL-002", facecolor="#DCE9F7")
-    _process_arrow(ax, (6.15, 4.6), (6.15, 3.9), color="#1F6FB2")
-    _proc_box(ax, 5.3, 3.4, 1.7, 1.0, "Product Storage\nTank Farm", "PUMP-001 • VALVE-001\nSENSOR-001", facecolor="#D8EFDA")
-    _proc_box(ax, 7.3, 3.4, 1.7, 0.9, "DCS Controller\n(Utilities)", "CHEM-DCS-CTRL-003", facecolor="#DCE9F7")
-    _process_arrow(ax, (6.15, 2.9), (6.15, 2.2), color="#1F6FB2")
-    _proc_box(ax, 5.3, 1.7, 1.7, 1.0, "Remote Tank Farm\n(rail loading)", "RTU-001 • PUMP-001\nVALVE-001", facecolor="#D8EFDA")
+    _proc_box(ax, 5.2, 8.5, 1.5, 0.9, "FEEDSTOCK", "", facecolor="#BFE3C0", edgecolor="#2F7D32")
+    _process_arrow(ax, (5.95, 8.05), (5.95, 7.4), color="#1F6FB2")
+    _proc_box(ax, 5.2, 6.9, 1.7, 1.1, "Reactor", "TC-001 • PT-001 • CV-001", facecolor="#D8EFDA")
+    _proc_box(ax, 7.4, 6.9, 1.5, 0.9, "DCS Controller\n(Reactor)", "CHEM-DCS-CTRL-001", facecolor="#DCE9F7")
+    _process_arrow(ax, (6.0, 6.4), (6.0, 5.6), color="#1F6FB2")
+    _proc_box(ax, 5.2, 5.1, 1.8, 1.1, "Distillation\nColumn", "TC-002 • PT-002 • CV-002", facecolor="#D8EFDA")
+    _proc_box(ax, 7.4, 5.1, 1.7, 0.9, "DCS Controller\n(Distillation)", "CHEM-DCS-CTRL-002", facecolor="#DCE9F7")
+    _process_arrow(ax, (6.05, 4.6), (6.05, 3.9), color="#1F6FB2")
+    _proc_box(ax, 5.2, 3.4, 1.8, 1.1, "Product Storage\nTank Farm", "PUMP-001 • VALVE-001", facecolor="#D8EFDA")
+    _proc_box(ax, 7.4, 3.4, 1.7, 0.9, "DCS Controller\n(Utilities)", "CHEM-DCS-CTRL-003", facecolor="#DCE9F7")
+    _process_arrow(ax, (6.05, 2.9), (6.05, 2.2), color="#1F6FB2")
+    _proc_box(ax, 5.2, 1.7, 1.8, 1.1, "Remote Tank Farm\n(rail loading)", "RTU-001 • PUMP-001", facecolor="#D8EFDA")
 
-    # SIS
-    _proc_box(ax, 9.0, 3.4, 1.6, 1.0, "Safety PLC (SIS)", "CHEM-SIS-PLC-001", facecolor="#F5E1F7")
-    _sensor_marker(ax, 9.0, 5.0, "ESD Switch\nSIS-ESD-001")
-    _sensor_marker(ax, 9.0, 1.9, "ESD Relay\nSIS-RELAY-001")
+    # SIS (independent safety column, clearly separated from the DCS column)
+    _proc_box(ax, 9.3, 3.4, 1.6, 1.0, "Safety PLC (SIS)", "CHEM-SIS-PLC-001", facecolor="#F5E1F7")
+    _sensor_marker(ax, 9.3, 5.2, "ESD Switch\nSIS-ESD-001")
+    _sensor_marker(ax, 9.3, 1.9, "ESD Relay\nSIS-RELAY-001")
 
-    _signal(ax, (2.95, 6.2), (6.6, 6.9), color="#845ef7")
-    _signal(ax, (2.95, 6.2), (6.6, 5.1), color="#845ef7")
-    _signal(ax, (2.95, 6.2), (6.6, 3.4), color="#845ef7")
-    _signal(ax, (2.95, 6.2), (6.6, 1.7), color="#845ef7")
+    _signal(ax, (2.95, 6.2), (6.5, 6.9), color="#845ef7")
+    _signal(ax, (2.95, 6.2), (6.5, 5.1), color="#845ef7")
+    _signal(ax, (2.95, 6.2), (6.5, 3.4), color="#845ef7")
+    _signal(ax, (2.95, 6.2), (6.5, 1.7), color="#845ef7")
     _signal(ax, (3.0, 8.35), (2.95, 7.7), color="#8E44AD")
     _signal(ax, (2.0, 8.35), (2.0, 7.7), color="#6B7280")
-    _signal(ax, (8.0, 6.9), (8.95, 4.4), color="#da77f2")
-    _signal(ax, (8.0, 5.1), (8.95, 3.9), color="#da77f2")
-    _signal(ax, (9.0, 3.9), (9.0, 2.45), color="#da77f2")
-    _signal(ax, (9.0, 4.45), (9.0, 5.15), color="#da77f2")
-    _sensor_marker(ax, 4.0, 6.9, "TC / PT / LT")
-    _sensor_marker(ax, 4.0, 5.1, "TC / PT / FT")
+    _signal(ax, (8.15, 6.9), (9.25, 5.3), color="#da77f2")
+    _signal(ax, (8.15, 5.1), (9.25, 4.35), color="#da77f2")
+    _signal(ax, (9.3, 3.9), (9.3, 2.45), color="#da77f2")
+    _signal(ax, (9.3, 4.5), (9.3, 5.3), color="#da77f2")
+    _sensor_marker(ax, 3.9, 6.9, "TC / PT / LT")
+    _sensor_marker(ax, 3.9, 5.1, "TC / PT / FT")
 
     _finish(
         fig,

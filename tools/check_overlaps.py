@@ -99,6 +99,13 @@ def main() -> None:
                 if area > 1400:
                     issues += 1
                     print(f"  [{folder.name}] TEXT-BOX '{t_name}'  overlap_px={area:.0f}")
+        # box vs box (must never happen in a clean layout)
+        for i in range(len(boxes)):
+            for j in range(i + 1, len(boxes)):
+                area = rects_overlap(boxes[i][1], boxes[j][1])
+                if area > 400:
+                    issues += 1
+                    print(f"  [{folder.name}] BOX-BOX (box#{i} <-> box#{j})  overlap_px={area:.0f}")
 
         total_issues += issues
         print(f"{folder.name}: {len(texts)} texts, {len(boxes)} boxes, {issues} issues")
