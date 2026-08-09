@@ -1,0 +1,527 @@
+metadata:
+  name: Water Treatment Plant
+  description: Municipal water treatment facility with intake, filtration, chemical
+    dosing, storage, and distribution.
+  version: '2.0'
+  created: '2026-08-09T11:43:32.591274'
+zones:
+- id: Internet
+  name: Internet
+  color: '#ff6b6b'
+- id: Enterprise
+  name: Enterprise IT
+  color: '#4dabf7'
+- id: DMZ
+  name: OT DMZ
+  color: '#ffa94d'
+- id: Control
+  name: Control Network
+  color: '#845ef7'
+- id: Field
+  name: Field Devices
+  color: '#20c997'
+assets:
+- id: WTP-FW-001
+  name: Perimeter Firewall
+  type: Firewall
+  kind: device
+  zone: Internet
+  description: Internet edge firewall
+  criticality: High
+  vendor: Cisco
+  model: ASA 5585
+  ip: 10.0.0.1
+  cvss_type: 7.5
+  exposed: true
+  patched: true
+  consequence_severity: 8.0
+- id: WTP-ENT-SW-001
+  name: Enterprise Switch
+  type: Network Switch
+  kind: device
+  zone: Enterprise
+  description: Core enterprise switch
+  criticality: Medium
+  vendor: Cisco
+  model: Catalyst 9300
+  cvss_type: 6.5
+  exposed: false
+  patched: true
+  consequence_severity: 6.0
+- id: WTP-ENT-DC-001
+  name: Domain Controller
+  type: Server
+  kind: device
+  zone: Enterprise
+  description: Active Directory
+  criticality: High
+  vendor: Microsoft
+  model: Windows Server 2022
+  cvss_type: 8.1
+  exposed: false
+  patched: false
+  consequence_severity: 9.0
+- id: WTP-ENT-HIST-001
+  name: Historian
+  type: Server
+  kind: device
+  zone: Enterprise
+  description: Data historian
+  criticality: Medium
+  vendor: OSIsoft
+  model: PI Server
+  cvss_type: 7.0
+  exposed: false
+  patched: false
+  consequence_severity: 5.0
+- id: WTP-DMZ-SW-001
+  name: DMZ Switch
+  type: Network Switch
+  kind: device
+  zone: DMZ
+  description: OT DMZ switch
+  criticality: High
+  vendor: Cisco
+  model: IE 4000
+  cvss_type: 6.5
+  exposed: false
+  patched: false
+  consequence_severity: 7.0
+- id: WTP-DMZ-JUMP-001
+  name: Jump Server
+  type: Server
+  kind: device
+  zone: DMZ
+  description: Secure jump host for OT access
+  criticality: High
+  vendor: Microsoft
+  model: Windows Server 2022
+  cvss_type: 8.1
+  exposed: true
+  patched: true
+  consequence_severity: 8.0
+- id: WTP-DMZ-SCADA-001
+  name: SCADA Server
+  type: SCADA
+  kind: device
+  zone: DMZ
+  description: Primary SCADA server
+  criticality: High
+  vendor: Schneider
+  model: EcoStruxure
+  cvss_type: 8.5
+  exposed: false
+  patched: false
+  consequence_severity: 9.0
+- id: WTP-CTRL-SW-001
+  name: Control Switch
+  type: Network Switch
+  kind: device
+  zone: Control
+  description: Industrial Ethernet switch
+  criticality: High
+  vendor: Siemens
+  model: SCALANCE XM408
+  cvss_type: 6.5
+  exposed: false
+  patched: false
+  consequence_severity: 8.0
+- id: WTP-CTRL-HMI-001
+  name: HMI
+  type: HMI
+  kind: device
+  zone: Control
+  description: Operator interface
+  criticality: Medium
+  vendor: Siemens
+  model: SIMATIC HMI
+  cvss_type: 7.5
+  exposed: false
+  patched: false
+  consequence_severity: 6.0
+- id: WTP-CTRL-PLC-001
+  name: Intake PLC
+  type: PLC
+  kind: device
+  zone: Control
+  description: Controls raw water intake pumps
+  criticality: High
+  vendor: Allen-Bradley
+  model: ControlLogix 5580
+  cvss_type: 8.1
+  exposed: false
+  patched: false
+  consequence_severity: 9.0
+- id: WTP-CTRL-PLC-002
+  name: Filtration PLC
+  type: PLC
+  kind: device
+  zone: Control
+  description: Controls filter backwash and flow
+  criticality: High
+  vendor: Allen-Bradley
+  model: ControlLogix 5580
+  cvss_type: 8.1
+  exposed: false
+  patched: false
+  consequence_severity: 9.0
+- id: WTP-CTRL-PLC-003
+  name: Chemical Dosing PLC
+  type: PLC
+  kind: device
+  zone: Control
+  description: Controls chemical dosing pumps
+  criticality: High
+  vendor: Allen-Bradley
+  model: ControlLogix 5580
+  cvss_type: 8.1
+  exposed: false
+  patched: false
+  consequence_severity: 9.0
+- id: WTP-CTRL-PLC-004
+  name: Distribution PLC
+  type: PLC
+  kind: device
+  zone: Control
+  description: Controls distribution pumps
+  criticality: High
+  vendor: Allen-Bradley
+  model: ControlLogix 5580
+  cvss_type: 8.1
+  exposed: false
+  patched: false
+  consequence_severity: 9.0
+- id: WTP-HUM-OPR-001
+  name: Control Room Operator
+  type: Operator
+  kind: human
+  zone: Control
+  description: Duty operator supervising the plant from the control room
+  criticality: Medium
+  role: operator
+  awareness: 0.4
+  privilege: standard
+  consequence_severity: 4.0
+- id: WTP-FLD-PUMP-001
+  name: Intake Pump
+  type: Pump
+  kind: physical
+  zone: Field
+  description: Raw water intake pump
+  criticality: High
+  vendor: Grundfos
+  model: CR 64
+  p_base_override: 0.02
+  consequence_severity: 8.0
+- id: WTP-FLD-PUMP-002
+  name: Distribution Pump
+  type: Pump
+  kind: physical
+  zone: Field
+  description: High service pump
+  criticality: High
+  vendor: Grundfos
+  model: CR 90
+  p_base_override: 0.02
+  consequence_severity: 8.0
+- id: WTP-FLD-VALVE-001
+  name: Inlet Valve
+  type: Valve
+  kind: physical
+  zone: Field
+  description: Motorized inlet valve
+  criticality: Medium
+  vendor: Emerson
+  model: Fisher V500
+  p_base_override: 0.02
+  consequence_severity: 6.0
+- id: WTP-FLD-VALVE-002
+  name: Backwash Valve
+  type: Valve
+  kind: physical
+  zone: Field
+  description: Filter backwash valve
+  criticality: Medium
+  vendor: Emerson
+  model: Fisher V500
+  p_base_override: 0.02
+  consequence_severity: 6.0
+- id: WTP-FLD-SENSOR-001
+  name: Flow Sensor
+  type: Sensor
+  kind: physical
+  zone: Field
+  description: Raw water flow meter
+  criticality: Medium
+  vendor: Emerson
+  model: Rosemount 8700
+  p_base_override: 0.01
+  consequence_severity: 4.0
+- id: WTP-FLD-SENSOR-002
+  name: Pressure Sensor
+  type: Sensor
+  kind: physical
+  zone: Field
+  description: Distribution pressure sensor
+  criticality: Medium
+  vendor: Emerson
+  model: Rosemount 3051
+  p_base_override: 0.01
+  consequence_severity: 4.0
+- id: WTP-FLD-SENSOR-003
+  name: pH Sensor
+  type: Sensor
+  kind: physical
+  zone: Field
+  description: pH in treated water
+  criticality: Medium
+  vendor: Hach
+  model: SC200
+  p_base_override: 0.01
+  consequence_severity: 5.0
+- id: WTP-FLD-SENSOR-004
+  name: Turbidity Sensor
+  type: Sensor
+  kind: physical
+  zone: Field
+  description: Turbidity measurement
+  criticality: Medium
+  vendor: Hach
+  model: 1720E
+  p_base_override: 0.01
+  consequence_severity: 4.0
+- id: WTP-FLD-MOTOR-001
+  name: Blower Motor
+  type: Motor
+  kind: physical
+  zone: Field
+  description: Aeration blower
+  criticality: Low
+  vendor: Siemens
+  model: 1LA8
+  p_base_override: 0.01
+  consequence_severity: 5.0
+- id: WTP-FLD-VFD-001
+  name: Pump VFD
+  type: VFD
+  kind: device
+  zone: Field
+  description: Variable frequency drive for pump
+  criticality: High
+  vendor: ABB
+  model: ACS880
+  cvss_type: 7.5
+  exposed: false
+  patched: false
+  consequence_severity: 7.0
+- id: WTP-FLD-ENG-001
+  name: Engineering Workstation
+  type: Workstation
+  kind: device
+  zone: Field
+  description: Engineering laptop for maintenance
+  criticality: Medium
+  vendor: Dell
+  model: Precision 5560
+  cvss_type: 7.8
+  exposed: false
+  patched: true
+  consequence_severity: 5.0
+- id: WTP-FLD-SW-001
+  name: Field Switch
+  type: Network Switch
+  kind: device
+  zone: Field
+  description: Industrial switch at field level
+  criticality: Medium
+  vendor: Siemens
+  model: SCALANCE XB208
+  cvss_type: 6.5
+  exposed: false
+  patched: false
+  consequence_severity: 5.0
+connections:
+- source: WTP-FW-001
+  target: WTP-ENT-SW-001
+  type: connects-to
+  protocol: HTTP
+  direction: bidirectional
+  trust: low
+- source: WTP-ENT-SW-001
+  target: WTP-DMZ-SW-001
+  type: connects-to
+  protocol: HTTP
+  direction: bidirectional
+  trust: medium
+- source: WTP-ENT-SW-001
+  target: WTP-ENT-DC-001
+  type: connects-to
+  protocol: LDAP
+  direction: bidirectional
+  trust: high
+- source: WTP-ENT-SW-001
+  target: WTP-ENT-HIST-001
+  type: connects-to
+  protocol: OPC UA
+  direction: bidirectional
+  trust: high
+- source: WTP-DMZ-SW-001
+  target: WTP-DMZ-JUMP-001
+  type: connects-to
+  protocol: SSH
+  direction: bidirectional
+  trust: medium
+- source: WTP-DMZ-SW-001
+  target: WTP-DMZ-SCADA-001
+  type: connects-to
+  protocol: OPC UA
+  direction: bidirectional
+  trust: medium
+- source: WTP-DMZ-SCADA-001
+  target: WTP-CTRL-SW-001
+  type: connects-to
+  protocol: OPC UA
+  direction: bidirectional
+  trust: medium
+- source: WTP-CTRL-SW-001
+  target: WTP-CTRL-HMI-001
+  type: connects-to
+  protocol: Ethernet/IP
+  direction: bidirectional
+  trust: high
+- source: WTP-CTRL-SW-001
+  target: WTP-CTRL-PLC-001
+  type: controls
+  protocol: Ethernet/IP
+  direction: bidirectional
+  trust: high
+- source: WTP-CTRL-SW-001
+  target: WTP-CTRL-PLC-002
+  type: controls
+  protocol: Ethernet/IP
+  direction: bidirectional
+  trust: high
+- source: WTP-CTRL-SW-001
+  target: WTP-CTRL-PLC-003
+  type: controls
+  protocol: Ethernet/IP
+  direction: bidirectional
+  trust: high
+- source: WTP-CTRL-SW-001
+  target: WTP-CTRL-PLC-004
+  type: controls
+  protocol: Ethernet/IP
+  direction: bidirectional
+  trust: high
+- source: WTP-HUM-OPR-001
+  target: WTP-CTRL-HMI-001
+  type: programs / operates
+  protocol: HMI
+  direction: bidirectional
+  trust: high
+- source: WTP-CTRL-PLC-001
+  target: WTP-FLD-PUMP-001
+  type: actuates
+  protocol: Modbus TCP
+  direction: unidirectional
+  trust: low
+- source: WTP-CTRL-PLC-001
+  target: WTP-FLD-VALVE-001
+  type: actuates
+  protocol: Modbus TCP
+  direction: unidirectional
+  trust: low
+- source: WTP-CTRL-PLC-001
+  target: WTP-FLD-SENSOR-001
+  type: monitors
+  protocol: Modbus TCP
+  direction: bidirectional
+  trust: low
+- source: WTP-CTRL-PLC-002
+  target: WTP-FLD-VALVE-002
+  type: actuates
+  protocol: Modbus TCP
+  direction: unidirectional
+  trust: low
+- source: WTP-CTRL-PLC-002
+  target: WTP-FLD-SENSOR-004
+  type: monitors
+  protocol: Modbus TCP
+  direction: bidirectional
+  trust: low
+- source: WTP-CTRL-PLC-003
+  target: WTP-FLD-SENSOR-003
+  type: monitors
+  protocol: Modbus TCP
+  direction: bidirectional
+  trust: low
+- source: WTP-CTRL-PLC-003
+  target: WTP-FLD-PUMP-001
+  type: actuates
+  protocol: Modbus TCP
+  direction: unidirectional
+  trust: low
+- source: WTP-CTRL-PLC-004
+  target: WTP-FLD-PUMP-002
+  type: actuates
+  protocol: Modbus TCP
+  direction: unidirectional
+  trust: low
+- source: WTP-CTRL-PLC-004
+  target: WTP-FLD-SENSOR-002
+  type: monitors
+  protocol: Modbus TCP
+  direction: bidirectional
+  trust: low
+- source: WTP-CTRL-PLC-004
+  target: WTP-FLD-VFD-001
+  type: actuates
+  protocol: Modbus TCP
+  direction: bidirectional
+  trust: low
+- source: WTP-CTRL-PLC-001
+  target: WTP-FLD-MOTOR-001
+  type: actuates
+  protocol: Modbus TCP
+  direction: unidirectional
+  trust: low
+- source: WTP-DMZ-JUMP-001
+  target: WTP-CTRL-SW-001
+  type: connects-to
+  protocol: RDP
+  direction: bidirectional
+  trust: medium
+- source: WTP-FLD-ENG-001
+  target: WTP-CTRL-SW-001
+  type: connects-to
+  protocol: SSH
+  direction: bidirectional
+  trust: medium
+- source: WTP-FLD-SW-001
+  target: WTP-FLD-PUMP-001
+  type: connects-to
+  protocol: Modbus TCP
+  direction: bidirectional
+  trust: low
+protocols:
+- id: http
+  name: HTTP
+  osi_layer: Application
+- id: opcua
+  name: OPC UA
+  osi_layer: Application
+- id: ethernetip
+  name: Ethernet/IP
+  osi_layer: Application
+- id: modbustcp
+  name: Modbus TCP
+  osi_layer: Application
+- id: ldap
+  name: LDAP
+  osi_layer: Application
+- id: ssh
+  name: SSH
+  osi_layer: Application
+- id: rdp
+  name: RDP
+  osi_layer: Application

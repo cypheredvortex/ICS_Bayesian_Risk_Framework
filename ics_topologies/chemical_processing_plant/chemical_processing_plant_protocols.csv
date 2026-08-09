@@ -1,0 +1,10 @@
+id,name,osi_layer
+http,HTTP,Application
+opcua,OPC UA,Application
+profibus,PROFIBUS,Application
+hart,HART,Application
+modbustcp,Modbus TCP,Application
+profisafe,PROFIsafe,Application
+ldap,LDAP,Application
+ssh,SSH,Application
+rdp,RDP,Application

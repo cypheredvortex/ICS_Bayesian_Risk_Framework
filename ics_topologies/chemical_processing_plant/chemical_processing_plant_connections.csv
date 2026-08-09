@@ -1,0 +1,33 @@
+source,target,type,protocol,direction,trust
+CHEM-ENT-FW-001,CHEM-ENT-SW-001,connects-to,HTTP,bidirectional,low
+CHEM-ENT-SW-001,CHEM-ENT-DC-001,connects-to,LDAP,bidirectional,high
+CHEM-ENT-SW-001,CHEM-ENT-ERP-001,connects-to,HTTP,bidirectional,high
+CHEM-ENT-SW-001,CHEM-DMZ-SW-001,connects-to,HTTP,bidirectional,medium
+CHEM-DMZ-SW-001,CHEM-DMZ-HIST-001,connects-to,OPC UA,bidirectional,medium
+CHEM-DMZ-SW-001,CHEM-DMZ-JUMP-001,connects-to,SSH,bidirectional,medium
+CHEM-DMZ-JUMP-001,CHEM-DCS-SW-001,connects-to,RDP,bidirectional,medium
+CHEM-DCS-SW-001,CHEM-DCS-OP-001,connects-to,OPC UA,bidirectional,high
+CHEM-DCS-SW-001,CHEM-DCS-ENG-001,connects-to,OPC UA,bidirectional,high
+CHEM-DCS-SW-001,CHEM-DCS-CTRL-001,connects-to,PROFIBUS,bidirectional,high
+CHEM-DCS-SW-001,CHEM-DCS-CTRL-002,connects-to,PROFIBUS,bidirectional,high
+CHEM-DCS-SW-001,CHEM-DCS-CTRL-003,connects-to,PROFIBUS,bidirectional,high
+CHEM-HUM-OPR-001,CHEM-DCS-OP-001,programs / operates,HMI,bidirectional,high
+CHEM-DCS-CTRL-001,CHEM-FLD-TC-001,monitors,HART,bidirectional,low
+CHEM-DCS-CTRL-001,CHEM-FLD-PT-001,monitors,HART,bidirectional,low
+CHEM-DCS-CTRL-001,CHEM-FLD-LT-001,monitors,HART,bidirectional,low
+CHEM-DCS-CTRL-001,CHEM-FLD-CV-001,actuates,HART,unidirectional,low
+CHEM-DCS-CTRL-002,CHEM-FLD-TC-002,monitors,HART,bidirectional,low
+CHEM-DCS-CTRL-002,CHEM-FLD-PT-002,monitors,HART,bidirectional,low
+CHEM-DCS-CTRL-002,CHEM-FLD-FT-001,monitors,HART,bidirectional,low
+CHEM-DCS-CTRL-002,CHEM-FLD-CV-002,actuates,HART,unidirectional,low
+CHEM-DCS-CTRL-001,CHEM-SIS-PLC-001,connects-to,PROFIsafe,bidirectional,medium
+CHEM-DCS-CTRL-002,CHEM-SIS-PLC-001,connects-to,PROFIsafe,bidirectional,medium
+CHEM-SIS-PLC-001,CHEM-SIS-ESD-001,monitors,PROFIsafe,bidirectional,low
+CHEM-SIS-PLC-001,CHEM-SIS-RELAY-001,monitors,PROFIsafe,bidirectional,low
+CHEM-DCS-CTRL-003,CHEM-REM-RTU-001,controls,Modbus TCP,bidirectional,medium
+CHEM-REM-RTU-001,CHEM-REM-SW-001,connects-to,Modbus TCP,bidirectional,low
+CHEM-REM-RTU-001,CHEM-REM-PUMP-001,actuates,Modbus TCP,unidirectional,low
+CHEM-REM-RTU-001,CHEM-REM-VALVE-001,actuates,Modbus TCP,unidirectional,low
+CHEM-DCS-CTRL-003,CHEM-FLD-PUMP-001,actuates,Modbus TCP,unidirectional,low
+CHEM-DCS-CTRL-003,CHEM-FLD-VALVE-001,actuates,Modbus TCP,unidirectional,low
+CHEM-DCS-CTRL-003,CHEM-FLD-SENSOR-001,monitors,Modbus TCP,bidirectional,low

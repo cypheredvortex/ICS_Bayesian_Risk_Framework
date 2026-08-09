@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutomationML xmlns="http://www.automationml.org/schema/aml">
+  <AdditionalInformation/>
+  <InstanceHierarchy Name="Electrical Substation">
+    <InternalElement Name="Substation Firewall" ID="SUB-FW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Firewall</Attribute>
+      <Attribute Name="zone">Utility</Attribute>
+      <Attribute Name="description">Firewall to utility WAN</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Cisco</Attribute>
+      <Attribute Name="model">ASA 5585</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">true</Attribute>
+      <Attribute Name="patched">true</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Substation Switch" ID="SUB-SW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Network Switch</Attribute>
+      <Attribute Name="zone">Substation</Attribute>
+      <Attribute Name="description">Core substation Ethernet switch</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">RUGGEDCOM RSG920P</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="SCADA Gateway" ID="SUB-SCADA-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">SCADA</Attribute>
+      <Attribute Name="zone">Substation</Attribute>
+      <Attribute Name="description">Gateway to utility SCADA</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">GE</Attribute>
+      <Attribute Name="model">D400</Attribute>
+      <Attribute Name="cvss_type">8.0</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Substation HMI" ID="SUB-HMI-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">HMI</Attribute>
+      <Attribute Name="zone">Substation</Attribute>
+      <Attribute Name="description">Operator interface</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SIMATIC HMI</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Engineering Workstation" ID="SUB-EWS-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Workstation</Attribute>
+      <Attribute Name="zone">Substation</Attribute>
+      <Attribute Name="description">Configuration laptop</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Dell</Attribute>
+      <Attribute Name="model">Latitude 5420</Attribute>
+      <Attribute Name="cvss_type">7.8</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">true</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="RTU" ID="SUB-RTU-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">RTU</Attribute>
+      <Attribute Name="zone">Substation</Attribute>
+      <Attribute Name="description">Remote Terminal Unit for data acquisition</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Schweitzer</Attribute>
+      <Attribute Name="model">SEL-3530</Attribute>
+      <Attribute Name="cvss_type">8.0</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Protection IED (Line)" ID="SUB-IED-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">IED</Attribute>
+      <Attribute Name="zone">Protection</Attribute>
+      <Attribute Name="description">Distance protection relay</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SIPROTEC 5 7SA86</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Protection IED (Transformer)" ID="SUB-IED-002">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">IED</Attribute>
+      <Attribute Name="zone">Protection</Attribute>
+      <Attribute Name="description">Transformer differential protection</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SIPROTEC 5 7UT86</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Protection IED (Bus)" ID="SUB-IED-003">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">IED</Attribute>
+      <Attribute Name="zone">Protection</Attribute>
+      <Attribute Name="description">Busbar protection</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SIPROTEC 5 7SS86</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Phasor Measurement Unit" ID="SUB-PMU-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">PMU</Attribute>
+      <Attribute Name="zone">Protection</Attribute>
+      <Attribute Name="description">PMU for synchrophasors</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">GE</Attribute>
+      <Attribute Name="model">PMU 369</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Merging Unit" ID="SUB-MU-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Merging Unit</Attribute>
+      <Attribute Name="zone">Process</Attribute>
+      <Attribute Name="description">IEC 61850 process interface</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SIO 6MD85</Attribute>
+      <Attribute Name="cvss_type">7.0</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Circuit Breaker" ID="SUB-CB-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">CircuitBreaker</Attribute>
+      <Attribute Name="zone">Process</Attribute>
+      <Attribute Name="description">High voltage circuit breaker</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">ABB</Attribute>
+      <Attribute Name="model">HPL 550</Attribute>
+      <Attribute Name="consequence_severity">10.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Disconnect Switch" ID="SUB-DIS-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Disconnect</Attribute>
+      <Attribute Name="zone">Process</Attribute>
+      <Attribute Name="description">Disconnecting switch</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">8DA10</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Power Transformer" ID="SUB-XFMR-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Transformer</Attribute>
+      <Attribute Name="zone">Process</Attribute>
+      <Attribute Name="description">Main step-down transformer</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">TRAFO 100 MVA</Attribute>
+      <Attribute Name="consequence_severity">10.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Voltage Transformer" ID="SUB-VT-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">VT</Attribute>
+      <Attribute Name="zone">Process</Attribute>
+      <Attribute Name="description">Capacitive voltage transformer</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">ABB</Attribute>
+      <Attribute Name="model">CPD 1</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Current Transformer" ID="SUB-CT-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">CT</Attribute>
+      <Attribute Name="zone">Process</Attribute>
+      <Attribute Name="description">Current transformer</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">ABB</Attribute>
+      <Attribute Name="model">CT 1000:1</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Temperature Sensor" ID="SUB-SENSOR-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Process</Attribute>
+      <Attribute Name="description">Oil temperature sensor</Attribute>
+      <Attribute Name="criticality">Low</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 214</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="SF6 Pressure Sensor" ID="SUB-SENSOR-002">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Process</Attribute>
+      <Attribute Name="description">SF6 gas density monitor</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">WIKA</Attribute>
+      <Attribute Name="model">GDM-100</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Control Room Dispatcher" ID="SUB-HUM-DSP-001">
+      <Attribute Name="kind">human</Attribute>
+      <Attribute Name="type">Dispatcher</Attribute>
+      <Attribute Name="zone">Substation</Attribute>
+      <Attribute Name="description">Utility dispatcher supervising the substation</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="consequence_severity">3.0</Attribute>
+      <Attribute Name="role">operator</Attribute>
+      <Attribute Name="awareness">0.45</Attribute>
+      <Attribute Name="privilege">standard</Attribute>
+    </InternalElement>
+  </InstanceHierarchy>
+  <Connections>
+    <Connection>
+      <Source>SUB-FW-001</Source>
+      <Target>SUB-SW-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>HTTP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-SW-001</Source>
+      <Target>SUB-SCADA-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>DNP3</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-SW-001</Source>
+      <Target>SUB-HMI-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>IEC 61850</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-SW-001</Source>
+      <Target>SUB-EWS-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>IEC 61850</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-SW-001</Source>
+      <Target>SUB-RTU-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>DNP3</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-SW-001</Source>
+      <Target>SUB-IED-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>IEC 61850</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-SW-001</Source>
+      <Target>SUB-IED-002</Target>
+      <Type>connects-to</Type>
+      <Protocol>IEC 61850</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-SW-001</Source>
+      <Target>SUB-IED-003</Target>
+      <Type>connects-to</Type>
+      <Protocol>IEC 61850</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-HUM-DSP-001</Source>
+      <Target>SUB-HMI-001</Target>
+      <Type>programs / operates</Type>
+      <Protocol>HMI</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-IED-001</Source>
+      <Target>SUB-MU-001</Target>
+      <Type>monitors</Type>
+      <Protocol>IEC 61850 (Sampled Values)</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-IED-002</Source>
+      <Target>SUB-MU-001</Target>
+      <Type>monitors</Type>
+      <Protocol>IEC 61850 (GOOSE)</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-MU-001</Source>
+      <Target>SUB-CB-001</Target>
+      <Type>actuates</Type>
+      <Protocol>IEC 61850 (GOOSE)</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-MU-001</Source>
+      <Target>SUB-DIS-001</Target>
+      <Type>actuates</Type>
+      <Protocol>IEC 61850 (GOOSE)</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-MU-001</Source>
+      <Target>SUB-XFMR-001</Target>
+      <Type>monitors</Type>
+      <Protocol>IEC 61850 (Sampled Values)</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-MU-001</Source>
+      <Target>SUB-VT-001</Target>
+      <Type>monitors</Type>
+      <Protocol>IEC 61850 (Sampled Values)</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-MU-001</Source>
+      <Target>SUB-CT-001</Target>
+      <Type>monitors</Type>
+      <Protocol>IEC 61850 (Sampled Values)</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-MU-001</Source>
+      <Target>SUB-SENSOR-001</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-MU-001</Source>
+      <Target>SUB-SENSOR-002</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-SCADA-001</Source>
+      <Target>SUB-RTU-001</Target>
+      <Type>controls</Type>
+      <Protocol>DNP3</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>SUB-PMU-001</Source>
+      <Target>SUB-MU-001</Target>
+      <Type>monitors</Type>
+      <Protocol>IEC 61850</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+  </Connections>
+</AutomationML>

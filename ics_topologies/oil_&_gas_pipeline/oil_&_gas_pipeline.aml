@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutomationML xmlns="http://www.automationml.org/schema/aml">
+  <AdditionalInformation/>
+  <InstanceHierarchy Name="Oil &amp; Gas Pipeline">
+    <InternalElement Name="Control Center Firewall" ID="PIPE-CTR-FW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Firewall</Attribute>
+      <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="description">Protects control center</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Palo Alto</Attribute>
+      <Attribute Name="model">PA-5250</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">true</Attribute>
+      <Attribute Name="patched">true</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Control Center Switch" ID="PIPE-CTR-SW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Network Switch</Attribute>
+      <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="description">Core switch</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Cisco</Attribute>
+      <Attribute Name="model">Catalyst 9300</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">true</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="SCADA Server" ID="PIPE-CTR-SCADA-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">SCADA</Attribute>
+      <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="description">Pipeline SCADA</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Schneider</Attribute>
+      <Attribute Name="model">OASyS DNA</Attribute>
+      <Attribute Name="cvss_type">8.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">10.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Historian" ID="PIPE-CTR-HIST-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Server</Attribute>
+      <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="description">Pipeline data historian</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">OSIsoft</Attribute>
+      <Attribute Name="model">PI Server</Attribute>
+      <Attribute Name="cvss_type">7.0</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="HMI" ID="PIPE-CTR-HMI-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">HMI</Attribute>
+      <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="description">Operator console</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Schneider</Attribute>
+      <Attribute Name="model">ClearSCADA</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Engineering Workstation" ID="PIPE-CTR-EWS-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Workstation</Attribute>
+      <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="description">Configuration station</Attribute>
+      <Attribute Name="criticality">Low</Attribute>
+      <Attribute Name="vendor">Dell</Attribute>
+      <Attribute Name="model">Precision 7920</Attribute>
+      <Attribute Name="cvss_type">7.8</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">true</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="RTU (Station A)" ID="PIPE-RTU-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">RTU</Attribute>
+      <Attribute Name="zone">RemoteSite</Attribute>
+      <Attribute Name="description">RTU for pump station A</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Control Microsystems</Attribute>
+      <Attribute Name="model">SCADAPack 470</Attribute>
+      <Attribute Name="cvss_type">8.0</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="RTU (Station B)" ID="PIPE-RTU-002">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">RTU</Attribute>
+      <Attribute Name="zone">RemoteSite</Attribute>
+      <Attribute Name="description">RTU for pump station B</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Control Microsystems</Attribute>
+      <Attribute Name="model">SCADAPack 470</Attribute>
+      <Attribute Name="cvss_type">8.0</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="RTU (Valve Site)" ID="PIPE-RTU-003">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">RTU</Attribute>
+      <Attribute Name="zone">RemoteSite</Attribute>
+      <Attribute Name="description">RTU for block valve site</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Control Microsystems</Attribute>
+      <Attribute Name="model">SCADAPack 470</Attribute>
+      <Attribute Name="cvss_type">8.0</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="RTU (Metering)" ID="PIPE-RTU-004">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">RTU</Attribute>
+      <Attribute Name="zone">RemoteSite</Attribute>
+      <Attribute Name="description">RTU for custody transfer</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Control Microsystems</Attribute>
+      <Attribute Name="model">SCADAPack 470</Attribute>
+      <Attribute Name="cvss_type">8.0</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Station Switch A" ID="PIPE-SW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Network Switch</Attribute>
+      <Attribute Name="zone">RemoteSite</Attribute>
+      <Attribute Name="description">Industrial switch for station A</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SCALANCE XM408</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Station Switch B" ID="PIPE-SW-002">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Network Switch</Attribute>
+      <Attribute Name="zone">RemoteSite</Attribute>
+      <Attribute Name="description">Industrial switch for station B</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SCALANCE XM408</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Main Pump A" ID="PIPE-PUMP-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Pump</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Centrifugal pump</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Sulzer</Attribute>
+      <Attribute Name="model">Z6</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Standby Pump A" ID="PIPE-PUMP-002">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Pump</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Standby pump</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Sulzer</Attribute>
+      <Attribute Name="model">Z6</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="VFD A" ID="PIPE-VFD-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">VFD</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Variable frequency drive for pump</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">ABB</Attribute>
+      <Attribute Name="model">ACS880</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Suction Valve A" ID="PIPE-VALVE-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Valve</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Motor-operated valve</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Fisher V500</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Pressure Sensor A" ID="PIPE-SENSOR-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Discharge pressure</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 3051</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Flow Meter A" ID="PIPE-SENSOR-002">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Ultrasonic flow meter</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Daniel 3410</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Temperature Sensor A" ID="PIPE-SENSOR-003">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Product temperature</Attribute>
+      <Attribute Name="criticality">Low</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 214</Attribute>
+      <Attribute Name="consequence_severity">4.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Main Pump B" ID="PIPE-PUMP-003">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Pump</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Centrifugal pump</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Sulzer</Attribute>
+      <Attribute Name="model">Z6</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="VFD B" ID="PIPE-VFD-002">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">VFD</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">VFD for pump B</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">ABB</Attribute>
+      <Attribute Name="model">ACS880</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Discharge Valve B" ID="PIPE-VALVE-002">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Valve</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Motor-operated valve</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Fisher V500</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Pressure Sensor B" ID="PIPE-SENSOR-004">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Discharge pressure</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 3051</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Flow Meter B" ID="PIPE-SENSOR-005">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Ultrasonic flow meter</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Daniel 3410</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Block Valve" ID="PIPE-VALVE-003">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Valve</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Emergency block valve</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Fisher V500</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Pressure Sensor Valve" ID="PIPE-SENSOR-006">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Pressure at valve site</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 3051</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Custody Meter" ID="PIPE-SENSOR-007">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Custody transfer meter</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Daniel 3410</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Density Meter" ID="PIPE-SENSOR-008">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Product density</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Micro Motion</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Pipeline Dispatcher" ID="PIPE-HUM-DSP-001">
+      <Attribute Name="kind">human</Attribute>
+      <Attribute Name="type">Dispatcher</Attribute>
+      <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="description">Dispatcher monitoring pipeline operations</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="consequence_severity">4.0</Attribute>
+      <Attribute Name="role">operator</Attribute>
+      <Attribute Name="awareness">0.45</Attribute>
+      <Attribute Name="privilege">standard</Attribute>
+    </InternalElement>
+  </InstanceHierarchy>
+  <Connections>
+    <Connection>
+      <Source>PIPE-CTR-FW-001</Source>
+      <Target>PIPE-CTR-SW-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>HTTP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-CTR-SW-001</Source>
+      <Target>PIPE-CTR-SCADA-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>OPC UA</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-CTR-SW-001</Source>
+      <Target>PIPE-CTR-HIST-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>OPC UA</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-CTR-SW-001</Source>
+      <Target>PIPE-CTR-HMI-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>OPC UA</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-CTR-SW-001</Source>
+      <Target>PIPE-CTR-EWS-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>SSH</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-HUM-DSP-001</Source>
+      <Target>PIPE-CTR-HMI-001</Target>
+      <Type>programs / operates</Type>
+      <Protocol>HMI</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-CTR-SCADA-001</Source>
+      <Target>PIPE-RTU-001</Target>
+      <Type>controls</Type>
+      <Protocol>DNP3</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-CTR-SCADA-001</Source>
+      <Target>PIPE-RTU-002</Target>
+      <Type>controls</Type>
+      <Protocol>DNP3</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-CTR-SCADA-001</Source>
+      <Target>PIPE-RTU-003</Target>
+      <Type>controls</Type>
+      <Protocol>DNP3</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-CTR-SCADA-001</Source>
+      <Target>PIPE-RTU-004</Target>
+      <Type>controls</Type>
+      <Protocol>DNP3</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-RTU-001</Source>
+      <Target>PIPE-SW-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-RTU-002</Source>
+      <Target>PIPE-SW-002</Target>
+      <Type>connects-to</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-SW-001</Source>
+      <Target>PIPE-PUMP-001</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-SW-001</Source>
+      <Target>PIPE-PUMP-002</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-SW-001</Source>
+      <Target>PIPE-VFD-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-SW-001</Source>
+      <Target>PIPE-VALVE-001</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-SW-001</Source>
+      <Target>PIPE-SENSOR-001</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-SW-001</Source>
+      <Target>PIPE-SENSOR-002</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-SW-001</Source>
+      <Target>PIPE-SENSOR-003</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-SW-002</Source>
+      <Target>PIPE-PUMP-003</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-SW-002</Source>
+      <Target>PIPE-VFD-002</Target>
+      <Type>connects-to</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-SW-002</Source>
+      <Target>PIPE-VALVE-002</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-SW-002</Source>
+      <Target>PIPE-SENSOR-004</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-SW-002</Source>
+      <Target>PIPE-SENSOR-005</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-RTU-003</Source>
+      <Target>PIPE-VALVE-003</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-RTU-003</Source>
+      <Target>PIPE-SENSOR-006</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-RTU-004</Source>
+      <Target>PIPE-SENSOR-007</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>PIPE-RTU-004</Source>
+      <Target>PIPE-SENSOR-008</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+  </Connections>
+</AutomationML>

@@ -1,0 +1,616 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutomationML xmlns="http://www.automationml.org/schema/aml">
+  <AdditionalInformation/>
+  <InstanceHierarchy Name="Chemical Processing Plant">
+    <InternalElement Name="Corporate Firewall" ID="CHEM-ENT-FW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Firewall</Attribute>
+      <Attribute Name="zone">Enterprise</Attribute>
+      <Attribute Name="description">Internet edge</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Palo Alto</Attribute>
+      <Attribute Name="model">PA-5250</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">true</Attribute>
+      <Attribute Name="patched">true</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Enterprise Switch" ID="CHEM-ENT-SW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Network Switch</Attribute>
+      <Attribute Name="zone">Enterprise</Attribute>
+      <Attribute Name="description">Corporate network</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Cisco</Attribute>
+      <Attribute Name="model">Catalyst 9300</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">true</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Domain Controller" ID="CHEM-ENT-DC-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Server</Attribute>
+      <Attribute Name="zone">Enterprise</Attribute>
+      <Attribute Name="description">AD</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Microsoft</Attribute>
+      <Attribute Name="model">Windows Server 2022</Attribute>
+      <Attribute Name="cvss_type">8.1</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="ERP Server" ID="CHEM-ENT-ERP-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Server</Attribute>
+      <Attribute Name="zone">Enterprise</Attribute>
+      <Attribute Name="description">ERP</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">SAP</Attribute>
+      <Attribute Name="model">S/4HANA</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="DMZ Switch" ID="CHEM-DMZ-SW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Network Switch</Attribute>
+      <Attribute Name="zone">DMZ</Attribute>
+      <Attribute Name="description">Process DMZ</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Cisco</Attribute>
+      <Attribute Name="model">IE 4000</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Historian" ID="CHEM-DMZ-HIST-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Server</Attribute>
+      <Attribute Name="zone">DMZ</Attribute>
+      <Attribute Name="description">Plant historian</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">OSIsoft</Attribute>
+      <Attribute Name="model">PI Server</Attribute>
+      <Attribute Name="cvss_type">7.0</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Jump Server" ID="CHEM-DMZ-JUMP-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Server</Attribute>
+      <Attribute Name="zone">DMZ</Attribute>
+      <Attribute Name="description">OT jump host</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Microsoft</Attribute>
+      <Attribute Name="model">Windows Server 2022</Attribute>
+      <Attribute Name="cvss_type">8.1</Attribute>
+      <Attribute Name="exposed">true</Attribute>
+      <Attribute Name="patched">true</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="DCS Switch" ID="CHEM-DCS-SW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Network Switch</Attribute>
+      <Attribute Name="zone">DCS</Attribute>
+      <Attribute Name="description">DCS backbone</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SCALANCE XM408</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Operator Station" ID="CHEM-DCS-OP-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Workstation</Attribute>
+      <Attribute Name="zone">DCS</Attribute>
+      <Attribute Name="description">DCS operator console</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SIMATIC PCS 7</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Engineering Station" ID="CHEM-DCS-ENG-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Workstation</Attribute>
+      <Attribute Name="zone">DCS</Attribute>
+      <Attribute Name="description">DCS engineering</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SIMATIC PCS 7</Attribute>
+      <Attribute Name="cvss_type">7.8</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">true</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="DCS Controller (Reactor)" ID="CHEM-DCS-CTRL-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">DCSController</Attribute>
+      <Attribute Name="zone">DCS</Attribute>
+      <Attribute Name="description">Reactor temperature/pressure control</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">AS 410</Attribute>
+      <Attribute Name="cvss_type">8.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">10.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="DCS Controller (Distillation)" ID="CHEM-DCS-CTRL-002">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">DCSController</Attribute>
+      <Attribute Name="zone">DCS</Attribute>
+      <Attribute Name="description">Distillation column control</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">AS 410</Attribute>
+      <Attribute Name="cvss_type">8.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">10.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="DCS Controller (Utilities)" ID="CHEM-DCS-CTRL-003">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">DCSController</Attribute>
+      <Attribute Name="zone">DCS</Attribute>
+      <Attribute Name="description">Utilities (steam, cooling)</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">AS 410</Attribute>
+      <Attribute Name="cvss_type">8.0</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Safety PLC" ID="CHEM-SIS-PLC-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">SafetyPLC</Attribute>
+      <Attribute Name="zone">SIS</Attribute>
+      <Attribute Name="description">Safety Instrumented System</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">S7-400F</Attribute>
+      <Attribute Name="cvss_type">7.0</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">10.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="ESD Switch" ID="CHEM-SIS-ESD-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">SafetyDevice</Attribute>
+      <Attribute Name="zone">SIS</Attribute>
+      <Attribute Name="description">Emergency shutdown button</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Pilz</Attribute>
+      <Attribute Name="model">PNOZ</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="ESD Relay" ID="CHEM-SIS-RELAY-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">SafetyRelay</Attribute>
+      <Attribute Name="zone">SIS</Attribute>
+      <Attribute Name="description">Safety relay</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Pilz</Attribute>
+      <Attribute Name="model">PNOZ X3</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Thermocouple (Reactor)" ID="CHEM-FLD-TC-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Reactor temperature</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 214</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Pressure Transmitter (Reactor)" ID="CHEM-FLD-PT-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Reactor pressure</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 3051</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Level Transmitter (Reactor)" ID="CHEM-FLD-LT-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Reactor level</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 3300</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Control Valve (Reactor)" ID="CHEM-FLD-CV-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Valve</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Feed control valve</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Fisher V500</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Thermocouple (Distillation)" ID="CHEM-FLD-TC-002">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Column temperature</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 214</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Pressure Transmitter (Distillation)" ID="CHEM-FLD-PT-002">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Column pressure</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 3051</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Flow Transmitter (Distillation)" ID="CHEM-FLD-FT-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Reflux flow</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 8700</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Control Valve (Distillation)" ID="CHEM-FLD-CV-002">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Valve</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Reflux valve</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Fisher V500</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Product Pump" ID="CHEM-FLD-PUMP-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Pump</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Transfer pump to storage</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Grundfos</Attribute>
+      <Attribute Name="model">CR 64</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Storage Tank Valve" ID="CHEM-FLD-VALVE-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Valve</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Tank inlet/outlet</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Fisher V500</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Tank Level Sensor" ID="CHEM-FLD-SENSOR-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Storage tank level</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 3300</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Remote Switch" ID="CHEM-REM-SW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Network Switch</Attribute>
+      <Attribute Name="zone">Remote</Attribute>
+      <Attribute Name="description">Switch at remote tank farm</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SCALANCE XB208</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Remote RTU" ID="CHEM-REM-RTU-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">RTU</Attribute>
+      <Attribute Name="zone">Remote</Attribute>
+      <Attribute Name="description">RTU for tank farm</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Control Microsystems</Attribute>
+      <Attribute Name="model">SCADAPack 470</Attribute>
+      <Attribute Name="cvss_type">8.0</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Remote Transfer Pump" ID="CHEM-REM-PUMP-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Pump</Attribute>
+      <Attribute Name="zone">Remote</Attribute>
+      <Attribute Name="description">Pump to rail cars</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Grundfos</Attribute>
+      <Attribute Name="model">CR 90</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Remote Valve" ID="CHEM-REM-VALVE-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Valve</Attribute>
+      <Attribute Name="zone">Remote</Attribute>
+      <Attribute Name="description">Rail loading valve</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Fisher V500</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Process Operator" ID="CHEM-HUM-OPR-001">
+      <Attribute Name="kind">human</Attribute>
+      <Attribute Name="type">Operator</Attribute>
+      <Attribute Name="zone">DCS</Attribute>
+      <Attribute Name="description">Board operator supervising the DCS</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+      <Attribute Name="role">operator</Attribute>
+      <Attribute Name="awareness">0.4</Attribute>
+      <Attribute Name="privilege">standard</Attribute>
+    </InternalElement>
+  </InstanceHierarchy>
+  <Connections>
+    <Connection>
+      <Source>CHEM-ENT-FW-001</Source>
+      <Target>CHEM-ENT-SW-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>HTTP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-ENT-SW-001</Source>
+      <Target>CHEM-ENT-DC-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>LDAP</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-ENT-SW-001</Source>
+      <Target>CHEM-ENT-ERP-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>HTTP</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-ENT-SW-001</Source>
+      <Target>CHEM-DMZ-SW-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>HTTP</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DMZ-SW-001</Source>
+      <Target>CHEM-DMZ-HIST-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>OPC UA</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DMZ-SW-001</Source>
+      <Target>CHEM-DMZ-JUMP-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>SSH</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DMZ-JUMP-001</Source>
+      <Target>CHEM-DCS-SW-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>RDP</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-SW-001</Source>
+      <Target>CHEM-DCS-OP-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>OPC UA</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-SW-001</Source>
+      <Target>CHEM-DCS-ENG-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>OPC UA</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-SW-001</Source>
+      <Target>CHEM-DCS-CTRL-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>PROFIBUS</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-SW-001</Source>
+      <Target>CHEM-DCS-CTRL-002</Target>
+      <Type>connects-to</Type>
+      <Protocol>PROFIBUS</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-SW-001</Source>
+      <Target>CHEM-DCS-CTRL-003</Target>
+      <Type>connects-to</Type>
+      <Protocol>PROFIBUS</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-HUM-OPR-001</Source>
+      <Target>CHEM-DCS-OP-001</Target>
+      <Type>programs / operates</Type>
+      <Protocol>HMI</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-001</Source>
+      <Target>CHEM-FLD-TC-001</Target>
+      <Type>monitors</Type>
+      <Protocol>HART</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-001</Source>
+      <Target>CHEM-FLD-PT-001</Target>
+      <Type>monitors</Type>
+      <Protocol>HART</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-001</Source>
+      <Target>CHEM-FLD-LT-001</Target>
+      <Type>monitors</Type>
+      <Protocol>HART</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-001</Source>
+      <Target>CHEM-FLD-CV-001</Target>
+      <Type>actuates</Type>
+      <Protocol>HART</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-002</Source>
+      <Target>CHEM-FLD-TC-002</Target>
+      <Type>monitors</Type>
+      <Protocol>HART</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-002</Source>
+      <Target>CHEM-FLD-PT-002</Target>
+      <Type>monitors</Type>
+      <Protocol>HART</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-002</Source>
+      <Target>CHEM-FLD-FT-001</Target>
+      <Type>monitors</Type>
+      <Protocol>HART</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-002</Source>
+      <Target>CHEM-FLD-CV-002</Target>
+      <Type>actuates</Type>
+      <Protocol>HART</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-001</Source>
+      <Target>CHEM-SIS-PLC-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>PROFIsafe</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-002</Source>
+      <Target>CHEM-SIS-PLC-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>PROFIsafe</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-SIS-PLC-001</Source>
+      <Target>CHEM-SIS-ESD-001</Target>
+      <Type>monitors</Type>
+      <Protocol>PROFIsafe</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-SIS-PLC-001</Source>
+      <Target>CHEM-SIS-RELAY-001</Target>
+      <Type>monitors</Type>
+      <Protocol>PROFIsafe</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-003</Source>
+      <Target>CHEM-REM-RTU-001</Target>
+      <Type>controls</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-REM-RTU-001</Source>
+      <Target>CHEM-REM-SW-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-REM-RTU-001</Source>
+      <Target>CHEM-REM-PUMP-001</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-REM-RTU-001</Source>
+      <Target>CHEM-REM-VALVE-001</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-003</Source>
+      <Target>CHEM-FLD-PUMP-001</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-003</Source>
+      <Target>CHEM-FLD-VALVE-001</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>CHEM-DCS-CTRL-003</Source>
+      <Target>CHEM-FLD-SENSOR-001</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+  </Connections>
+</AutomationML>

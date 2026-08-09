@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisioDocument xmlns="http://schemas.microsoft.com/visio/2003/core">
+  <DocumentProperties>
+    <Title>Water Treatment Plant</Title>
+    <Creator>ICS Topology Generator</Creator>
+    <Description>Municipal water treatment facility with intake, filtration, chemical dosing, storage, and distribution.</Description>
+  </DocumentProperties>
+  <Pages>
+    <Page ID="0" Name="Water Treatment Plant" Width="3000" Height="1600">
+      <Shapes>
+        <Shape ID="1" Type="Shape" NameU="WTP-FW-001">
+          <X>120.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-FW-001,device,7.5,true,true,8.0
+          </Text>
+        </Shape>
+        <Shape ID="2" Type="Shape" NameU="WTP-ENT-SW-001">
+          <X>120.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-ENT-SW-001,device,6.5,false,true,6.0
+          </Text>
+        </Shape>
+        <Shape ID="3" Type="Shape" NameU="WTP-ENT-DC-001">
+          <X>330.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-ENT-DC-001,device,8.1,false,false,9.0
+          </Text>
+        </Shape>
+        <Shape ID="4" Type="Shape" NameU="WTP-ENT-HIST-001">
+          <X>540.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-ENT-HIST-001,device,7.0,false,false,5.0
+          </Text>
+        </Shape>
+        <Shape ID="5" Type="Shape" NameU="WTP-DMZ-SW-001">
+          <X>120.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-DMZ-SW-001,device,6.5,false,false,7.0
+          </Text>
+        </Shape>
+        <Shape ID="6" Type="Shape" NameU="WTP-DMZ-JUMP-001">
+          <X>330.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-DMZ-JUMP-001,device,8.1,true,true,8.0
+          </Text>
+        </Shape>
+        <Shape ID="7" Type="Shape" NameU="WTP-DMZ-SCADA-001">
+          <X>540.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-DMZ-SCADA-001,device,8.5,false,false,9.0
+          </Text>
+        </Shape>
+        <Shape ID="8" Type="Shape" NameU="WTP-CTRL-SW-001">
+          <X>120.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-CTRL-SW-001,device,6.5,false,false,8.0
+          </Text>
+        </Shape>
+        <Shape ID="9" Type="Shape" NameU="WTP-CTRL-HMI-001">
+          <X>330.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-CTRL-HMI-001,device,7.5,false,false,6.0
+          </Text>
+        </Shape>
+        <Shape ID="10" Type="Shape" NameU="WTP-CTRL-PLC-001">
+          <X>540.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-CTRL-PLC-001,device,8.1,false,false,9.0
+          </Text>
+        </Shape>
+        <Shape ID="11" Type="Shape" NameU="WTP-CTRL-PLC-002">
+          <X>750.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-CTRL-PLC-002,device,8.1,false,false,9.0
+          </Text>
+        </Shape>
+        <Shape ID="12" Type="Shape" NameU="WTP-CTRL-PLC-003">
+          <X>960.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-CTRL-PLC-003,device,8.1,false,false,9.0
+          </Text>
+        </Shape>
+        <Shape ID="13" Type="Shape" NameU="WTP-CTRL-PLC-004">
+          <X>1170.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-CTRL-PLC-004,device,8.1,false,false,9.0
+          </Text>
+        </Shape>
+        <Shape ID="14" Type="Shape" NameU="WTP-HUM-OPR-001">
+          <X>1380.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-HUM-OPR-001,human,operator,0.4,standard,4.0
+          </Text>
+        </Shape>
+        <Shape ID="15" Type="Shape" NameU="WTP-FLD-PUMP-001">
+          <X>120.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-FLD-PUMP-001,physical,0.02,8.0
+          </Text>
+        </Shape>
+        <Shape ID="16" Type="Shape" NameU="WTP-FLD-PUMP-002">
+          <X>330.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-FLD-PUMP-002,physical,0.02,8.0
+          </Text>
+        </Shape>
+        <Shape ID="17" Type="Shape" NameU="WTP-FLD-VALVE-001">
+          <X>540.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-FLD-VALVE-001,physical,0.02,6.0
+          </Text>
+        </Shape>
+        <Shape ID="18" Type="Shape" NameU="WTP-FLD-VALVE-002">
+          <X>750.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-FLD-VALVE-002,physical,0.02,6.0
+          </Text>
+        </Shape>
+        <Shape ID="19" Type="Shape" NameU="WTP-FLD-SENSOR-001">
+          <X>960.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-FLD-SENSOR-001,physical,0.01,4.0
+          </Text>
+        </Shape>
+        <Shape ID="20" Type="Shape" NameU="WTP-FLD-SENSOR-002">
+          <X>1170.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-FLD-SENSOR-002,physical,0.01,4.0
+          </Text>
+        </Shape>
+        <Shape ID="21" Type="Shape" NameU="WTP-FLD-SENSOR-003">
+          <X>1380.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-FLD-SENSOR-003,physical,0.01,5.0
+          </Text>
+        </Shape>
+        <Shape ID="22" Type="Shape" NameU="WTP-FLD-SENSOR-004">
+          <X>1590.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-FLD-SENSOR-004,physical,0.01,4.0
+          </Text>
+        </Shape>
+        <Shape ID="23" Type="Shape" NameU="WTP-FLD-MOTOR-001">
+          <X>1800.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-FLD-MOTOR-001,physical,0.01,5.0
+          </Text>
+        </Shape>
+        <Shape ID="24" Type="Shape" NameU="WTP-FLD-VFD-001">
+          <X>120.0</X>
+          <Y>1010.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-FLD-VFD-001,device,7.5,false,false,7.0
+          </Text>
+        </Shape>
+        <Shape ID="25" Type="Shape" NameU="WTP-FLD-ENG-001">
+          <X>330.0</X>
+          <Y>1010.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-FLD-ENG-001,device,7.8,false,true,5.0
+          </Text>
+        </Shape>
+        <Shape ID="26" Type="Shape" NameU="WTP-FLD-SW-001">
+          <X>540.0</X>
+          <Y>1010.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-FLD-SW-001,device,6.5,false,false,5.0
+          </Text>
+        </Shape>
+        <Shape ID="27" Type="Shape" NameU="conn_WTP-FW-001_WTP-ENT-SW-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-FW-001,WTP-ENT-SW-001,connects-to,false,HTTP,low,
+          </Text>
+        </Shape>
+        <Shape ID="28" Type="Shape" NameU="conn_WTP-ENT-SW-001_WTP-DMZ-SW-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-ENT-SW-001,WTP-DMZ-SW-001,connects-to,false,HTTP,medium,
+          </Text>
+        </Shape>
+        <Shape ID="29" Type="Shape" NameU="conn_WTP-ENT-SW-001_WTP-ENT-DC-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-ENT-SW-001,WTP-ENT-DC-001,connects-to,false,LDAP,high,
+          </Text>
+        </Shape>
+        <Shape ID="30" Type="Shape" NameU="conn_WTP-ENT-SW-001_WTP-ENT-HIST-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-ENT-SW-001,WTP-ENT-HIST-001,connects-to,false,OPC UA,high,
+          </Text>
+        </Shape>
+        <Shape ID="31" Type="Shape" NameU="conn_WTP-DMZ-SW-001_WTP-DMZ-JUMP-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-DMZ-SW-001,WTP-DMZ-JUMP-001,connects-to,false,SSH,medium,
+          </Text>
+        </Shape>
+        <Shape ID="32" Type="Shape" NameU="conn_WTP-DMZ-SW-001_WTP-DMZ-SCADA-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-DMZ-SW-001,WTP-DMZ-SCADA-001,connects-to,false,OPC UA,medium,
+          </Text>
+        </Shape>
+        <Shape ID="33" Type="Shape" NameU="conn_WTP-DMZ-SCADA-001_WTP-CTRL-SW-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-DMZ-SCADA-001,WTP-CTRL-SW-001,connects-to,false,OPC UA,medium,
+          </Text>
+        </Shape>
+        <Shape ID="34" Type="Shape" NameU="conn_WTP-CTRL-SW-001_WTP-CTRL-HMI-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-SW-001,WTP-CTRL-HMI-001,connects-to,false,Ethernet/IP,high,
+          </Text>
+        </Shape>
+        <Shape ID="35" Type="Shape" NameU="conn_WTP-CTRL-SW-001_WTP-CTRL-PLC-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-SW-001,WTP-CTRL-PLC-001,controls,false,Ethernet/IP,high,
+          </Text>
+        </Shape>
+        <Shape ID="36" Type="Shape" NameU="conn_WTP-CTRL-SW-001_WTP-CTRL-PLC-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-SW-001,WTP-CTRL-PLC-002,controls,false,Ethernet/IP,high,
+          </Text>
+        </Shape>
+        <Shape ID="37" Type="Shape" NameU="conn_WTP-CTRL-SW-001_WTP-CTRL-PLC-003">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-SW-001,WTP-CTRL-PLC-003,controls,false,Ethernet/IP,high,
+          </Text>
+        </Shape>
+        <Shape ID="38" Type="Shape" NameU="conn_WTP-CTRL-SW-001_WTP-CTRL-PLC-004">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-SW-001,WTP-CTRL-PLC-004,controls,false,Ethernet/IP,high,
+          </Text>
+        </Shape>
+        <Shape ID="39" Type="Shape" NameU="conn_WTP-HUM-OPR-001_WTP-CTRL-HMI-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-HUM-OPR-001,WTP-CTRL-HMI-001,programs / operates,false,HMI,high,
+          </Text>
+        </Shape>
+        <Shape ID="40" Type="Shape" NameU="conn_WTP-CTRL-PLC-001_WTP-FLD-PUMP-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-PLC-001,WTP-FLD-PUMP-001,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="41" Type="Shape" NameU="conn_WTP-CTRL-PLC-001_WTP-FLD-VALVE-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-PLC-001,WTP-FLD-VALVE-001,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="42" Type="Shape" NameU="conn_WTP-CTRL-PLC-001_WTP-FLD-SENSOR-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-PLC-001,WTP-FLD-SENSOR-001,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="43" Type="Shape" NameU="conn_WTP-CTRL-PLC-002_WTP-FLD-VALVE-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-PLC-002,WTP-FLD-VALVE-002,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="44" Type="Shape" NameU="conn_WTP-CTRL-PLC-002_WTP-FLD-SENSOR-004">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-PLC-002,WTP-FLD-SENSOR-004,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="45" Type="Shape" NameU="conn_WTP-CTRL-PLC-003_WTP-FLD-SENSOR-003">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-PLC-003,WTP-FLD-SENSOR-003,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="46" Type="Shape" NameU="conn_WTP-CTRL-PLC-003_WTP-FLD-PUMP-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-PLC-003,WTP-FLD-PUMP-001,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="47" Type="Shape" NameU="conn_WTP-CTRL-PLC-004_WTP-FLD-PUMP-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-PLC-004,WTP-FLD-PUMP-002,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="48" Type="Shape" NameU="conn_WTP-CTRL-PLC-004_WTP-FLD-SENSOR-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-PLC-004,WTP-FLD-SENSOR-002,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="49" Type="Shape" NameU="conn_WTP-CTRL-PLC-004_WTP-FLD-VFD-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-PLC-004,WTP-FLD-VFD-001,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="50" Type="Shape" NameU="conn_WTP-CTRL-PLC-001_WTP-FLD-MOTOR-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-CTRL-PLC-001,WTP-FLD-MOTOR-001,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="51" Type="Shape" NameU="conn_WTP-DMZ-JUMP-001_WTP-CTRL-SW-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-DMZ-JUMP-001,WTP-CTRL-SW-001,connects-to,false,RDP,medium,
+          </Text>
+        </Shape>
+        <Shape ID="52" Type="Shape" NameU="conn_WTP-FLD-ENG-001_WTP-CTRL-SW-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-FLD-ENG-001,WTP-CTRL-SW-001,connects-to,false,SSH,medium,
+          </Text>
+        </Shape>
+        <Shape ID="53" Type="Shape" NameU="conn_WTP-FLD-SW-001_WTP-FLD-PUMP-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,WTP-FLD-SW-001,WTP-FLD-PUMP-001,connects-to,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+      </Shapes>
+    </Page>
+  </Pages>
+</VisioDocument>

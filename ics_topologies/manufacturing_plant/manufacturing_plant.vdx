@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisioDocument xmlns="http://schemas.microsoft.com/visio/2003/core">
+  <DocumentProperties>
+    <Title>Manufacturing Plant</Title>
+    <Creator>ICS Topology Generator</Creator>
+    <Description>Automated production plant for automotive components, with robotic assembly and quality control.</Description>
+  </DocumentProperties>
+  <Pages>
+    <Page ID="0" Name="Manufacturing Plant" Width="3000" Height="1600">
+      <Shapes>
+        <Shape ID="1" Type="Shape" NameU="MFG-ENT-FW-001">
+          <X>120.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-ENT-FW-001,device,7.5,true,true,8.0
+          </Text>
+        </Shape>
+        <Shape ID="2" Type="Shape" NameU="MFG-ENT-SW-001">
+          <X>330.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-ENT-SW-001,device,6.5,false,true,6.0
+          </Text>
+        </Shape>
+        <Shape ID="3" Type="Shape" NameU="MFG-ENT-DC-001">
+          <X>540.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-ENT-DC-001,device,8.1,false,false,9.0
+          </Text>
+        </Shape>
+        <Shape ID="4" Type="Shape" NameU="MFG-ENT-MES-001">
+          <X>750.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-ENT-MES-001,device,7.5,false,false,8.0
+          </Text>
+        </Shape>
+        <Shape ID="5" Type="Shape" NameU="MFG-ENT-ERP-001">
+          <X>960.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-ENT-ERP-001,device,6.5,false,false,5.0
+          </Text>
+        </Shape>
+        <Shape ID="6" Type="Shape" NameU="MFG-DMZ-SW-001">
+          <X>120.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-DMZ-SW-001,device,6.5,false,false,7.0
+          </Text>
+        </Shape>
+        <Shape ID="7" Type="Shape" NameU="MFG-DMZ-HIST-001">
+          <X>330.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-DMZ-HIST-001,device,7.0,false,false,5.0
+          </Text>
+        </Shape>
+        <Shape ID="8" Type="Shape" NameU="MFG-DMZ-JUMP-001">
+          <X>540.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-DMZ-JUMP-001,device,8.1,true,true,8.0
+          </Text>
+        </Shape>
+        <Shape ID="9" Type="Shape" NameU="MFG-SF-SW-001">
+          <X>120.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-SF-SW-001,device,6.5,false,false,8.0
+          </Text>
+        </Shape>
+        <Shape ID="10" Type="Shape" NameU="MFG-SF-SCADA-001">
+          <X>330.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-SF-SCADA-001,device,8.5,false,false,9.0
+          </Text>
+        </Shape>
+        <Shape ID="11" Type="Shape" NameU="MFG-SF-HMI-001">
+          <X>540.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-SF-HMI-001,device,7.5,false,false,6.0
+          </Text>
+        </Shape>
+        <Shape ID="12" Type="Shape" NameU="MFG-CELL1-SW-001">
+          <X>120.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-CELL1-SW-001,device,6.5,false,false,7.0
+          </Text>
+        </Shape>
+        <Shape ID="13" Type="Shape" NameU="MFG-CELL1-PLC-001">
+          <X>330.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-CELL1-PLC-001,device,8.1,false,false,9.0
+          </Text>
+        </Shape>
+        <Shape ID="14" Type="Shape" NameU="MFG-CELL1-ROBOT-001">
+          <X>540.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-CELL1-ROBOT-001,device,7.5,false,false,8.0
+          </Text>
+        </Shape>
+        <Shape ID="15" Type="Shape" NameU="MFG-CELL1-POS-001">
+          <X>750.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-CELL1-POS-001,physical,0.01,5.0
+          </Text>
+        </Shape>
+        <Shape ID="16" Type="Shape" NameU="MFG-CELL2-SW-001">
+          <X>960.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-CELL2-SW-001,device,6.5,false,false,7.0
+          </Text>
+        </Shape>
+        <Shape ID="17" Type="Shape" NameU="MFG-CELL2-PLC-001">
+          <X>1170.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-CELL2-PLC-001,device,8.1,false,false,9.0
+          </Text>
+        </Shape>
+        <Shape ID="18" Type="Shape" NameU="MFG-CELL2-HMI-001">
+          <X>1380.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-CELL2-HMI-001,device,7.0,false,false,6.0
+          </Text>
+        </Shape>
+        <Shape ID="19" Type="Shape" NameU="MFG-SAF-PLC-001">
+          <X>120.0</X>
+          <Y>1020.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-SAF-PLC-001,device,7.0,false,false,9.0
+          </Text>
+        </Shape>
+        <Shape ID="20" Type="Shape" NameU="MFG-SAF-LC-001">
+          <X>330.0</X>
+          <Y>1020.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-SAF-LC-001,physical,0.01,6.0
+          </Text>
+        </Shape>
+        <Shape ID="21" Type="Shape" NameU="MFG-SAF-ESTOP-001">
+          <X>540.0</X>
+          <Y>1020.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-SAF-ESTOP-001,physical,0.01,6.0
+          </Text>
+        </Shape>
+        <Shape ID="22" Type="Shape" NameU="MFG-FLD-VFD-001">
+          <X>120.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-FLD-VFD-001,device,7.5,false,false,7.0
+          </Text>
+        </Shape>
+        <Shape ID="23" Type="Shape" NameU="MFG-FLD-MOTOR-001">
+          <X>330.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-FLD-MOTOR-001,physical,0.01,5.0
+          </Text>
+        </Shape>
+        <Shape ID="24" Type="Shape" NameU="MFG-FLD-SENSOR-001">
+          <X>540.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-FLD-SENSOR-001,physical,0.01,4.0
+          </Text>
+        </Shape>
+        <Shape ID="25" Type="Shape" NameU="MFG-FLD-SENSOR-002">
+          <X>750.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-FLD-SENSOR-002,physical,0.01,5.0
+          </Text>
+        </Shape>
+        <Shape ID="26" Type="Shape" NameU="MFG-FLD-ACT-001">
+          <X>960.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-FLD-ACT-001,physical,0.01,4.0
+          </Text>
+        </Shape>
+        <Shape ID="27" Type="Shape" NameU="MFG-HUM-SUP-001">
+          <X>750.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,MFG-HUM-SUP-001,human,operator,0.4,standard,4.0
+          </Text>
+        </Shape>
+        <Shape ID="28" Type="Shape" NameU="conn_MFG-ENT-FW-001_MFG-ENT-SW-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-ENT-FW-001,MFG-ENT-SW-001,connects-to,false,HTTP,low,
+          </Text>
+        </Shape>
+        <Shape ID="29" Type="Shape" NameU="conn_MFG-ENT-SW-001_MFG-ENT-DC-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-ENT-SW-001,MFG-ENT-DC-001,connects-to,false,LDAP,high,
+          </Text>
+        </Shape>
+        <Shape ID="30" Type="Shape" NameU="conn_MFG-ENT-SW-001_MFG-ENT-MES-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-ENT-SW-001,MFG-ENT-MES-001,connects-to,false,OPC UA,high,
+          </Text>
+        </Shape>
+        <Shape ID="31" Type="Shape" NameU="conn_MFG-ENT-SW-001_MFG-ENT-ERP-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-ENT-SW-001,MFG-ENT-ERP-001,connects-to,false,HTTP,high,
+          </Text>
+        </Shape>
+        <Shape ID="32" Type="Shape" NameU="conn_MFG-ENT-SW-001_MFG-DMZ-SW-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-ENT-SW-001,MFG-DMZ-SW-001,connects-to,false,HTTP,medium,
+          </Text>
+        </Shape>
+        <Shape ID="33" Type="Shape" NameU="conn_MFG-DMZ-SW-001_MFG-DMZ-HIST-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-DMZ-SW-001,MFG-DMZ-HIST-001,connects-to,false,OPC UA,medium,
+          </Text>
+        </Shape>
+        <Shape ID="34" Type="Shape" NameU="conn_MFG-DMZ-SW-001_MFG-DMZ-JUMP-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-DMZ-SW-001,MFG-DMZ-JUMP-001,connects-to,false,SSH,medium,
+          </Text>
+        </Shape>
+        <Shape ID="35" Type="Shape" NameU="conn_MFG-DMZ-JUMP-001_MFG-SF-SW-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-DMZ-JUMP-001,MFG-SF-SW-001,connects-to,false,RDP,medium,
+          </Text>
+        </Shape>
+        <Shape ID="36" Type="Shape" NameU="conn_MFG-SF-SW-001_MFG-SF-SCADA-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-SF-SW-001,MFG-SF-SCADA-001,connects-to,false,OPC UA,high,
+          </Text>
+        </Shape>
+        <Shape ID="37" Type="Shape" NameU="conn_MFG-SF-SW-001_MFG-SF-HMI-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-SF-SW-001,MFG-SF-HMI-001,connects-to,false,PROFINET,high,
+          </Text>
+        </Shape>
+        <Shape ID="38" Type="Shape" NameU="conn_MFG-HUM-SUP-001_MFG-SF-HMI-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-HUM-SUP-001,MFG-SF-HMI-001,programs / operates,false,HMI,high,
+          </Text>
+        </Shape>
+        <Shape ID="39" Type="Shape" NameU="conn_MFG-SF-SCADA-001_MFG-CELL1-PLC-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-SF-SCADA-001,MFG-CELL1-PLC-001,controls,false,PROFINET,high,
+          </Text>
+        </Shape>
+        <Shape ID="40" Type="Shape" NameU="conn_MFG-SF-SCADA-001_MFG-CELL2-PLC-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-SF-SCADA-001,MFG-CELL2-PLC-001,controls,false,PROFINET,high,
+          </Text>
+        </Shape>
+        <Shape ID="41" Type="Shape" NameU="conn_MFG-CELL1-SW-001_MFG-CELL1-PLC-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-CELL1-SW-001,MFG-CELL1-PLC-001,connects-to,false,PROFINET,high,
+          </Text>
+        </Shape>
+        <Shape ID="42" Type="Shape" NameU="conn_MFG-CELL1-SW-001_MFG-CELL1-ROBOT-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-CELL1-SW-001,MFG-CELL1-ROBOT-001,connects-to,false,PROFINET,high,
+          </Text>
+        </Shape>
+        <Shape ID="43" Type="Shape" NameU="conn_MFG-CELL1-SW-001_MFG-CELL1-POS-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-CELL1-SW-001,MFG-CELL1-POS-001,connects-to,false,PROFINET,high,
+          </Text>
+        </Shape>
+        <Shape ID="44" Type="Shape" NameU="conn_MFG-CELL1-PLC-001_MFG-FLD-VFD-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-CELL1-PLC-001,MFG-FLD-VFD-001,actuates,false,PROFINET,low,
+          </Text>
+        </Shape>
+        <Shape ID="45" Type="Shape" NameU="conn_MFG-CELL1-PLC-001_MFG-FLD-MOTOR-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-CELL1-PLC-001,MFG-FLD-MOTOR-001,actuates,false,PROFINET,low,
+          </Text>
+        </Shape>
+        <Shape ID="46" Type="Shape" NameU="conn_MFG-CELL1-PLC-001_MFG-FLD-SENSOR-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-CELL1-PLC-001,MFG-FLD-SENSOR-001,monitors,false,PROFINET,low,
+          </Text>
+        </Shape>
+        <Shape ID="47" Type="Shape" NameU="conn_MFG-CELL2-SW-001_MFG-CELL2-PLC-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-CELL2-SW-001,MFG-CELL2-PLC-001,connects-to,false,PROFINET,high,
+          </Text>
+        </Shape>
+        <Shape ID="48" Type="Shape" NameU="conn_MFG-CELL2-SW-001_MFG-CELL2-HMI-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-CELL2-SW-001,MFG-CELL2-HMI-001,connects-to,false,PROFINET,high,
+          </Text>
+        </Shape>
+        <Shape ID="49" Type="Shape" NameU="conn_MFG-CELL2-PLC-001_MFG-FLD-SENSOR-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-CELL2-PLC-001,MFG-FLD-SENSOR-002,monitors,false,PROFINET,low,
+          </Text>
+        </Shape>
+        <Shape ID="50" Type="Shape" NameU="conn_MFG-CELL2-PLC-001_MFG-FLD-ACT-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-CELL2-PLC-001,MFG-FLD-ACT-001,actuates,false,PROFINET,low,
+          </Text>
+        </Shape>
+        <Shape ID="51" Type="Shape" NameU="conn_MFG-SAF-PLC-001_MFG-SAF-LC-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-SAF-PLC-001,MFG-SAF-LC-001,monitors,false,PROFIsafe,low,
+          </Text>
+        </Shape>
+        <Shape ID="52" Type="Shape" NameU="conn_MFG-SAF-PLC-001_MFG-SAF-ESTOP-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-SAF-PLC-001,MFG-SAF-ESTOP-001,monitors,false,PROFIsafe,low,
+          </Text>
+        </Shape>
+        <Shape ID="53" Type="Shape" NameU="conn_MFG-SAF-PLC-001_MFG-CELL1-PLC-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-SAF-PLC-001,MFG-CELL1-PLC-001,connects-to,false,PROFIsafe,medium,
+          </Text>
+        </Shape>
+        <Shape ID="54" Type="Shape" NameU="conn_MFG-SAF-PLC-001_MFG-CELL2-PLC-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,MFG-SAF-PLC-001,MFG-CELL2-PLC-001,connects-to,false,PROFIsafe,medium,
+          </Text>
+        </Shape>
+      </Shapes>
+    </Page>
+  </Pages>
+</VisioDocument>

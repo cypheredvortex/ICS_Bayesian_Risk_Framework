@@ -1,0 +1,686 @@
+{
+  "metadata": {
+    "name": "Manufacturing Plant",
+    "description": "Automated production plant for automotive components, with robotic assembly and quality control.",
+    "version": "2.0",
+    "created": "2026-08-09T11:43:32.591353"
+  },
+  "zones": [
+    {
+      "id": "Enterprise",
+      "name": "Enterprise IT",
+      "color": "#4dabf7"
+    },
+    {
+      "id": "DMZ",
+      "name": "Industrial DMZ",
+      "color": "#ffa94d"
+    },
+    {
+      "id": "ShopFloor",
+      "name": "Shop Floor Network",
+      "color": "#845ef7"
+    },
+    {
+      "id": "Cell",
+      "name": "Work Cell",
+      "color": "#fcc419"
+    },
+    {
+      "id": "Field",
+      "name": "Field Devices",
+      "color": "#20c997"
+    },
+    {
+      "id": "Safety",
+      "name": "Safety Network",
+      "color": "#da77f2"
+    }
+  ],
+  "assets": [
+    {
+      "id": "MFG-ENT-FW-001",
+      "name": "Perimeter Firewall",
+      "type": "Firewall",
+      "kind": "device",
+      "zone": "Enterprise",
+      "description": "Edge firewall",
+      "criticality": "High",
+      "vendor": "Fortinet",
+      "model": "FortiGate 600F",
+      "cvss_type": 7.5,
+      "exposed": true,
+      "patched": true,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "MFG-ENT-SW-001",
+      "name": "Enterprise Switch",
+      "type": "Network Switch",
+      "kind": "device",
+      "zone": "Enterprise",
+      "description": "Core switch",
+      "criticality": "High",
+      "vendor": "Cisco",
+      "model": "Catalyst 9300",
+      "cvss_type": 6.5,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 6.0
+    },
+    {
+      "id": "MFG-ENT-DC-001",
+      "name": "Domain Controller",
+      "type": "Server",
+      "kind": "device",
+      "zone": "Enterprise",
+      "description": "AD",
+      "criticality": "High",
+      "vendor": "Microsoft",
+      "model": "Windows Server 2022",
+      "cvss_type": 8.1,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 9.0
+    },
+    {
+      "id": "MFG-ENT-MES-001",
+      "name": "MES Server",
+      "type": "Server",
+      "kind": "device",
+      "zone": "Enterprise",
+      "description": "Manufacturing Execution System",
+      "criticality": "High",
+      "vendor": "Siemens",
+      "model": "SIMATIC IT",
+      "cvss_type": 7.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "MFG-ENT-ERP-001",
+      "name": "ERP Server",
+      "type": "Server",
+      "kind": "device",
+      "zone": "Enterprise",
+      "description": "ERP",
+      "criticality": "Medium",
+      "vendor": "SAP",
+      "model": "S/4HANA",
+      "cvss_type": 6.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 5.0
+    },
+    {
+      "id": "MFG-DMZ-SW-001",
+      "name": "DMZ Switch",
+      "type": "Network Switch",
+      "kind": "device",
+      "zone": "DMZ",
+      "description": "DMZ switch",
+      "criticality": "High",
+      "vendor": "Cisco",
+      "model": "IE 4000",
+      "cvss_type": 6.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 7.0
+    },
+    {
+      "id": "MFG-DMZ-HIST-001",
+      "name": "Historian",
+      "type": "Server",
+      "kind": "device",
+      "zone": "DMZ",
+      "description": "Data historian",
+      "criticality": "Medium",
+      "vendor": "OSIsoft",
+      "model": "PI Server",
+      "cvss_type": 7.0,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 5.0
+    },
+    {
+      "id": "MFG-DMZ-JUMP-001",
+      "name": "Jump Server",
+      "type": "Server",
+      "kind": "device",
+      "zone": "DMZ",
+      "description": "OT access",
+      "criticality": "High",
+      "vendor": "Microsoft",
+      "model": "Windows Server 2022",
+      "cvss_type": 8.1,
+      "exposed": true,
+      "patched": true,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "MFG-SF-SW-001",
+      "name": "Shop Floor Switch",
+      "type": "Network Switch",
+      "kind": "device",
+      "zone": "ShopFloor",
+      "description": "Industrial Ethernet switch",
+      "criticality": "High",
+      "vendor": "Siemens",
+      "model": "SCALANCE XM408",
+      "cvss_type": 6.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "MFG-SF-SCADA-001",
+      "name": "SCADA Server",
+      "type": "SCADA",
+      "kind": "device",
+      "zone": "ShopFloor",
+      "description": "Production SCADA",
+      "criticality": "High",
+      "vendor": "Siemens",
+      "model": "WinCC",
+      "cvss_type": 8.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 9.0
+    },
+    {
+      "id": "MFG-SF-HMI-001",
+      "name": "Production HMI",
+      "type": "HMI",
+      "kind": "device",
+      "zone": "ShopFloor",
+      "description": "Operator console",
+      "criticality": "Medium",
+      "vendor": "Siemens",
+      "model": "SIMATIC HMI",
+      "cvss_type": 7.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 6.0
+    },
+    {
+      "id": "MFG-CELL1-SW-001",
+      "name": "Cell 1 Switch",
+      "type": "Network Switch",
+      "kind": "device",
+      "zone": "Cell",
+      "description": "Switch for welding cell",
+      "criticality": "High",
+      "vendor": "Siemens",
+      "model": "SCALANCE XB208",
+      "cvss_type": 6.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 7.0
+    },
+    {
+      "id": "MFG-CELL1-PLC-001",
+      "name": "Cell 1 PLC",
+      "type": "PLC",
+      "kind": "device",
+      "zone": "Cell",
+      "description": "Welding cell controller",
+      "criticality": "High",
+      "vendor": "Siemens",
+      "model": "S7-1500",
+      "cvss_type": 8.1,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 9.0
+    },
+    {
+      "id": "MFG-CELL1-ROBOT-001",
+      "name": "Robot Controller",
+      "type": "Robot",
+      "kind": "device",
+      "zone": "Cell",
+      "description": "Welding robot",
+      "criticality": "High",
+      "vendor": "KUKA",
+      "model": "KR Cybertech",
+      "cvss_type": 7.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "MFG-CELL1-POS-001",
+      "name": "Positioner",
+      "type": "Positioner",
+      "kind": "physical",
+      "zone": "Cell",
+      "description": "Workpiece positioner",
+      "criticality": "Medium",
+      "vendor": "FANUC",
+      "model": "2-axis pos.",
+      "p_base_override": 0.01,
+      "consequence_severity": 5.0
+    },
+    {
+      "id": "MFG-CELL2-SW-001",
+      "name": "Cell 2 Switch",
+      "type": "Network Switch",
+      "kind": "device",
+      "zone": "Cell",
+      "description": "Switch for assembly cell",
+      "criticality": "High",
+      "vendor": "Siemens",
+      "model": "SCALANCE XB208",
+      "cvss_type": 6.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 7.0
+    },
+    {
+      "id": "MFG-CELL2-PLC-001",
+      "name": "Cell 2 PLC",
+      "type": "PLC",
+      "kind": "device",
+      "zone": "Cell",
+      "description": "Assembly controller",
+      "criticality": "High",
+      "vendor": "Siemens",
+      "model": "S7-1500",
+      "cvss_type": 8.1,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 9.0
+    },
+    {
+      "id": "MFG-CELL2-HMI-001",
+      "name": "Cell 2 HMI",
+      "type": "HMI",
+      "kind": "device",
+      "zone": "Cell",
+      "description": "Assembly operator panel",
+      "criticality": "Medium",
+      "vendor": "Siemens",
+      "model": "SIMATIC HMI",
+      "cvss_type": 7.0,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 6.0
+    },
+    {
+      "id": "MFG-SAF-PLC-001",
+      "name": "Safety PLC",
+      "type": "SafetyPLC",
+      "kind": "device",
+      "zone": "Safety",
+      "description": "Safety controller for light curtains",
+      "criticality": "High",
+      "vendor": "Siemens",
+      "model": "S7-1500F",
+      "cvss_type": 7.0,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 9.0
+    },
+    {
+      "id": "MFG-SAF-LC-001",
+      "name": "Light Curtain",
+      "type": "SafetyDevice",
+      "kind": "physical",
+      "zone": "Safety",
+      "description": "Safety light curtain",
+      "criticality": "High",
+      "vendor": "SICK",
+      "model": "C4000",
+      "p_base_override": 0.01,
+      "consequence_severity": 6.0
+    },
+    {
+      "id": "MFG-SAF-ESTOP-001",
+      "name": "E-Stop",
+      "type": "SafetyDevice",
+      "kind": "physical",
+      "zone": "Safety",
+      "description": "Emergency stop",
+      "criticality": "High",
+      "vendor": "Pilz",
+      "model": "PNOZ",
+      "p_base_override": 0.01,
+      "consequence_severity": 6.0
+    },
+    {
+      "id": "MFG-FLD-VFD-001",
+      "name": "Conveyor VFD",
+      "type": "VFD",
+      "kind": "device",
+      "zone": "Field",
+      "description": "VFD for conveyor",
+      "criticality": "Medium",
+      "vendor": "ABB",
+      "model": "ACS580",
+      "cvss_type": 7.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 7.0
+    },
+    {
+      "id": "MFG-FLD-MOTOR-001",
+      "name": "Conveyor Motor",
+      "type": "Motor",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Conveyor drive",
+      "criticality": "Medium",
+      "vendor": "Siemens",
+      "model": "1LA8",
+      "p_base_override": 0.01,
+      "consequence_severity": 5.0
+    },
+    {
+      "id": "MFG-FLD-SENSOR-001",
+      "name": "Proximity Sensor",
+      "type": "Sensor",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Part presence",
+      "criticality": "Low",
+      "vendor": "Banner",
+      "model": "Q45",
+      "p_base_override": 0.01,
+      "consequence_severity": 4.0
+    },
+    {
+      "id": "MFG-FLD-SENSOR-002",
+      "name": "Vision Sensor",
+      "type": "Sensor",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Quality camera",
+      "criticality": "Medium",
+      "vendor": "Cognex",
+      "model": "In-Sight 7000",
+      "p_base_override": 0.01,
+      "consequence_severity": 5.0
+    },
+    {
+      "id": "MFG-FLD-ACT-001",
+      "name": "Pneumatic Cylinder",
+      "type": "Actuator",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Clamp cylinder",
+      "criticality": "Low",
+      "vendor": "SMC",
+      "model": "CQ2",
+      "p_base_override": 0.01,
+      "consequence_severity": 4.0
+    },
+    {
+      "id": "MFG-HUM-SUP-001",
+      "name": "Production Supervisor",
+      "type": "Supervisor",
+      "kind": "human",
+      "zone": "ShopFloor",
+      "description": "Supervisor monitoring production lines",
+      "criticality": "Medium",
+      "role": "operator",
+      "awareness": 0.4,
+      "privilege": "standard",
+      "consequence_severity": 4.0
+    }
+  ],
+  "connections": [
+    {
+      "source": "MFG-ENT-FW-001",
+      "target": "MFG-ENT-SW-001",
+      "type": "connects-to",
+      "protocol": "HTTP",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "MFG-ENT-SW-001",
+      "target": "MFG-ENT-DC-001",
+      "type": "connects-to",
+      "protocol": "LDAP",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "MFG-ENT-SW-001",
+      "target": "MFG-ENT-MES-001",
+      "type": "connects-to",
+      "protocol": "OPC UA",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "MFG-ENT-SW-001",
+      "target": "MFG-ENT-ERP-001",
+      "type": "connects-to",
+      "protocol": "HTTP",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "MFG-ENT-SW-001",
+      "target": "MFG-DMZ-SW-001",
+      "type": "connects-to",
+      "protocol": "HTTP",
+      "direction": "bidirectional",
+      "trust": "medium"
+    },
+    {
+      "source": "MFG-DMZ-SW-001",
+      "target": "MFG-DMZ-HIST-001",
+      "type": "connects-to",
+      "protocol": "OPC UA",
+      "direction": "bidirectional",
+      "trust": "medium"
+    },
+    {
+      "source": "MFG-DMZ-SW-001",
+      "target": "MFG-DMZ-JUMP-001",
+      "type": "connects-to",
+      "protocol": "SSH",
+      "direction": "bidirectional",
+      "trust": "medium"
+    },
+    {
+      "source": "MFG-DMZ-JUMP-001",
+      "target": "MFG-SF-SW-001",
+      "type": "connects-to",
+      "protocol": "RDP",
+      "direction": "bidirectional",
+      "trust": "medium"
+    },
+    {
+      "source": "MFG-SF-SW-001",
+      "target": "MFG-SF-SCADA-001",
+      "type": "connects-to",
+      "protocol": "OPC UA",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "MFG-SF-SW-001",
+      "target": "MFG-SF-HMI-001",
+      "type": "connects-to",
+      "protocol": "PROFINET",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "MFG-HUM-SUP-001",
+      "target": "MFG-SF-HMI-001",
+      "type": "programs / operates",
+      "protocol": "HMI",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "MFG-SF-SCADA-001",
+      "target": "MFG-CELL1-PLC-001",
+      "type": "controls",
+      "protocol": "PROFINET",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "MFG-SF-SCADA-001",
+      "target": "MFG-CELL2-PLC-001",
+      "type": "controls",
+      "protocol": "PROFINET",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "MFG-CELL1-SW-001",
+      "target": "MFG-CELL1-PLC-001",
+      "type": "connects-to",
+      "protocol": "PROFINET",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "MFG-CELL1-SW-001",
+      "target": "MFG-CELL1-ROBOT-001",
+      "type": "connects-to",
+      "protocol": "PROFINET",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "MFG-CELL1-SW-001",
+      "target": "MFG-CELL1-POS-001",
+      "type": "connects-to",
+      "protocol": "PROFINET",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "MFG-CELL1-PLC-001",
+      "target": "MFG-FLD-VFD-001",
+      "type": "actuates",
+      "protocol": "PROFINET",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "MFG-CELL1-PLC-001",
+      "target": "MFG-FLD-MOTOR-001",
+      "type": "actuates",
+      "protocol": "PROFINET",
+      "direction": "unidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "MFG-CELL1-PLC-001",
+      "target": "MFG-FLD-SENSOR-001",
+      "type": "monitors",
+      "protocol": "PROFINET",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "MFG-CELL2-SW-001",
+      "target": "MFG-CELL2-PLC-001",
+      "type": "connects-to",
+      "protocol": "PROFINET",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "MFG-CELL2-SW-001",
+      "target": "MFG-CELL2-HMI-001",
+      "type": "connects-to",
+      "protocol": "PROFINET",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "MFG-CELL2-PLC-001",
+      "target": "MFG-FLD-SENSOR-002",
+      "type": "monitors",
+      "protocol": "PROFINET",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "MFG-CELL2-PLC-001",
+      "target": "MFG-FLD-ACT-001",
+      "type": "actuates",
+      "protocol": "PROFINET",
+      "direction": "unidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "MFG-SAF-PLC-001",
+      "target": "MFG-SAF-LC-001",
+      "type": "monitors",
+      "protocol": "PROFIsafe",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "MFG-SAF-PLC-001",
+      "target": "MFG-SAF-ESTOP-001",
+      "type": "monitors",
+      "protocol": "PROFIsafe",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "MFG-SAF-PLC-001",
+      "target": "MFG-CELL1-PLC-001",
+      "type": "connects-to",
+      "protocol": "PROFIsafe",
+      "direction": "bidirectional",
+      "trust": "medium"
+    },
+    {
+      "source": "MFG-SAF-PLC-001",
+      "target": "MFG-CELL2-PLC-001",
+      "type": "connects-to",
+      "protocol": "PROFIsafe",
+      "direction": "bidirectional",
+      "trust": "medium"
+    }
+  ],
+  "protocols": [
+    {
+      "id": "http",
+      "name": "HTTP",
+      "osi_layer": "Application"
+    },
+    {
+      "id": "opcua",
+      "name": "OPC UA",
+      "osi_layer": "Application"
+    },
+    {
+      "id": "profinet",
+      "name": "PROFINET",
+      "osi_layer": "Application"
+    },
+    {
+      "id": "profisafe",
+      "name": "PROFIsafe",
+      "osi_layer": "Application"
+    },
+    {
+      "id": "ldap",
+      "name": "LDAP",
+      "osi_layer": "Application"
+    },
+    {
+      "id": "ssh",
+      "name": "SSH",
+      "osi_layer": "Application"
+    },
+    {
+      "id": "rdp",
+      "name": "RDP",
+      "osi_layer": "Application"
+    }
+  ]
+}

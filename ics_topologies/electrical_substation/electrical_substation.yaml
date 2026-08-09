@@ -1,0 +1,385 @@
+metadata:
+  name: Electrical Substation
+  description: High-voltage transmission substation with protection and control, based
+    on IEC 61850 architecture.
+  version: '2.0'
+  created: '2026-08-09T11:43:32.591305'
+zones:
+- id: Utility
+  name: Utility Control Center
+  color: '#e599f7'
+- id: Substation
+  name: Substation LAN
+  color: '#ffd43b'
+- id: Process
+  name: Process Bus
+  color: '#ff922b'
+- id: Protection
+  name: Protection Network
+  color: '#da77f2'
+assets:
+- id: SUB-FW-001
+  name: Substation Firewall
+  type: Firewall
+  kind: device
+  zone: Utility
+  description: Firewall to utility WAN
+  criticality: High
+  vendor: Cisco
+  model: ASA 5585
+  cvss_type: 7.5
+  exposed: true
+  patched: true
+  consequence_severity: 8.0
+- id: SUB-SW-001
+  name: Substation Switch
+  type: Network Switch
+  kind: device
+  zone: Substation
+  description: Core substation Ethernet switch
+  criticality: High
+  vendor: Siemens
+  model: RUGGEDCOM RSG920P
+  cvss_type: 6.5
+  exposed: false
+  patched: false
+  consequence_severity: 8.0
+- id: SUB-SCADA-001
+  name: SCADA Gateway
+  type: SCADA
+  kind: device
+  zone: Substation
+  description: Gateway to utility SCADA
+  criticality: High
+  vendor: GE
+  model: D400
+  cvss_type: 8.0
+  exposed: false
+  patched: false
+  consequence_severity: 9.0
+- id: SUB-HMI-001
+  name: Substation HMI
+  type: HMI
+  kind: device
+  zone: Substation
+  description: Operator interface
+  criticality: Medium
+  vendor: Siemens
+  model: SIMATIC HMI
+  cvss_type: 7.5
+  exposed: false
+  patched: false
+  consequence_severity: 7.0
+- id: SUB-EWS-001
+  name: Engineering Workstation
+  type: Workstation
+  kind: device
+  zone: Substation
+  description: Configuration laptop
+  criticality: Medium
+  vendor: Dell
+  model: Latitude 5420
+  cvss_type: 7.8
+  exposed: false
+  patched: true
+  consequence_severity: 5.0
+- id: SUB-RTU-001
+  name: RTU
+  type: RTU
+  kind: device
+  zone: Substation
+  description: Remote Terminal Unit for data acquisition
+  criticality: High
+  vendor: Schweitzer
+  model: SEL-3530
+  cvss_type: 8.0
+  exposed: false
+  patched: false
+  consequence_severity: 8.0
+- id: SUB-IED-001
+  name: Protection IED (Line)
+  type: IED
+  kind: device
+  zone: Protection
+  description: Distance protection relay
+  criticality: High
+  vendor: Siemens
+  model: SIPROTEC 5 7SA86
+  cvss_type: 7.5
+  exposed: false
+  patched: false
+  consequence_severity: 9.0
+- id: SUB-IED-002
+  name: Protection IED (Transformer)
+  type: IED
+  kind: device
+  zone: Protection
+  description: Transformer differential protection
+  criticality: High
+  vendor: Siemens
+  model: SIPROTEC 5 7UT86
+  cvss_type: 7.5
+  exposed: false
+  patched: false
+  consequence_severity: 9.0
+- id: SUB-IED-003
+  name: Protection IED (Bus)
+  type: IED
+  kind: device
+  zone: Protection
+  description: Busbar protection
+  criticality: High
+  vendor: Siemens
+  model: SIPROTEC 5 7SS86
+  cvss_type: 7.5
+  exposed: false
+  patched: false
+  consequence_severity: 9.0
+- id: SUB-PMU-001
+  name: Phasor Measurement Unit
+  type: PMU
+  kind: device
+  zone: Protection
+  description: PMU for synchrophasors
+  criticality: Medium
+  vendor: GE
+  model: PMU 369
+  cvss_type: 6.5
+  exposed: false
+  patched: false
+  consequence_severity: 5.0
+- id: SUB-MU-001
+  name: Merging Unit
+  type: Merging Unit
+  kind: device
+  zone: Process
+  description: IEC 61850 process interface
+  criticality: High
+  vendor: Siemens
+  model: SIO 6MD85
+  cvss_type: 7.0
+  exposed: false
+  patched: false
+  consequence_severity: 7.0
+- id: SUB-CB-001
+  name: Circuit Breaker
+  type: CircuitBreaker
+  kind: physical
+  zone: Process
+  description: High voltage circuit breaker
+  criticality: High
+  vendor: ABB
+  model: HPL 550
+  p_base_override: 0.02
+  consequence_severity: 10.0
+- id: SUB-DIS-001
+  name: Disconnect Switch
+  type: Disconnect
+  kind: physical
+  zone: Process
+  description: Disconnecting switch
+  criticality: Medium
+  vendor: Siemens
+  model: 8DA10
+  p_base_override: 0.01
+  consequence_severity: 7.0
+- id: SUB-XFMR-001
+  name: Power Transformer
+  type: Transformer
+  kind: physical
+  zone: Process
+  description: Main step-down transformer
+  criticality: High
+  vendor: Siemens
+  model: TRAFO 100 MVA
+  p_base_override: 0.02
+  consequence_severity: 10.0
+- id: SUB-VT-001
+  name: Voltage Transformer
+  type: VT
+  kind: physical
+  zone: Process
+  description: Capacitive voltage transformer
+  criticality: Medium
+  vendor: ABB
+  model: CPD 1
+  p_base_override: 0.01
+  consequence_severity: 6.0
+- id: SUB-CT-001
+  name: Current Transformer
+  type: CT
+  kind: physical
+  zone: Process
+  description: Current transformer
+  criticality: Medium
+  vendor: ABB
+  model: CT 1000:1
+  p_base_override: 0.01
+  consequence_severity: 6.0
+- id: SUB-SENSOR-001
+  name: Temperature Sensor
+  type: Sensor
+  kind: physical
+  zone: Process
+  description: Oil temperature sensor
+  criticality: Low
+  vendor: Emerson
+  model: Rosemount 214
+  p_base_override: 0.01
+  consequence_severity: 5.0
+- id: SUB-SENSOR-002
+  name: SF6 Pressure Sensor
+  type: Sensor
+  kind: physical
+  zone: Process
+  description: SF6 gas density monitor
+  criticality: Medium
+  vendor: WIKA
+  model: GDM-100
+  p_base_override: 0.01
+  consequence_severity: 6.0
+- id: SUB-HUM-DSP-001
+  name: Control Room Dispatcher
+  type: Dispatcher
+  kind: human
+  zone: Substation
+  description: Utility dispatcher supervising the substation
+  criticality: Medium
+  role: operator
+  awareness: 0.45
+  privilege: standard
+  consequence_severity: 3.0
+connections:
+- source: SUB-FW-001
+  target: SUB-SW-001
+  type: connects-to
+  protocol: HTTP
+  direction: bidirectional
+  trust: low
+- source: SUB-SW-001
+  target: SUB-SCADA-001
+  type: connects-to
+  protocol: DNP3
+  direction: bidirectional
+  trust: high
+- source: SUB-SW-001
+  target: SUB-HMI-001
+  type: connects-to
+  protocol: IEC 61850
+  direction: bidirectional
+  trust: high
+- source: SUB-SW-001
+  target: SUB-EWS-001
+  type: connects-to
+  protocol: IEC 61850
+  direction: bidirectional
+  trust: high
+- source: SUB-SW-001
+  target: SUB-RTU-001
+  type: connects-to
+  protocol: DNP3
+  direction: bidirectional
+  trust: high
+- source: SUB-SW-001
+  target: SUB-IED-001
+  type: connects-to
+  protocol: IEC 61850
+  direction: bidirectional
+  trust: high
+- source: SUB-SW-001
+  target: SUB-IED-002
+  type: connects-to
+  protocol: IEC 61850
+  direction: bidirectional
+  trust: high
+- source: SUB-SW-001
+  target: SUB-IED-003
+  type: connects-to
+  protocol: IEC 61850
+  direction: bidirectional
+  trust: high
+- source: SUB-HUM-DSP-001
+  target: SUB-HMI-001
+  type: programs / operates
+  protocol: HMI
+  direction: bidirectional
+  trust: high
+- source: SUB-IED-001
+  target: SUB-MU-001
+  type: monitors
+  protocol: IEC 61850 (Sampled Values)
+  direction: unidirectional
+  trust: low
+- source: SUB-IED-002
+  target: SUB-MU-001
+  type: monitors
+  protocol: IEC 61850 (GOOSE)
+  direction: bidirectional
+  trust: low
+- source: SUB-MU-001
+  target: SUB-CB-001
+  type: actuates
+  protocol: IEC 61850 (GOOSE)
+  direction: bidirectional
+  trust: low
+- source: SUB-MU-001
+  target: SUB-DIS-001
+  type: actuates
+  protocol: IEC 61850 (GOOSE)
+  direction: bidirectional
+  trust: low
+- source: SUB-MU-001
+  target: SUB-XFMR-001
+  type: monitors
+  protocol: IEC 61850 (Sampled Values)
+  direction: unidirectional
+  trust: low
+- source: SUB-MU-001
+  target: SUB-VT-001
+  type: monitors
+  protocol: IEC 61850 (Sampled Values)
+  direction: unidirectional
+  trust: low
+- source: SUB-MU-001
+  target: SUB-CT-001
+  type: monitors
+  protocol: IEC 61850 (Sampled Values)
+  direction: unidirectional
+  trust: low
+- source: SUB-MU-001
+  target: SUB-SENSOR-001
+  type: monitors
+  protocol: Modbus
+  direction: bidirectional
+  trust: low
+- source: SUB-MU-001
+  target: SUB-SENSOR-002
+  type: monitors
+  protocol: Modbus
+  direction: bidirectional
+  trust: low
+- source: SUB-SCADA-001
+  target: SUB-RTU-001
+  type: controls
+  protocol: DNP3
+  direction: bidirectional
+  trust: high
+- source: SUB-PMU-001
+  target: SUB-MU-001
+  type: monitors
+  protocol: IEC 61850
+  direction: bidirectional
+  trust: medium
+protocols:
+- id: http
+  name: HTTP
+  osi_layer: Application
+- id: dnp3
+  name: DNP3
+  osi_layer: Application
+- id: iec61850
+  name: IEC 61850
+  osi_layer: Application
+- id: modbus
+  name: Modbus
+  osi_layer: Application

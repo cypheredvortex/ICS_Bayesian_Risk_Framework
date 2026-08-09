@@ -1,0 +1,685 @@
+{
+  "metadata": {
+    "name": "Oil & Gas Pipeline",
+    "description": "Long-distance pipeline with multiple pump stations and remote terminal units.",
+    "version": "2.0",
+    "created": "2026-08-09T11:43:32.591323"
+  },
+  "zones": [
+    {
+      "id": "ControlCenter",
+      "name": "Control Center",
+      "color": "#ff6b6b"
+    },
+    {
+      "id": "RemoteSite",
+      "name": "Remote Sites",
+      "color": "#ffa94d"
+    },
+    {
+      "id": "Field",
+      "name": "Field Instruments",
+      "color": "#20c997"
+    }
+  ],
+  "assets": [
+    {
+      "id": "PIPE-CTR-FW-001",
+      "name": "Control Center Firewall",
+      "type": "Firewall",
+      "kind": "device",
+      "zone": "ControlCenter",
+      "description": "Protects control center",
+      "criticality": "High",
+      "vendor": "Palo Alto",
+      "model": "PA-5250",
+      "cvss_type": 7.5,
+      "exposed": true,
+      "patched": true,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "PIPE-CTR-SW-001",
+      "name": "Control Center Switch",
+      "type": "Network Switch",
+      "kind": "device",
+      "zone": "ControlCenter",
+      "description": "Core switch",
+      "criticality": "High",
+      "vendor": "Cisco",
+      "model": "Catalyst 9300",
+      "cvss_type": 6.5,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "PIPE-CTR-SCADA-001",
+      "name": "SCADA Server",
+      "type": "SCADA",
+      "kind": "device",
+      "zone": "ControlCenter",
+      "description": "Pipeline SCADA",
+      "criticality": "High",
+      "vendor": "Schneider",
+      "model": "OASyS DNA",
+      "cvss_type": 8.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 10.0
+    },
+    {
+      "id": "PIPE-CTR-HIST-001",
+      "name": "Historian",
+      "type": "Server",
+      "kind": "device",
+      "zone": "ControlCenter",
+      "description": "Pipeline data historian",
+      "criticality": "Medium",
+      "vendor": "OSIsoft",
+      "model": "PI Server",
+      "cvss_type": 7.0,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 6.0
+    },
+    {
+      "id": "PIPE-CTR-HMI-001",
+      "name": "HMI",
+      "type": "HMI",
+      "kind": "device",
+      "zone": "ControlCenter",
+      "description": "Operator console",
+      "criticality": "Medium",
+      "vendor": "Schneider",
+      "model": "ClearSCADA",
+      "cvss_type": 7.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 7.0
+    },
+    {
+      "id": "PIPE-CTR-EWS-001",
+      "name": "Engineering Workstation",
+      "type": "Workstation",
+      "kind": "device",
+      "zone": "ControlCenter",
+      "description": "Configuration station",
+      "criticality": "Low",
+      "vendor": "Dell",
+      "model": "Precision 7920",
+      "cvss_type": 7.8,
+      "exposed": false,
+      "patched": true,
+      "consequence_severity": 5.0
+    },
+    {
+      "id": "PIPE-RTU-001",
+      "name": "RTU (Station A)",
+      "type": "RTU",
+      "kind": "device",
+      "zone": "RemoteSite",
+      "description": "RTU for pump station A",
+      "criticality": "High",
+      "vendor": "Control Microsystems",
+      "model": "SCADAPack 470",
+      "cvss_type": 8.0,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "PIPE-RTU-002",
+      "name": "RTU (Station B)",
+      "type": "RTU",
+      "kind": "device",
+      "zone": "RemoteSite",
+      "description": "RTU for pump station B",
+      "criticality": "High",
+      "vendor": "Control Microsystems",
+      "model": "SCADAPack 470",
+      "cvss_type": 8.0,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "PIPE-RTU-003",
+      "name": "RTU (Valve Site)",
+      "type": "RTU",
+      "kind": "device",
+      "zone": "RemoteSite",
+      "description": "RTU for block valve site",
+      "criticality": "High",
+      "vendor": "Control Microsystems",
+      "model": "SCADAPack 470",
+      "cvss_type": 8.0,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "PIPE-RTU-004",
+      "name": "RTU (Metering)",
+      "type": "RTU",
+      "kind": "device",
+      "zone": "RemoteSite",
+      "description": "RTU for custody transfer",
+      "criticality": "High",
+      "vendor": "Control Microsystems",
+      "model": "SCADAPack 470",
+      "cvss_type": 8.0,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "PIPE-SW-001",
+      "name": "Station Switch A",
+      "type": "Network Switch",
+      "kind": "device",
+      "zone": "RemoteSite",
+      "description": "Industrial switch for station A",
+      "criticality": "High",
+      "vendor": "Siemens",
+      "model": "SCALANCE XM408",
+      "cvss_type": 6.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 7.0
+    },
+    {
+      "id": "PIPE-SW-002",
+      "name": "Station Switch B",
+      "type": "Network Switch",
+      "kind": "device",
+      "zone": "RemoteSite",
+      "description": "Industrial switch for station B",
+      "criticality": "High",
+      "vendor": "Siemens",
+      "model": "SCALANCE XM408",
+      "cvss_type": 6.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 7.0
+    },
+    {
+      "id": "PIPE-PUMP-001",
+      "name": "Main Pump A",
+      "type": "Pump",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Centrifugal pump",
+      "criticality": "High",
+      "vendor": "Sulzer",
+      "model": "Z6",
+      "p_base_override": 0.02,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "PIPE-PUMP-002",
+      "name": "Standby Pump A",
+      "type": "Pump",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Standby pump",
+      "criticality": "High",
+      "vendor": "Sulzer",
+      "model": "Z6",
+      "p_base_override": 0.02,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "PIPE-VFD-001",
+      "name": "VFD A",
+      "type": "VFD",
+      "kind": "device",
+      "zone": "Field",
+      "description": "Variable frequency drive for pump",
+      "criticality": "High",
+      "vendor": "ABB",
+      "model": "ACS880",
+      "cvss_type": 7.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 7.0
+    },
+    {
+      "id": "PIPE-VALVE-001",
+      "name": "Suction Valve A",
+      "type": "Valve",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Motor-operated valve",
+      "criticality": "Medium",
+      "vendor": "Emerson",
+      "model": "Fisher V500",
+      "p_base_override": 0.02,
+      "consequence_severity": 7.0
+    },
+    {
+      "id": "PIPE-SENSOR-001",
+      "name": "Pressure Sensor A",
+      "type": "Sensor",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Discharge pressure",
+      "criticality": "Medium",
+      "vendor": "Emerson",
+      "model": "Rosemount 3051",
+      "p_base_override": 0.01,
+      "consequence_severity": 5.0
+    },
+    {
+      "id": "PIPE-SENSOR-002",
+      "name": "Flow Meter A",
+      "type": "Sensor",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Ultrasonic flow meter",
+      "criticality": "High",
+      "vendor": "Emerson",
+      "model": "Daniel 3410",
+      "p_base_override": 0.01,
+      "consequence_severity": 6.0
+    },
+    {
+      "id": "PIPE-SENSOR-003",
+      "name": "Temperature Sensor A",
+      "type": "Sensor",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Product temperature",
+      "criticality": "Low",
+      "vendor": "Emerson",
+      "model": "Rosemount 214",
+      "p_base_override": 0.01,
+      "consequence_severity": 4.0
+    },
+    {
+      "id": "PIPE-PUMP-003",
+      "name": "Main Pump B",
+      "type": "Pump",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Centrifugal pump",
+      "criticality": "High",
+      "vendor": "Sulzer",
+      "model": "Z6",
+      "p_base_override": 0.02,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "PIPE-VFD-002",
+      "name": "VFD B",
+      "type": "VFD",
+      "kind": "device",
+      "zone": "Field",
+      "description": "VFD for pump B",
+      "criticality": "High",
+      "vendor": "ABB",
+      "model": "ACS880",
+      "cvss_type": 7.5,
+      "exposed": false,
+      "patched": false,
+      "consequence_severity": 7.0
+    },
+    {
+      "id": "PIPE-VALVE-002",
+      "name": "Discharge Valve B",
+      "type": "Valve",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Motor-operated valve",
+      "criticality": "Medium",
+      "vendor": "Emerson",
+      "model": "Fisher V500",
+      "p_base_override": 0.02,
+      "consequence_severity": 7.0
+    },
+    {
+      "id": "PIPE-SENSOR-004",
+      "name": "Pressure Sensor B",
+      "type": "Sensor",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Discharge pressure",
+      "criticality": "Medium",
+      "vendor": "Emerson",
+      "model": "Rosemount 3051",
+      "p_base_override": 0.01,
+      "consequence_severity": 5.0
+    },
+    {
+      "id": "PIPE-SENSOR-005",
+      "name": "Flow Meter B",
+      "type": "Sensor",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Ultrasonic flow meter",
+      "criticality": "High",
+      "vendor": "Emerson",
+      "model": "Daniel 3410",
+      "p_base_override": 0.01,
+      "consequence_severity": 6.0
+    },
+    {
+      "id": "PIPE-VALVE-003",
+      "name": "Block Valve",
+      "type": "Valve",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Emergency block valve",
+      "criticality": "High",
+      "vendor": "Emerson",
+      "model": "Fisher V500",
+      "p_base_override": 0.02,
+      "consequence_severity": 8.0
+    },
+    {
+      "id": "PIPE-SENSOR-006",
+      "name": "Pressure Sensor Valve",
+      "type": "Sensor",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Pressure at valve site",
+      "criticality": "Medium",
+      "vendor": "Emerson",
+      "model": "Rosemount 3051",
+      "p_base_override": 0.01,
+      "consequence_severity": 5.0
+    },
+    {
+      "id": "PIPE-SENSOR-007",
+      "name": "Custody Meter",
+      "type": "Sensor",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Custody transfer meter",
+      "criticality": "High",
+      "vendor": "Emerson",
+      "model": "Daniel 3410",
+      "p_base_override": 0.01,
+      "consequence_severity": 6.0
+    },
+    {
+      "id": "PIPE-SENSOR-008",
+      "name": "Density Meter",
+      "type": "Sensor",
+      "kind": "physical",
+      "zone": "Field",
+      "description": "Product density",
+      "criticality": "Medium",
+      "vendor": "Emerson",
+      "model": "Micro Motion",
+      "p_base_override": 0.01,
+      "consequence_severity": 5.0
+    },
+    {
+      "id": "PIPE-HUM-DSP-001",
+      "name": "Pipeline Dispatcher",
+      "type": "Dispatcher",
+      "kind": "human",
+      "zone": "ControlCenter",
+      "description": "Dispatcher monitoring pipeline operations",
+      "criticality": "Medium",
+      "role": "operator",
+      "awareness": 0.45,
+      "privilege": "standard",
+      "consequence_severity": 4.0
+    }
+  ],
+  "connections": [
+    {
+      "source": "PIPE-CTR-FW-001",
+      "target": "PIPE-CTR-SW-001",
+      "type": "connects-to",
+      "protocol": "HTTP",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-CTR-SW-001",
+      "target": "PIPE-CTR-SCADA-001",
+      "type": "connects-to",
+      "protocol": "OPC UA",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "PIPE-CTR-SW-001",
+      "target": "PIPE-CTR-HIST-001",
+      "type": "connects-to",
+      "protocol": "OPC UA",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "PIPE-CTR-SW-001",
+      "target": "PIPE-CTR-HMI-001",
+      "type": "connects-to",
+      "protocol": "OPC UA",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "PIPE-CTR-SW-001",
+      "target": "PIPE-CTR-EWS-001",
+      "type": "connects-to",
+      "protocol": "SSH",
+      "direction": "bidirectional",
+      "trust": "medium"
+    },
+    {
+      "source": "PIPE-HUM-DSP-001",
+      "target": "PIPE-CTR-HMI-001",
+      "type": "programs / operates",
+      "protocol": "HMI",
+      "direction": "bidirectional",
+      "trust": "high"
+    },
+    {
+      "source": "PIPE-CTR-SCADA-001",
+      "target": "PIPE-RTU-001",
+      "type": "controls",
+      "protocol": "DNP3",
+      "direction": "bidirectional",
+      "trust": "medium"
+    },
+    {
+      "source": "PIPE-CTR-SCADA-001",
+      "target": "PIPE-RTU-002",
+      "type": "controls",
+      "protocol": "DNP3",
+      "direction": "bidirectional",
+      "trust": "medium"
+    },
+    {
+      "source": "PIPE-CTR-SCADA-001",
+      "target": "PIPE-RTU-003",
+      "type": "controls",
+      "protocol": "DNP3",
+      "direction": "bidirectional",
+      "trust": "medium"
+    },
+    {
+      "source": "PIPE-CTR-SCADA-001",
+      "target": "PIPE-RTU-004",
+      "type": "controls",
+      "protocol": "DNP3",
+      "direction": "bidirectional",
+      "trust": "medium"
+    },
+    {
+      "source": "PIPE-RTU-001",
+      "target": "PIPE-SW-001",
+      "type": "connects-to",
+      "protocol": "Modbus TCP",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-RTU-002",
+      "target": "PIPE-SW-002",
+      "type": "connects-to",
+      "protocol": "Modbus TCP",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-SW-001",
+      "target": "PIPE-PUMP-001",
+      "type": "actuates",
+      "protocol": "Modbus TCP",
+      "direction": "unidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-SW-001",
+      "target": "PIPE-PUMP-002",
+      "type": "actuates",
+      "protocol": "Modbus TCP",
+      "direction": "unidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-SW-001",
+      "target": "PIPE-VFD-001",
+      "type": "connects-to",
+      "protocol": "Modbus TCP",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-SW-001",
+      "target": "PIPE-VALVE-001",
+      "type": "actuates",
+      "protocol": "Modbus TCP",
+      "direction": "unidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-SW-001",
+      "target": "PIPE-SENSOR-001",
+      "type": "monitors",
+      "protocol": "Modbus TCP",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-SW-001",
+      "target": "PIPE-SENSOR-002",
+      "type": "monitors",
+      "protocol": "Modbus TCP",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-SW-001",
+      "target": "PIPE-SENSOR-003",
+      "type": "monitors",
+      "protocol": "Modbus TCP",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-SW-002",
+      "target": "PIPE-PUMP-003",
+      "type": "actuates",
+      "protocol": "Modbus TCP",
+      "direction": "unidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-SW-002",
+      "target": "PIPE-VFD-002",
+      "type": "connects-to",
+      "protocol": "Modbus TCP",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-SW-002",
+      "target": "PIPE-VALVE-002",
+      "type": "actuates",
+      "protocol": "Modbus TCP",
+      "direction": "unidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-SW-002",
+      "target": "PIPE-SENSOR-004",
+      "type": "monitors",
+      "protocol": "Modbus TCP",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-SW-002",
+      "target": "PIPE-SENSOR-005",
+      "type": "monitors",
+      "protocol": "Modbus TCP",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-RTU-003",
+      "target": "PIPE-VALVE-003",
+      "type": "actuates",
+      "protocol": "Modbus TCP",
+      "direction": "unidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-RTU-003",
+      "target": "PIPE-SENSOR-006",
+      "type": "monitors",
+      "protocol": "Modbus TCP",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-RTU-004",
+      "target": "PIPE-SENSOR-007",
+      "type": "monitors",
+      "protocol": "Modbus TCP",
+      "direction": "bidirectional",
+      "trust": "low"
+    },
+    {
+      "source": "PIPE-RTU-004",
+      "target": "PIPE-SENSOR-008",
+      "type": "monitors",
+      "protocol": "Modbus TCP",
+      "direction": "bidirectional",
+      "trust": "low"
+    }
+  ],
+  "protocols": [
+    {
+      "id": "http",
+      "name": "HTTP",
+      "osi_layer": "Application"
+    },
+    {
+      "id": "opcua",
+      "name": "OPC UA",
+      "osi_layer": "Application"
+    },
+    {
+      "id": "dnp3",
+      "name": "DNP3",
+      "osi_layer": "Application"
+    },
+    {
+      "id": "modbustcp",
+      "name": "Modbus TCP",
+      "osi_layer": "Application"
+    },
+    {
+      "id": "ssh",
+      "name": "SSH",
+      "osi_layer": "Application"
+    }
+  ]
+}

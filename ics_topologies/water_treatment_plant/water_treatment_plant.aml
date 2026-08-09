@@ -1,0 +1,516 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutomationML xmlns="http://www.automationml.org/schema/aml">
+  <AdditionalInformation/>
+  <InstanceHierarchy Name="Water Treatment Plant">
+    <InternalElement Name="Perimeter Firewall" ID="WTP-FW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Firewall</Attribute>
+      <Attribute Name="zone">Internet</Attribute>
+      <Attribute Name="description">Internet edge firewall</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Cisco</Attribute>
+      <Attribute Name="model">ASA 5585</Attribute>
+      <Attribute Name="ip">10.0.0.1</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">true</Attribute>
+      <Attribute Name="patched">true</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Enterprise Switch" ID="WTP-ENT-SW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Network Switch</Attribute>
+      <Attribute Name="zone">Enterprise</Attribute>
+      <Attribute Name="description">Core enterprise switch</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Cisco</Attribute>
+      <Attribute Name="model">Catalyst 9300</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">true</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Domain Controller" ID="WTP-ENT-DC-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Server</Attribute>
+      <Attribute Name="zone">Enterprise</Attribute>
+      <Attribute Name="description">Active Directory</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Microsoft</Attribute>
+      <Attribute Name="model">Windows Server 2022</Attribute>
+      <Attribute Name="cvss_type">8.1</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Historian" ID="WTP-ENT-HIST-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Server</Attribute>
+      <Attribute Name="zone">Enterprise</Attribute>
+      <Attribute Name="description">Data historian</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">OSIsoft</Attribute>
+      <Attribute Name="model">PI Server</Attribute>
+      <Attribute Name="cvss_type">7.0</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="DMZ Switch" ID="WTP-DMZ-SW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Network Switch</Attribute>
+      <Attribute Name="zone">DMZ</Attribute>
+      <Attribute Name="description">OT DMZ switch</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Cisco</Attribute>
+      <Attribute Name="model">IE 4000</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Jump Server" ID="WTP-DMZ-JUMP-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Server</Attribute>
+      <Attribute Name="zone">DMZ</Attribute>
+      <Attribute Name="description">Secure jump host for OT access</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Microsoft</Attribute>
+      <Attribute Name="model">Windows Server 2022</Attribute>
+      <Attribute Name="cvss_type">8.1</Attribute>
+      <Attribute Name="exposed">true</Attribute>
+      <Attribute Name="patched">true</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="SCADA Server" ID="WTP-DMZ-SCADA-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">SCADA</Attribute>
+      <Attribute Name="zone">DMZ</Attribute>
+      <Attribute Name="description">Primary SCADA server</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Schneider</Attribute>
+      <Attribute Name="model">EcoStruxure</Attribute>
+      <Attribute Name="cvss_type">8.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Control Switch" ID="WTP-CTRL-SW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Network Switch</Attribute>
+      <Attribute Name="zone">Control</Attribute>
+      <Attribute Name="description">Industrial Ethernet switch</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SCALANCE XM408</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="HMI" ID="WTP-CTRL-HMI-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">HMI</Attribute>
+      <Attribute Name="zone">Control</Attribute>
+      <Attribute Name="description">Operator interface</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SIMATIC HMI</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Intake PLC" ID="WTP-CTRL-PLC-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">PLC</Attribute>
+      <Attribute Name="zone">Control</Attribute>
+      <Attribute Name="description">Controls raw water intake pumps</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Allen-Bradley</Attribute>
+      <Attribute Name="model">ControlLogix 5580</Attribute>
+      <Attribute Name="cvss_type">8.1</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Filtration PLC" ID="WTP-CTRL-PLC-002">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">PLC</Attribute>
+      <Attribute Name="zone">Control</Attribute>
+      <Attribute Name="description">Controls filter backwash and flow</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Allen-Bradley</Attribute>
+      <Attribute Name="model">ControlLogix 5580</Attribute>
+      <Attribute Name="cvss_type">8.1</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Chemical Dosing PLC" ID="WTP-CTRL-PLC-003">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">PLC</Attribute>
+      <Attribute Name="zone">Control</Attribute>
+      <Attribute Name="description">Controls chemical dosing pumps</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Allen-Bradley</Attribute>
+      <Attribute Name="model">ControlLogix 5580</Attribute>
+      <Attribute Name="cvss_type">8.1</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Distribution PLC" ID="WTP-CTRL-PLC-004">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">PLC</Attribute>
+      <Attribute Name="zone">Control</Attribute>
+      <Attribute Name="description">Controls distribution pumps</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Allen-Bradley</Attribute>
+      <Attribute Name="model">ControlLogix 5580</Attribute>
+      <Attribute Name="cvss_type">8.1</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">9.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Control Room Operator" ID="WTP-HUM-OPR-001">
+      <Attribute Name="kind">human</Attribute>
+      <Attribute Name="type">Operator</Attribute>
+      <Attribute Name="zone">Control</Attribute>
+      <Attribute Name="description">Duty operator supervising the plant from the control room</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="consequence_severity">4.0</Attribute>
+      <Attribute Name="role">operator</Attribute>
+      <Attribute Name="awareness">0.4</Attribute>
+      <Attribute Name="privilege">standard</Attribute>
+    </InternalElement>
+    <InternalElement Name="Intake Pump" ID="WTP-FLD-PUMP-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Pump</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Raw water intake pump</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Grundfos</Attribute>
+      <Attribute Name="model">CR 64</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Distribution Pump" ID="WTP-FLD-PUMP-002">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Pump</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">High service pump</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">Grundfos</Attribute>
+      <Attribute Name="model">CR 90</Attribute>
+      <Attribute Name="consequence_severity">8.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Inlet Valve" ID="WTP-FLD-VALVE-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Valve</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Motorized inlet valve</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Fisher V500</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Backwash Valve" ID="WTP-FLD-VALVE-002">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Valve</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Filter backwash valve</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Fisher V500</Attribute>
+      <Attribute Name="consequence_severity">6.0</Attribute>
+      <Attribute Name="p_base_override">0.02</Attribute>
+    </InternalElement>
+    <InternalElement Name="Flow Sensor" ID="WTP-FLD-SENSOR-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Raw water flow meter</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 8700</Attribute>
+      <Attribute Name="consequence_severity">4.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Pressure Sensor" ID="WTP-FLD-SENSOR-002">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Distribution pressure sensor</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Emerson</Attribute>
+      <Attribute Name="model">Rosemount 3051</Attribute>
+      <Attribute Name="consequence_severity">4.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="pH Sensor" ID="WTP-FLD-SENSOR-003">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">pH in treated water</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Hach</Attribute>
+      <Attribute Name="model">SC200</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Turbidity Sensor" ID="WTP-FLD-SENSOR-004">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Sensor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Turbidity measurement</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Hach</Attribute>
+      <Attribute Name="model">1720E</Attribute>
+      <Attribute Name="consequence_severity">4.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Blower Motor" ID="WTP-FLD-MOTOR-001">
+      <Attribute Name="kind">physical</Attribute>
+      <Attribute Name="type">Motor</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Aeration blower</Attribute>
+      <Attribute Name="criticality">Low</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">1LA8</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+      <Attribute Name="p_base_override">0.01</Attribute>
+    </InternalElement>
+    <InternalElement Name="Pump VFD" ID="WTP-FLD-VFD-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">VFD</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Variable frequency drive for pump</Attribute>
+      <Attribute Name="criticality">High</Attribute>
+      <Attribute Name="vendor">ABB</Attribute>
+      <Attribute Name="model">ACS880</Attribute>
+      <Attribute Name="cvss_type">7.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">7.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Engineering Workstation" ID="WTP-FLD-ENG-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Workstation</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Engineering laptop for maintenance</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Dell</Attribute>
+      <Attribute Name="model">Precision 5560</Attribute>
+      <Attribute Name="cvss_type">7.8</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">true</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+    </InternalElement>
+    <InternalElement Name="Field Switch" ID="WTP-FLD-SW-001">
+      <Attribute Name="kind">device</Attribute>
+      <Attribute Name="type">Network Switch</Attribute>
+      <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="description">Industrial switch at field level</Attribute>
+      <Attribute Name="criticality">Medium</Attribute>
+      <Attribute Name="vendor">Siemens</Attribute>
+      <Attribute Name="model">SCALANCE XB208</Attribute>
+      <Attribute Name="cvss_type">6.5</Attribute>
+      <Attribute Name="exposed">false</Attribute>
+      <Attribute Name="patched">false</Attribute>
+      <Attribute Name="consequence_severity">5.0</Attribute>
+    </InternalElement>
+  </InstanceHierarchy>
+  <Connections>
+    <Connection>
+      <Source>WTP-FW-001</Source>
+      <Target>WTP-ENT-SW-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>HTTP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-ENT-SW-001</Source>
+      <Target>WTP-DMZ-SW-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>HTTP</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-ENT-SW-001</Source>
+      <Target>WTP-ENT-DC-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>LDAP</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-ENT-SW-001</Source>
+      <Target>WTP-ENT-HIST-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>OPC UA</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-DMZ-SW-001</Source>
+      <Target>WTP-DMZ-JUMP-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>SSH</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-DMZ-SW-001</Source>
+      <Target>WTP-DMZ-SCADA-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>OPC UA</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-DMZ-SCADA-001</Source>
+      <Target>WTP-CTRL-SW-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>OPC UA</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-SW-001</Source>
+      <Target>WTP-CTRL-HMI-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>Ethernet/IP</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-SW-001</Source>
+      <Target>WTP-CTRL-PLC-001</Target>
+      <Type>controls</Type>
+      <Protocol>Ethernet/IP</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-SW-001</Source>
+      <Target>WTP-CTRL-PLC-002</Target>
+      <Type>controls</Type>
+      <Protocol>Ethernet/IP</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-SW-001</Source>
+      <Target>WTP-CTRL-PLC-003</Target>
+      <Type>controls</Type>
+      <Protocol>Ethernet/IP</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-SW-001</Source>
+      <Target>WTP-CTRL-PLC-004</Target>
+      <Type>controls</Type>
+      <Protocol>Ethernet/IP</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-HUM-OPR-001</Source>
+      <Target>WTP-CTRL-HMI-001</Target>
+      <Type>programs / operates</Type>
+      <Protocol>HMI</Protocol>
+      <Trust_level>high</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-PLC-001</Source>
+      <Target>WTP-FLD-PUMP-001</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-PLC-001</Source>
+      <Target>WTP-FLD-VALVE-001</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-PLC-001</Source>
+      <Target>WTP-FLD-SENSOR-001</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-PLC-002</Source>
+      <Target>WTP-FLD-VALVE-002</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-PLC-002</Source>
+      <Target>WTP-FLD-SENSOR-004</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-PLC-003</Source>
+      <Target>WTP-FLD-SENSOR-003</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-PLC-003</Source>
+      <Target>WTP-FLD-PUMP-001</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-PLC-004</Source>
+      <Target>WTP-FLD-PUMP-002</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-PLC-004</Source>
+      <Target>WTP-FLD-SENSOR-002</Target>
+      <Type>monitors</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-PLC-004</Source>
+      <Target>WTP-FLD-VFD-001</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-CTRL-PLC-001</Source>
+      <Target>WTP-FLD-MOTOR-001</Target>
+      <Type>actuates</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-DMZ-JUMP-001</Source>
+      <Target>WTP-CTRL-SW-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>RDP</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-FLD-ENG-001</Source>
+      <Target>WTP-CTRL-SW-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>SSH</Protocol>
+      <Trust_level>medium</Trust_level>
+    </Connection>
+    <Connection>
+      <Source>WTP-FLD-SW-001</Source>
+      <Target>WTP-FLD-PUMP-001</Target>
+      <Type>connects-to</Type>
+      <Protocol>Modbus TCP</Protocol>
+      <Trust_level>low</Trust_level>
+    </Connection>
+  </Connections>
+</AutomationML>

@@ -28,6 +28,7 @@ except ImportError:  # pragma: no cover
 
 from backend.topology import (
     DEFAULT_REL_TYPE,
+    VALID_KINDS,
     normalize_asset,
     normalize_relationship,
     parse_generic_json,
@@ -491,17 +492,24 @@ def _parse_aml_bytes(content: bytes) -> dict[str, Any]:
     for element in root.iter():
         tag = strip_ns(element.tag)
         if tag == "InternalElement":
-            name = element.get("Name") or element.get("ID") or element.get("NameLong")
-            if not name:
+            # IEC 62714 semantics: `ID` is the canonical machine identifier,
+            # `Name` the human-readable label, and `Connection` elements
+            # reference IDs.  Prefer ID when present; fall back to Name so
+            # ID-less documents (legacy AML exports) still parse.
+            asset_id = element.get("ID") or element.get("Name") or element.get("NameLong")
+            if not asset_id:
                 continue
-            raw: dict[str, Any] = {"id": name, "name": name}
+            asset_id = _normalize_text(asset_id)
+            display_name = _normalize_text(element.get("Name") or asset_id)
+            raw: dict[str, Any] = {"id": asset_id, "name": display_name}
             for child in element:
                 child_tag = strip_ns(child.tag)
-                if child_tag == "Attribute" and child.get("Name") == "Manufacturer":
-                    raw["vendor"] = child.text
-                if child_tag == "Attribute" and child.get("Name") == "DeviceType":
-                    raw["type"] = child.text
-            assets[name] = raw
+                if child_tag == "Attribute":
+                    attr_name = child.get("Name")
+                    attr_value = child.text
+                    if attr_name and attr_value:
+                        raw[attr_name.lower()] = _normalize_text(attr_value)
+            assets[asset_id] = raw
         if tag in {"Connection", "InternalLink", "ConnectionElement"}:
             source = None
             target = None
@@ -510,13 +518,15 @@ def _parse_aml_bytes(content: bytes) -> dict[str, Any]:
             for child in element:
                 child_tag = strip_ns(child.tag)
                 if child_tag in {"Source", "From"}:
-                    source = child.text
+                    source = _normalize_text(child.text)
                 elif child_tag in {"Target", "To"}:
-                    target = child.text
+                    target = _normalize_text(child.text)
                 elif child_tag in {"Role", "Type"}:
-                    rel_type = child.text or rel_type
+                    rel_type = _normalize_text(child.text) or rel_type
                 elif child_tag == "Protocol":
-                    metadata["protocol"] = child.text
+                    metadata["protocol"] = _normalize_text(child.text)
+                elif child_tag in {"Trust_level", "Trust"}:
+                    metadata["trust_level"] = _normalize_text(child.text)
             if source and target:
                 relationships.append({"source": source, "target": target, "type": rel_type, "metadata": metadata})
 
@@ -579,16 +589,37 @@ def _parse_vdx_bytes(content: bytes) -> dict[str, Any]:
         if shape_text.lower().startswith("asset,"):
             parts = [part.strip() for part in shape_text.split(",")]
             raw = {"id": parts[1] if len(parts) > 1 else None, "name": parts[1] if len(parts) > 1 else None}
-            if len(parts) > 2:
-                raw["type"] = parts[2]
-            if len(parts) > 3:
-                raw["cvss_type"] = parts[3]
-            if len(parts) > 4:
-                raw["exposed"] = parts[4]
-            if len(parts) > 5:
-                raw["patched"] = parts[5]
-            if len(parts) > 6:
-                raw["consequence_severity"] = parts[6]
+            asset_kind = parts[2].lower() if len(parts) > 2 else ""
+            if asset_kind in VALID_KINDS:
+                raw["kind"] = asset_kind
+            elif asset_kind:
+                raw["type"] = asset_kind
+            # Fields after the kind are interpreted per asset kind so the
+            # Visio annotation convention (see tests/generate_vsdx.py)
+            # round-trips the same security attributes as JSON/YAML/CSV.
+            if asset_kind == "human":
+                if len(parts) > 3:
+                    raw["role"] = parts[3]
+                if len(parts) > 4:
+                    raw["awareness"] = parts[4]
+                if len(parts) > 5:
+                    raw["privilege"] = parts[5]
+                if len(parts) > 6:
+                    raw["consequence_severity"] = parts[6]
+            elif asset_kind == "physical":
+                if len(parts) > 3:
+                    raw["p_base_override"] = parts[3]
+                if len(parts) > 4:
+                    raw["consequence_severity"] = parts[4]
+            else:  # device (or legacy shapes without a valid kind token)
+                if len(parts) > 3:
+                    raw["cvss_type"] = parts[3]
+                if len(parts) > 4:
+                    raw["exposed"] = parts[4]
+                if len(parts) > 5:
+                    raw["patched"] = parts[5]
+                if len(parts) > 6:
+                    raw["consequence_severity"] = parts[6]
             asset_id = raw.get("id")
             if asset_id:
                 assets[asset_id] = raw
@@ -682,16 +713,34 @@ def _parse_vsdx_bytes(content: bytes, filename: str) -> dict[str, Any]:
                     if text.lower().startswith("asset,"):
                         parts = [part.strip() for part in text.split(",")]
                         raw = {"id": parts[1] if len(parts) > 1 else None, "name": parts[1] if len(parts) > 1 else None}
-                        if len(parts) > 2:
-                            raw["type"] = parts[2]
-                        if len(parts) > 3:
-                            raw["cvss_type"] = parts[3]
-                        if len(parts) > 4:
-                            raw["exposed"] = parts[4]
-                        if len(parts) > 5:
-                            raw["patched"] = parts[5]
-                        if len(parts) > 6:
-                            raw["consequence_severity"] = parts[6]
+                        asset_kind = parts[2].lower() if len(parts) > 2 else ""
+                        if asset_kind in VALID_KINDS:
+                            raw["kind"] = asset_kind
+                        elif asset_kind:
+                            raw["type"] = asset_kind
+                        if asset_kind == "human":
+                            if len(parts) > 3:
+                                raw["role"] = parts[3]
+                            if len(parts) > 4:
+                                raw["awareness"] = parts[4]
+                            if len(parts) > 5:
+                                raw["privilege"] = parts[5]
+                            if len(parts) > 6:
+                                raw["consequence_severity"] = parts[6]
+                        elif asset_kind == "physical":
+                            if len(parts) > 3:
+                                raw["p_base_override"] = parts[3]
+                            if len(parts) > 4:
+                                raw["consequence_severity"] = parts[4]
+                        else:  # device (or legacy shapes without a valid kind token)
+                            if len(parts) > 3:
+                                raw["cvss_type"] = parts[3]
+                            if len(parts) > 4:
+                                raw["exposed"] = parts[4]
+                            if len(parts) > 5:
+                                raw["patched"] = parts[5]
+                            if len(parts) > 6:
+                                raw["consequence_severity"] = parts[6]
                         asset_id = raw.get("id")
                         if asset_id:
                             assets[asset_id] = raw

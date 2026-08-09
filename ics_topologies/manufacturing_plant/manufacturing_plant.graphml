@@ -1,0 +1,633 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d22" for="edge" attr.name="trust" attr.type="string" />
+  <key id="d21" for="edge" attr.name="direction" attr.type="string" />
+  <key id="d20" for="edge" attr.name="protocol" attr.type="string" />
+  <key id="d19" for="edge" attr.name="type" attr.type="string" />
+  <key id="d18" for="edge" attr.name="target" attr.type="string" />
+  <key id="d17" for="edge" attr.name="source" attr.type="string" />
+  <key id="d16" for="node" attr.name="privilege" attr.type="string" />
+  <key id="d15" for="node" attr.name="awareness" attr.type="double" />
+  <key id="d14" for="node" attr.name="role" attr.type="string" />
+  <key id="d13" for="node" attr.name="p_base_override" attr.type="double" />
+  <key id="d12" for="node" attr.name="consequence_severity" attr.type="double" />
+  <key id="d11" for="node" attr.name="patched" attr.type="boolean" />
+  <key id="d10" for="node" attr.name="exposed" attr.type="boolean" />
+  <key id="d9" for="node" attr.name="cvss_type" attr.type="double" />
+  <key id="d8" for="node" attr.name="model" attr.type="string" />
+  <key id="d7" for="node" attr.name="vendor" attr.type="string" />
+  <key id="d6" for="node" attr.name="criticality" attr.type="string" />
+  <key id="d5" for="node" attr.name="description" attr.type="string" />
+  <key id="d4" for="node" attr.name="zone" attr.type="string" />
+  <key id="d3" for="node" attr.name="type" attr.type="string" />
+  <key id="d2" for="node" attr.name="kind" attr.type="string" />
+  <key id="d1" for="node" attr.name="name" attr.type="string" />
+  <key id="d0" for="node" attr.name="id" attr.type="string" />
+  <graph edgedefault="directed">
+    <node id="MFG-ENT-FW-001">
+      <data key="d0">MFG-ENT-FW-001</data>
+      <data key="d1">Perimeter Firewall</data>
+      <data key="d2">device</data>
+      <data key="d3">Firewall</data>
+      <data key="d4">Enterprise</data>
+      <data key="d5">Edge firewall</data>
+      <data key="d6">High</data>
+      <data key="d7">Fortinet</data>
+      <data key="d8">FortiGate 600F</data>
+      <data key="d9">7.5</data>
+      <data key="d10">True</data>
+      <data key="d11">True</data>
+      <data key="d12">8.0</data>
+    </node>
+    <node id="MFG-ENT-SW-001">
+      <data key="d0">MFG-ENT-SW-001</data>
+      <data key="d1">Enterprise Switch</data>
+      <data key="d2">device</data>
+      <data key="d3">Network Switch</data>
+      <data key="d4">Enterprise</data>
+      <data key="d5">Core switch</data>
+      <data key="d6">High</data>
+      <data key="d7">Cisco</data>
+      <data key="d8">Catalyst 9300</data>
+      <data key="d9">6.5</data>
+      <data key="d10">False</data>
+      <data key="d11">True</data>
+      <data key="d12">6.0</data>
+    </node>
+    <node id="MFG-ENT-DC-001">
+      <data key="d0">MFG-ENT-DC-001</data>
+      <data key="d1">Domain Controller</data>
+      <data key="d2">device</data>
+      <data key="d3">Server</data>
+      <data key="d4">Enterprise</data>
+      <data key="d5">AD</data>
+      <data key="d6">High</data>
+      <data key="d7">Microsoft</data>
+      <data key="d8">Windows Server 2022</data>
+      <data key="d9">8.1</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">9.0</data>
+    </node>
+    <node id="MFG-ENT-MES-001">
+      <data key="d0">MFG-ENT-MES-001</data>
+      <data key="d1">MES Server</data>
+      <data key="d2">device</data>
+      <data key="d3">Server</data>
+      <data key="d4">Enterprise</data>
+      <data key="d5">Manufacturing Execution System</data>
+      <data key="d6">High</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">SIMATIC IT</data>
+      <data key="d9">7.5</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">8.0</data>
+    </node>
+    <node id="MFG-ENT-ERP-001">
+      <data key="d0">MFG-ENT-ERP-001</data>
+      <data key="d1">ERP Server</data>
+      <data key="d2">device</data>
+      <data key="d3">Server</data>
+      <data key="d4">Enterprise</data>
+      <data key="d5">ERP</data>
+      <data key="d6">Medium</data>
+      <data key="d7">SAP</data>
+      <data key="d8">S/4HANA</data>
+      <data key="d9">6.5</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">5.0</data>
+    </node>
+    <node id="MFG-DMZ-SW-001">
+      <data key="d0">MFG-DMZ-SW-001</data>
+      <data key="d1">DMZ Switch</data>
+      <data key="d2">device</data>
+      <data key="d3">Network Switch</data>
+      <data key="d4">DMZ</data>
+      <data key="d5">DMZ switch</data>
+      <data key="d6">High</data>
+      <data key="d7">Cisco</data>
+      <data key="d8">IE 4000</data>
+      <data key="d9">6.5</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">7.0</data>
+    </node>
+    <node id="MFG-DMZ-HIST-001">
+      <data key="d0">MFG-DMZ-HIST-001</data>
+      <data key="d1">Historian</data>
+      <data key="d2">device</data>
+      <data key="d3">Server</data>
+      <data key="d4">DMZ</data>
+      <data key="d5">Data historian</data>
+      <data key="d6">Medium</data>
+      <data key="d7">OSIsoft</data>
+      <data key="d8">PI Server</data>
+      <data key="d9">7.0</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">5.0</data>
+    </node>
+    <node id="MFG-DMZ-JUMP-001">
+      <data key="d0">MFG-DMZ-JUMP-001</data>
+      <data key="d1">Jump Server</data>
+      <data key="d2">device</data>
+      <data key="d3">Server</data>
+      <data key="d4">DMZ</data>
+      <data key="d5">OT access</data>
+      <data key="d6">High</data>
+      <data key="d7">Microsoft</data>
+      <data key="d8">Windows Server 2022</data>
+      <data key="d9">8.1</data>
+      <data key="d10">True</data>
+      <data key="d11">True</data>
+      <data key="d12">8.0</data>
+    </node>
+    <node id="MFG-SF-SW-001">
+      <data key="d0">MFG-SF-SW-001</data>
+      <data key="d1">Shop Floor Switch</data>
+      <data key="d2">device</data>
+      <data key="d3">Network Switch</data>
+      <data key="d4">ShopFloor</data>
+      <data key="d5">Industrial Ethernet switch</data>
+      <data key="d6">High</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">SCALANCE XM408</data>
+      <data key="d9">6.5</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">8.0</data>
+    </node>
+    <node id="MFG-SF-SCADA-001">
+      <data key="d0">MFG-SF-SCADA-001</data>
+      <data key="d1">SCADA Server</data>
+      <data key="d2">device</data>
+      <data key="d3">SCADA</data>
+      <data key="d4">ShopFloor</data>
+      <data key="d5">Production SCADA</data>
+      <data key="d6">High</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">WinCC</data>
+      <data key="d9">8.5</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">9.0</data>
+    </node>
+    <node id="MFG-SF-HMI-001">
+      <data key="d0">MFG-SF-HMI-001</data>
+      <data key="d1">Production HMI</data>
+      <data key="d2">device</data>
+      <data key="d3">HMI</data>
+      <data key="d4">ShopFloor</data>
+      <data key="d5">Operator console</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">SIMATIC HMI</data>
+      <data key="d9">7.5</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">6.0</data>
+    </node>
+    <node id="MFG-CELL1-SW-001">
+      <data key="d0">MFG-CELL1-SW-001</data>
+      <data key="d1">Cell 1 Switch</data>
+      <data key="d2">device</data>
+      <data key="d3">Network Switch</data>
+      <data key="d4">Cell</data>
+      <data key="d5">Switch for welding cell</data>
+      <data key="d6">High</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">SCALANCE XB208</data>
+      <data key="d9">6.5</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">7.0</data>
+    </node>
+    <node id="MFG-CELL1-PLC-001">
+      <data key="d0">MFG-CELL1-PLC-001</data>
+      <data key="d1">Cell 1 PLC</data>
+      <data key="d2">device</data>
+      <data key="d3">PLC</data>
+      <data key="d4">Cell</data>
+      <data key="d5">Welding cell controller</data>
+      <data key="d6">High</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">S7-1500</data>
+      <data key="d9">8.1</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">9.0</data>
+    </node>
+    <node id="MFG-CELL1-ROBOT-001">
+      <data key="d0">MFG-CELL1-ROBOT-001</data>
+      <data key="d1">Robot Controller</data>
+      <data key="d2">device</data>
+      <data key="d3">Robot</data>
+      <data key="d4">Cell</data>
+      <data key="d5">Welding robot</data>
+      <data key="d6">High</data>
+      <data key="d7">KUKA</data>
+      <data key="d8">KR Cybertech</data>
+      <data key="d9">7.5</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">8.0</data>
+    </node>
+    <node id="MFG-CELL1-POS-001">
+      <data key="d0">MFG-CELL1-POS-001</data>
+      <data key="d1">Positioner</data>
+      <data key="d2">physical</data>
+      <data key="d3">Positioner</data>
+      <data key="d4">Cell</data>
+      <data key="d5">Workpiece positioner</data>
+      <data key="d6">Medium</data>
+      <data key="d7">FANUC</data>
+      <data key="d8">2-axis pos.</data>
+      <data key="d12">5.0</data>
+      <data key="d13">0.01</data>
+    </node>
+    <node id="MFG-CELL2-SW-001">
+      <data key="d0">MFG-CELL2-SW-001</data>
+      <data key="d1">Cell 2 Switch</data>
+      <data key="d2">device</data>
+      <data key="d3">Network Switch</data>
+      <data key="d4">Cell</data>
+      <data key="d5">Switch for assembly cell</data>
+      <data key="d6">High</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">SCALANCE XB208</data>
+      <data key="d9">6.5</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">7.0</data>
+    </node>
+    <node id="MFG-CELL2-PLC-001">
+      <data key="d0">MFG-CELL2-PLC-001</data>
+      <data key="d1">Cell 2 PLC</data>
+      <data key="d2">device</data>
+      <data key="d3">PLC</data>
+      <data key="d4">Cell</data>
+      <data key="d5">Assembly controller</data>
+      <data key="d6">High</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">S7-1500</data>
+      <data key="d9">8.1</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">9.0</data>
+    </node>
+    <node id="MFG-CELL2-HMI-001">
+      <data key="d0">MFG-CELL2-HMI-001</data>
+      <data key="d1">Cell 2 HMI</data>
+      <data key="d2">device</data>
+      <data key="d3">HMI</data>
+      <data key="d4">Cell</data>
+      <data key="d5">Assembly operator panel</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">SIMATIC HMI</data>
+      <data key="d9">7.0</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">6.0</data>
+    </node>
+    <node id="MFG-SAF-PLC-001">
+      <data key="d0">MFG-SAF-PLC-001</data>
+      <data key="d1">Safety PLC</data>
+      <data key="d2">device</data>
+      <data key="d3">SafetyPLC</data>
+      <data key="d4">Safety</data>
+      <data key="d5">Safety controller for light curtains</data>
+      <data key="d6">High</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">S7-1500F</data>
+      <data key="d9">7.0</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">9.0</data>
+    </node>
+    <node id="MFG-SAF-LC-001">
+      <data key="d0">MFG-SAF-LC-001</data>
+      <data key="d1">Light Curtain</data>
+      <data key="d2">physical</data>
+      <data key="d3">SafetyDevice</data>
+      <data key="d4">Safety</data>
+      <data key="d5">Safety light curtain</data>
+      <data key="d6">High</data>
+      <data key="d7">SICK</data>
+      <data key="d8">C4000</data>
+      <data key="d12">6.0</data>
+      <data key="d13">0.01</data>
+    </node>
+    <node id="MFG-SAF-ESTOP-001">
+      <data key="d0">MFG-SAF-ESTOP-001</data>
+      <data key="d1">E-Stop</data>
+      <data key="d2">physical</data>
+      <data key="d3">SafetyDevice</data>
+      <data key="d4">Safety</data>
+      <data key="d5">Emergency stop</data>
+      <data key="d6">High</data>
+      <data key="d7">Pilz</data>
+      <data key="d8">PNOZ</data>
+      <data key="d12">6.0</data>
+      <data key="d13">0.01</data>
+    </node>
+    <node id="MFG-FLD-VFD-001">
+      <data key="d0">MFG-FLD-VFD-001</data>
+      <data key="d1">Conveyor VFD</data>
+      <data key="d2">device</data>
+      <data key="d3">VFD</data>
+      <data key="d4">Field</data>
+      <data key="d5">VFD for conveyor</data>
+      <data key="d6">Medium</data>
+      <data key="d7">ABB</data>
+      <data key="d8">ACS580</data>
+      <data key="d9">7.5</data>
+      <data key="d10">False</data>
+      <data key="d11">False</data>
+      <data key="d12">7.0</data>
+    </node>
+    <node id="MFG-FLD-MOTOR-001">
+      <data key="d0">MFG-FLD-MOTOR-001</data>
+      <data key="d1">Conveyor Motor</data>
+      <data key="d2">physical</data>
+      <data key="d3">Motor</data>
+      <data key="d4">Field</data>
+      <data key="d5">Conveyor drive</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">1LA8</data>
+      <data key="d12">5.0</data>
+      <data key="d13">0.01</data>
+    </node>
+    <node id="MFG-FLD-SENSOR-001">
+      <data key="d0">MFG-FLD-SENSOR-001</data>
+      <data key="d1">Proximity Sensor</data>
+      <data key="d2">physical</data>
+      <data key="d3">Sensor</data>
+      <data key="d4">Field</data>
+      <data key="d5">Part presence</data>
+      <data key="d6">Low</data>
+      <data key="d7">Banner</data>
+      <data key="d8">Q45</data>
+      <data key="d12">4.0</data>
+      <data key="d13">0.01</data>
+    </node>
+    <node id="MFG-FLD-SENSOR-002">
+      <data key="d0">MFG-FLD-SENSOR-002</data>
+      <data key="d1">Vision Sensor</data>
+      <data key="d2">physical</data>
+      <data key="d3">Sensor</data>
+      <data key="d4">Field</data>
+      <data key="d5">Quality camera</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Cognex</data>
+      <data key="d8">In-Sight 7000</data>
+      <data key="d12">5.0</data>
+      <data key="d13">0.01</data>
+    </node>
+    <node id="MFG-FLD-ACT-001">
+      <data key="d0">MFG-FLD-ACT-001</data>
+      <data key="d1">Pneumatic Cylinder</data>
+      <data key="d2">physical</data>
+      <data key="d3">Actuator</data>
+      <data key="d4">Field</data>
+      <data key="d5">Clamp cylinder</data>
+      <data key="d6">Low</data>
+      <data key="d7">SMC</data>
+      <data key="d8">CQ2</data>
+      <data key="d12">4.0</data>
+      <data key="d13">0.01</data>
+    </node>
+    <node id="MFG-HUM-SUP-001">
+      <data key="d0">MFG-HUM-SUP-001</data>
+      <data key="d1">Production Supervisor</data>
+      <data key="d2">human</data>
+      <data key="d3">Supervisor</data>
+      <data key="d4">ShopFloor</data>
+      <data key="d5">Supervisor monitoring production lines</data>
+      <data key="d6">Medium</data>
+      <data key="d12">4.0</data>
+      <data key="d14">operator</data>
+      <data key="d15">0.4</data>
+      <data key="d16">standard</data>
+    </node>
+    <edge source="MFG-ENT-FW-001" target="MFG-ENT-SW-001">
+      <data key="d17">MFG-ENT-FW-001</data>
+      <data key="d18">MFG-ENT-SW-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">HTTP</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">low</data>
+    </edge>
+    <edge source="MFG-ENT-SW-001" target="MFG-ENT-DC-001">
+      <data key="d17">MFG-ENT-SW-001</data>
+      <data key="d18">MFG-ENT-DC-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">LDAP</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">high</data>
+    </edge>
+    <edge source="MFG-ENT-SW-001" target="MFG-ENT-MES-001">
+      <data key="d17">MFG-ENT-SW-001</data>
+      <data key="d18">MFG-ENT-MES-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">OPC UA</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">high</data>
+    </edge>
+    <edge source="MFG-ENT-SW-001" target="MFG-ENT-ERP-001">
+      <data key="d17">MFG-ENT-SW-001</data>
+      <data key="d18">MFG-ENT-ERP-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">HTTP</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">high</data>
+    </edge>
+    <edge source="MFG-ENT-SW-001" target="MFG-DMZ-SW-001">
+      <data key="d17">MFG-ENT-SW-001</data>
+      <data key="d18">MFG-DMZ-SW-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">HTTP</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">medium</data>
+    </edge>
+    <edge source="MFG-DMZ-SW-001" target="MFG-DMZ-HIST-001">
+      <data key="d17">MFG-DMZ-SW-001</data>
+      <data key="d18">MFG-DMZ-HIST-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">OPC UA</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">medium</data>
+    </edge>
+    <edge source="MFG-DMZ-SW-001" target="MFG-DMZ-JUMP-001">
+      <data key="d17">MFG-DMZ-SW-001</data>
+      <data key="d18">MFG-DMZ-JUMP-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">SSH</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">medium</data>
+    </edge>
+    <edge source="MFG-DMZ-JUMP-001" target="MFG-SF-SW-001">
+      <data key="d17">MFG-DMZ-JUMP-001</data>
+      <data key="d18">MFG-SF-SW-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">RDP</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">medium</data>
+    </edge>
+    <edge source="MFG-SF-SW-001" target="MFG-SF-SCADA-001">
+      <data key="d17">MFG-SF-SW-001</data>
+      <data key="d18">MFG-SF-SCADA-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">OPC UA</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">high</data>
+    </edge>
+    <edge source="MFG-SF-SW-001" target="MFG-SF-HMI-001">
+      <data key="d17">MFG-SF-SW-001</data>
+      <data key="d18">MFG-SF-HMI-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">PROFINET</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">high</data>
+    </edge>
+    <edge source="MFG-SF-SCADA-001" target="MFG-CELL1-PLC-001">
+      <data key="d17">MFG-SF-SCADA-001</data>
+      <data key="d18">MFG-CELL1-PLC-001</data>
+      <data key="d19">controls</data>
+      <data key="d20">PROFINET</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">high</data>
+    </edge>
+    <edge source="MFG-SF-SCADA-001" target="MFG-CELL2-PLC-001">
+      <data key="d17">MFG-SF-SCADA-001</data>
+      <data key="d18">MFG-CELL2-PLC-001</data>
+      <data key="d19">controls</data>
+      <data key="d20">PROFINET</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">high</data>
+    </edge>
+    <edge source="MFG-CELL1-SW-001" target="MFG-CELL1-PLC-001">
+      <data key="d17">MFG-CELL1-SW-001</data>
+      <data key="d18">MFG-CELL1-PLC-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">PROFINET</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">high</data>
+    </edge>
+    <edge source="MFG-CELL1-SW-001" target="MFG-CELL1-ROBOT-001">
+      <data key="d17">MFG-CELL1-SW-001</data>
+      <data key="d18">MFG-CELL1-ROBOT-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">PROFINET</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">high</data>
+    </edge>
+    <edge source="MFG-CELL1-SW-001" target="MFG-CELL1-POS-001">
+      <data key="d17">MFG-CELL1-SW-001</data>
+      <data key="d18">MFG-CELL1-POS-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">PROFINET</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">high</data>
+    </edge>
+    <edge source="MFG-CELL1-PLC-001" target="MFG-FLD-VFD-001">
+      <data key="d17">MFG-CELL1-PLC-001</data>
+      <data key="d18">MFG-FLD-VFD-001</data>
+      <data key="d19">actuates</data>
+      <data key="d20">PROFINET</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">low</data>
+    </edge>
+    <edge source="MFG-CELL1-PLC-001" target="MFG-FLD-MOTOR-001">
+      <data key="d17">MFG-CELL1-PLC-001</data>
+      <data key="d18">MFG-FLD-MOTOR-001</data>
+      <data key="d19">actuates</data>
+      <data key="d20">PROFINET</data>
+      <data key="d21">unidirectional</data>
+      <data key="d22">low</data>
+    </edge>
+    <edge source="MFG-CELL1-PLC-001" target="MFG-FLD-SENSOR-001">
+      <data key="d17">MFG-CELL1-PLC-001</data>
+      <data key="d18">MFG-FLD-SENSOR-001</data>
+      <data key="d19">monitors</data>
+      <data key="d20">PROFINET</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">low</data>
+    </edge>
+    <edge source="MFG-CELL2-SW-001" target="MFG-CELL2-PLC-001">
+      <data key="d17">MFG-CELL2-SW-001</data>
+      <data key="d18">MFG-CELL2-PLC-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">PROFINET</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">high</data>
+    </edge>
+    <edge source="MFG-CELL2-SW-001" target="MFG-CELL2-HMI-001">
+      <data key="d17">MFG-CELL2-SW-001</data>
+      <data key="d18">MFG-CELL2-HMI-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">PROFINET</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">high</data>
+    </edge>
+    <edge source="MFG-CELL2-PLC-001" target="MFG-FLD-SENSOR-002">
+      <data key="d17">MFG-CELL2-PLC-001</data>
+      <data key="d18">MFG-FLD-SENSOR-002</data>
+      <data key="d19">monitors</data>
+      <data key="d20">PROFINET</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">low</data>
+    </edge>
+    <edge source="MFG-CELL2-PLC-001" target="MFG-FLD-ACT-001">
+      <data key="d17">MFG-CELL2-PLC-001</data>
+      <data key="d18">MFG-FLD-ACT-001</data>
+      <data key="d19">actuates</data>
+      <data key="d20">PROFINET</data>
+      <data key="d21">unidirectional</data>
+      <data key="d22">low</data>
+    </edge>
+    <edge source="MFG-SAF-PLC-001" target="MFG-SAF-LC-001">
+      <data key="d17">MFG-SAF-PLC-001</data>
+      <data key="d18">MFG-SAF-LC-001</data>
+      <data key="d19">monitors</data>
+      <data key="d20">PROFIsafe</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">low</data>
+    </edge>
+    <edge source="MFG-SAF-PLC-001" target="MFG-SAF-ESTOP-001">
+      <data key="d17">MFG-SAF-PLC-001</data>
+      <data key="d18">MFG-SAF-ESTOP-001</data>
+      <data key="d19">monitors</data>
+      <data key="d20">PROFIsafe</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">low</data>
+    </edge>
+    <edge source="MFG-SAF-PLC-001" target="MFG-CELL1-PLC-001">
+      <data key="d17">MFG-SAF-PLC-001</data>
+      <data key="d18">MFG-CELL1-PLC-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">PROFIsafe</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">medium</data>
+    </edge>
+    <edge source="MFG-SAF-PLC-001" target="MFG-CELL2-PLC-001">
+      <data key="d17">MFG-SAF-PLC-001</data>
+      <data key="d18">MFG-CELL2-PLC-001</data>
+      <data key="d19">connects-to</data>
+      <data key="d20">PROFIsafe</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">medium</data>
+    </edge>
+    <edge source="MFG-HUM-SUP-001" target="MFG-SF-HMI-001">
+      <data key="d17">MFG-HUM-SUP-001</data>
+      <data key="d18">MFG-SF-HMI-001</data>
+      <data key="d19">programs / operates</data>
+      <data key="d20">HMI</data>
+      <data key="d21">bidirectional</data>
+      <data key="d22">high</data>
+    </edge>
+  </graph>
+</graphml>

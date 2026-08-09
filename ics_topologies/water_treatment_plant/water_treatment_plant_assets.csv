@@ -1,0 +1,27 @@
+id,name,kind,type,zone,description,criticality,vendor,model,ip,cvss_type,exposed,patched,consequence_severity,role,awareness,privilege,p_base_override
+WTP-FW-001,Perimeter Firewall,device,Firewall,Internet,Internet edge firewall,High,Cisco,ASA 5585,10.0.0.1,7.5,true,true,8.0,,,,
+WTP-ENT-SW-001,Enterprise Switch,device,Network Switch,Enterprise,Core enterprise switch,Medium,Cisco,Catalyst 9300,,6.5,false,true,6.0,,,,
+WTP-ENT-DC-001,Domain Controller,device,Server,Enterprise,Active Directory,High,Microsoft,Windows Server 2022,,8.1,false,false,9.0,,,,
+WTP-ENT-HIST-001,Historian,device,Server,Enterprise,Data historian,Medium,OSIsoft,PI Server,,7.0,false,false,5.0,,,,
+WTP-DMZ-SW-001,DMZ Switch,device,Network Switch,DMZ,OT DMZ switch,High,Cisco,IE 4000,,6.5,false,false,7.0,,,,
+WTP-DMZ-JUMP-001,Jump Server,device,Server,DMZ,Secure jump host for OT access,High,Microsoft,Windows Server 2022,,8.1,true,true,8.0,,,,
+WTP-DMZ-SCADA-001,SCADA Server,device,SCADA,DMZ,Primary SCADA server,High,Schneider,EcoStruxure,,8.5,false,false,9.0,,,,
+WTP-CTRL-SW-001,Control Switch,device,Network Switch,Control,Industrial Ethernet switch,High,Siemens,SCALANCE XM408,,6.5,false,false,8.0,,,,
+WTP-CTRL-HMI-001,HMI,device,HMI,Control,Operator interface,Medium,Siemens,SIMATIC HMI,,7.5,false,false,6.0,,,,
+WTP-CTRL-PLC-001,Intake PLC,device,PLC,Control,Controls raw water intake pumps,High,Allen-Bradley,ControlLogix 5580,,8.1,false,false,9.0,,,,
+WTP-CTRL-PLC-002,Filtration PLC,device,PLC,Control,Controls filter backwash and flow,High,Allen-Bradley,ControlLogix 5580,,8.1,false,false,9.0,,,,
+WTP-CTRL-PLC-003,Chemical Dosing PLC,device,PLC,Control,Controls chemical dosing pumps,High,Allen-Bradley,ControlLogix 5580,,8.1,false,false,9.0,,,,
+WTP-CTRL-PLC-004,Distribution PLC,device,PLC,Control,Controls distribution pumps,High,Allen-Bradley,ControlLogix 5580,,8.1,false,false,9.0,,,,
+WTP-HUM-OPR-001,Control Room Operator,human,Operator,Control,Duty operator supervising the plant from the control room,Medium,,,,,,,4.0,operator,0.4,standard,
+WTP-FLD-PUMP-001,Intake Pump,physical,Pump,Field,Raw water intake pump,High,Grundfos,CR 64,,,,,8.0,,,,0.02
+WTP-FLD-PUMP-002,Distribution Pump,physical,Pump,Field,High service pump,High,Grundfos,CR 90,,,,,8.0,,,,0.02
+WTP-FLD-VALVE-001,Inlet Valve,physical,Valve,Field,Motorized inlet valve,Medium,Emerson,Fisher V500,,,,,6.0,,,,0.02
+WTP-FLD-VALVE-002,Backwash Valve,physical,Valve,Field,Filter backwash valve,Medium,Emerson,Fisher V500,,,,,6.0,,,,0.02
+WTP-FLD-SENSOR-001,Flow Sensor,physical,Sensor,Field,Raw water flow meter,Medium,Emerson,Rosemount 8700,,,,,4.0,,,,0.01
+WTP-FLD-SENSOR-002,Pressure Sensor,physical,Sensor,Field,Distribution pressure sensor,Medium,Emerson,Rosemount 3051,,,,,4.0,,,,0.01
+WTP-FLD-SENSOR-003,pH Sensor,physical,Sensor,Field,pH in treated water,Medium,Hach,SC200,,,,,5.0,,,,0.01
+WTP-FLD-SENSOR-004,Turbidity Sensor,physical,Sensor,Field,Turbidity measurement,Medium,Hach,1720E,,,,,4.0,,,,0.01
+WTP-FLD-MOTOR-001,Blower Motor,physical,Motor,Field,Aeration blower,Low,Siemens,1LA8,,,,,5.0,,,,0.01
+WTP-FLD-VFD-001,Pump VFD,device,VFD,Field,Variable frequency drive for pump,High,ABB,ACS880,,7.5,false,false,7.0,,,,
+WTP-FLD-ENG-001,Engineering Workstation,device,Workstation,Field,Engineering laptop for maintenance,Medium,Dell,Precision 5560,,7.8,false,true,5.0,,,,
+WTP-FLD-SW-001,Field Switch,device,Network Switch,Field,Industrial switch at field level,Medium,Siemens,SCALANCE XB208,,6.5,false,false,5.0,,,,

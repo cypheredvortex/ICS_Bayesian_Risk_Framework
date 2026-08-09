@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="utf-8"?>
+<VisioDocument xmlns="http://schemas.microsoft.com/visio/2003/core">
+  <DocumentProperties>
+    <Title>Oil &amp; Gas Pipeline</Title>
+    <Creator>ICS Topology Generator</Creator>
+    <Description>Long-distance pipeline with multiple pump stations and remote terminal units.</Description>
+  </DocumentProperties>
+  <Pages>
+    <Page ID="0" Name="Oil &amp; Gas Pipeline" Width="3000" Height="1600">
+      <Shapes>
+        <Shape ID="1" Type="Shape" NameU="PIPE-CTR-FW-001">
+          <X>120.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-CTR-FW-001,device,7.5,true,true,8.0
+          </Text>
+        </Shape>
+        <Shape ID="2" Type="Shape" NameU="PIPE-CTR-SW-001">
+          <X>330.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-CTR-SW-001,device,6.5,false,true,8.0
+          </Text>
+        </Shape>
+        <Shape ID="3" Type="Shape" NameU="PIPE-CTR-SCADA-001">
+          <X>540.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-CTR-SCADA-001,device,8.5,false,false,10.0
+          </Text>
+        </Shape>
+        <Shape ID="4" Type="Shape" NameU="PIPE-CTR-HIST-001">
+          <X>750.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-CTR-HIST-001,device,7.0,false,false,6.0
+          </Text>
+        </Shape>
+        <Shape ID="5" Type="Shape" NameU="PIPE-CTR-HMI-001">
+          <X>960.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-CTR-HMI-001,device,7.5,false,false,7.0
+          </Text>
+        </Shape>
+        <Shape ID="6" Type="Shape" NameU="PIPE-CTR-EWS-001">
+          <X>1170.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-CTR-EWS-001,device,7.8,false,true,5.0
+          </Text>
+        </Shape>
+        <Shape ID="7" Type="Shape" NameU="PIPE-RTU-001">
+          <X>120.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-RTU-001,device,8.0,false,false,8.0
+          </Text>
+        </Shape>
+        <Shape ID="8" Type="Shape" NameU="PIPE-RTU-002">
+          <X>330.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-RTU-002,device,8.0,false,false,8.0
+          </Text>
+        </Shape>
+        <Shape ID="9" Type="Shape" NameU="PIPE-RTU-003">
+          <X>540.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-RTU-003,device,8.0,false,false,8.0
+          </Text>
+        </Shape>
+        <Shape ID="10" Type="Shape" NameU="PIPE-RTU-004">
+          <X>750.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-RTU-004,device,8.0,false,false,8.0
+          </Text>
+        </Shape>
+        <Shape ID="11" Type="Shape" NameU="PIPE-SW-001">
+          <X>960.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-SW-001,device,6.5,false,false,7.0
+          </Text>
+        </Shape>
+        <Shape ID="12" Type="Shape" NameU="PIPE-SW-002">
+          <X>1170.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-SW-002,device,6.5,false,false,7.0
+          </Text>
+        </Shape>
+        <Shape ID="13" Type="Shape" NameU="PIPE-PUMP-001">
+          <X>120.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-PUMP-001,physical,0.02,8.0
+          </Text>
+        </Shape>
+        <Shape ID="14" Type="Shape" NameU="PIPE-PUMP-002">
+          <X>330.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-PUMP-002,physical,0.02,8.0
+          </Text>
+        </Shape>
+        <Shape ID="15" Type="Shape" NameU="PIPE-VFD-001">
+          <X>540.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-VFD-001,device,7.5,false,false,7.0
+          </Text>
+        </Shape>
+        <Shape ID="16" Type="Shape" NameU="PIPE-VALVE-001">
+          <X>750.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-VALVE-001,physical,0.02,7.0
+          </Text>
+        </Shape>
+        <Shape ID="17" Type="Shape" NameU="PIPE-SENSOR-001">
+          <X>960.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-SENSOR-001,physical,0.01,5.0
+          </Text>
+        </Shape>
+        <Shape ID="18" Type="Shape" NameU="PIPE-SENSOR-002">
+          <X>1170.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-SENSOR-002,physical,0.01,6.0
+          </Text>
+        </Shape>
+        <Shape ID="19" Type="Shape" NameU="PIPE-SENSOR-003">
+          <X>1380.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-SENSOR-003,physical,0.01,4.0
+          </Text>
+        </Shape>
+        <Shape ID="20" Type="Shape" NameU="PIPE-PUMP-003">
+          <X>1590.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-PUMP-003,physical,0.02,8.0
+          </Text>
+        </Shape>
+        <Shape ID="21" Type="Shape" NameU="PIPE-VFD-002">
+          <X>1800.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-VFD-002,device,7.5,false,false,7.0
+          </Text>
+        </Shape>
+        <Shape ID="22" Type="Shape" NameU="PIPE-VALVE-002">
+          <X>120.0</X>
+          <Y>670.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-VALVE-002,physical,0.02,7.0
+          </Text>
+        </Shape>
+        <Shape ID="23" Type="Shape" NameU="PIPE-SENSOR-004">
+          <X>330.0</X>
+          <Y>670.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-SENSOR-004,physical,0.01,5.0
+          </Text>
+        </Shape>
+        <Shape ID="24" Type="Shape" NameU="PIPE-SENSOR-005">
+          <X>540.0</X>
+          <Y>670.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-SENSOR-005,physical,0.01,6.0
+          </Text>
+        </Shape>
+        <Shape ID="25" Type="Shape" NameU="PIPE-VALVE-003">
+          <X>750.0</X>
+          <Y>670.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-VALVE-003,physical,0.02,8.0
+          </Text>
+        </Shape>
+        <Shape ID="26" Type="Shape" NameU="PIPE-SENSOR-006">
+          <X>960.0</X>
+          <Y>670.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-SENSOR-006,physical,0.01,5.0
+          </Text>
+        </Shape>
+        <Shape ID="27" Type="Shape" NameU="PIPE-SENSOR-007">
+          <X>1170.0</X>
+          <Y>670.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-SENSOR-007,physical,0.01,6.0
+          </Text>
+        </Shape>
+        <Shape ID="28" Type="Shape" NameU="PIPE-SENSOR-008">
+          <X>1380.0</X>
+          <Y>670.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-SENSOR-008,physical,0.01,5.0
+          </Text>
+        </Shape>
+        <Shape ID="29" Type="Shape" NameU="PIPE-HUM-DSP-001">
+          <X>1380.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,PIPE-HUM-DSP-001,human,operator,0.45,standard,4.0
+          </Text>
+        </Shape>
+        <Shape ID="30" Type="Shape" NameU="conn_PIPE-CTR-FW-001_PIPE-CTR-SW-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-CTR-FW-001,PIPE-CTR-SW-001,connects-to,false,HTTP,low,
+          </Text>
+        </Shape>
+        <Shape ID="31" Type="Shape" NameU="conn_PIPE-CTR-SW-001_PIPE-CTR-SCADA-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-CTR-SW-001,PIPE-CTR-SCADA-001,connects-to,false,OPC UA,high,
+          </Text>
+        </Shape>
+        <Shape ID="32" Type="Shape" NameU="conn_PIPE-CTR-SW-001_PIPE-CTR-HIST-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-CTR-SW-001,PIPE-CTR-HIST-001,connects-to,false,OPC UA,high,
+          </Text>
+        </Shape>
+        <Shape ID="33" Type="Shape" NameU="conn_PIPE-CTR-SW-001_PIPE-CTR-HMI-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-CTR-SW-001,PIPE-CTR-HMI-001,connects-to,false,OPC UA,high,
+          </Text>
+        </Shape>
+        <Shape ID="34" Type="Shape" NameU="conn_PIPE-CTR-SW-001_PIPE-CTR-EWS-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-CTR-SW-001,PIPE-CTR-EWS-001,connects-to,false,SSH,medium,
+          </Text>
+        </Shape>
+        <Shape ID="35" Type="Shape" NameU="conn_PIPE-HUM-DSP-001_PIPE-CTR-HMI-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-HUM-DSP-001,PIPE-CTR-HMI-001,programs / operates,false,HMI,high,
+          </Text>
+        </Shape>
+        <Shape ID="36" Type="Shape" NameU="conn_PIPE-CTR-SCADA-001_PIPE-RTU-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-CTR-SCADA-001,PIPE-RTU-001,controls,false,DNP3,medium,
+          </Text>
+        </Shape>
+        <Shape ID="37" Type="Shape" NameU="conn_PIPE-CTR-SCADA-001_PIPE-RTU-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-CTR-SCADA-001,PIPE-RTU-002,controls,false,DNP3,medium,
+          </Text>
+        </Shape>
+        <Shape ID="38" Type="Shape" NameU="conn_PIPE-CTR-SCADA-001_PIPE-RTU-003">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-CTR-SCADA-001,PIPE-RTU-003,controls,false,DNP3,medium,
+          </Text>
+        </Shape>
+        <Shape ID="39" Type="Shape" NameU="conn_PIPE-CTR-SCADA-001_PIPE-RTU-004">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-CTR-SCADA-001,PIPE-RTU-004,controls,false,DNP3,medium,
+          </Text>
+        </Shape>
+        <Shape ID="40" Type="Shape" NameU="conn_PIPE-RTU-001_PIPE-SW-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-RTU-001,PIPE-SW-001,connects-to,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="41" Type="Shape" NameU="conn_PIPE-RTU-002_PIPE-SW-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-RTU-002,PIPE-SW-002,connects-to,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="42" Type="Shape" NameU="conn_PIPE-SW-001_PIPE-PUMP-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-SW-001,PIPE-PUMP-001,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="43" Type="Shape" NameU="conn_PIPE-SW-001_PIPE-PUMP-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-SW-001,PIPE-PUMP-002,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="44" Type="Shape" NameU="conn_PIPE-SW-001_PIPE-VFD-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-SW-001,PIPE-VFD-001,connects-to,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="45" Type="Shape" NameU="conn_PIPE-SW-001_PIPE-VALVE-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-SW-001,PIPE-VALVE-001,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="46" Type="Shape" NameU="conn_PIPE-SW-001_PIPE-SENSOR-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-SW-001,PIPE-SENSOR-001,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="47" Type="Shape" NameU="conn_PIPE-SW-001_PIPE-SENSOR-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-SW-001,PIPE-SENSOR-002,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="48" Type="Shape" NameU="conn_PIPE-SW-001_PIPE-SENSOR-003">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-SW-001,PIPE-SENSOR-003,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="49" Type="Shape" NameU="conn_PIPE-SW-002_PIPE-PUMP-003">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-SW-002,PIPE-PUMP-003,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="50" Type="Shape" NameU="conn_PIPE-SW-002_PIPE-VFD-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-SW-002,PIPE-VFD-002,connects-to,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="51" Type="Shape" NameU="conn_PIPE-SW-002_PIPE-VALVE-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-SW-002,PIPE-VALVE-002,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="52" Type="Shape" NameU="conn_PIPE-SW-002_PIPE-SENSOR-004">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-SW-002,PIPE-SENSOR-004,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="53" Type="Shape" NameU="conn_PIPE-SW-002_PIPE-SENSOR-005">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-SW-002,PIPE-SENSOR-005,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="54" Type="Shape" NameU="conn_PIPE-RTU-003_PIPE-VALVE-003">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-RTU-003,PIPE-VALVE-003,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="55" Type="Shape" NameU="conn_PIPE-RTU-003_PIPE-SENSOR-006">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-RTU-003,PIPE-SENSOR-006,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="56" Type="Shape" NameU="conn_PIPE-RTU-004_PIPE-SENSOR-007">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-RTU-004,PIPE-SENSOR-007,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="57" Type="Shape" NameU="conn_PIPE-RTU-004_PIPE-SENSOR-008">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,PIPE-RTU-004,PIPE-SENSOR-008,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+      </Shapes>
+    </Page>
+  </Pages>
+</VisioDocument>

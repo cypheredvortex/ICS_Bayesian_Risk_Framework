@@ -1,0 +1,28 @@
+source,target,type,protocol,direction,trust
+MFG-ENT-FW-001,MFG-ENT-SW-001,connects-to,HTTP,bidirectional,low
+MFG-ENT-SW-001,MFG-ENT-DC-001,connects-to,LDAP,bidirectional,high
+MFG-ENT-SW-001,MFG-ENT-MES-001,connects-to,OPC UA,bidirectional,high
+MFG-ENT-SW-001,MFG-ENT-ERP-001,connects-to,HTTP,bidirectional,high
+MFG-ENT-SW-001,MFG-DMZ-SW-001,connects-to,HTTP,bidirectional,medium
+MFG-DMZ-SW-001,MFG-DMZ-HIST-001,connects-to,OPC UA,bidirectional,medium
+MFG-DMZ-SW-001,MFG-DMZ-JUMP-001,connects-to,SSH,bidirectional,medium
+MFG-DMZ-JUMP-001,MFG-SF-SW-001,connects-to,RDP,bidirectional,medium
+MFG-SF-SW-001,MFG-SF-SCADA-001,connects-to,OPC UA,bidirectional,high
+MFG-SF-SW-001,MFG-SF-HMI-001,connects-to,PROFINET,bidirectional,high
+MFG-HUM-SUP-001,MFG-SF-HMI-001,programs / operates,HMI,bidirectional,high
+MFG-SF-SCADA-001,MFG-CELL1-PLC-001,controls,PROFINET,bidirectional,high
+MFG-SF-SCADA-001,MFG-CELL2-PLC-001,controls,PROFINET,bidirectional,high
+MFG-CELL1-SW-001,MFG-CELL1-PLC-001,connects-to,PROFINET,bidirectional,high
+MFG-CELL1-SW-001,MFG-CELL1-ROBOT-001,connects-to,PROFINET,bidirectional,high
+MFG-CELL1-SW-001,MFG-CELL1-POS-001,connects-to,PROFINET,bidirectional,high
+MFG-CELL1-PLC-001,MFG-FLD-VFD-001,actuates,PROFINET,bidirectional,low
+MFG-CELL1-PLC-001,MFG-FLD-MOTOR-001,actuates,PROFINET,unidirectional,low
+MFG-CELL1-PLC-001,MFG-FLD-SENSOR-001,monitors,PROFINET,bidirectional,low
+MFG-CELL2-SW-001,MFG-CELL2-PLC-001,connects-to,PROFINET,bidirectional,high
+MFG-CELL2-SW-001,MFG-CELL2-HMI-001,connects-to,PROFINET,bidirectional,high
+MFG-CELL2-PLC-001,MFG-FLD-SENSOR-002,monitors,PROFINET,bidirectional,low
+MFG-CELL2-PLC-001,MFG-FLD-ACT-001,actuates,PROFINET,unidirectional,low
+MFG-SAF-PLC-001,MFG-SAF-LC-001,monitors,PROFIsafe,bidirectional,low
+MFG-SAF-PLC-001,MFG-SAF-ESTOP-001,monitors,PROFIsafe,bidirectional,low
+MFG-SAF-PLC-001,MFG-CELL1-PLC-001,connects-to,PROFIsafe,bidirectional,medium
+MFG-SAF-PLC-001,MFG-CELL2-PLC-001,connects-to,PROFIsafe,bidirectional,medium

@@ -1,0 +1,616 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d23" for="edge" attr.name="trust" attr.type="string" />
+  <key id="d22" for="edge" attr.name="direction" attr.type="string" />
+  <key id="d21" for="edge" attr.name="protocol" attr.type="string" />
+  <key id="d20" for="edge" attr.name="type" attr.type="string" />
+  <key id="d19" for="edge" attr.name="target" attr.type="string" />
+  <key id="d18" for="edge" attr.name="source" attr.type="string" />
+  <key id="d17" for="node" attr.name="p_base_override" attr.type="double" />
+  <key id="d16" for="node" attr.name="privilege" attr.type="string" />
+  <key id="d15" for="node" attr.name="awareness" attr.type="double" />
+  <key id="d14" for="node" attr.name="role" attr.type="string" />
+  <key id="d13" for="node" attr.name="consequence_severity" attr.type="double" />
+  <key id="d12" for="node" attr.name="patched" attr.type="boolean" />
+  <key id="d11" for="node" attr.name="exposed" attr.type="boolean" />
+  <key id="d10" for="node" attr.name="cvss_type" attr.type="double" />
+  <key id="d9" for="node" attr.name="ip" attr.type="string" />
+  <key id="d8" for="node" attr.name="model" attr.type="string" />
+  <key id="d7" for="node" attr.name="vendor" attr.type="string" />
+  <key id="d6" for="node" attr.name="criticality" attr.type="string" />
+  <key id="d5" for="node" attr.name="description" attr.type="string" />
+  <key id="d4" for="node" attr.name="zone" attr.type="string" />
+  <key id="d3" for="node" attr.name="type" attr.type="string" />
+  <key id="d2" for="node" attr.name="kind" attr.type="string" />
+  <key id="d1" for="node" attr.name="name" attr.type="string" />
+  <key id="d0" for="node" attr.name="id" attr.type="string" />
+  <graph edgedefault="directed">
+    <node id="WTP-FW-001">
+      <data key="d0">WTP-FW-001</data>
+      <data key="d1">Perimeter Firewall</data>
+      <data key="d2">device</data>
+      <data key="d3">Firewall</data>
+      <data key="d4">Internet</data>
+      <data key="d5">Internet edge firewall</data>
+      <data key="d6">High</data>
+      <data key="d7">Cisco</data>
+      <data key="d8">ASA 5585</data>
+      <data key="d9">10.0.0.1</data>
+      <data key="d10">7.5</data>
+      <data key="d11">True</data>
+      <data key="d12">True</data>
+      <data key="d13">8.0</data>
+    </node>
+    <node id="WTP-ENT-SW-001">
+      <data key="d0">WTP-ENT-SW-001</data>
+      <data key="d1">Enterprise Switch</data>
+      <data key="d2">device</data>
+      <data key="d3">Network Switch</data>
+      <data key="d4">Enterprise</data>
+      <data key="d5">Core enterprise switch</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Cisco</data>
+      <data key="d8">Catalyst 9300</data>
+      <data key="d10">6.5</data>
+      <data key="d11">False</data>
+      <data key="d12">True</data>
+      <data key="d13">6.0</data>
+    </node>
+    <node id="WTP-ENT-DC-001">
+      <data key="d0">WTP-ENT-DC-001</data>
+      <data key="d1">Domain Controller</data>
+      <data key="d2">device</data>
+      <data key="d3">Server</data>
+      <data key="d4">Enterprise</data>
+      <data key="d5">Active Directory</data>
+      <data key="d6">High</data>
+      <data key="d7">Microsoft</data>
+      <data key="d8">Windows Server 2022</data>
+      <data key="d10">8.1</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">9.0</data>
+    </node>
+    <node id="WTP-ENT-HIST-001">
+      <data key="d0">WTP-ENT-HIST-001</data>
+      <data key="d1">Historian</data>
+      <data key="d2">device</data>
+      <data key="d3">Server</data>
+      <data key="d4">Enterprise</data>
+      <data key="d5">Data historian</data>
+      <data key="d6">Medium</data>
+      <data key="d7">OSIsoft</data>
+      <data key="d8">PI Server</data>
+      <data key="d10">7.0</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">5.0</data>
+    </node>
+    <node id="WTP-DMZ-SW-001">
+      <data key="d0">WTP-DMZ-SW-001</data>
+      <data key="d1">DMZ Switch</data>
+      <data key="d2">device</data>
+      <data key="d3">Network Switch</data>
+      <data key="d4">DMZ</data>
+      <data key="d5">OT DMZ switch</data>
+      <data key="d6">High</data>
+      <data key="d7">Cisco</data>
+      <data key="d8">IE 4000</data>
+      <data key="d10">6.5</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
+    </node>
+    <node id="WTP-DMZ-JUMP-001">
+      <data key="d0">WTP-DMZ-JUMP-001</data>
+      <data key="d1">Jump Server</data>
+      <data key="d2">device</data>
+      <data key="d3">Server</data>
+      <data key="d4">DMZ</data>
+      <data key="d5">Secure jump host for OT access</data>
+      <data key="d6">High</data>
+      <data key="d7">Microsoft</data>
+      <data key="d8">Windows Server 2022</data>
+      <data key="d10">8.1</data>
+      <data key="d11">True</data>
+      <data key="d12">True</data>
+      <data key="d13">8.0</data>
+    </node>
+    <node id="WTP-DMZ-SCADA-001">
+      <data key="d0">WTP-DMZ-SCADA-001</data>
+      <data key="d1">SCADA Server</data>
+      <data key="d2">device</data>
+      <data key="d3">SCADA</data>
+      <data key="d4">DMZ</data>
+      <data key="d5">Primary SCADA server</data>
+      <data key="d6">High</data>
+      <data key="d7">Schneider</data>
+      <data key="d8">EcoStruxure</data>
+      <data key="d10">8.5</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">9.0</data>
+    </node>
+    <node id="WTP-CTRL-SW-001">
+      <data key="d0">WTP-CTRL-SW-001</data>
+      <data key="d1">Control Switch</data>
+      <data key="d2">device</data>
+      <data key="d3">Network Switch</data>
+      <data key="d4">Control</data>
+      <data key="d5">Industrial Ethernet switch</data>
+      <data key="d6">High</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">SCALANCE XM408</data>
+      <data key="d10">6.5</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">8.0</data>
+    </node>
+    <node id="WTP-CTRL-HMI-001">
+      <data key="d0">WTP-CTRL-HMI-001</data>
+      <data key="d1">HMI</data>
+      <data key="d2">device</data>
+      <data key="d3">HMI</data>
+      <data key="d4">Control</data>
+      <data key="d5">Operator interface</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">SIMATIC HMI</data>
+      <data key="d10">7.5</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">6.0</data>
+    </node>
+    <node id="WTP-CTRL-PLC-001">
+      <data key="d0">WTP-CTRL-PLC-001</data>
+      <data key="d1">Intake PLC</data>
+      <data key="d2">device</data>
+      <data key="d3">PLC</data>
+      <data key="d4">Control</data>
+      <data key="d5">Controls raw water intake pumps</data>
+      <data key="d6">High</data>
+      <data key="d7">Allen-Bradley</data>
+      <data key="d8">ControlLogix 5580</data>
+      <data key="d10">8.1</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">9.0</data>
+    </node>
+    <node id="WTP-CTRL-PLC-002">
+      <data key="d0">WTP-CTRL-PLC-002</data>
+      <data key="d1">Filtration PLC</data>
+      <data key="d2">device</data>
+      <data key="d3">PLC</data>
+      <data key="d4">Control</data>
+      <data key="d5">Controls filter backwash and flow</data>
+      <data key="d6">High</data>
+      <data key="d7">Allen-Bradley</data>
+      <data key="d8">ControlLogix 5580</data>
+      <data key="d10">8.1</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">9.0</data>
+    </node>
+    <node id="WTP-CTRL-PLC-003">
+      <data key="d0">WTP-CTRL-PLC-003</data>
+      <data key="d1">Chemical Dosing PLC</data>
+      <data key="d2">device</data>
+      <data key="d3">PLC</data>
+      <data key="d4">Control</data>
+      <data key="d5">Controls chemical dosing pumps</data>
+      <data key="d6">High</data>
+      <data key="d7">Allen-Bradley</data>
+      <data key="d8">ControlLogix 5580</data>
+      <data key="d10">8.1</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">9.0</data>
+    </node>
+    <node id="WTP-CTRL-PLC-004">
+      <data key="d0">WTP-CTRL-PLC-004</data>
+      <data key="d1">Distribution PLC</data>
+      <data key="d2">device</data>
+      <data key="d3">PLC</data>
+      <data key="d4">Control</data>
+      <data key="d5">Controls distribution pumps</data>
+      <data key="d6">High</data>
+      <data key="d7">Allen-Bradley</data>
+      <data key="d8">ControlLogix 5580</data>
+      <data key="d10">8.1</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">9.0</data>
+    </node>
+    <node id="WTP-HUM-OPR-001">
+      <data key="d0">WTP-HUM-OPR-001</data>
+      <data key="d1">Control Room Operator</data>
+      <data key="d2">human</data>
+      <data key="d3">Operator</data>
+      <data key="d4">Control</data>
+      <data key="d5">Duty operator supervising the plant from the control room</data>
+      <data key="d6">Medium</data>
+      <data key="d13">4.0</data>
+      <data key="d14">operator</data>
+      <data key="d15">0.4</data>
+      <data key="d16">standard</data>
+    </node>
+    <node id="WTP-FLD-PUMP-001">
+      <data key="d0">WTP-FLD-PUMP-001</data>
+      <data key="d1">Intake Pump</data>
+      <data key="d2">physical</data>
+      <data key="d3">Pump</data>
+      <data key="d4">Field</data>
+      <data key="d5">Raw water intake pump</data>
+      <data key="d6">High</data>
+      <data key="d7">Grundfos</data>
+      <data key="d8">CR 64</data>
+      <data key="d13">8.0</data>
+      <data key="d17">0.02</data>
+    </node>
+    <node id="WTP-FLD-PUMP-002">
+      <data key="d0">WTP-FLD-PUMP-002</data>
+      <data key="d1">Distribution Pump</data>
+      <data key="d2">physical</data>
+      <data key="d3">Pump</data>
+      <data key="d4">Field</data>
+      <data key="d5">High service pump</data>
+      <data key="d6">High</data>
+      <data key="d7">Grundfos</data>
+      <data key="d8">CR 90</data>
+      <data key="d13">8.0</data>
+      <data key="d17">0.02</data>
+    </node>
+    <node id="WTP-FLD-VALVE-001">
+      <data key="d0">WTP-FLD-VALVE-001</data>
+      <data key="d1">Inlet Valve</data>
+      <data key="d2">physical</data>
+      <data key="d3">Valve</data>
+      <data key="d4">Field</data>
+      <data key="d5">Motorized inlet valve</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Emerson</data>
+      <data key="d8">Fisher V500</data>
+      <data key="d13">6.0</data>
+      <data key="d17">0.02</data>
+    </node>
+    <node id="WTP-FLD-VALVE-002">
+      <data key="d0">WTP-FLD-VALVE-002</data>
+      <data key="d1">Backwash Valve</data>
+      <data key="d2">physical</data>
+      <data key="d3">Valve</data>
+      <data key="d4">Field</data>
+      <data key="d5">Filter backwash valve</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Emerson</data>
+      <data key="d8">Fisher V500</data>
+      <data key="d13">6.0</data>
+      <data key="d17">0.02</data>
+    </node>
+    <node id="WTP-FLD-SENSOR-001">
+      <data key="d0">WTP-FLD-SENSOR-001</data>
+      <data key="d1">Flow Sensor</data>
+      <data key="d2">physical</data>
+      <data key="d3">Sensor</data>
+      <data key="d4">Field</data>
+      <data key="d5">Raw water flow meter</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Emerson</data>
+      <data key="d8">Rosemount 8700</data>
+      <data key="d13">4.0</data>
+      <data key="d17">0.01</data>
+    </node>
+    <node id="WTP-FLD-SENSOR-002">
+      <data key="d0">WTP-FLD-SENSOR-002</data>
+      <data key="d1">Pressure Sensor</data>
+      <data key="d2">physical</data>
+      <data key="d3">Sensor</data>
+      <data key="d4">Field</data>
+      <data key="d5">Distribution pressure sensor</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Emerson</data>
+      <data key="d8">Rosemount 3051</data>
+      <data key="d13">4.0</data>
+      <data key="d17">0.01</data>
+    </node>
+    <node id="WTP-FLD-SENSOR-003">
+      <data key="d0">WTP-FLD-SENSOR-003</data>
+      <data key="d1">pH Sensor</data>
+      <data key="d2">physical</data>
+      <data key="d3">Sensor</data>
+      <data key="d4">Field</data>
+      <data key="d5">pH in treated water</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Hach</data>
+      <data key="d8">SC200</data>
+      <data key="d13">5.0</data>
+      <data key="d17">0.01</data>
+    </node>
+    <node id="WTP-FLD-SENSOR-004">
+      <data key="d0">WTP-FLD-SENSOR-004</data>
+      <data key="d1">Turbidity Sensor</data>
+      <data key="d2">physical</data>
+      <data key="d3">Sensor</data>
+      <data key="d4">Field</data>
+      <data key="d5">Turbidity measurement</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Hach</data>
+      <data key="d8">1720E</data>
+      <data key="d13">4.0</data>
+      <data key="d17">0.01</data>
+    </node>
+    <node id="WTP-FLD-MOTOR-001">
+      <data key="d0">WTP-FLD-MOTOR-001</data>
+      <data key="d1">Blower Motor</data>
+      <data key="d2">physical</data>
+      <data key="d3">Motor</data>
+      <data key="d4">Field</data>
+      <data key="d5">Aeration blower</data>
+      <data key="d6">Low</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">1LA8</data>
+      <data key="d13">5.0</data>
+      <data key="d17">0.01</data>
+    </node>
+    <node id="WTP-FLD-VFD-001">
+      <data key="d0">WTP-FLD-VFD-001</data>
+      <data key="d1">Pump VFD</data>
+      <data key="d2">device</data>
+      <data key="d3">VFD</data>
+      <data key="d4">Field</data>
+      <data key="d5">Variable frequency drive for pump</data>
+      <data key="d6">High</data>
+      <data key="d7">ABB</data>
+      <data key="d8">ACS880</data>
+      <data key="d10">7.5</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
+    </node>
+    <node id="WTP-FLD-ENG-001">
+      <data key="d0">WTP-FLD-ENG-001</data>
+      <data key="d1">Engineering Workstation</data>
+      <data key="d2">device</data>
+      <data key="d3">Workstation</data>
+      <data key="d4">Field</data>
+      <data key="d5">Engineering laptop for maintenance</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Dell</data>
+      <data key="d8">Precision 5560</data>
+      <data key="d10">7.8</data>
+      <data key="d11">False</data>
+      <data key="d12">True</data>
+      <data key="d13">5.0</data>
+    </node>
+    <node id="WTP-FLD-SW-001">
+      <data key="d0">WTP-FLD-SW-001</data>
+      <data key="d1">Field Switch</data>
+      <data key="d2">device</data>
+      <data key="d3">Network Switch</data>
+      <data key="d4">Field</data>
+      <data key="d5">Industrial switch at field level</data>
+      <data key="d6">Medium</data>
+      <data key="d7">Siemens</data>
+      <data key="d8">SCALANCE XB208</data>
+      <data key="d10">6.5</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">5.0</data>
+    </node>
+    <edge source="WTP-FW-001" target="WTP-ENT-SW-001">
+      <data key="d18">WTP-FW-001</data>
+      <data key="d19">WTP-ENT-SW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">HTTP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="WTP-ENT-SW-001" target="WTP-DMZ-SW-001">
+      <data key="d18">WTP-ENT-SW-001</data>
+      <data key="d19">WTP-DMZ-SW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">HTTP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+    </edge>
+    <edge source="WTP-ENT-SW-001" target="WTP-ENT-DC-001">
+      <data key="d18">WTP-ENT-SW-001</data>
+      <data key="d19">WTP-ENT-DC-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">LDAP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="WTP-ENT-SW-001" target="WTP-ENT-HIST-001">
+      <data key="d18">WTP-ENT-SW-001</data>
+      <data key="d19">WTP-ENT-HIST-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="WTP-DMZ-SW-001" target="WTP-DMZ-JUMP-001">
+      <data key="d18">WTP-DMZ-SW-001</data>
+      <data key="d19">WTP-DMZ-JUMP-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">SSH</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+    </edge>
+    <edge source="WTP-DMZ-SW-001" target="WTP-DMZ-SCADA-001">
+      <data key="d18">WTP-DMZ-SW-001</data>
+      <data key="d19">WTP-DMZ-SCADA-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+    </edge>
+    <edge source="WTP-DMZ-JUMP-001" target="WTP-CTRL-SW-001">
+      <data key="d18">WTP-DMZ-JUMP-001</data>
+      <data key="d19">WTP-CTRL-SW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">RDP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+    </edge>
+    <edge source="WTP-DMZ-SCADA-001" target="WTP-CTRL-SW-001">
+      <data key="d18">WTP-DMZ-SCADA-001</data>
+      <data key="d19">WTP-CTRL-SW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+    </edge>
+    <edge source="WTP-CTRL-SW-001" target="WTP-CTRL-HMI-001">
+      <data key="d18">WTP-CTRL-SW-001</data>
+      <data key="d19">WTP-CTRL-HMI-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">Ethernet/IP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="WTP-CTRL-SW-001" target="WTP-CTRL-PLC-001">
+      <data key="d18">WTP-CTRL-SW-001</data>
+      <data key="d19">WTP-CTRL-PLC-001</data>
+      <data key="d20">controls</data>
+      <data key="d21">Ethernet/IP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="WTP-CTRL-SW-001" target="WTP-CTRL-PLC-002">
+      <data key="d18">WTP-CTRL-SW-001</data>
+      <data key="d19">WTP-CTRL-PLC-002</data>
+      <data key="d20">controls</data>
+      <data key="d21">Ethernet/IP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="WTP-CTRL-SW-001" target="WTP-CTRL-PLC-003">
+      <data key="d18">WTP-CTRL-SW-001</data>
+      <data key="d19">WTP-CTRL-PLC-003</data>
+      <data key="d20">controls</data>
+      <data key="d21">Ethernet/IP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="WTP-CTRL-SW-001" target="WTP-CTRL-PLC-004">
+      <data key="d18">WTP-CTRL-SW-001</data>
+      <data key="d19">WTP-CTRL-PLC-004</data>
+      <data key="d20">controls</data>
+      <data key="d21">Ethernet/IP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="WTP-CTRL-PLC-001" target="WTP-FLD-PUMP-001">
+      <data key="d18">WTP-CTRL-PLC-001</data>
+      <data key="d19">WTP-FLD-PUMP-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="WTP-CTRL-PLC-001" target="WTP-FLD-VALVE-001">
+      <data key="d18">WTP-CTRL-PLC-001</data>
+      <data key="d19">WTP-FLD-VALVE-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="WTP-CTRL-PLC-001" target="WTP-FLD-SENSOR-001">
+      <data key="d18">WTP-CTRL-PLC-001</data>
+      <data key="d19">WTP-FLD-SENSOR-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="WTP-CTRL-PLC-001" target="WTP-FLD-MOTOR-001">
+      <data key="d18">WTP-CTRL-PLC-001</data>
+      <data key="d19">WTP-FLD-MOTOR-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="WTP-CTRL-PLC-002" target="WTP-FLD-VALVE-002">
+      <data key="d18">WTP-CTRL-PLC-002</data>
+      <data key="d19">WTP-FLD-VALVE-002</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="WTP-CTRL-PLC-002" target="WTP-FLD-SENSOR-004">
+      <data key="d18">WTP-CTRL-PLC-002</data>
+      <data key="d19">WTP-FLD-SENSOR-004</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="WTP-CTRL-PLC-003" target="WTP-FLD-SENSOR-003">
+      <data key="d18">WTP-CTRL-PLC-003</data>
+      <data key="d19">WTP-FLD-SENSOR-003</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="WTP-CTRL-PLC-003" target="WTP-FLD-PUMP-001">
+      <data key="d18">WTP-CTRL-PLC-003</data>
+      <data key="d19">WTP-FLD-PUMP-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="WTP-CTRL-PLC-004" target="WTP-FLD-PUMP-002">
+      <data key="d18">WTP-CTRL-PLC-004</data>
+      <data key="d19">WTP-FLD-PUMP-002</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="WTP-CTRL-PLC-004" target="WTP-FLD-SENSOR-002">
+      <data key="d18">WTP-CTRL-PLC-004</data>
+      <data key="d19">WTP-FLD-SENSOR-002</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="WTP-CTRL-PLC-004" target="WTP-FLD-VFD-001">
+      <data key="d18">WTP-CTRL-PLC-004</data>
+      <data key="d19">WTP-FLD-VFD-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="WTP-HUM-OPR-001" target="WTP-CTRL-HMI-001">
+      <data key="d18">WTP-HUM-OPR-001</data>
+      <data key="d19">WTP-CTRL-HMI-001</data>
+      <data key="d20">programs / operates</data>
+      <data key="d21">HMI</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="WTP-FLD-ENG-001" target="WTP-CTRL-SW-001">
+      <data key="d18">WTP-FLD-ENG-001</data>
+      <data key="d19">WTP-CTRL-SW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">SSH</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+    </edge>
+    <edge source="WTP-FLD-SW-001" target="WTP-FLD-PUMP-001">
+      <data key="d18">WTP-FLD-SW-001</data>
+      <data key="d19">WTP-FLD-PUMP-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+  </graph>
+</graphml>

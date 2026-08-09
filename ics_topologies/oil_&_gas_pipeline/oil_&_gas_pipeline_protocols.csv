@@ -1,0 +1,6 @@
+id,name,osi_layer
+http,HTTP,Application
+opcua,OPC UA,Application
+dnp3,DNP3,Application
+modbustcp,Modbus TCP,Application
+ssh,SSH,Application

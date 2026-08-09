@@ -1,0 +1,33 @@
+id,name,kind,type,zone,description,criticality,vendor,model,ip,cvss_type,exposed,patched,consequence_severity,role,awareness,privilege,p_base_override
+CHEM-ENT-FW-001,Corporate Firewall,device,Firewall,Enterprise,Internet edge,High,Palo Alto,PA-5250,,7.5,true,true,9.0,,,,
+CHEM-ENT-SW-001,Enterprise Switch,device,Network Switch,Enterprise,Corporate network,High,Cisco,Catalyst 9300,,6.5,false,true,6.0,,,,
+CHEM-ENT-DC-001,Domain Controller,device,Server,Enterprise,AD,High,Microsoft,Windows Server 2022,,8.1,false,false,9.0,,,,
+CHEM-ENT-ERP-001,ERP Server,device,Server,Enterprise,ERP,Medium,SAP,S/4HANA,,6.5,false,false,5.0,,,,
+CHEM-DMZ-SW-001,DMZ Switch,device,Network Switch,DMZ,Process DMZ,High,Cisco,IE 4000,,6.5,false,false,7.0,,,,
+CHEM-DMZ-HIST-001,Historian,device,Server,DMZ,Plant historian,High,OSIsoft,PI Server,,7.0,false,false,6.0,,,,
+CHEM-DMZ-JUMP-001,Jump Server,device,Server,DMZ,OT jump host,High,Microsoft,Windows Server 2022,,8.1,true,true,8.0,,,,
+CHEM-DCS-SW-001,DCS Switch,device,Network Switch,DCS,DCS backbone,High,Siemens,SCALANCE XM408,,6.5,false,false,8.0,,,,
+CHEM-DCS-OP-001,Operator Station,device,Workstation,DCS,DCS operator console,High,Siemens,SIMATIC PCS 7,,7.5,false,false,8.0,,,,
+CHEM-DCS-ENG-001,Engineering Station,device,Workstation,DCS,DCS engineering,High,Siemens,SIMATIC PCS 7,,7.8,false,true,7.0,,,,
+CHEM-DCS-CTRL-001,DCS Controller (Reactor),device,DCSController,DCS,Reactor temperature/pressure control,High,Siemens,AS 410,,8.5,false,false,10.0,,,,
+CHEM-DCS-CTRL-002,DCS Controller (Distillation),device,DCSController,DCS,Distillation column control,High,Siemens,AS 410,,8.5,false,false,10.0,,,,
+CHEM-DCS-CTRL-003,DCS Controller (Utilities),device,DCSController,DCS,"Utilities (steam, cooling)",Medium,Siemens,AS 410,,8.0,false,false,8.0,,,,
+CHEM-SIS-PLC-001,Safety PLC,device,SafetyPLC,SIS,Safety Instrumented System,High,Siemens,S7-400F,,7.0,false,false,10.0,,,,
+CHEM-SIS-ESD-001,ESD Switch,physical,SafetyDevice,SIS,Emergency shutdown button,High,Pilz,PNOZ,,,,,9.0,,,,0.01
+CHEM-SIS-RELAY-001,ESD Relay,physical,SafetyRelay,SIS,Safety relay,High,Pilz,PNOZ X3,,,,,9.0,,,,0.01
+CHEM-FLD-TC-001,Thermocouple (Reactor),physical,Sensor,Field,Reactor temperature,High,Emerson,Rosemount 214,,,,,8.0,,,,0.01
+CHEM-FLD-PT-001,Pressure Transmitter (Reactor),physical,Sensor,Field,Reactor pressure,High,Emerson,Rosemount 3051,,,,,8.0,,,,0.01
+CHEM-FLD-LT-001,Level Transmitter (Reactor),physical,Sensor,Field,Reactor level,High,Emerson,Rosemount 3300,,,,,7.0,,,,0.01
+CHEM-FLD-CV-001,Control Valve (Reactor),physical,Valve,Field,Feed control valve,High,Emerson,Fisher V500,,,,,8.0,,,,0.02
+CHEM-FLD-TC-002,Thermocouple (Distillation),physical,Sensor,Field,Column temperature,High,Emerson,Rosemount 214,,,,,8.0,,,,0.01
+CHEM-FLD-PT-002,Pressure Transmitter (Distillation),physical,Sensor,Field,Column pressure,High,Emerson,Rosemount 3051,,,,,8.0,,,,0.01
+CHEM-FLD-FT-001,Flow Transmitter (Distillation),physical,Sensor,Field,Reflux flow,High,Emerson,Rosemount 8700,,,,,7.0,,,,0.01
+CHEM-FLD-CV-002,Control Valve (Distillation),physical,Valve,Field,Reflux valve,High,Emerson,Fisher V500,,,,,8.0,,,,0.02
+CHEM-FLD-PUMP-001,Product Pump,physical,Pump,Field,Transfer pump to storage,High,Grundfos,CR 64,,,,,7.0,,,,0.02
+CHEM-FLD-VALVE-001,Storage Tank Valve,physical,Valve,Field,Tank inlet/outlet,Medium,Emerson,Fisher V500,,,,,7.0,,,,0.02
+CHEM-FLD-SENSOR-001,Tank Level Sensor,physical,Sensor,Field,Storage tank level,Medium,Emerson,Rosemount 3300,,,,,6.0,,,,0.01
+CHEM-REM-SW-001,Remote Switch,device,Network Switch,Remote,Switch at remote tank farm,Medium,Siemens,SCALANCE XB208,,6.5,false,false,6.0,,,,
+CHEM-REM-RTU-001,Remote RTU,device,RTU,Remote,RTU for tank farm,High,Control Microsystems,SCADAPack 470,,8.0,false,false,7.0,,,,
+CHEM-REM-PUMP-001,Remote Transfer Pump,physical,Pump,Remote,Pump to rail cars,High,Grundfos,CR 90,,,,,6.0,,,,0.02
+CHEM-REM-VALVE-001,Remote Valve,physical,Valve,Remote,Rail loading valve,Medium,Emerson,Fisher V500,,,,,6.0,,,,0.02
+CHEM-HUM-OPR-001,Process Operator,human,Operator,DCS,Board operator supervising the DCS,Medium,,,,,,,5.0,operator,0.4,standard,

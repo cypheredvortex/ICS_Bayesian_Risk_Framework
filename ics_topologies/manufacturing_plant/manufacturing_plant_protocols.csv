@@ -1,0 +1,8 @@
+id,name,osi_layer
+http,HTTP,Application
+opcua,OPC UA,Application
+profinet,PROFINET,Application
+profisafe,PROFIsafe,Application
+ldap,LDAP,Application
+ssh,SSH,Application
+rdp,RDP,Application
