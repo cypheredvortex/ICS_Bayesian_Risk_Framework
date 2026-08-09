@@ -126,6 +126,53 @@ validated with unit tests.
   Bayes' rule computation for single-parent models. No shortcut "Bayesian"
   values are used.
 
+## 9) Settings traceability — every output records the parameters used
+
+- **Files modified:** `backend/settings.py`, `backend/cli.py`,
+  `backend/outputs.py`, `backend/pdf_reports.py`, `backend/api_adapter.py`,
+  `frontend/src/types.ts`, `frontend/src/components/BayesianResults.tsx`,
+  `docs/parameter-provenance.md`
+- **Problem:** analysis outputs recorded **no settings snapshot**. Because
+  settings persist in the database and are process-global, the same topology
+  could silently produce different results when the stored settings changed.
+  (During this audit the local database contained stale non-default values —
+  k=1.4/x0=2.1, impact_weight=0.47, modified propagation weights and
+  thresholds — that changed every number with no indication.)
+- **Change:** every run now records a `settings_used` snapshot (restricted to
+  the model keys in `DEFAULT_SETTINGS`) in the result dict, `metrics.json`,
+  `summary.txt`, the PDF "Model Parameters" section and the REST API
+  response. `non_default_settings()` reports deviations from framework
+  defaults, and a human-readable warning is appended to
+  `summary.topology_warnings` whenever non-default settings are active. The
+  frontend shows the snapshot and the warning in the Bayesian Results panel.
+- **Why:** traceability and reproducibility. A reviewer must be able to
+  answer "why did this asset get this score?" from the outputs alone.
+- **Tests:** `tests/test_scientific_validation.py` (snapshot presence and
+  contents, non-default detection, warning in summary, exclusion of UI-only
+  keys).
+
+## 10) `scope` attribute preserved end-to-end (dead-feature fix)
+
+- **Files modified:** `backend/topology.py`, `tests/test_scientific_validation.py`
+- **Problem:** the documented blast-radius `scope` attribute
+  (`scope_multiplier = 1 + (scope − 1) × 0.1`, scope ∈ [1, 5]) was **silently
+  dropped** by `normalize_asset`, so the multiplier was always 1.0 — the
+  documented feature was dead in the pipeline and risk indices were wrong for
+  assets that declare scope.
+- **Change:** `normalize_asset` now preserves `scope` and validates it to
+  [1, 5] with an actionable error for out-of-range values.
+- **Tests:** scope preservation through normalization, end-to-end effect on
+  the risk index, out-of-range rejection.
+
+## 11) Numerically stable sigmoid
+
+- **Files modified:** `backend/probability.py`, `tests/test_scientific_validation.py`
+- **Problem:** `_cvss_to_prob_logistic` computed `math.exp(−k·(cvss−x₀))`
+  directly and could raise `OverflowError` for extreme-but-valid settings
+  (e.g. k=100, x₀=10, cvss=0).
+- **Change:** the sigmoid now uses the numerically stable branch already used
+  by `_inv_logit`.
+
 ## Notes on methodology and defensibility
 
 - Noisy-OR is a well-established, interpretable causal parameterisation for

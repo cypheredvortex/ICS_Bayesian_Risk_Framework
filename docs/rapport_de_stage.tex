@@ -62,12 +62,13 @@
 % ============================================================
 % GÉOMÉTRIE ET MARGES
 % ============================================================
-\geometry{a4paper, margin=2.8cm, top=3.1cm, bottom=3.1cm, headheight=16pt, headsep=10pt}
+\geometry{a4paper, margin=2.5cm, top=2.8cm, bottom=2.8cm, headheight=16pt, headsep=10pt}
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{1.1ex plus 0.3ex minus 0.2ex}
+\setlength{\parskip}{0.7ex plus 0.2ex minus 0.1ex}
 
-% Interligne
-\onehalfspacing
+% Interligne : 1,3 (équilibré entre lisibilité et densité)
+\setstretch{1.3}
+\emergencystretch=2em
 
 % Pénalités anti veuves/orphelines
 \clubpenalty=10000
@@ -172,8 +173,8 @@
 % ============================================================
 % TABLEAUX
 % ============================================================
-\renewcommand{\arraystretch}{1.4}
-\setlength{\tabcolsep}{10pt}
+\renewcommand{\arraystretch}{1.3}
+\setlength{\tabcolsep}{8pt}
 
 % ============================================================
 % LÉGENDES
@@ -233,13 +234,15 @@
 % ============================================================
 % GESTION DES SAUTS DE PAGE
 % ============================================================
-% Main sections always start on a new page
-\pretocmd{\section}{\clearpage\needspace{5\baselineskip}\FloatBarrier}{}{}
-\pretocmd{\subsection}{\needspace{6\baselineskip}\nopagebreak[4]}{}{}
-\pretocmd{\subsubsection}{\needspace{4\baselineskip}\nopagebreak[4]}{}{}
-\interlinepenalty=10000
-\relpenalty=10000
-\binoppenalty=10000
+% Main sections always start on a new page (exigence du rapport de stage)
+\pretocmd{\section}{\clearpage\FloatBarrier}{}{}
+% Les sous-sections ne sont déplacées que si moins de 3 lignes restent,
+% évitant les titres orphelins sans créer de grands vides de page.
+\pretocmd{\subsection}{\needspace{3\baselineskip}\nopagebreak[4]}{}{}
+\pretocmd{\subsubsection}{\needspace{2\baselineskip}\nopagebreak[4]}{}{}
+\interlinepenalty=600
+\relpenalty=600
+\binoppenalty=600
 
 % ============================================================
 % ESPACEMENT AUTOUR DES ÉQUATIONS
@@ -260,7 +263,9 @@
 \setcounter{bottomnumber}{2}
 \setcounter{totalnumber}{4}
 
-\newcommand{\forcereset}[1]{\needspace{#1\baselineskip}}
+% Anciennement \needspace{N} : poussait chaque sous-section en haut de page
+% et créait de grands vides. Conservé en no-op pour compatibilité des appels.
+\newcommand{\forcereset}[1]{}
 \newcommand{\dividerline}{\rule{2.4cm}{0.4pt}\\[2pt]}
 
 \begin{document}
@@ -341,7 +346,9 @@ Les systèmes de contrôle industriels (ICS) pilotent des procédés physiques d
 
 Ce rapport présente un framework générique qui transforme une architecture ICS en un réseau bayésien discret. Chaque actif reçoit une probabilité intrinsèque de compromission calculée à partir de son score CVSS v3.1 via un modèle logistique calibré, ajusté par des facteurs de contexte. Les relations entre actifs portent un poids causal Noisy-OR dépendant du type de liaison et des protections. Les tables de probabilités conditionnelles (CPT) sont générées automatiquement par un modèle Noisy-OR, évitant une saisie manuelle exponentielle. Une inférence exacte par élimination de variables actualise les probabilités à partir de preuves observées, classe les actifs selon un indice de risque et identifie les chemins d'attaque critiques.
 
-Le framework est concrétisé par une application Web combinant un backend FastAPI/Python avec \texttt{pgmpy} et un frontend React/TypeScript. Elle permet d'importer une topologie dans plusieurs formats, de valider, de sélectionner des preuves, d'ajuster les paramètres, d'exécuter l'analyse, d'explorer le réseau bayésien, de conduire une analyse de sensibilité et d'exporter un registre des risques ainsi qu'un rapport de synthèse. Le prototype est fonctionnel, modulaire et adaptable à des contextes industriels réels.
+Le framework est concrétisé par une application Web combinant un backend FastAPI/Python avec \texttt{pgmpy} et un frontend React/TypeScript. Elle permet d'importer une topologie dans plusieurs formats, de valider, de sélectionner des preuves, d'ajuster les paramètres, d'exécuter l'analyse, d'explorer le réseau bayésien, de conduire une analyse de sensibilité et d'exporter un registre des risques ainsi qu'un rapport de synthèse.
+
+Chaque évaluation enregistre l'instantané des paramètres actifs (\texttt{settings\_used}) et signale tout écart par rapport aux valeurs par défaut, garantissant la reproductibilité des résultats. Le prototype est fonctionnel, modulaire et adaptable à des contextes industriels réels.
 \end{abstractbox}
 
 % ============================================================
@@ -356,17 +363,21 @@ Industrial Control Systems (ICS) drive physical processes whose compromise can l
 
 This report presents a generic framework that transforms an ICS architecture into a discrete Bayesian network. Each asset is assigned an intrinsic compromise probability computed from its CVSS v3.1 score via a calibrated logistic model, adjusted by contextual factors. Relationships between assets carry a Noisy-OR causal weight depending on the link type and protections. Conditional probability tables (CPTs) are automatically generated using a Noisy-OR model, avoiding exponential manual entry. Exact inference by variable elimination updates compromise probabilities from observed evidence, ranks assets according to a bounded risk index, and identifies critical attack paths.
 
-The framework is implemented as a Web application combining a FastAPI/Python backend with \texttt{pgmpy} and a React/TypeScript frontend. It allows users to import a topology in several formats, validate it, select evidence, adjust parameters, run the analysis, interactively explore the Bayesian network, conduct a sensitivity analysis, and export a risk register and summary report. The prototype is functional, modular, and adaptable to real industrial contexts.
+The framework is implemented as a Web application combining a FastAPI/Python backend with \texttt{pgmpy} and a React/TypeScript frontend. It allows users to import a topology in several formats, validate it, select evidence, adjust parameters, run the analysis, interactively explore the Bayesian network, conduct a sensitivity analysis, and export a risk register and summary report.
+
+Every assessment records a snapshot of the active parameters (\texttt{settings\_used}) and flags any deviation from defaults, guaranteeing reproducibility. The prototype is functional, modular, and adaptable to real industrial contexts.
 \end{abstractbox}
 
 % ============================================================
 % LISTE DES ACRONYMES
 % ============================================================
+\clearpage
 \thispagestyle{empty}
 \unnumberedsection{Liste des acronymes}
 \addcontentsline{toc}{section}{Liste des acronymes}
 
-\begin{small}
+\begin{footnotesize}
+\renewcommand{\arraystretch}{1.15}
 \begin{tabularx}{\textwidth}{p{2.6cm} X}
 \toprule
 \textbf{Acronyme} & \textbf{Signification} \\
@@ -403,7 +414,7 @@ E2E & \emph{End-to-End} --- tests de bout en bout \\
 CI & \emph{Continuous Integration} --- intégration continue \\
 \bottomrule
 \end{tabularx}
-\end{small}
+\end{footnotesize}
 
 % ============================================================
 % TABLE DES MATIÈRES
@@ -416,7 +427,7 @@ CI & \emph{Continuous Integration} --- intégration continue \\
 \newpage
 
 % ============================================================
-% 7. INTRODUCTION GÉNÉRALE
+% 1. INTRODUCTION GÉNÉRALE
 % ============================================================
 \section{Introduction générale}
 \markboth{Introduction générale}{Introduction générale}
@@ -446,15 +457,15 @@ Ce stage de fin d'année met en œuvre cette approche à travers un \textbf{fram
 
 \paragraph{Organisation du rapport}
 \begin{itemize}
-    \item Chapitres 8 à 11 : contexte, problématique, objectifs, état de l'art.
-    \item Chapitre 12 : fondements théoriques.
-    \item Chapitres 13 à 21 : conception et implémentation.
-    \item Chapitre 22 : pipeline de calcul.
-    \item Chapitres 23 à 26 : résultats, limites, perspectives, conclusion.
+    \item Chapitres 2 à 5 : contexte, problématique, objectifs, état de l'art.
+    \item Chapitre 6 : fondements théoriques.
+    \item Chapitres 7 à 15 : conception et implémentation.
+    \item Chapitre 16 : pipeline de calcul.
+    \item Chapitres 17 à 20 : résultats, limites, perspectives, conclusion.
 \end{itemize}
 
 % ============================================================
-% 8. CONTEXTE DES SYSTÈMES ICS
+% 2. CONTEXTE DES SYSTÈMES ICS
 % ============================================================
 \section{Contexte des systèmes ICS}
 \markboth{Contexte des systèmes ICS}{Contexte des systèmes ICS}
@@ -488,7 +499,7 @@ Ces niveaux communiquent via des protocoles industriels dédiés (Modbus, Profin
 Ces spécificités justifient une méthode d'évaluation du risque capable de représenter la topologie, les dépendances et l'incertitude. C'est l'objet de ce framework.
 
 % ============================================================
-% 9. PROBLÉMATIQUE
+% 3. PROBLÉMATIQUE
 % ============================================================
 \section{Problématique}
 \markboth{Problématique}{Problématique}
@@ -515,7 +526,7 @@ La problématique centrale est donc :
 La réponse repose sur un réseau bayésien avec génération automatique des tables de probabilités conditionnelles par modèle Noisy-OR.
 
 % ============================================================
-% 10. OBJECTIFS DU PROJET
+% 4. OBJECTIFS DU PROJET
 % ============================================================
 \section{Objectifs du projet}
 \markboth{Objectifs du projet}{Objectifs du projet}
@@ -554,7 +565,7 @@ Concevoir et développer un framework générique, fondé sur les réseaux bayé
 \end{contributionbox}
 
 % ============================================================
-% 11. ÉTAT DE L'ART
+% 5. ÉTAT DE L'ART
 % ============================================================
 \section{État de l'art}
 \markboth{État de l'art}{État de l'art}
@@ -606,7 +617,7 @@ La littérature met en évidence trois limites récurrentes :
 Ce framework répond à ces limites en combinant réseau bayésien, génération automatique des CPT par Noisy-OR, et application Web complète.
 
 % ============================================================
-% 12. FONDEMENTS THÉORIQUES
+% 6. FONDEMENTS THÉORIQUES
 % ============================================================
 \section{Fondements théoriques}
 \markboth{Fondements théoriques}{Fondements théoriques}
@@ -639,7 +650,7 @@ Il permet de mettre à jour la probabilité de compromission d'un actif à parti
 \forcereset{5}
 
 \begin{defbox}
-CVSS est un \textbf{score de sévérité} (0--10) décrivant la difficulté d'exploitation et l'impact d'une vulnérabilité. Ce n'est \emph{pas} une probabilité de compromission. Le framework calcule les scores avec les équations officielles FIRST, puis les convertit en probabilité via un modèle explicite (section~12.4).
+CVSS est un \textbf{score de sévérité} (0--10) décrivant la difficulté d'exploitation et l'impact d'une vulnérabilité. Ce n'est \emph{pas} une probabilité de compromission. Le framework calcule les scores avec les équations officielles FIRST, puis les convertit en probabilité via un modèle explicite (section~6.4).
 \end{defbox}
 
 Le moteur (\texttt{backend/cvss.py}) implémente les équations officielles CVSS v3.1.
@@ -659,14 +670,10 @@ Le moteur (\texttt{backend/cvss.py}) implémente les équations officielles CVSS
 \text{Exploitabilité} = 8{,}22 \times \text{AV} \times \text{AC} \times \text{PR} \times \text{UI}
 \]
 \[
-\text{Score de base} = 
-\begin{cases}
-\text{Roundup}\!\big(\min(\text{Impact} + \text{Exploitabilité},\, 10)\big) & \text{portée inchangée} \\[2pt]
-\text{Roundup}\!\big(\min(1{,}08 \times (\text{Impact} + \text{Exploitabilité}),\, 10)\big) & \text{portée modifiée}
-\end{cases}
+\text{Score de base} = \text{Roundup}\!\Big(\min\big(k \cdot (\text{Impact} + \text{Exploitabilité}),\, 10\big)\Big)
 \]
 
-oindent où \textsc{Roundup} est la fonction d'arrondi officielle et les poids des métriques sont ceux du tableau~\ref{tab:cvss-weights}. La sévérité qualitative est dérivée du score.
+oindent où $k = 1$ si la portée est inchangée et $k = 1{,}08$ si elle est modifiée; \textsc{Roundup} est la fonction d'arrondi officielle et les poids des métriques sont ceux du tableau~\ref{tab:cvss-weights}. La sévérité qualitative est dérivée du score.
 
 \begin{table}[H]
 \centering
@@ -856,7 +863,7 @@ L'algorithme \textbf{Variable Elimination} procède en trois étapes :
     \item Élimination des variables inutiles par marginalisation : $P(X) = \sum_{Y} P(X,Y)$.
 \end{enumerate}
 
-La méthode fournit la probabilité \emph{a posteriori} exacte et est utilisée via \texttt{pgmpy} (cf. chapitre~18).
+La méthode fournit la probabilité \emph{a posteriori} exacte et est utilisée via \texttt{pgmpy} (cf. chapitre~12).
 
 \begin{warningbox}[Preuves impossibles]
 Le framework détecte les preuves de probabilité nulle avant l'inférence et renvoie un diagnostic \texttt{IMPOSSIBLE\_EVIDENCE}.
@@ -873,7 +880,9 @@ Le risque est obtenu en combinant probabilité \emph{a posteriori} et impact de 
 \text{Impact} = \frac{\text{consequence\_severity}}{10} \times \text{multiplicateur de portée} \times \text{poids d'impact}
 \]
 
-où \texttt{consequence\_severity} est une criticité 0--10, le multiplicateur de portée vaut $1 + (\text{scope} - 1) \times 0{,}1$, et le poids d'impact est paramétrable.
+où \texttt{consequence\_severity} est une criticité 0--10, le multiplicateur de portée vaut $1 + (\text{scope} - 1) \times 0{,}1$ (portée de 1 à 5, validée à l'import), et le poids d'impact est paramétrable.
+
+Ce multiplicateur de portée est \textbf{effectivement appliqué} de bout en bout : l'attribut \texttt{scope} est préservé lors de la normalisation de la topologie, et la colonne \texttt{scope\_mult} du registre de risques reflète sa valeur (1,30 pour une portée 4, 1,40 pour une portée 5).
 
 L'indice est \textbf{borné} et sert au \textbf{classement} des actifs.
 
@@ -899,7 +908,7 @@ Ces seuils sont issus d'un \textbf{ensemble unique} (\texttt{risk\_thresholds}) 
 Le risque global est le maximum des indices individuels ; la moyenne, la médiane et les effectifs par niveau sont également rapportés.
 
 % ============================================================
-% 13. PRÉSENTATION DU FRAMEWORK PROPOSÉ
+% 7. PRÉSENTATION DU FRAMEWORK PROPOSÉ
 % ============================================================
 \section{Présentation du framework proposé}
 \markboth{Présentation du framework proposé}{Présentation du framework proposé}
@@ -936,6 +945,7 @@ L'utilisateur importe la topologie, la valide, sélectionne des preuves, lance l
     \item Classement des risques, chemins d'attaque, analyse de sensibilité.
     \item Tableau de bord Web avec graphe interactif et inspection des CPT.
     \item Export CSV (registre des risques) et PDF (rapport de synthèse).
+    \item Traçabilité des paramètres : chaque évaluation enregistre l'instantané des réglages actifs (\texttt{settings\_used}) et signale les écarts par rapport aux valeurs par défaut.
 \end{itemize}
 \end{contributionbox}
 
@@ -959,7 +969,7 @@ Pour une topologie donnée, le framework produit :
 \end{itemize}
 
 % ============================================================
-% 14. ARCHITECTURE GÉNÉRALE
+% 8. ARCHITECTURE GÉNÉRALE
 % ============================================================
 \section{Architecture générale}
 \markboth{Architecture générale}{Architecture générale}
@@ -997,7 +1007,7 @@ L'architecture s'organise en quatre composants principaux selon un modèle clien
 L'utilisateur interagit exclusivement avec le frontend, qui adresse toutes les opérations à l'API. Le backend valide les données via Pydantic, orchestre le moteur d'analyse et persiste les réglages et l'historique des évaluations. Cette séparation rend chaque composant testable et remplaçable.
 
 % ============================================================
-% 15. MODÉLISATION DE L'INFRASTRUCTURE ICS
+% 9. MODÉLISATION DE L'INFRASTRUCTURE ICS
 % ============================================================
 \section{Modélisation de l'infrastructure ICS}
 \markboth{Modélisation de l'infrastructure ICS}{Modélisation de l'infrastructure ICS}
@@ -1062,7 +1072,7 @@ Avant tout calcul, la topologie importée est validée :
 \end{itemize}
 
 % ============================================================
-% 16. WORKFLOW COMPLET DU FRAMEWORK
+% 10. WORKFLOW COMPLET DU FRAMEWORK
 % ============================================================
 \section{Workflow complet du framework}
 \markboth{Workflow complet du framework}{Workflow complet du framework}
@@ -1106,6 +1116,8 @@ La touche \texttt{r} lance l'évaluation ; la touche \texttt{/} place le focus s
     \item Un clic sur « Run assessment » envoie la topologie et les preuves à \texttt{POST /analyze}.
     \item Le moteur construit le réseau bayésien, calcule les probabilités intrinsèques, génère les CPT, attribue les poids, et exécute l'inférence.
     \item Le résultat produit un indice de risque par actif, des chemins d'attaque candidats et des statistiques agrégées.
+    \item La réponse \texttt{/analyze} inclut un instantané des paramètres actifs (\texttt{settings\_used}) : tout réglage non par défaut est signalé dans le résumé et dans l'interface.
+    \item Une preuve de probabilité nulle sous le modèle renvoie un diagnostic structuré \texttt{IMPOSSIBLE\_EVIDENCE} listant les nœuds concernés.
 \end{itemize}
 
 \subsection{Exploration des résultats}
@@ -1131,10 +1143,10 @@ Deux exports sont proposés :
     \item Rapport PDF de synthèse.
 \end{itemize}
 
-Ces fichiers sont générés via \texttt{GET /reports}.
+Ces fichiers sont générés via \texttt{GET /reports}. Le PDF contient une section \emph{Model Parameters Used} (paramètres actifs, seuils, pondérations) ; le registre CSV expose les colonnes \texttt{scope\_mult} et \texttt{risk\_level}. En ligne de commande, \texttt{python -m backend --topology} produit \texttt{metrics.json} et \texttt{summary.txt} avec le même instantané de paramètres.
 
 % ============================================================
-% 17. ARCHITECTURE LOGICIELLE
+% 11. ARCHITECTURE LOGICIELLE
 % ============================================================
 \section{Architecture logicielle}
 \markboth{Architecture logicielle}{Architecture logicielle}
@@ -1175,7 +1187,7 @@ Regroupe les modules de construction du graphe, calcul des probabilités, géné
 \end{itemize}
 
 % ============================================================
-% 18. CHOIX TECHNOLOGIQUES
+% 12. CHOIX TECHNOLOGIQUES
 % ============================================================
 \section{Choix technologiques}
 \markboth{Choix technologiques}{Choix technologiques}
@@ -1251,7 +1263,7 @@ fetch & Client HTTP natif & Axios & Besoin couvert sans dépendance \\
 \end{table}
 
 % ============================================================
-% 19. CONCEPTION UML
+% 13. CONCEPTION UML
 % ============================================================
 \section{Conception UML}
 \markboth{Conception UML}{Conception UML}
@@ -1407,7 +1419,7 @@ Le scénario nominal complet enchaîne le chargement, le marquage des preuves, l
 \end{figure}
 
 % ============================================================
-% 20. IMPLÉMENTATION
+% 14. IMPLÉMENTATION
 % ============================================================
 \section{Implémentation}
 \markboth{Implémentation}{Implémentation}
@@ -1464,7 +1476,7 @@ React/TypeScript implémente toutes les vues du workflow : import, preuves, rég
 Quatre jeux de données : SWaT, automatisation du bâtiment, poste électrique, traitement de l'eau.
 
 % ============================================================
-% 21. INTERFACE UTILISATEUR
+% 15. INTERFACE UTILISATEUR
 % ============================================================
 \section{Interface utilisateur}
 \markboth{Interface utilisateur}{Interface utilisateur}
@@ -1488,7 +1500,7 @@ Construit avec \texttt{@xyflow/react}, positionnement par BFS, coloré selon pro
 \subsection{Résultats et CPT}
 \forcereset{4}
 
-Tableau de bord synthétique : risque global, niveau, top 5, chemin prioritaire, liste des chemins. Graphiques en barres et en secteurs. Tables de CPT consultables et filtrables. Analyse de sensibilité.
+Tableau de bord synthétique : risque global, niveau, top 5, chemin prioritaire, liste des chemins. Graphiques en barres et en secteurs. Tables de CPT consultables et filtrables. Analyse de sensibilité. Une section « Settings used » liste les paramètres actifs de l'évaluation et un bandeau avertit de tout réglage non par défaut.
 
 \subsection{Exports}
 \forcereset{4}
@@ -1496,63 +1508,68 @@ Tableau de bord synthétique : risque global, niveau, top 5, chemin prioritaire,
 CSV (registre des risques) et PDF (rapport de synthèse) générés côté serveur.
 
 % ============================================================
-% 22. PIPELINE COMPLET DE CALCUL
+% 16. PIPELINE COMPLET DE CALCUL
 % ============================================================
 \section{Pipeline complet de calcul}
 \markboth{Pipeline complet de calcul}{Pipeline complet de calcul}
 \forcereset{10}
 
-La chaîne de traitement s'organise en onze étapes séquencées (figure~\ref{fig:pipeline}).
+La chaîne de traitement s'organise en onze étapes séquencées (figure~\ref{fig:pipeline}). Chaque étape dépend du résultat de la précédente, garantissant la traçabilité complète du calcul.
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[
-    step/.style={rectangle, draw=primary!70, fill=primary!8, minimum width=6.4cm, minimum height=0.82cm, align=center, rounded corners, thick, font=\small\sffamily},
-    arrow/.style={-{Stealth[scale=1.15]}, thick, draw=secondary}
+    pipebox/.style={rectangle, draw=primary!70, fill=primary!8, minimum width=7.2cm, minimum height=0.52cm, align=center, rounded corners, thick, font=\scriptsize\sffamily},
+    arrow/.style={-{Stealth[scale=1.0]}, thick, draw=secondary}
 ]
-\node[step] (s1) at (0,0) {1. Import de la topologie};
-\node[step] (s2) at (0,-1.15) {2. Validation (DAG, champs)};
-\node[step] (s3) at (0,-2.3) {3. Construction du graphe orienté};
-\node[step] (s4) at (0,-3.45) {4. Probabilités intrinsèques};
-\node[step] (s5) at (0,-4.6) {5. Poids causaux Noisy-OR};
-\node[step] (s6) at (0,-5.75) {6. Génération des CPT (Noisy-OR)};
-\node[step] (s7) at (0,-6.9) {7. Construction du réseau bayésien};
-\node[step] (s8) at (0,-8.05) {8. Inférence (Variable Elimination)};
-\node[step] (s9) at (0,-9.2) {9. Calcul des indices de risque};
-\node[step] (s10) at (0,-10.35) {10. Classement et chemins d'attaque};
-\node[step] (s11) at (0,-11.5) {11. Visualisation, sensibilité, export};
-\foreach \i [evaluate=\i as \j using \i+1] in {1,...,10} {
-    \draw[arrow] (s\i.south) -- (s\j.north);
-}
+\node[pipebox] (s1) at (0,0) {1. Import de la topologie};
+\node[pipebox] (s2) at (0,-0.62) {2. Validation (DAG, champs)};
+\node[pipebox] (s3) at (0,-1.24) {3. Construction du graphe orienté};
+\node[pipebox] (s4) at (0,-1.86) {4. Probabilités intrinsèques};
+\node[pipebox] (s5) at (0,-2.48) {5. Poids causaux Noisy-OR};
+\node[pipebox] (s6) at (0,-3.1) {6. Génération des CPT (Noisy-OR)};
+\node[pipebox] (s7) at (0,-3.72) {7. Construction du réseau bayésien};
+\node[pipebox] (s8) at (0,-4.34) {8. Inférence (Variable Elimination)};
+\node[pipebox] (s9) at (0,-4.96) {9. Calcul des indices de risque};
+\node[pipebox] (s10) at (0,-5.58) {10. Classement et chemins d'attaque};
+\node[pipebox] (s11) at (0,-6.2) {11. Visualisation, sensibilité, export};
+\draw[arrow] (s1.south) -- (s2.north);
+\draw[arrow] (s2.south) -- (s3.north);
+\draw[arrow] (s3.south) -- (s4.north);
+\draw[arrow] (s4.south) -- (s5.north);
+\draw[arrow] (s5.south) -- (s6.north);
+\draw[arrow] (s6.south) -- (s7.north);
+\draw[arrow] (s7.south) -- (s8.north);
+\draw[arrow] (s8.south) -- (s9.north);
+\draw[arrow] (s9.south) -- (s10.north);
+\draw[arrow] (s10.south) -- (s11.north);
 \end{tikzpicture}
 \caption{Pipeline complet de calcul}
 \label{fig:pipeline}
 \end{figure}
 
-\begin{enumerate}
+\begin{enumerate}[itemsep=0.08\baselineskip, topsep=0.25\baselineskip]
     \item \textbf{Import} : topologie reçue dans l'un des formats supportés.
     \item \textbf{Validation} : graphe orienté acyclique, champs requis, avertissements.
-    \item \textbf{Construction} : \texttt{GraphBuilder} transforme en graphe orienté.
-    \item \textbf{Probabilités intrinsèques} : \texttt{ProbabilityEngine} applique logistique et log-odds.
+    \item \textbf{Construction} : \texttt{graph\_builder.build\_graph\_skeleton} transforme les relations validées en graphe orienté pondéré.
+    \item \textbf{Probabilités intrinsèques} : \texttt{probability.compute\_base\_probs} applique la logistique et l'ajustement log-odds.
     \item \textbf{Poids causaux} : attribution Noisy-OR selon type, protocoles, pare-feu.
-    \item \textbf{Génération des CPT} : \texttt{CPTGenerator} applique $P(X{=}1 \mid S) = 1-(1-P_{\text{base}})\prod_{i \in S}(1-w_i)$.
+    \item \textbf{Génération des CPT} : \texttt{cpt\_generator.noisy\_or\_cpt} applique $P(X{=}1 \mid S) = 1-(1-P_{\text{base}})\prod_{i \in S}(1-w_i)$.
     \item \textbf{Construction du réseau} : graphe + CPT = réseau bayésien (\texttt{pgmpy}).
-    \item \textbf{Inférence} : \texttt{InferenceEngine} exécute Variable Elimination, produit les postérieurs.
-    \item \textbf{Calcul des risques} : \texttt{RiskCalculator} applique $\text{Indice} = P_{\text{post}} \times \text{Impact}$.
-    \item \textbf{Classement et chemins} : classement des actifs, \texttt{AttackPathFinder} identifie les chemins.
+    \item \textbf{Inférence} : \texttt{inference.compute\_posteriors\_with\_evidence} exécute Variable Elimination, produit les postérieurs.
+    \item \textbf{Calcul des risques} : \texttt{risk.build\_risk\_table} applique $\text{Indice} = P_{\text{post}} \times \text{Impact}$.
+    \item \textbf{Classement et chemins} : classement des actifs, \texttt{attack\_paths.compute\_attack\_paths} identifie les chemins.
     \item \textbf{Visualisation, sensibilité, export} : tableau de bord, analyse de sensibilité, CSV et PDF.
 \end{enumerate}
 
-Chaque étape dépend du résultat de la précédente, garantissant la traçabilité complète du calcul.
-
 % ============================================================
-% 23. RÉSULTATS OBTENUS
+% 17. RÉSULTATS OBTENUS
 % ============================================================
 \section{Résultats obtenus}
 \markboth{Résultats obtenus}{Résultats obtenus}
 \forcereset{6}
 
-Le prototype démontre la faisabilité de bout en bout de l'approche. Sur les quatre jeux de données de référence, le framework :
+Le prototype démontre la faisabilité de bout en bout de l'approche. Sur les jeux de données de référence (dépôt \texttt{data/}), le framework :
 
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
     \item importe et valide correctement la topologie, quel que soit le format ;
@@ -1592,22 +1609,28 @@ Performance & benchmarks 10/25/50/100 nœuds \\
 Persistance & indisponibilité de la base, sauvegarde des réglages \\
 Exports & CSV, PDF \\
 API & scénarios de bout en bout HTTP \\
+Validation scientifique & sigmoïde et log-odds recalculés, tables Noisy-OR \\
+& vérifiées en forme fermée sur toutes les configurations, \\
+& postérieurs comparés à une énumération brute de la \\
+& distribution jointe, indice de risque recalculé \\
+Traçabilité & instantané \texttt{settings\_used} et avertissements non par défaut \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-La suite backend compte \textbf{221 tests} (pytest), la suite frontend \textbf{31 tests} unitaires (Vitest + Testing Library), et \textbf{3 scénarios E2E} (Playwright). Une intégration continue (GitHub Actions) exécute l'ensemble à chaque poussée.
+La suite backend compte \textbf{261 tests} (pytest), dont \textbf{40 tests de validation scientifique} qui recalculent les formules clés de manière indépendante (logistique, log-odds, Noisy-OR, inférence par énumération de la distribution jointe, indice de risque). La suite frontend compte \textbf{31 tests} unitaires (Vitest + Testing Library) et \textbf{3 scénarios E2E} (Playwright). Une intégration continue (GitHub Actions) exécute l'ensemble à chaque poussée.
 
 % ============================================================
-% 24. LIMITES
+% 18. LIMITES
 % ============================================================
 \section{Limites}
 \markboth{Limites}{Limites}
 \forcereset{6}
 
 \begin{itemize}[leftmargin=1.2cm, itemsep=0.2\baselineskip]
-    \item \textbf{Absence de calibration empirique} : les valeurs par défaut sont des jugements d'experts ; une organisation doit les calibrer.
-    \item \textbf{Pas de récupération automatisée de vulnérabilités} : les données CVSS sont fournies par l'analyste.
+    \item \textbf{Absence de calibration empirique} : les valeurs par défaut sont des jugements d'experts ; une organisation doit les calibrer sur ses propres données d'incidents.
+    \item \textbf{Pas de récupération automatisée de vulnérabilités} : les données CVSS sont fournies par l'analyste (la source est un champ descriptif, jamais interrogée).
+    \item \textbf{Probabilités de modèle} : les valeurs sont des probabilités conditionnelles du modèle, sans horizon temporel explicite ; elles ne doivent pas être lues comme des fréquences annuelles.
     \item \textbf{Hypothèse Noisy-OR} : indépendance des causes, simplifie mais peut ne pas refléter des dépendances conjointes.
     \item \textbf{États binaires uniquement} : pas d'états multi-niveaux ou continus.
     \item \textbf{Preuves certaines} : pas de preuves incertaines ou partielles.
@@ -1618,7 +1641,7 @@ La suite backend compte \textbf{221 tests} (pytest), la suite frontend \textbf{3
 \end{itemize}
 
 % ============================================================
-% 25. PERSPECTIVES
+% 19. PERSPECTIVES
 % ============================================================
 \section{Perspectives}
 \markboth{Perspectives}{Perspectives}
@@ -1635,7 +1658,7 @@ La suite backend compte \textbf{221 tests} (pytest), la suite frontend \textbf{3
 \end{itemize}
 
 % ============================================================
-% 26. CONCLUSION GÉNÉRALE
+% 20. CONCLUSION GÉNÉRALE
 % ============================================================
 \section{Conclusion générale}
 \markboth{Conclusion générale}{Conclusion générale}
@@ -1647,14 +1670,14 @@ La démarche combine des fondements théoriques solides --- probabilités condit
 
 Le framework calcule automatiquement les probabilités intrinsèques (via une correspondance logistique explicite du score CVSS), génère les CPT par Noisy-OR (évitant l'explosion combinatoire), classe les actifs par un indice de risque borné et identifie des chemins d'attaque plausibles. L'application Web rend cette chaîne accessible sans écriture de code, avec une traçabilité complète.
 
-Les choix technologiques --- FastAPI, \texttt{pgmpy}, React, TypeScript, SQLite/SQLAlchemy --- offrent une base modulaire, testable et extensible. Les résultats sur les quatre jeux de données, corroborés par plus de 250 tests, démontrent la faisabilité et la cohérence de l'approche.
+Les choix technologiques --- FastAPI, \texttt{pgmpy}, React, TypeScript, SQLite/SQLAlchemy --- offrent une base modulaire, testable et extensible. Les résultats sur les jeux de données de référence, corroborés par plus de 290 tests backend et frontend, démontrent la faisabilité et la cohérence de l'approche.
 
 Ce travail ouvre plusieurs perspectives, notamment la calibration sur données de terrain, l'extension du modèle au-delà de Noisy-OR, l'intégration de sources de vulnérabilités externes, et l'ajout des mécanismes d'authentification et de journalisation pour un déploiement industriel.
 
 Dans son état actuel, il constitue une démonstration convaincante de l'apport des réseaux bayésiens à l'évaluation quantitative et dynamique du risque dans les systèmes de contrôle industriels.
 
 % ============================================================
-% 27. BIBLIOGRAPHIE
+% 21. BIBLIOGRAPHIE
 % ============================================================
 \begin{thebibliography}{99}
 \addcontentsline{toc}{section}{Bibliographie}
@@ -1707,7 +1730,7 @@ A. Ankan, A. Panda, ``pgmpy: Probabilistic Graphical Models using Python,'' \emp
 \end{thebibliography}
 
 % ============================================================
-% 28. ANNEXES
+% A. ANNEXES
 % ============================================================
 \appendix
 \section{Annexes}
@@ -1809,5 +1832,7 @@ Neuf tables définies par la migration Alembic initiale :
     \item Poste électrique.
     \item Traitement de l'eau générique.
 \end{itemize}
+
+En complément, le dépôt \texttt{ics\_topologies/} fournit cinq installations industrielles de référence (usine de traitement chimique, sous-station électrique, usine de fabrication, oléoduc/gazoduc, usine de traitement de l'eau), chacune déclinée dans tous les formats d'import supportés (JSON, YAML, CSV, XLSX, GraphML, XML, AML, VDX, VSDX).
 
 \end{document}

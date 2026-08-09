@@ -49,6 +49,54 @@ export default function BayesianResults({
                   </span>
                 }
               />
+              {(() => {
+                const snapshot = result.settings_used
+                const logistic =
+                  (snapshot?.cvss_logistic_params as
+                    | { k?: number; x0?: number }
+                    | undefined) ?? {}
+                const thresholds = (snapshot?.risk_thresholds as
+                  | { critical?: number; high?: number; moderate?: number }
+                  | undefined) ?? {}
+                const nonDefault = result.summary.non_default_settings ?? []
+                const t = (value: number) => value.toFixed(2)
+                if (!snapshot || Object.keys(snapshot).length === 0) return null
+                return (
+                  <>
+                    <KvRow
+                      label="Settings used"
+                      value={
+                        <span className="max-w-[280px] break-words text-right font-mono text-[11px]">
+                          {String(snapshot.cvss_mapping ?? 'logistic')} · k=
+                          {Number(logistic.k ?? 0.8)} · x0=
+                          {Number(logistic.x0 ?? 5.0)} · impact_w=
+                          {Number(snapshot.impact_weight ?? 1.0)}
+                          <span className="block text-slate-500">
+                            Low &lt; {t(thresholds.moderate ?? 0.25)} · Moderate{' '}
+                            {t(thresholds.moderate ?? 0.25)}–
+                            {t(thresholds.high ?? 0.5)} · High{' '}
+                            {t(thresholds.high ?? 0.5)}–
+                            {t(thresholds.critical ?? 0.75)} · Critical ≥{' '}
+                            {t(thresholds.critical ?? 0.75)}
+                          </span>
+                        </span>
+                      }
+                      tone="violet"
+                    />
+                    {nonDefault.length > 0 ? (
+                      <KvRow
+                        label="Non-default settings"
+                        value={
+                          <span className="max-w-[280px] break-words text-right text-[11px] text-amber-300">
+                            {nonDefault.map(([key]) => key).join(', ')}
+                          </span>
+                        }
+                        tone="amber"
+                      />
+                    ) : null}
+                  </>
+                )
+              })()}
             </div>
           </div>
         ) : (

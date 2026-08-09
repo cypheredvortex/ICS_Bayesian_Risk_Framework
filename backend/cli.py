@@ -32,6 +32,7 @@ from backend.outputs import (
 )
 from backend.database.config import initialize_database
 from backend.database.services import AssessmentPersistenceService
+from backend.settings import get_model_settings_snapshot, non_default_settings
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,17 @@ def run(
 
     if evidence is None:
         evidence = {}
+
+    # Capture the exact parameter set before any computation.  Every output
+    # (result dict, metrics.json, summary.txt, PDF) records this snapshot so
+    # that results are traceable and reproducible: two runs with the same
+    # topology but different active settings must visibly differ.
+    settings_used = get_model_settings_snapshot()
+    non_default = non_default_settings()
+    settings_warnings = [
+        f"Non-default setting '{key}' in use: active={active!r} vs default={default!r}"
+        for key, active, default in non_default
+    ]
 
     assets, relationships, topology_warnings = load_topology(topology)
     normalized = enrich_graph(assets, relationships)
@@ -108,6 +120,10 @@ def run(
         "attack_paths": attack_paths,
         "evidence_used": evidence_used,
         "risk_table": risk_table,
+        # Full parameter snapshot that produced these numbers (traceability /
+        # reproducibility).  The model only reads DEFAULT_SETTINGS keys, so
+        # UI-only keys such as theme are excluded.
+        "settings_used": settings_used,
         "timings": {
             "build_time_seconds": round(build_time_seconds, 6),
             "inference_time_seconds": round(inference_time_seconds, 6),
@@ -117,7 +133,10 @@ def run(
             "topology": str(topology) if not isinstance(topology, dict) else "inline-topology",
             "asset_count": len(assets),
             "relationship_count": len(relationships),
+            # Topology warnings stay strictly about input normalisation; any
+            # configuration deviation is reported separately below.
             "topology_warnings": topology_warnings,
+            "settings_warnings": settings_warnings,
             # Active risk thresholds so every consumer (UI, reports) reads the
             # same values the backend used for classification.
             "risk_thresholds": get_risk_thresholds(),
@@ -129,6 +148,7 @@ def run(
             "highest_risk_assets": risk_table.head(5)["asset"].tolist(),
             "critical_attack_path": attack_paths[0] if attack_paths else None,
             "aggregate_risk": aggregate,
+            "non_default_settings": non_default,
         },
     }
 
@@ -164,6 +184,8 @@ def run(
                 "evidence_count": len(result["evidence_used"]),
                 "evidence_used": result["evidence_used"],
                 "attack_path_count": len(result["attack_paths"]),
+                "settings_used": result["settings_used"],
+                "non_default_settings": result["summary"]["non_default_settings"],
                 "validation": {"success": True, "errors": 0},
                 "inference_algorithm": "Variable Elimination",
                 "build_time_seconds": result["timings"]["build_time_seconds"],
@@ -179,6 +201,8 @@ def run(
             result["relationships"],
             result["risk_table"],
             path=out_dir / "summary.txt",
+            settings_used=result["settings_used"],
+            non_default_settings=result["summary"]["non_default_settings"],
         )
         result["artifacts"] = {
             "graph": str(out_dir / "graph.json"),

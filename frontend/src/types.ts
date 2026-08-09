@@ -71,7 +71,13 @@ export type ResultSummary = {
   highest_risk_assets: string[]
   overall_risk_basis?: string
   aggregate_risk?: Record<string, unknown>
+  // Model-parameter snapshot that produced this run (traceability).
+  non_default_settings?: Array<[string, unknown, unknown]>
 }
+
+// Full model-parameter snapshot recorded by the backend for a run, so
+// outputs can be traced back to the exact settings that produced them.
+export type SettingsSnapshot = Record<string, unknown>
 
 export type ResultPayload = {
   assets?: Record<string, Record<string, unknown>>
@@ -92,6 +98,7 @@ export type ResultPayload = {
   timings?: {
     total_time_seconds?: number
   }
+  settings_used?: SettingsSnapshot
 }
 
 // Active risk-level thresholds (single source of truth: backend settings).

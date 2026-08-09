@@ -222,6 +222,13 @@ def normalize_asset(raw: dict) -> dict | None:
     if metadata := raw.get("metadata"):
         attrs["metadata"] = metadata
 
+    # Blast-radius scope (1-5) is a risk-model attribute consumed by
+    # backend/risk.m_scope as the scope multiplier 1 + (scope-1)*0.1.
+    # It must be preserved here; otherwise it is silently dropped and the
+    # documented scope multiplier always evaluates to 1.0.
+    if "scope" in raw:
+        attrs["scope"] = _strict_float(raw["scope"], f"asset '{asset_id}'", "scope", 1.0, 5.0)
+
     context = f"asset '{asset_id}'"
 
     if kind == "device":

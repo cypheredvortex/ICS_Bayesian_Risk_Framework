@@ -85,7 +85,7 @@ def write_metrics_json(metrics: dict, path="output/metrics.json") -> Path:
     return path
 
 
-def write_summary_txt(topology_path, evidence, assets, relationships, risk_table, path="output/summary.txt", top_n=5) -> Path:
+def write_summary_txt(topology_path, evidence, assets, relationships, risk_table, path="output/summary.txt", top_n=5, settings_used=None, non_default_settings=None) -> Path:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -97,6 +97,29 @@ def write_summary_txt(topology_path, evidence, assets, relationships, risk_table
         f"Relationships : {len(relationships)}",
         f"Evidence used : {evidence if evidence else '(none provided)'}",
         "",
+    ]
+
+    if settings_used:
+        lines += [
+            "Model settings used for this run (traceability snapshot):",
+            "-" * 40,
+        ]
+        for key in ("cvss_mapping", "cvss_logistic_params", "exposure_weight", "patch_weight", "impact_weight"):
+            if key in settings_used:
+                lines.append(f"  {key:24s} = {settings_used[key]}")
+        if "propagation_weights" in settings_used:
+            pw = settings_used["propagation_weights"]
+            lines.append(f"  {'propagation_weights':24s} = {pw}")
+        if "risk_thresholds" in settings_used:
+            lines.append(f"  {'risk_thresholds':24s} = {settings_used['risk_thresholds']}")
+        if non_default_settings:
+            lines.append("")
+            lines.append("WARNING: non-default settings are active:")
+            for key, active, default in non_default_settings:
+                lines.append(f"  {key}: active={active!r} vs default={default!r}")
+        lines.append("")
+
+    lines += [
         f"Top {top_n} assets by risk:",
         "-" * 40,
     ]

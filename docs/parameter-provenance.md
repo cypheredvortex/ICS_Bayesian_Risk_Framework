@@ -58,7 +58,7 @@ it is configurable, and its sensitivity behaviour.
 | `risk_thresholds.critical` | Lower bound for the Critical risk level | `0.75` | `> high` | Expert judgment (standard 0.75 upper band) | Expert judgment | Not calibrated | Yes | High: level counts and colours change with thresholds |
 | `risk_thresholds.high` | Lower bound for High | `0.50` | `> moderate, < critical` | Expert judgment | Expert judgment | Not calibrated | Yes | High |
 | `risk_thresholds.moderate` | Lower bound for Moderate | `0.25` | `≥ 0, < high` | Expert judgment | Expert judgment | Not calibrated | Yes | High |
-| scope multiplier | CVSS v3.1 scope factor in impact normalisation | per-vector | `1.0`/`1.5` | Official CVSS v3.1 spec | Empirical (specification constant) | n/a (fixed by spec) | No | Fixed by vector |
+| asset `scope` attribute | Blast-radius multiplier in impact normalisation: `1 + (scope − 1) × 0.1` over `scope ∈ [1, 5]` (→ multiplier `[1.0, 1.4]`) | `1` (no multiplier) | `[1, 5]` | Framework design (a normalised consequence-extent scale, *not* the CVSS v3.1 scope factor, which is a separate per-vector constant 1.0/1.5) | Framework default | Not calibrated | Per asset | Low–moderate |
 | `impact_weight` | Weight on consequence impact in the risk index | `1.0` | `≥ 0` | Framework default | Framework default | Not calibrated | Yes | Moderate |
 
 ## Fixed engineering constants (not analyst-configurable)
@@ -68,7 +68,7 @@ it is configurable, and its sensitivity behaviour.
 | `P_BASE_CAP` | Soft cap for probabilities | `0.9995` | Framework design (avoid exact 0/1) |
 | probability floor | Lower clamp | `1e-6` | Framework design |
 | CVSS severity bands | Informational/Low/Medium/High/Critical | 0.0/0.1/4.0/7.0/9.0 | Official CVSS v3.1 spec |
-| CVSS scope multipliers | Unchanged/Changed | 1.0/1.5 | Official CVSS v3.1 spec |
+| CVSS scope-changed Base Score factor | Constant applied to Base Score when scope changes | `1.08` (in `min(1.08 × (Impact + Exploitability), 10)`) | Official CVSS v3.1 spec |
 
 ## Aggregated defaults (single source of truth)
 

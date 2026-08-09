@@ -147,6 +147,47 @@ def _persist_runtime_settings() -> None:
             service.save_settings(key, str(value))
 
 
+def get_model_settings_snapshot() -> dict[str, Any]:
+    """Return the active settings restricted to the keys that actually drive the model.
+
+    The settings store may contain UI-only or legacy keys (e.g. ``theme``,
+    ``recent_projects``) that are persisted but never consumed by the
+    probability/risk pipeline.  Analysis outputs must record exactly the
+    parameter set that produced the numbers, so this snapshot is filtered to
+    ``DEFAULT_SETTINGS`` keys (the single source of truth for what the model
+    reads).  See ``backend/cli.py`` (``settings_used``) and
+    ``backend/pdf_reports.py`` (Model Parameters section).
+    """
+    active = get_settings()
+    return deepcopy({key: active[key] for key in DEFAULT_SETTINGS if key in active})
+    # NOTE on traceability precision: the pipeline reads live settings
+    # throughout a run, so a concurrent settings write mid-run could make the
+    # snapshot differ slightly from the values actually used for some steps.
+    # For serial/single-user usage (the normal case) the snapshot is exact.
+
+
+def non_default_settings() -> list[tuple[str, Any, Any]]:
+    """List settings that currently differ from the framework defaults.
+
+    Returns a list of ``(key, active_value, default_value)`` for every model
+    setting that deviates from ``DEFAULT_SETTINGS``.  Used to warn analysts
+    that an assessment was produced with non-default assumptions, which is
+    essential for traceability and reproducibility: two runs with the same
+    topology can legitimately differ when the active settings differ.
+
+    Returns:
+        Sorted list of ``(key, active_value, default_value)`` tuples for
+        settings whose active value differs from the framework default.
+    """
+    active = get_settings()
+    deviations: list[tuple[str, Any, Any]] = []
+    for key, default_value in DEFAULT_SETTINGS.items():
+        active_value = active.get(key)
+        if active_value != default_value:
+            deviations.append((key, deepcopy(active_value), deepcopy(default_value)))
+    return sorted(deviations, key=lambda item: item[0])
+
+
 def get_settings() -> dict[str, Any]:
     with _settings_lock:
         if not _ensure_db_initialized():

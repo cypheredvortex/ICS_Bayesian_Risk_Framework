@@ -58,6 +58,9 @@ def analyze(
         "summary": result["summary"],
         "evidence_used": result["evidence_used"],
         "timings": result["timings"],
+        # Full model-parameter snapshot used for this run, so API consumers
+        # can trace every output back to the exact settings that produced it.
+        "settings_used": result.get("settings_used", {}),
         "artifacts": result.get("artifacts", {}),
         # Persistence status: whether the analysis run could be stored.  A
         # False value means the assessment itself succeeded but the database

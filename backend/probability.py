@@ -93,7 +93,11 @@ def _cvss_to_prob_logistic(cvss_val: float, k: float, x0: float) -> float:
     """
     # Clamp CVSS to valid range
     cvss_clamped = max(0.0, min(10.0, float(cvss_val)))
-    raw = 1.0 / (1.0 + math.exp(-k * (cvss_clamped - x0)))
+    # Numerically stable sigmoid (see _inv_logit): never computes exp of a
+    # large positive argument directly, which would raise OverflowError for
+    # extreme-but-valid settings such as k=100, x0=10, cvss=0.  This is
+    # P = 1 / (1 + exp(-k·(cvss - x0))), evaluated branch-safely.
+    raw = _inv_logit(k * (cvss_clamped - x0))
     # Soft-cap away from exact 0/1 boundaries
     return max(1e-6, min(P_BASE_CAP, raw))
 

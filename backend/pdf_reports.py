@@ -246,6 +246,62 @@ def generate_pdf_report(
     ]))
     story.append(metrics_table)
 
+    # ---- Model Parameters (traceability) ----
+    settings_used = result.get("settings_used", {}) or {}
+    if settings_used:
+        story.append(Paragraph("Model Parameters Used", styles["SectionHeading"]))
+        story.append(Paragraph(
+            "The following settings produced the numbers in this report. "
+            "They are recorded so the assessment is traceable and reproducible; "
+            "changing any of them changes the results.",
+            styles["Body"],
+        ))
+
+        param_rows: list[list[str]] = [["Parameter", "Value"]]
+        mapping = settings_used.get("cvss_mapping", "logistic")
+        params = settings_used.get("cvss_logistic_params", {})
+        param_rows.append(["CVSS → probability mapping", str(mapping)])
+        param_rows.append(["Logistic k (steepness)", str(params.get("k", "—"))])
+        param_rows.append(["Logistic x0 (midpoint)", str(params.get("x0", "—"))])
+        param_rows.append(["Exposure multiplier (exposed)", str(settings_used.get("exposure_multipliers", {}).get("true", "—"))])
+        param_rows.append(["Exposure multiplier (not exposed)", str(settings_used.get("exposure_multipliers", {}).get("false", "—"))])
+        param_rows.append(["Patch multiplier (patched)", str(settings_used.get("patch_multipliers", {}).get("true", "—"))])
+        param_rows.append(["Patch multiplier (unpatched)", str(settings_used.get("patch_multipliers", {}).get("false", "—"))])
+        param_rows.append(["Impact weight", str(settings_used.get("impact_weight", "—"))])
+        param_rows.append(["Risk thresholds", str(settings_used.get("risk_thresholds", "—"))])
+
+        prop_weights = settings_used.get("propagation_weights", {})
+        for rel_type in sorted(prop_weights):
+            param_rows.append([f"Propagation weight '{rel_type}'", str(prop_weights[rel_type])])
+
+        params_table = Table(param_rows, colWidths=[6 * cm, 8.5 * cm])
+        params_table.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), COLOR_DARK),
+            ("TEXTCOLOR", (0, 0), (-1, 0), COLOR_WHITE),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, 0), 8),
+            ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#f8fafc")),
+            ("TEXTCOLOR", (0, 1), (-1, -1), COLOR_TEXT),
+            ("FONTSIZE", (0, 1), (-1, -1), 8),
+            ("GRID", (0, 0), (-1, -1), 0.4, COLOR_BORDER),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("TOPPADDING", (0, 0), (-1, -1), 3),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+            ("LEFTPADDING", (0, 0), (-1, -1), 4),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ]))
+        story.append(params_table)
+
+        non_default = result.get("summary", {}).get("non_default_settings") or []
+        if non_default:
+            story.append(Paragraph(
+                "<b>Note:</b> one or more settings differ from the framework defaults. "
+                "The values above are the ones actually used; the defaults are "
+                "documented in docs/parameter-provenance.md.",
+                styles["Small"],
+            ))
+        story.append(Spacer(1, 2 * mm))
+
     # ---- Risk Register ----
     story.append(Paragraph("Risk Register", styles["SectionHeading"]))
     story.append(Paragraph(

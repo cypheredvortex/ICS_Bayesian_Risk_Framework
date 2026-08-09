@@ -46,10 +46,19 @@ assessment of ICS environments:
 - **Impossible evidence is never silently accepted.** Zero-probability
   evidence returns a structured `IMPOSSIBLE_EVIDENCE` diagnostic.
 
-Authoritative documents: [`docs/model-assumptions.md`](docs/model-assumptions.md),
-[`docs/parameter-provenance.md`](docs/parameter-provenance.md) and
-[`docs/topology-ingestion.md`](docs/topology-ingestion.md) (supported topology
-representations, format semantics and the analyst upload workflow).
+Authoritative documents:
+
+- [`docs/scientific_validation_report.md`](docs/scientific_validation_report.md) —
+  the full scientific, mathematical and methodological audit (16 sections).
+- [`docs/metric_catalog.md`](docs/metric_catalog.md) — definition, formula,
+  inputs, range, interpretation, source, validation and scientific status for
+  every metric the platform produces.
+- [`docs/model-assumptions.md`](docs/model-assumptions.md) — the authoritative
+  statement of every modelling assumption.
+- [`docs/parameter-provenance.md`](docs/parameter-provenance.md) — provenance and
+  calibration status of every configurable parameter.
+- [`docs/topology-ingestion.md`](docs/topology-ingestion.md) — supported topology
+  representations, format semantics and the analyst upload workflow.
 
 ---
 
@@ -203,6 +212,11 @@ Risk Register (CSV) + Assessment Report (PDF) + sensitivity analysis
 - **Persistence**: SQLAlchemy (SQLite by default, PostgreSQL-ready) for
   settings and assessment history; the analysis pipeline degrades gracefully
   when the database is unavailable.
+- **Settings traceability**: every assessment records the exact
+  `settings_used` snapshot (CVSS mapping, k/x₀, multipliers, propagation
+  weights, thresholds) in the API result, `metrics.json`, `summary.txt` and
+  the PDF "Model Parameters" section, and warns when non-default settings are
+  active — so results are reproducible and auditable.
 
 ---
 
@@ -235,9 +249,12 @@ its attributes; `relationships` lists directed links between assets.
 ```
 
 - Asset kinds: `device` (`vulnerabilities`, `cvss_type`, `exposed`,
-  `patched`, `consequence_severity`), `human` (`role`, `awareness`,
+  `patched`, `consequence_severity`, `scope`), `human` (`role`, `awareness`,
   `privilege`, `consequence_severity`), `physical` (`p_base_override`,
-  `consequence_severity`).
+  `consequence_severity`, `scope`).
+- `scope` ∈ [1, 5] is the blast-radius attribute used by the risk model
+  (`scope_multiplier = 1 + (scope − 1) × 0.1`); it is validated and preserved
+  end-to-end.
 - A relationship is `[source, target, type, firewalled]` with `type` ∈
   {controls, monitors, actuates, connects-to, programs / operates}.
 - Validation rejects out-of-range values, unknown assets/types, and cycles.
@@ -412,7 +429,7 @@ route for investigation prioritisation; it is not proof of a real intrusion.
 ### Backend
 
 ```bash
-python -m pytest tests/ -q          # 221 tests
+python -m pytest tests/ -q          # 261 tests
 ruff check .                        # lint
 mypy backend/ --ignore-missing-imports   # type check (must pass in CI)
 ```
@@ -423,6 +440,16 @@ dynamic thresholds, topology validation (non-destructive warnings), all import
 formats, upload security, sensitivity analysis, performance benchmarks
 (10/25/50/100 nodes), database-failure behaviour, persistence, reports, and
 API-level end-to-end flows.
+
+`tests/test_scientific_validation.py` (40 tests) is the **independent
+scientific validation suite**: every key formula is checked against an
+independently computed expected value — the logistic sigmoid and log-odds
+adjustments recomputed from first principles, Noisy-OR CPT rows verified
+closed-form row-by-row with normalisation over all parent configurations,
+posteriors matched against brute-force joint enumeration (chain and collider
+structures, with and without evidence), and the risk index recomputed from its
+definition. It also guards the `scope`-preservation and settings-traceability
+regressions.
 
 ### Frontend unit tests
 
@@ -470,7 +497,9 @@ See `Dockerfile`, `frontend/Dockerfile`, `frontend/.nginx.conf`, and
 - Optional API-key authentication, rate limiting, request-ID tracing.
 - Structured error responses: no raw tracebacks are ever leaked to clients.
 - Dependency audits (pip-audit / npm audit) should be run before releases;
-  the repository documents findings in `ENGINEERING_AUDIT_REPORT.md`.
+  engineering and methodology findings are documented in
+  `ENGINEERING_AUDIT_REPORT.md` (historical) and the current
+  `docs/scientific_validation_report.md` + `docs/methodology_changes.md`.
 
 ---
 
