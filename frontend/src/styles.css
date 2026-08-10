@@ -221,6 +221,14 @@
     animation: details-panel-in 160ms ease-out;
   }
 
+  /* ---------- Header panels (Settings / Reports) ---------- */
+  .header-panel {
+    @apply overflow-hidden rounded-2xl border border-slate-800 bg-slate-950/80 shadow-card backdrop-blur-sm;
+  }
+  .header-panel {
+    animation: header-panel-in 180ms ease-out;
+  }
+
   /* ---------- Progress bar ---------- */
   .progress-track {
     @apply h-1.5 w-full overflow-hidden rounded-full bg-slate-800;
@@ -254,6 +262,23 @@
   }
   .details-chevron {
     transition: none;
+  }
+}
+
+@keyframes header-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-panel {
+    animation: none;
   }
 }
 
@@ -305,6 +330,12 @@ input[type='range']:focus-visible::-webkit-slider-thumb {
 }
 input[type='range']:focus-visible::-moz-range-thumb {
   box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.4), 0 0 0 1px rgba(34, 211, 238, 0.9);
+}
+
+/* Smooth focus transition when a risk-level slice is selected in the pie
+   chart: the chosen slice stays opaque while the others fade out softly. */
+svg .recharts-sector {
+  transition: opacity 250ms ease;
 }
 
 /* React Flow canvas chrome */

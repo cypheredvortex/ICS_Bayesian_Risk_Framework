@@ -27,7 +27,7 @@ import ResultsDashboard from './components/ResultsDashboard'
 import ProbabilityChart from './components/ProbabilityChart'
 import CptSection from './components/CptSection'
 import ReportsSection from './components/ReportsSection'
-import { Card } from './components/ui'
+import { Card, HeaderPanel } from './components/ui'
 
 // Merge the server-side settings payload into a complete CoreSettings,
 // falling back to framework defaults for any key the API does not return.
@@ -184,7 +184,8 @@ export default function App() {
     }
   }, [])
 
-  // keyboard shortcuts: "/" focuses node search, "r" runs the assessment
+  // keyboard shortcuts: "/" focuses node search, "r" runs the assessment,
+  // "Escape" closes the Settings/Reports panels
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement
@@ -200,11 +201,26 @@ export default function App() {
         event.preventDefault()
         void runAssessment()
       }
+      if (event.key === 'Escape') {
+        setSettingsOpen(false)
+        setReportsOpen(false)
+      }
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [topology, evidence])
+
+  // Only one header panel is open at a time: opening one closes the other so
+  // the two controls behave like a deliberate, mutually-exclusive workflow.
+  const toggleSettings = () => {
+    setSettingsOpen((open) => !open)
+    setReportsOpen(false)
+  }
+  const toggleReports = () => {
+    setReportsOpen((open) => !open)
+    setSettingsOpen(false)
+  }
 
   const assets = useMemo(
     () => Object.entries(topology.assets),
@@ -263,14 +279,20 @@ export default function App() {
       .sort((left, right) => right.probability - left.probability)
   }, [nodeIds, combinedProbabilities, isEvidenceNode])
 
+  // Complete risk register: every asset the backend ranked, ordered by the
+  // authoritative risk index (the backend already sorts by risk descending;
+  // the defensive sort here only guarantees display order stays correct).
+  // Rank is derived from the display order, never from a hardcoded limit.
   const riskRanking = useMemo(() => {
-    return (result?.risk_scores ?? []).slice(0, 5).map((item) => ({
-      asset: String(item.asset ?? 'unknown'),
-      risk: Number(item.risk ?? 0),
-      probability: Number(item['P(compromised|evidence)'] ?? 0),
-      severity: Number(item.severity ?? 0),
-      impact: Number(item.impact ?? 0),
-    }))
+    return (result?.risk_scores ?? [])
+      .map((item) => ({
+        asset: String(item.asset ?? 'unknown'),
+        risk: Number(item.risk ?? 0),
+        probability: Number(item['P(compromised|evidence)'] ?? 0),
+        severity: Number(item.severity ?? 0),
+        impact: Number(item.impact ?? 0),
+      }))
+      .sort((left, right) => right.risk - left.risk)
   }, [result])
 
   // Number of assets pinned by evidence — shown in the collapsible Evidence
@@ -346,6 +368,32 @@ export default function App() {
       counts[riskLevelFor(risk, riskThresholds)] += 1
     }
     return Object.entries(counts).map(([name, value]) => ({ name, value }))
+  }, [result, riskThresholds])
+
+  // Per-level asset lists with their risk indices, grouped with the exact
+  // same classification as `pieData` so the pie drill-down always matches the
+  // chart it was clicked from. Risk values are the authoritative ones from
+  // the backend risk register.
+  const assetsByRiskLevel = useMemo(() => {
+    const byLevel: Record<
+      'critical' | 'high' | 'moderate' | 'low',
+      Array<{
+        asset: string
+        risk: number
+        probability: number
+        impact: number
+      }>
+    > = { critical: [], high: [], moderate: [], low: [] }
+    for (const item of result?.risk_scores ?? []) {
+      const level = riskLevelFor(Number(item.risk ?? 0), riskThresholds)
+      byLevel[level].push({
+        asset: String(item.asset ?? 'unknown'),
+        risk: Number(item.risk ?? 0),
+        probability: Number(item['P(compromised|evidence)'] ?? 0),
+        impact: Number(item.impact ?? 0),
+      })
+    }
+    return byLevel
   }, [result, riskThresholds])
 
   // Clear everything derived from an analysis so no stale assessment,
@@ -588,7 +636,7 @@ export default function App() {
       <Header
         settingsButton={
           <button
-            onClick={() => setSettingsOpen((open) => !open)}
+            onClick={toggleSettings}
             className="btn btn-secondary btn-sm"
             aria-expanded={settingsOpen}
           >
@@ -610,7 +658,7 @@ export default function App() {
         }
         reportsButton={
           <button
-            onClick={() => setReportsOpen((open) => !open)}
+            onClick={toggleReports}
             className="btn btn-secondary btn-sm"
             aria-expanded={reportsOpen}
             title="Download the risk register and assessment report"
@@ -635,23 +683,49 @@ export default function App() {
         apiOnline={apiOnline}
       >
         {settingsOpen ? (
-          <SettingsPanel
-            draftSettings={draftSettings}
-            settingsDirty={settingsDirty}
-            settingsLoading={settingsLoading}
-            onUpdate={(updater) =>
-              setDraftSettings((current) => updater(current))
+          <HeaderPanel
+            title="Analysis Settings"
+            subtitle="Stored server-side via GET/PUT /settings and applied to every future run — not just this session. Changing an assumption changes the output; see the sensitivity documentation."
+            onClose={() => setSettingsOpen(false)}
+            actions={
+              <>
+                <button
+                  onClick={() => void resetSettings()}
+                  disabled={settingsLoading}
+                  className="btn btn-secondary btn-sm"
+                >
+                  Reset to defaults
+                </button>
+                <button
+                  onClick={() => void saveSettings()}
+                  disabled={settingsLoading || !settingsDirty}
+                  className="btn btn-primary btn-sm"
+                >
+                  {settingsLoading
+                    ? 'Saving…'
+                    : settingsDirty
+                      ? 'Save changes'
+                      : 'Saved'}
+                </button>
+              </>
             }
-            onSave={() => void saveSettings()}
-            onReset={() => void resetSettings()}
-          />
+          >
+            <SettingsPanel
+              draftSettings={draftSettings}
+              onUpdate={(updater) =>
+                setDraftSettings((current) => updater(current))
+              }
+            />
+          </HeaderPanel>
         ) : null}
-        {/* Aligned with the Settings panel: full-width within the max-w-7xl
-            header container, below the title row. */}
         {reportsOpen ? (
-          <div className="mx-auto mt-4 max-w-7xl">
+          <HeaderPanel
+            title="Reports"
+            subtitle="Download the outputs of the latest assessment run. Every file is generated from the same authoritative result — the dashboard, CSV and PDF always agree."
+            onClose={() => setReportsOpen(false)}
+          >
             <ReportsSection available={Boolean(result)} />
-          </div>
+          </HeaderPanel>
         ) : null}
       </Header>
 
@@ -766,6 +840,7 @@ export default function App() {
             chartData={chartData}
             setSelectedNode={setSelectedNode}
             pieData={pieData}
+            assetsByRiskLevel={assetsByRiskLevel}
           />
         </section>
 

@@ -108,14 +108,6 @@ export function deriveTopologySummary(
   }
 }
 
-export function formatEvidence(evidence?: Record<string, number> | null) {
-  const entries = Object.entries(evidence ?? {})
-  if (!entries.length) return 'None — probabilities use the topology and configured assumptions.'
-  return entries
-    .map(([asset, state]) => `${asset}: ${state === 1 ? 'Compromised' : 'Safe'}`)
-    .join(' · ')
-}
-
 // FastAPI's HTTPException serializes as {"detail": "..."}. Pull that out
 // instead of dumping raw JSON into the UI; fall back to plain text for
 // non-JSON error bodies (e.g. a proxy/500 page).

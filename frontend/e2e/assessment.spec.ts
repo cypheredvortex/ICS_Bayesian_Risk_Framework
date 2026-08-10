@@ -8,7 +8,11 @@ test('full assessment workflow', async ({ page }) => {
   await page.goto('/')
 
   // --- Settings load from the backend ---
-  const settingsButton = page.getByRole('button', { name: /Settings/ })
+  // (exact match: the open panel adds a "Close Analysis Settings" button)
+  const settingsButton = page.getByRole('button', {
+    name: 'Settings',
+    exact: true,
+  })
   await settingsButton.click()
   // The logistic CVSS parameters must come from the backend, not hardcoded.
   await expect(page.getByLabel('Logistic slope k')).toBeVisible()
@@ -36,7 +40,7 @@ test('full assessment workflow', async ({ page }) => {
 
   // --- Select an asset and inspect its metrics ---
   await expect(page.getByText('Posterior probabilities')).toBeVisible()
-  await expect(page.getByText('Top high-risk assets')).toBeVisible()
+  await expect(page.getByText('Risk Ranking by Asset')).toBeVisible()
   // Click the first asset row in the posterior list to select it in the
   // details panel.
   await page.getByRole('button', { name: /^plc_1/ }).first().click()
@@ -84,12 +88,30 @@ test('full assessment workflow', async ({ page }) => {
   // --- Export the risk register ---
   // Reports moved into the header control area next to Settings — open it
   // before using the export controls.
-  await page.getByRole('button', { name: 'Reports' }).click()
-  await expect(page.getByText('Download risk register (CSV)')).toBeVisible()
+  await page
+    .getByRole('button', { name: 'Reports', exact: true })
+    .click()
+  await expect(page.getByText('Risk register (CSV)')).toBeVisible()
+
+  // --- Export the risk register (CSV) ---
   const downloadPromise = page.waitForEvent('download')
-  await page.getByText('Download risk register (CSV)').click()
+  await page.getByText('Download Risk register').click()
   const download = await downloadPromise
   expect(download.suggestedFilename()).toMatch(/\.csv$/i)
+
+  // --- Export the full results record (JSON) ---
+  await expect(page.getByText('Full results (JSON)')).toBeVisible()
+  const jsonDownloadPromise = page.waitForEvent('download')
+  await page.getByText('Download Full results').click()
+  const jsonDownload = await jsonDownloadPromise
+  expect(jsonDownload.suggestedFilename()).toMatch(/\.json$/i)
+
+  // --- Export the assessment report (PDF) ---
+  await expect(page.getByText('Assessment report (PDF)')).toBeVisible()
+  const pdfDownloadPromise = page.waitForEvent('download')
+  await page.getByText('Download Assessment report').click()
+  const pdfDownload = await pdfDownloadPromise
+  expect(pdfDownload.suggestedFilename()).toMatch(/\.pdf$/i)
 
   // --- No fatal console errors ---
   const errors: string[] = []

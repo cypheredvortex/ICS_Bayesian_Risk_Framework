@@ -3,53 +3,16 @@ import { defaultCoreSettings } from '../constants'
 
 export default function SettingsPanel({
   draftSettings,
-  settingsDirty,
-  settingsLoading,
   onUpdate,
-  onSave,
-  onReset,
 }: {
   draftSettings: CoreSettings
-  settingsDirty: boolean
-  settingsLoading: boolean
   onUpdate: (updater: (prev: CoreSettings) => CoreSettings) => void
-  onSave: () => void
-  onReset: () => void
 }) {
   const { risk_thresholds: t } = draftSettings
 
   return (
-    <div className="mx-auto mt-4 max-w-7xl rounded-2xl border border-slate-800 bg-slate-950/80 p-5 shadow-card">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-300">
-            Analysis settings
-          </h3>
-          <p className="mt-1 text-xs text-slate-500">
-            Stored server-side via GET/PUT /settings and applied to every future
-            run — not just this session. Changing an assumption changes the
-            output; see the sensitivity documentation.
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={onReset}
-            disabled={settingsLoading}
-            className="btn btn-secondary btn-sm"
-          >
-            Reset to defaults
-          </button>
-          <button
-            onClick={onSave}
-            disabled={settingsLoading || !settingsDirty}
-            className="btn btn-primary btn-sm"
-          >
-            {settingsLoading ? 'Saving…' : settingsDirty ? 'Save changes' : 'Saved'}
-          </button>
-        </div>
-      </div>
-
-      <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+    <div>
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
         {(
           [
             ['exposure_weight', 'Exposure weight', 0, 2],

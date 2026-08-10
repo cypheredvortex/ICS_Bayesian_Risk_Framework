@@ -102,6 +102,69 @@ export function EmptyState({
   )
 }
 
+/** Slide-down panel chrome shared by the Settings and Reports headers.
+ *  Provides a consistent title/subtitle/actions/close row and a subtle
+ *  entrance animation so opening either panel feels intentional and smooth.
+ *  The caller controls mounting; the panel itself is plain content below the
+ *  header title row, matching the existing layout (no modal/drawer). */
+export function HeaderPanel({
+  title,
+  subtitle,
+  onClose,
+  actions,
+  children,
+}: {
+  title: string
+  subtitle?: string
+  onClose: () => void
+  /** Extra controls rendered next to the close button (e.g. Save/Reset). */
+  actions?: ReactNode
+  children: ReactNode
+}) {
+  return (
+    <section className="mx-auto mt-4 max-w-7xl" role="region" aria-label={title}>
+      <div className="header-panel">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 px-5 py-4 sm:px-6">
+          <div className="min-w-0">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-200">
+              {title}
+            </h3>
+            {subtitle ? (
+              <p className="mt-1 max-w-3xl text-xs leading-relaxed text-slate-500">
+                {subtitle}
+              </p>
+            ) : null}
+          </div>
+          <div className="flex shrink-0 flex-wrap items-center gap-2">
+            {actions}
+            <button
+              type="button"
+              onClick={onClose}
+              className="btn btn-ghost btn-sm"
+              aria-label={`Close ${title}`}
+            >
+              <svg
+                className="h-3.5 w-3.5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+              Close
+            </button>
+          </div>
+        </div>
+        <div className="p-5 sm:p-6">{children}</div>
+      </div>
+    </section>
+  )
+}
+
 /** Label / value row for analytical metrics (monospace value). */
 export function KvRow({
   label,

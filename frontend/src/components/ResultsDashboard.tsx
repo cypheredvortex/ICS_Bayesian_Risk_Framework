@@ -1,7 +1,8 @@
-import { formatProbability, formatEvidence, getRiskTone } from '../utils'
+import { formatProbability, getRiskTone } from '../utils'
 import type { ResultPayload, RiskThresholds } from '../types'
 import { riskLevelMeta } from '../constants'
 import { Badge } from './ui'
+import EvidenceList from './EvidenceList'
 
 function formatThresholdScale(t: RiskThresholds): string {
   const f = (value: number) => value.toFixed(2)
@@ -31,6 +32,9 @@ export default function ResultsDashboard({
     riskLevelMeta[result.summary.risk_level as keyof typeof riskLevelMeta] ??
     riskLevelMeta.low
 
+  const evidence = result.summary.evidence_used ?? {}
+  const evidenceCount = Object.keys(evidence).length
+
   return (
     <div className="card card-pad">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -40,8 +44,10 @@ export default function ResultsDashboard({
             Decision-ready outputs from the latest assessment run.
           </p>
         </div>
-        <Badge tone={result.summary.evidence_used && Object.keys(result.summary.evidence_used).length ? 'cyan' : 'slate'}>
-          {formatEvidence(result.summary.evidence_used).split(' — ')[0]}
+        <Badge tone={evidenceCount ? 'cyan' : 'slate'}>
+          {evidenceCount
+            ? `${evidenceCount} evidence item${evidenceCount === 1 ? '' : 's'}`
+            : 'No evidence'}
         </Badge>
       </div>
 
@@ -69,11 +75,32 @@ export default function ResultsDashboard({
           </div>
         </div>
 
+        {evidenceCount ? (
+          <div className="stat-card">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="font-semibold text-slate-200">Selected Evidence</h3>
+              <span className="text-xs text-slate-500">
+                {evidenceCount} of {result.summary.asset_count} assets pinned to
+                a known state
+              </span>
+            </div>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500">
+              These states were applied when the assessment ran. Pinned assets
+              keep their assigned value exactly; every other probability is
+              recomputed from them through the Bayesian network.
+            </p>
+            <div className="mt-3">
+              <EvidenceList evidence={evidence} />
+            </div>
+          </div>
+        ) : null}
+
         <div className="stat-card">
           <h3 className="font-semibold text-slate-200">Posterior probabilities</h3>
           <p className="mt-1 text-xs text-slate-500">
-            Estimated compromise probability after evidence propagates through
-            the Bayesian network.
+            {evidenceCount
+              ? `Posterior compromise probability after applying ${evidenceCount} selected evidence item${evidenceCount === 1 ? '' : 's'} and propagating through the Bayesian network.`
+              : 'Estimated compromise probability after evidence propagates through the Bayesian network.'}
           </p>
           <div className="mt-3 max-h-64 space-y-1.5 overflow-y-auto pr-1">
             {chartData.map(({ asset, probability, pinned }) => (
@@ -101,23 +128,32 @@ export default function ResultsDashboard({
         </div>
 
         <div className="stat-card">
-          <h3 className="font-semibold text-slate-200">Top high-risk assets</h3>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h3 className="font-semibold text-slate-200">Risk Ranking by Asset</h3>
+            <span className="text-xs text-slate-500">
+              {riskRanking.length} asset{riskRanking.length === 1 ? '' : 's'} ranked
+            </span>
+          </div>
           <p className="mt-1 text-xs text-slate-500">
-            Risk index = posterior probability × normalised consequence impact
-            (severity/10 × scope). Probability and impact are shown separately
-            so the product is transparent.
+            Every asset, ordered from highest to lowest risk index (1 =
+            highest). Risk index = posterior probability × normalised
+            consequence impact (severity/10 × scope). Probability and impact
+            are shown separately so the product is transparent.
           </p>
-          <div className="mt-3 space-y-1.5 text-sm">
-            {riskRanking.map((entry) => (
+          <div className="mt-3 max-h-96 space-y-1.5 overflow-y-auto pr-1">
+            {riskRanking.map((entry, index) => (
               <button
                 key={entry.asset}
                 onClick={() => setSelectedNode(entry.asset)}
-                className="flex w-full items-center justify-between gap-2 rounded-lg bg-slate-900/70 px-3 py-2 text-left transition hover:bg-slate-900"
+                className="flex w-full items-center gap-3 rounded-lg bg-slate-900/70 px-3 py-2 text-left transition hover:bg-slate-900"
               >
-                <span className="truncate font-mono text-sm text-slate-200">
+                <span className="w-8 shrink-0 text-right font-mono text-xs font-semibold text-slate-500">
+                  #{index + 1}
+                </span>
+                <span className="min-w-0 flex-1 truncate font-mono text-sm text-slate-200">
                   {entry.asset}
                 </span>
-                <span className="whitespace-nowrap font-mono text-xs text-slate-400">
+                <span className="shrink-0 whitespace-nowrap font-mono text-xs text-slate-400">
                   P {formatProbability(entry.probability)} ×{' '}
                   {formatProbability(entry.impact)}
                   <span className="ml-2 font-semibold text-rose-300">

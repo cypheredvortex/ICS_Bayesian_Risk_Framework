@@ -38,6 +38,7 @@ from backend.topology import build_topology_summary
 from backend.inference import ImpossibleEvidenceError
 from backend.database.config import initialize_database, get_db_url, get_session_factory
 from backend.logging_config import configure_logging, get_request_id, set_request_id
+from backend.outputs import write_assessment_json
 from backend.pdf_reports import generate_pdf_report
 from backend.schemas import (
     AnalyzeRequest,
@@ -58,6 +59,7 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 REPORT_FILES: dict[str, Path] = {
     "risk_table.csv": OUTPUT_DIR / "risk_table.csv",
     "assessment.pdf": OUTPUT_DIR / "assessment.pdf",
+    "assessment.json": OUTPUT_DIR / "assessment.json",
 }
 DATASET_FILES: dict[str, Path] = {
     "swat_example": DATA_DIR / "swat_example.json",
@@ -341,6 +343,11 @@ def analyze_endpoint(
     except Exception as exc:
         logger.warning("PDF reportlab generation failed: %s", exc)
 
+    try:
+        write_assessment_json(result, REPORT_FILES["assessment.json"])
+    except Exception as exc:
+        logger.warning("JSON export generation failed: %s", exc)
+
     return result
 
 
@@ -394,6 +401,7 @@ def get_reports():
     return {
         "risk_table": "/reports/risk_table.csv",
         "assessment_pdf": "/reports/assessment.pdf",
+        "assessment_json": "/reports/assessment.json",
     }
 
 
@@ -408,6 +416,7 @@ def download_report(report_name: str):
     media_type = {
         "risk_table.csv": "text/csv",
         "assessment.pdf": "application/pdf",
+        "assessment.json": "application/json",
     }.get(report_name, "application/octet-stream")
 
     return FileResponse(file_path, media_type=media_type, filename=file_path.name)

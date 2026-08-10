@@ -1,6 +1,6 @@
-import { formatEvidence } from '../utils'
 import type { ResultPayload } from '../types'
 import { EmptyState, KvRow } from './ui'
+import EvidenceList from './EvidenceList'
 
 export default function BayesianResults({
   result,
@@ -23,14 +23,14 @@ export default function BayesianResults({
         {result ? (
           <div className="rounded-xl border border-slate-800 bg-slate-950/60 px-4 py-3">
             <div className="mt-1">
-              <KvRow
-                label="Evidence used"
-                value={
-                  <span className="max-w-[280px] break-words text-right">
-                    {formatEvidence(result.evidence_used)}
-                  </span>
-                }
-              />
+              <div className="py-1.5">
+                <p className="text-[13px] leading-snug text-slate-400">
+                  Evidence used
+                </p>
+                <div className="mt-2 text-left">
+                  <EvidenceList evidence={result.evidence_used} />
+                </div>
+              </div>
               <KvRow label="Assets" value={result.summary.asset_count} />
               <KvRow
                 label="Connections"

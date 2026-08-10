@@ -3,6 +3,7 @@ outputs.py - Writers for graph.json, cpts.json, posteriors.json, summary.txt.
 """
 
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 import matplotlib
@@ -82,6 +83,73 @@ def write_metrics_json(metrics: dict, path="output/metrics.json") -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     with open(path, "w") as f:
         json.dump(metrics, f, indent=2)
+    return path
+
+
+# The assessment fields that make up a complete, self-contained machine-
+# readable record of a run. Excludes transport/persistence metadata
+# (``artifacts`` paths, ``persistence`` status) which are not assessment data.
+_ASSESSMENT_JSON_FIELDS = (
+    "assets",
+    "graph",
+    "base_probabilities",
+    "posteriors",
+    "cpts",
+    "risk_scores",
+    "attack_paths",
+    "summary",
+    "evidence_used",
+    "timings",
+    "settings_used",
+)
+
+
+def _json_default(value):
+    """Convert numpy/pandas scalar types to plain JSON types.
+
+    ``json.dump`` raises TypeError on numpy scalars (e.g. values that slip
+    through from pandas or pgmpy internals). This fallback keeps the export
+    robust: it never silently produces a missing file because of a value
+    type, and it never invents data.
+    """
+    try:
+        import numpy as np
+
+        if isinstance(value, np.integer):
+            return int(value)
+        if isinstance(value, np.floating):
+            return float(value)
+        if isinstance(value, np.bool_):
+            return bool(value)
+        if isinstance(value, np.ndarray):
+            return value.tolist()
+    except ImportError:
+        pass
+    raise TypeError(
+        f"Object of type {type(value).__name__} is not JSON serializable"
+    )
+
+
+def write_assessment_json(result: dict, path="output/assessment.json") -> Path:
+    """Write the complete assessment result as a machine-readable JSON record.
+
+    The record mirrors exactly what ``/analyze`` returns and what the
+    dashboard displays, plus a generation timestamp, so an archived run can be
+    reproduced, compared with later runs, or consumed by other tooling. Every
+    field is a real, calculated output of the run - nothing synthetic is added.
+    """
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    record = {
+        "format": "ics-risk-assessment",
+        "version": 1,
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "assessment": {
+            key: result[key] for key in _ASSESSMENT_JSON_FIELDS if key in result
+        },
+    }
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(record, f, indent=2, default=_json_default)
     return path
 
 

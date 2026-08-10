@@ -212,7 +212,7 @@ export default function NodeDetails({
                   riskRanking.findIndex((entry) => entry.asset === selectedNode) +
                     1 || '—'
                 }
-                hint="Position in the risk register (top 5 shown here)."
+                hint="Position in the complete risk register (1 = highest risk index)."
               />
               <KvRow
                 label="On top attack path"

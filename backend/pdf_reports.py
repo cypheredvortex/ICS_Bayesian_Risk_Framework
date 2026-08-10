@@ -99,6 +99,9 @@ def _build_styles() -> dict[str, ParagraphStyle]:
         leading=11,
         textColor=COLOR_TEXT,
         alignment=TA_LEFT,
+        # Allow cells to wrap and rows to grow vertically so long asset
+        # names or evidence entries never clip or overflow the column.
+        wordWrap="CJK",
     ))
     styles.add(ParagraphStyle(
         name="TableCellRight",
@@ -215,17 +218,15 @@ def generate_pdf_report(
         styles["Body"],
     ))
 
-    # Key metrics table
+    # Key metrics table (the evidence itself gets its own section below so a
+    # large evidence set can wrap and span pages instead of overflowing one row)
     metrics_data = [
         ["Metric", "Value"],
         ["Overall Risk Score", str(_format_pct(overall_risk) if isinstance(overall_risk, (int, float)) else str(overall_risk))],
         ["Risk Level", risk_level],
         ["Assets Assessed", str(summary.get("asset_count", "—"))],
         ["Connections Assessed", str(summary.get("relationship_count", "—"))],
-        ["Evidence Used", ", ".join(
-            f"{k}: {'Compromised' if v == 1 else 'Safe'}"
-            for k, v in evidence_used.items()
-        ) or "None"],
+        ["Evidence Items", str(len(evidence_used)) if evidence_used else "None"],
     ]
     metrics_table = Table(metrics_data, colWidths=[4.5 * cm, 10 * cm])
     metrics_table.setStyle(TableStyle([
@@ -245,6 +246,60 @@ def generate_pdf_report(
         ("RIGHTPADDING", (0, 0), (-1, -1), 6),
     ]))
     story.append(metrics_table)
+
+    # ---- Selected Evidence ----
+    story.append(Paragraph("Selected Evidence", styles["SectionHeading"]))
+    if evidence_used:
+        story.append(Paragraph(
+            "Assets pinned to a known state before inference. Pinned assets keep "
+            "their assigned value exactly; every other probability is recomputed "
+            "from them through the Bayesian network.",
+            styles["Body"],
+        ))
+        evidence_rows: list[list[Any]] = [
+            [
+                Paragraph("Asset", styles["TableHeader"]),
+                Paragraph("State", styles["TableHeader"]),
+            ]
+        ]
+        for asset, state in evidence_used.items():
+            evidence_rows.append([
+                Paragraph(str(asset), styles["TableCell"]),
+                Paragraph("Compromised" if state == 1 else "Safe", styles["TableCell"]),
+            ])
+
+        evidence_table = Table(
+            evidence_rows,
+            colWidths=[11 * cm, 3.5 * cm],
+            repeatRows=1,  # repeat the header when the table splits across pages
+        )
+        evidence_table.setStyle(TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), COLOR_DARK),
+            ("TEXTCOLOR", (0, 0), (-1, 0), COLOR_WHITE),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, 0), 8),
+            ("ALIGN", (1, 0), (1, -1), "CENTER"),
+            ("GRID", (0, 0), (-1, -1), 0.4, COLOR_BORDER),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("TOPPADDING", (0, 0), (-1, -1), 3),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+            ("LEFTPADDING", (0, 0), (-1, -1), 4),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ]))
+        # Alternating row shading for readability on long lists
+        for i in range(1, len(evidence_rows)):
+            bg = colors.HexColor("#f8fafc") if i % 2 == 0 else COLOR_WHITE
+            evidence_table.setStyle(TableStyle([
+                ("BACKGROUND", (0, i), (-1, i), bg)
+            ]))
+        story.append(evidence_table)
+    else:
+        story.append(Paragraph(
+            "No evidence was supplied for this run; the probabilities below are "
+            "based on the topology and the configured model assumptions only.",
+            styles["Body"],
+        ))
+    story.append(Spacer(1, 2 * mm))
 
     # ---- Model Parameters (traceability) ----
     settings_used = result.get("settings_used", {}) or {}
@@ -312,21 +367,27 @@ def generate_pdf_report(
     ))
 
     if risk_scores:
-        header = ["Rank", "Asset", "Risk Score", "Probability", "Risk Level"]
-        risk_rows = [header]
-        for rank, row in enumerate(risk_scores[:20], start=1):  # Top 20
+        # The complete register: every asset the framework ranked, in the same
+        # order and with the same values as the dashboard and CSV. The table
+        # splits across pages automatically and repeats its header row.
+        header = ["Rank", "Asset", "Risk Index", "P(Compromised)", "Impact", "Risk Level"]
+        risk_rows: list[list[Any]] = [
+            [Paragraph(cell, styles["TableHeader"]) for cell in header]
+        ]
+        for rank, row in enumerate(risk_scores, start=1):
             risk_val = row.get("risk", 0)
             risk_rows.append([
                 str(rank),
-                str(row.get("asset", "—")),
+                Paragraph(str(row.get("asset", "—")), styles["TableCell"]),
                 _format_pct(risk_val),
                 _format_pct(row.get("P(compromised|evidence)", None)),
+                _format_pct(row.get("impact", None)),
                 str(row.get("risk_level", "—")).title(),
             ])
 
         risk_table = Table(
             risk_rows,
-            colWidths=[1.2 * cm, 5 * cm, 2.5 * cm, 2.5 * cm, 2.5 * cm],
+            colWidths=[1.2 * cm, 4.6 * cm, 2.3 * cm, 2.3 * cm, 2.0 * cm, 2.3 * cm],
             repeatRows=1,
         )
 
@@ -337,8 +398,8 @@ def generate_pdf_report(
             ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
             ("FONTSIZE", (0, 0), (-1, 0), 8),
             ("ALIGN", (0, 0), (0, -1), "CENTER"),
-            ("ALIGN", (2, 0), (3, -1), "RIGHT"),
-            ("ALIGN", (4, 0), (4, -1), "CENTER"),
+            ("ALIGN", (2, 0), (4, -1), "RIGHT"),
+            ("ALIGN", (5, 0), (5, -1), "CENTER"),
             ("GRID", (0, 0), (-1, -1), 0.4, COLOR_BORDER),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
             ("TOPPADDING", (0, 0), (-1, -1), 3),
@@ -355,12 +416,11 @@ def generate_pdf_report(
         risk_table.setStyle(TableStyle(table_style_cmds))
         story.append(risk_table)
 
-        if len(risk_scores) > 20:
-            story.append(Paragraph(
-                f"Showing top 20 of {len(risk_scores)} assets. "
-                f"Full register available in the CSV export.",
-                styles["Small"],
-            ))
+        story.append(Paragraph(
+            f"{len(risk_scores)} asset(s) ranked by risk index, highest first. "
+            f"The same register is available as CSV for further analysis.",
+            styles["Small"],
+        ))
     else:
         story.append(Paragraph("No risk scores were generated.", styles["Body"]))
 
