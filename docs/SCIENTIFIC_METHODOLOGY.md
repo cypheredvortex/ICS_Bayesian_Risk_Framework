@@ -35,23 +35,23 @@ The implementation performs, in order:
 
 ```mermaid
 flowchart TD
-    A[ICS topology: assets + relationships] --> B[Normalize + validate: DAG, kinds, zones, defaults]
-    B --> C[Per-asset effective CVSS v3.1 severity]
-    C --> D[Severity → intrinsic probability via logistic mapping]
-    D --> E[Contextual log-odds adjustment: exposure, patch, human, physical]
-    E --> F[Intrinsic compromise probability p_base — the leak]
-    B --> G[Per-edge propagation weight w = min(0.99, base × controls)]
-    F --> H[CPT construction — Noisy-OR with leak p_base]
+    A["ICS topology: assets + relationships"] --> B["Normalize + validate: DAG, kinds, zones, defaults"]
+    B --> C["Per-asset effective CVSS v3.1 severity"]
+    C --> D["Severity → intrinsic probability via logistic mapping"]
+    D --> E["Contextual log-odds adjustment: exposure, patch, human, physical"]
+    E --> F["Intrinsic compromise probability p_base — the leak"]
+    B --> G["Per-edge propagation weight"]
+    F --> H["CPT construction — Noisy-OR with leak p_base"]
     G --> H
-    H --> I[Bayesian network: DAG + CPTs]
-    I --> J[Evidence: hard 0/1 observations]
-    J --> K[Exact inference: Variable Elimination]
-    K --> L[Posterior compromise probabilities]
-    L --> M[Risk index = posterior × impact]
-    B --> N[Impact = severity/10 × scope × weight]
+    H --> I["Bayesian network: DAG + CPTs"]
+    I --> J["Evidence: hard 0/1 observations"]
+    J --> K["Exact inference: Variable Elimination"]
+    K --> L["Posterior compromise probabilities"]
+    L --> M["Risk index = posterior × impact"]
+    B --> N["Impact = severity / 10 × scope × weight"]
     N --> M
-    M --> O[Ranking, thresholds, aggregate risk]
-    M --> P[Attack path analysis]
+    M --> O["Ranking, thresholds, aggregate risk"]
+    M --> P["Attack path analysis"]
 ```
 
 The next sections follow this chain stage by stage. Each stage defines its mathematical objects, gives the exact implemented equations, and states the assumptions they rest on.
