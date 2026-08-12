@@ -1,8 +1,27 @@
+import {
+  assetTypeDescriptions,
+  kindFallbackDescriptions,
+  relationshipColors,
+  RELATIONSHIP_FALLBACK_COLOR,
+} from './constants'
+
 export function getRiskTone(level: string) {
   if (level === 'critical') return 'text-rose-400 border-rose-500/40 bg-rose-500/10'
   if (level === 'high') return 'text-amber-300 border-amber-500/40 bg-amber-500/10'
   if (level === 'moderate') return 'text-cyan-300 border-cyan-500/40 bg-cyan-500/10'
   return 'text-emerald-300 border-emerald-500/40 bg-emerald-500/10'
+}
+
+// Edge stroke colour for a relationship type.  Falls back to a neutral
+// slate for types not in the semantic palette (e.g. custom types added via
+// settings), so unknown relationships stay visible rather than vanishing.
+export function relationshipColor(relType: string | undefined | null): string {
+  if (relType) {
+    const normalized = relType.toLowerCase().trim()
+    const color = relationshipColors[normalized]
+    if (color) return color
+  }
+  return RELATIONSHIP_FALLBACK_COLOR
 }
 
 export function getProbabilityColor(probability: number) {
@@ -42,6 +61,59 @@ export function formatBytes(bytes: number): string {
   return `${value.toFixed(unit === 0 ? 0 : 1)} ${units[unit]}`
 }
 
+// Compact a type/name into a lowercase alphanumeric token so "control valve",
+// "ControlValve" and the CSV-derived "controlvalve" all match the same
+// dictionary entry.
+function compactToken(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, '')
+}
+
+// Longest-first so "safety logic solver" wins over "logic solver" and
+// "control valve" over "valve" when a candidate contains several entries.
+const descriptionKeys = Object.keys(assetTypeDescriptions).sort(
+  (a, b) => b.length - a.length,
+)
+
+// Resolve a plain-language "what is this asset?" explanation for the Node
+// Details panel.  Priority:
+//   1. the topology's own `description` field (authoritative, specific);
+//   2. the asset-type dictionary keyed by the declared `type`;
+//   3. the same dictionary matched against the asset name;
+//   4. a generic kind-level fallback.
+// Short dictionary keys (acronyms like "ct", "hmi", "rtu") only match as
+// whole words to avoid false hits inside longer names.
+export function assetDescription(
+  attrs: Record<string, unknown> | undefined,
+  name: string,
+  kind: string,
+): string | null {
+  const declared = attrs?.description
+  if (typeof declared === 'string' && declared.trim()) return declared.trim()
+
+  const declaredType =
+    typeof attrs?.type === 'string' && attrs.type.trim()
+      ? attrs.type.trim()
+      : ''
+  const typeToken = declaredType ? compactToken(declaredType) : ''
+  if (typeToken) {
+    const direct = assetTypeDescriptions[typeToken]
+    if (direct) return direct
+  }
+
+  const spaced = `${declaredType ? `${declaredType} ` : ''}${name}`.toLowerCase()
+  const compacted = compactToken(spaced)
+  for (const key of descriptionKeys) {
+    if (key.length >= 4) {
+      if (compacted.includes(key)) return assetTypeDescriptions[key]
+    } else if (new RegExp(`(^|[^a-z0-9])${key}($|[^a-z0-9])`).test(spaced)) {
+      return assetTypeDescriptions[key]
+    }
+  }
+
+  const fallback = kindFallbackDescriptions[kind]
+  return fallback ?? null
+}
+
 // Derive the structural summary client-side from a normalized topology
 // payload. Used as a graceful fallback when an upload response omits
 // `summary`. It reads the exact same normalized fields the backend computes
@@ -58,10 +130,12 @@ export function deriveTopologySummary(
   relationship_types: Record<string, number>
   firewalled_relationships: number
   field_coverage: Record<string, number>
+  purdue_levels: Record<string, number>
 } {
   const zones: Record<string, number> = {}
   const kinds: Record<string, number> = {}
   const relationshipTypes: Record<string, number> = {}
+  const purdueLevels: Record<string, number> = {}
   const coverage: Record<string, number> = {
     cvss_type: 0,
     exposed: 0,
@@ -69,6 +143,8 @@ export function deriveTopologySummary(
     consequence_severity: 0,
     zone: 0,
     vulnerabilities: 0,
+    type: 0,
+    description: 0,
   }
   let zoned = 0
 
@@ -80,6 +156,11 @@ export function deriveTopologySummary(
       const name = String(zone)
       zones[name] = (zones[name] ?? 0) + 1
       zoned += 1
+    }
+    const level = attrs?.purdue_level
+    if (level) {
+      const name = String(level)
+      purdueLevels[name] = (purdueLevels[name] ?? 0) + 1
     }
     for (const field of Object.keys(coverage)) {
       const value = attrs?.[field]
@@ -102,6 +183,7 @@ export function deriveTopologySummary(
     zones,
     assets_without_zone: Math.max(0, Object.keys(topology.assets).length - zoned),
     kinds,
+    purdue_levels: purdueLevels,
     relationship_types: relationshipTypes,
     firewalled_relationships: firewalled,
     field_coverage: coverage,
@@ -154,7 +236,8 @@ export async function parseErrorBody(
 // Builds a left-to-right layered layout by BFS depth instead of a naive
 // index % 3 grid, so upstream/downstream relationships read left-to-right.
 // This also happens to match the "layered" layout the backend's
-// visualization settings already name.
+// visualization settings already name. Used as the fallback when a topology
+// carries no zone metadata.
 export function computeLayeredPositions(
   nodeIds: string[],
   edges: Array<{ source: string; target: string }>,
@@ -209,3 +292,138 @@ export function computeLayeredPositions(
   return positions
 }
 
+// Orders zone names into columns following the Purdue hierarchy (highest
+// level first), keeping ties alphabetical. Zones without a declared Purdue
+// level (or without any level at all) sort after every declared level.
+export function orderZonesByPurdue(
+  zones: Iterable<string>,
+  zonePurdue: (zone: string) => string | null,
+  rankLevel: (level: string | null) => number,
+): string[] {
+  // Deduplicate: callers commonly pass one zone name per node (e.g.
+  // nodeIds.map(zoneOf)), and laying a zone out once per member would shift
+  // every subsequent zone band by that zone's width each time.
+  return [...new Set(zones)].sort((a, b) => {
+    const ra = rankLevel(zonePurdue(a))
+    const rb = rankLevel(zonePurdue(b))
+    if (ra !== rb) return ra - rb
+    return a.localeCompare(b)
+  })
+}
+
+// Layouts the network as vertical zone bands ordered by Purdue level, with
+// left-to-right causality preserved *within* each zone via BFS layering of
+// the zone's local subgraph. Nodes are placed on a grid per zone: the BFS
+// depth selects the sub-column (so causal chains such as SIS
+// sensors → logic solver → final elements read left-to-right) and the rank
+// within a layer selects the row. Dense layers wrap into additional
+// sub-columns so no zone grows into an unreadably tall stack. Returns node
+// positions plus band geometry (column x, width, extent height) for the
+// zone-band decorations.
+export function computeZonedPositions(
+  nodeIds: string[],
+  edges: Array<{ source: string; target: string }>,
+  zoneOf: (id: string) => string,
+  zoneOrder: string[],
+  // Geometry constants — kept as parameters so tests can verify the packing
+  // without magic numbers. COLUMN_STEP and ROW_STEP include the visual gaps
+  // between adjacent nodes.
+  columnStep = 208,
+  rowStep = 132,
+  nodeHeight = 76,
+  maxRowsPerColumn = 7,
+) {
+  const positions = new Map<string, { x: number; y: number }>()
+  const bandExtents = new Map<string, { x: number; width: number; height: number }>()
+
+  let columnX = 0
+  zoneOrder.forEach((zone) => {
+    const members = nodeIds.filter((id) => zoneOf(id) === zone)
+    const localEdges = edges.filter(
+      ({ source, target }) =>
+        zoneOf(source) === zone && zoneOf(target) === zone,
+    )
+
+    // BFS depth within the zone's local subgraph so causal direction still
+    // reads left-to-right where the zone contains chains (e.g. SIS sensors
+    // -> logic solver -> final elements).
+    const outgoing = new Map<string, string[]>()
+    const incomingCount = new Map<string, number>()
+    members.forEach((id) => {
+      outgoing.set(id, [])
+      incomingCount.set(id, 0)
+    })
+    localEdges.forEach(({ source, target }) => {
+      if (!outgoing.has(source) || !incomingCount.has(target)) return
+      outgoing.get(source)!.push(target)
+      incomingCount.set(target, (incomingCount.get(target) ?? 0) + 1)
+    })
+    const roots = members.filter((id) => (incomingCount.get(id) ?? 0) === 0)
+    const queue: Array<{ id: string; depth: number }> = (
+      roots.length ? roots : members.slice(0, 1)
+    ).map((id) => ({ id, depth: 0 }))
+    const depth = new Map<string, number>()
+    const visited = new Set<string>()
+    while (queue.length) {
+      const { id, depth: d } = queue.shift()!
+      if (visited.has(id)) continue
+      visited.add(id)
+      depth.set(id, d)
+      for (const next of outgoing.get(id) ?? []) {
+        if (!visited.has(next)) queue.push({ id: next, depth: d + 1 })
+      }
+    }
+    let maxDepth = Math.max(0, ...members.map((id) => depth.get(id) ?? 0))
+    members.forEach((id) => {
+      if (!depth.has(id)) {
+        maxDepth += 1
+        depth.set(id, maxDepth)
+      }
+    })
+
+    // Deterministic order: depth first, then id, so dense layers pack the
+    // same way on every render.
+    const ordered = [...members].sort(
+      (a, b) =>
+        (depth.get(a) ?? 0) - (depth.get(b) ?? 0) || a.localeCompare(b),
+    )
+    // Group members by BFS depth; within a depth, assign rows 0..maxRows-1
+    // and wrap into additional sub-columns when the column fills up.
+    const rowsOf = new Map<string, number>()
+    const subColumnOf = new Map<string, number>()
+    const membersByDepth = new Map<number, string[]>()
+    ordered.forEach((id) => {
+      const d = depth.get(id) ?? 0
+      const list = membersByDepth.get(d) ?? []
+      list.push(id)
+      membersByDepth.set(d, list)
+    })
+    membersByDepth.forEach((ids) => {
+      ids.forEach((id, index) => {
+        rowsOf.set(id, index % maxRowsPerColumn)
+        subColumnOf.set(id, Math.floor(index / maxRowsPerColumn))
+      })
+    })
+
+    let bandBottom = 0
+    let maxColumnIndex = 0
+    ordered.forEach((id) => {
+      const d = depth.get(id) ?? 0
+      const row = rowsOf.get(id) ?? 0
+      // The node's depth selects the base sub-column; wrapping a layer past
+      // maxRowsPerColumn spills into the next sub-column.
+      const subColumn = d + (subColumnOf.get(id) ?? 0)
+      const x = 40 + subColumn * columnStep
+      const y = 46 + row * rowStep
+      positions.set(id, { x: columnX + x, y })
+      bandBottom = Math.max(bandBottom, y + nodeHeight)
+      maxColumnIndex = Math.max(maxColumnIndex, subColumn)
+    })
+
+    const width = 40 + (maxColumnIndex + 1) * columnStep + 24
+    bandExtents.set(zone, { x: columnX, width, height: bandBottom + 24 })
+    columnX += width + 40
+  })
+
+  return { positions, bandExtents }
+}

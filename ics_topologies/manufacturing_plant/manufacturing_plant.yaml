@@ -8,21 +8,27 @@ zones:
 - id: Enterprise
   name: Enterprise IT
   color: '#4dabf7'
+  purdue_level: '4'
 - id: DMZ
-  name: Industrial DMZ
+  name: Industrial DMZ (L3.5)
   color: '#ffa94d'
+  purdue_level: '3.5'
 - id: ShopFloor
-  name: Shop Floor Network
+  name: Shop Floor Network (L3)
   color: '#845ef7'
+  purdue_level: '3'
 - id: Cell
-  name: Work Cell
+  name: Work Cell (L2)
   color: '#fcc419'
+  purdue_level: '2'
 - id: Field
-  name: Field Devices
+  name: Field Devices (L1)
   color: '#20c997'
+  purdue_level: '1'
 - id: Safety
   name: Safety Network
   color: '#da77f2'
+  purdue_level: '2'
 assets:
 - id: MFG-ENT-FW-001
   name: Perimeter Firewall
@@ -37,6 +43,7 @@ assets:
   exposed: true
   patched: true
   consequence_severity: 8.0
+  purdue_level: '4'
 - id: MFG-ENT-SW-001
   name: Enterprise Switch
   type: Network Switch
@@ -50,6 +57,7 @@ assets:
   exposed: false
   patched: true
   consequence_severity: 6.0
+  purdue_level: '4'
 - id: MFG-ENT-DC-001
   name: Domain Controller
   type: Server
@@ -63,6 +71,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 9.0
+  purdue_level: '4'
 - id: MFG-ENT-MES-001
   name: MES Server
   type: Server
@@ -76,6 +85,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 8.0
+  purdue_level: '4'
 - id: MFG-ENT-ERP-001
   name: ERP Server
   type: Server
@@ -89,6 +99,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 5.0
+  purdue_level: '4'
 - id: MFG-DMZ-SW-001
   name: DMZ Switch
   type: Network Switch
@@ -102,6 +113,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 7.0
+  purdue_level: '3.5'
 - id: MFG-DMZ-HIST-001
   name: Historian
   type: Server
@@ -115,6 +127,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 5.0
+  purdue_level: '3.5'
 - id: MFG-DMZ-JUMP-001
   name: Jump Server
   type: Server
@@ -128,6 +141,7 @@ assets:
   exposed: true
   patched: true
   consequence_severity: 8.0
+  purdue_level: '3.5'
 - id: MFG-SF-SW-001
   name: Shop Floor Switch
   type: Network Switch
@@ -141,6 +155,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 8.0
+  purdue_level: '3'
 - id: MFG-SF-SCADA-001
   name: SCADA Server
   type: SCADA
@@ -154,6 +169,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 9.0
+  purdue_level: '3'
 - id: MFG-SF-HMI-001
   name: Production HMI
   type: HMI
@@ -167,6 +183,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 6.0
+  purdue_level: '3'
 - id: MFG-CELL1-SW-001
   name: Cell 1 Switch
   type: Network Switch
@@ -180,6 +197,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 7.0
+  purdue_level: '2'
 - id: MFG-CELL1-PLC-001
   name: Cell 1 PLC
   type: PLC
@@ -193,6 +211,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 9.0
+  purdue_level: '2'
 - id: MFG-CELL1-ROBOT-001
   name: Robot Controller
   type: Robot
@@ -206,6 +225,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 8.0
+  purdue_level: '2'
 - id: MFG-CELL1-POS-001
   name: Positioner
   type: Positioner
@@ -217,6 +237,7 @@ assets:
   model: 2-axis pos.
   p_base_override: 0.01
   consequence_severity: 5.0
+  purdue_level: '2'
 - id: MFG-CELL2-SW-001
   name: Cell 2 Switch
   type: Network Switch
@@ -230,6 +251,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 7.0
+  purdue_level: '2'
 - id: MFG-CELL2-PLC-001
   name: Cell 2 PLC
   type: PLC
@@ -243,6 +265,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 9.0
+  purdue_level: '2'
 - id: MFG-CELL2-HMI-001
   name: Cell 2 HMI
   type: HMI
@@ -256,6 +279,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 6.0
+  purdue_level: '2'
 - id: MFG-SAF-PLC-001
   name: Safety PLC
   type: SafetyPLC
@@ -269,6 +293,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 9.0
+  purdue_level: '2'
 - id: MFG-SAF-LC-001
   name: Light Curtain
   type: SafetyDevice
@@ -280,6 +305,7 @@ assets:
   model: C4000
   p_base_override: 0.01
   consequence_severity: 6.0
+  purdue_level: '1'
 - id: MFG-SAF-ESTOP-001
   name: E-Stop
   type: SafetyDevice
@@ -291,6 +317,7 @@ assets:
   model: PNOZ
   p_base_override: 0.01
   consequence_severity: 6.0
+  purdue_level: '1'
 - id: MFG-FLD-VFD-001
   name: Conveyor VFD
   type: VFD
@@ -304,6 +331,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 7.0
+  purdue_level: '1'
 - id: MFG-FLD-MOTOR-001
   name: Conveyor Motor
   type: Motor
@@ -315,6 +343,7 @@ assets:
   model: 1LA8
   p_base_override: 0.01
   consequence_severity: 5.0
+  purdue_level: '1'
 - id: MFG-FLD-SENSOR-001
   name: Proximity Sensor
   type: Sensor
@@ -326,6 +355,7 @@ assets:
   model: Q45
   p_base_override: 0.01
   consequence_severity: 4.0
+  purdue_level: '1'
 - id: MFG-FLD-SENSOR-002
   name: Vision Sensor
   type: Sensor
@@ -337,6 +367,7 @@ assets:
   model: In-Sight 7000
   p_base_override: 0.01
   consequence_severity: 5.0
+  purdue_level: '1'
 - id: MFG-FLD-ACT-001
   name: Pneumatic Cylinder
   type: Actuator
@@ -348,6 +379,7 @@ assets:
   model: CQ2
   p_base_override: 0.01
   consequence_severity: 4.0
+  purdue_level: '1'
 - id: MFG-HUM-SUP-001
   name: Production Supervisor
   type: Supervisor
@@ -359,6 +391,7 @@ assets:
   awareness: 0.4
   privilege: standard
   consequence_severity: 4.0
+  purdue_level: '3'
 connections:
 - source: MFG-ENT-FW-001
   target: MFG-ENT-SW-001
@@ -366,6 +399,7 @@ connections:
   protocol: HTTP
   direction: bidirectional
   trust: low
+  firewalled: true
 - source: MFG-ENT-SW-001
   target: MFG-ENT-DC-001
   type: connects-to
@@ -390,6 +424,7 @@ connections:
   protocol: HTTP
   direction: bidirectional
   trust: medium
+  firewalled: true
 - source: MFG-DMZ-SW-001
   target: MFG-DMZ-HIST-001
   type: connects-to

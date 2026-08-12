@@ -1,6 +1,7 @@
-id,name,color
-Internet,Internet,#ff6b6b
-Enterprise,Enterprise IT,#4dabf7
-DMZ,OT DMZ,#ffa94d
-Control,Control Network,#845ef7
-Field,Field Devices,#20c997
+id,name,color,purdue_level
+Internet,Internet,#ff6b6b,5
+Enterprise,Enterprise IT,#4dabf7,4
+IDMZ,Industrial DMZ (L3.5),#ffa94d,3.5
+Operations,Site Operations (L3),#9775fa,3
+Control,Control Network (L2),#845ef7,2
+Field,Field Devices (L1),#20c997,1

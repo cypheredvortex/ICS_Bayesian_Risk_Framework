@@ -11,6 +11,25 @@ const categoryTone: Record<string, 'emerald' | 'cyan' | 'violet' | 'amber'> = {
   Conversion: 'amber',
 }
 
+// Purdue levels ordered top-down (L5 → L0) for the summary chips.
+const purdueOrder: Record<string, number> = {
+  '5': 0,
+  '4': 1,
+  '3.5': 2,
+  '3': 3,
+  '2': 4,
+  '1': 5,
+  '0': 6,
+}
+
+// Severity ordering and badge tones for architecture-audit findings.
+const severityOrder: Record<string, number> = { error: 0, warning: 1, info: 2 }
+const severityBadgeTone: Record<string, 'rose' | 'amber' | 'cyan' | 'slate'> = {
+  error: 'rose',
+  warning: 'amber',
+  info: 'cyan',
+}
+
 export default function TopologySection({
   uploadedFileName,
   review,
@@ -18,6 +37,7 @@ export default function TopologySection({
   apiOnline,
   loading,
   hasAssets,
+  assessed,
   onFileUpload,
   onRemoveTopology,
   onRunAssessment,
@@ -30,6 +50,9 @@ export default function TopologySection({
   apiOnline: boolean | null
   loading: boolean
   hasAssets: boolean
+  // True once an assessment has completed for the current topology, so the
+  // workflow stepper can close the loop (step 3 marked done).
+  assessed: boolean
   onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void
   onRemoveTopology: () => void
   onRunAssessment: () => void
@@ -137,6 +160,68 @@ export default function TopologySection({
         </div>
       ) : null}
 
+      {/* Analyst workflow stepper: the three deliberate stages of the
+          assessment (upload → review → analyse). Current stage is highlighted
+          from the actual component state, so the analyst always knows what to
+          do next without hunting through the card. */}
+      <ol
+        className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-2 text-xs"
+        aria-label="Assessment workflow"
+      >
+        {[
+          {
+            n: 1,
+            label: 'Upload topology',
+            active: parsing || !review,
+            done: Boolean(review),
+          },
+          {
+            n: 2,
+            label: 'Review & validate',
+            active: Boolean(review) && !loading && !assessed,
+            done: assessed,
+          },
+          {
+            n: 3,
+            label: 'Run assessment',
+            active: loading,
+            done: assessed,
+          },
+        ].map((step, index) => (
+          <li key={step.n} className="flex items-center gap-2">
+            {index > 0 ? (
+              <span
+                className="h-px w-5 bg-slate-700"
+                aria-hidden="true"
+              />
+            ) : null}
+            <span
+              className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-semibold transition ${
+                step.done
+                  ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300'
+                  : step.active
+                    ? 'border-cyan-400/50 bg-cyan-500/10 text-cyan-200'
+                    : 'border-slate-700 bg-slate-950/60 text-slate-500'
+              }`}
+              aria-current={step.active ? 'step' : undefined}
+            >
+              <span
+                className={`flex h-4 w-4 items-center justify-center rounded-full text-[10px] ${
+                  step.done
+                    ? 'bg-emerald-400/20'
+                    : step.active
+                      ? 'bg-cyan-400/20'
+                      : 'bg-slate-800'
+                }`}
+              >
+                {step.done ? '✓' : step.n}
+              </span>
+              {step.label}
+            </span>
+          </li>
+        ))}
+      </ol>
+
       {/* Upload / selected-file workspace */}
       <div className="mt-5">
         {parsing ? (
@@ -222,6 +307,8 @@ export default function TopologySection({
                     ['Patch state', coverage.patched, 'assets declare patching status'],
                     ['Impact', coverage.consequence_severity, 'assets declare consequence severity'],
                     ['Zone', coverage.zone, 'assets declare a zone'],
+                    ['Type', coverage.type, 'assets declare a device type'],
+                    ['Description', coverage.description, 'assets carry a plain-language description'],
                     ['Vulnerabilities', coverage.vulnerabilities, 'assets carry CVE/vulnerability records'],
                   ].map(([label, count, hint]) => {
                     const n = Number(count)
@@ -251,6 +338,91 @@ export default function TopologySection({
                     </Badge>
                   ))}
                 </div>
+              </div>
+            ) : null}
+
+            {/* Purdue levels — ordered top-down (L5 → L0) using the same
+                metadata the network viewer uses for its zone bands. */}
+            {review.summary.purdue_levels &&
+            Object.keys(review.summary.purdue_levels).length > 0 ? (
+              <div className="border-t border-slate-800 px-4 py-3">
+                <p className="section-label">Purdue levels</p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {Object.entries(review.summary.purdue_levels)
+                    // Only declared levels are rendered; any unrecognised key
+                    // (defensive) is skipped rather than shown as "L…".
+                    .filter(([level]) => level in purdueOrder)
+                    .sort(
+                      ([a], [b]) =>
+                        (purdueOrder[b] ?? 99) - (purdueOrder[a] ?? 99),
+                    )
+                    .map(([level, count]) => (
+                      <Badge key={level} tone="cyan">
+                        L{level} · {count}
+                      </Badge>
+                    ))}
+                </div>
+              </div>
+            ) : null}
+
+            {/* Architecture review — advisory findings from the backend ICS
+                audit (Purdue-inspired zoning, IEC 62443 zone/conduit
+                thinking, SIS isolation, Enterprise/OT boundary). */}
+            {review.summary.architecture_issues ? (
+              <div className="border-t border-slate-800 px-4 py-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="section-label">Architecture review</p>
+                  {review.summary.architecture_issue_counts ? (
+                    <span className="flex flex-wrap gap-1">
+                      {Object.entries(review.summary.architecture_issue_counts)
+                        .sort(([a], [b]) => severityOrder[a] - severityOrder[b])
+                        .map(([severity, count]) => (
+                          <Badge key={severity} tone={severityBadgeTone[severity] ?? 'slate'}>
+                            {severity}: {count}
+                          </Badge>
+                        ))}
+                    </span>
+                  ) : null}
+                </div>
+                <p className="mt-1 text-[11px] leading-snug text-slate-500">
+                  Advisory findings about how defensible the architecture is —
+                  structural validation already gates the upload, these guide
+                  review before you trust the risk numbers.
+                </p>
+                <ul className="mt-2 space-y-1.5">
+                  {review.summary.architecture_issues.map((issue) => (
+                    <li
+                      key={issue.code}
+                      className="flex items-start gap-2 rounded-lg border border-slate-800 bg-slate-950/50 px-2.5 py-1.5"
+                    >
+                      <span
+                        className={`mt-0.5 shrink-0 rounded px-1 py-px text-[9px] font-bold uppercase tracking-wider ${
+                          issue.severity === 'error'
+                            ? 'bg-rose-500/15 text-rose-300'
+                            : issue.severity === 'warning'
+                              ? 'bg-amber-500/15 text-amber-300'
+                              : 'bg-sky-500/15 text-sky-300'
+                        }`}
+                      >
+                        {issue.severity}
+                      </span>
+                      <span className="text-xs leading-relaxed text-slate-300">
+                        <span className="font-mono text-[10px] font-semibold text-slate-500">
+                          {issue.code}
+                        </span>{' '}
+                        {issue.message}
+                        {issue.assets.length ? (
+                          <span className="mt-0.5 block font-mono text-[10px] text-slate-500">
+                            {issue.assets.slice(0, 6).join(', ')}
+                            {issue.assets.length > 6
+                              ? ` +${issue.assets.length - 6} more`
+                              : ''}
+                          </span>
+                        ) : null}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ) : null}
 

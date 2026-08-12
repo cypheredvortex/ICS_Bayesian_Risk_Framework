@@ -1,23 +1,25 @@
 <?xml version='1.0' encoding='utf-8'?>
 <graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
-  <key id="d22" for="edge" attr.name="trust" attr.type="string" />
-  <key id="d21" for="edge" attr.name="direction" attr.type="string" />
-  <key id="d20" for="edge" attr.name="protocol" attr.type="string" />
-  <key id="d19" for="edge" attr.name="type" attr.type="string" />
-  <key id="d18" for="edge" attr.name="target" attr.type="string" />
-  <key id="d17" for="edge" attr.name="source" attr.type="string" />
-  <key id="d16" for="node" attr.name="privilege" attr.type="string" />
-  <key id="d15" for="node" attr.name="awareness" attr.type="double" />
-  <key id="d14" for="node" attr.name="role" attr.type="string" />
-  <key id="d13" for="node" attr.name="p_base_override" attr.type="double" />
-  <key id="d12" for="node" attr.name="consequence_severity" attr.type="double" />
-  <key id="d11" for="node" attr.name="patched" attr.type="boolean" />
-  <key id="d10" for="node" attr.name="exposed" attr.type="boolean" />
-  <key id="d9" for="node" attr.name="cvss_type" attr.type="double" />
-  <key id="d8" for="node" attr.name="model" attr.type="string" />
-  <key id="d7" for="node" attr.name="vendor" attr.type="string" />
-  <key id="d6" for="node" attr.name="criticality" attr.type="string" />
-  <key id="d5" for="node" attr.name="description" attr.type="string" />
+  <key id="d24" for="edge" attr.name="firewalled" attr.type="boolean" />
+  <key id="d23" for="edge" attr.name="trust" attr.type="string" />
+  <key id="d22" for="edge" attr.name="direction" attr.type="string" />
+  <key id="d21" for="edge" attr.name="protocol" attr.type="string" />
+  <key id="d20" for="edge" attr.name="type" attr.type="string" />
+  <key id="d19" for="edge" attr.name="target" attr.type="string" />
+  <key id="d18" for="edge" attr.name="source" attr.type="string" />
+  <key id="d17" for="node" attr.name="privilege" attr.type="string" />
+  <key id="d16" for="node" attr.name="awareness" attr.type="double" />
+  <key id="d15" for="node" attr.name="role" attr.type="string" />
+  <key id="d14" for="node" attr.name="p_base_override" attr.type="double" />
+  <key id="d13" for="node" attr.name="consequence_severity" attr.type="double" />
+  <key id="d12" for="node" attr.name="patched" attr.type="boolean" />
+  <key id="d11" for="node" attr.name="exposed" attr.type="boolean" />
+  <key id="d10" for="node" attr.name="cvss_type" attr.type="double" />
+  <key id="d9" for="node" attr.name="model" attr.type="string" />
+  <key id="d8" for="node" attr.name="vendor" attr.type="string" />
+  <key id="d7" for="node" attr.name="criticality" attr.type="string" />
+  <key id="d6" for="node" attr.name="description" attr.type="string" />
+  <key id="d5" for="node" attr.name="purdue_level" attr.type="string" />
   <key id="d4" for="node" attr.name="zone" attr.type="string" />
   <key id="d3" for="node" attr.name="type" attr.type="string" />
   <key id="d2" for="node" attr.name="kind" attr.type="string" />
@@ -30,14 +32,15 @@
       <data key="d2">device</data>
       <data key="d3">Firewall</data>
       <data key="d4">Utility</data>
-      <data key="d5">Firewall to utility WAN</data>
-      <data key="d6">High</data>
-      <data key="d7">Cisco</data>
-      <data key="d8">ASA 5585</data>
-      <data key="d9">7.5</data>
-      <data key="d10">True</data>
+      <data key="d5">4</data>
+      <data key="d6">Firewall to utility WAN</data>
+      <data key="d7">High</data>
+      <data key="d8">Cisco</data>
+      <data key="d9">ASA 5585</data>
+      <data key="d10">7.5</data>
       <data key="d11">True</data>
-      <data key="d12">8.0</data>
+      <data key="d12">True</data>
+      <data key="d13">8.0</data>
     </node>
     <node id="SUB-SW-001">
       <data key="d0">SUB-SW-001</data>
@@ -45,14 +48,15 @@
       <data key="d2">device</data>
       <data key="d3">Network Switch</data>
       <data key="d4">Substation</data>
-      <data key="d5">Core substation Ethernet switch</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">RUGGEDCOM RSG920P</data>
-      <data key="d9">6.5</data>
-      <data key="d10">False</data>
+      <data key="d5">3</data>
+      <data key="d6">Core substation Ethernet switch</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">RUGGEDCOM RSG920P</data>
+      <data key="d10">6.5</data>
       <data key="d11">False</data>
-      <data key="d12">8.0</data>
+      <data key="d12">False</data>
+      <data key="d13">8.0</data>
     </node>
     <node id="SUB-SCADA-001">
       <data key="d0">SUB-SCADA-001</data>
@@ -60,14 +64,15 @@
       <data key="d2">device</data>
       <data key="d3">SCADA</data>
       <data key="d4">Substation</data>
-      <data key="d5">Gateway to utility SCADA</data>
-      <data key="d6">High</data>
-      <data key="d7">GE</data>
-      <data key="d8">D400</data>
-      <data key="d9">8.0</data>
-      <data key="d10">False</data>
+      <data key="d5">3</data>
+      <data key="d6">Gateway to utility SCADA</data>
+      <data key="d7">High</data>
+      <data key="d8">GE</data>
+      <data key="d9">D400</data>
+      <data key="d10">8.0</data>
       <data key="d11">False</data>
-      <data key="d12">9.0</data>
+      <data key="d12">False</data>
+      <data key="d13">9.0</data>
     </node>
     <node id="SUB-HMI-001">
       <data key="d0">SUB-HMI-001</data>
@@ -75,14 +80,15 @@
       <data key="d2">device</data>
       <data key="d3">HMI</data>
       <data key="d4">Substation</data>
-      <data key="d5">Operator interface</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">SIMATIC HMI</data>
-      <data key="d9">7.5</data>
-      <data key="d10">False</data>
+      <data key="d5">3</data>
+      <data key="d6">Operator interface</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SIMATIC HMI</data>
+      <data key="d10">7.5</data>
       <data key="d11">False</data>
-      <data key="d12">7.0</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
     </node>
     <node id="SUB-EWS-001">
       <data key="d0">SUB-EWS-001</data>
@@ -90,14 +96,15 @@
       <data key="d2">device</data>
       <data key="d3">Workstation</data>
       <data key="d4">Substation</data>
-      <data key="d5">Configuration laptop</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Dell</data>
-      <data key="d8">Latitude 5420</data>
-      <data key="d9">7.8</data>
-      <data key="d10">False</data>
-      <data key="d11">True</data>
-      <data key="d12">5.0</data>
+      <data key="d5">3</data>
+      <data key="d6">Configuration laptop</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Dell</data>
+      <data key="d9">Latitude 5420</data>
+      <data key="d10">7.8</data>
+      <data key="d11">False</data>
+      <data key="d12">True</data>
+      <data key="d13">5.0</data>
     </node>
     <node id="SUB-RTU-001">
       <data key="d0">SUB-RTU-001</data>
@@ -105,14 +112,15 @@
       <data key="d2">device</data>
       <data key="d3">RTU</data>
       <data key="d4">Substation</data>
-      <data key="d5">Remote Terminal Unit for data acquisition</data>
-      <data key="d6">High</data>
-      <data key="d7">Schweitzer</data>
-      <data key="d8">SEL-3530</data>
-      <data key="d9">8.0</data>
-      <data key="d10">False</data>
+      <data key="d5">3</data>
+      <data key="d6">Remote Terminal Unit for data acquisition</data>
+      <data key="d7">High</data>
+      <data key="d8">Schweitzer</data>
+      <data key="d9">SEL-3530</data>
+      <data key="d10">8.0</data>
       <data key="d11">False</data>
-      <data key="d12">8.0</data>
+      <data key="d12">False</data>
+      <data key="d13">8.0</data>
     </node>
     <node id="SUB-IED-001">
       <data key="d0">SUB-IED-001</data>
@@ -120,14 +128,15 @@
       <data key="d2">device</data>
       <data key="d3">IED</data>
       <data key="d4">Protection</data>
-      <data key="d5">Distance protection relay</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">SIPROTEC 5 7SA86</data>
-      <data key="d9">7.5</data>
-      <data key="d10">False</data>
+      <data key="d5">2</data>
+      <data key="d6">Distance protection relay</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SIPROTEC 5 7SA86</data>
+      <data key="d10">7.5</data>
       <data key="d11">False</data>
-      <data key="d12">9.0</data>
+      <data key="d12">False</data>
+      <data key="d13">9.0</data>
     </node>
     <node id="SUB-IED-002">
       <data key="d0">SUB-IED-002</data>
@@ -135,14 +144,15 @@
       <data key="d2">device</data>
       <data key="d3">IED</data>
       <data key="d4">Protection</data>
-      <data key="d5">Transformer differential protection</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">SIPROTEC 5 7UT86</data>
-      <data key="d9">7.5</data>
-      <data key="d10">False</data>
+      <data key="d5">2</data>
+      <data key="d6">Transformer differential protection</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SIPROTEC 5 7UT86</data>
+      <data key="d10">7.5</data>
       <data key="d11">False</data>
-      <data key="d12">9.0</data>
+      <data key="d12">False</data>
+      <data key="d13">9.0</data>
     </node>
     <node id="SUB-IED-003">
       <data key="d0">SUB-IED-003</data>
@@ -150,14 +160,15 @@
       <data key="d2">device</data>
       <data key="d3">IED</data>
       <data key="d4">Protection</data>
-      <data key="d5">Busbar protection</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">SIPROTEC 5 7SS86</data>
-      <data key="d9">7.5</data>
-      <data key="d10">False</data>
+      <data key="d5">2</data>
+      <data key="d6">Busbar protection</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SIPROTEC 5 7SS86</data>
+      <data key="d10">7.5</data>
       <data key="d11">False</data>
-      <data key="d12">9.0</data>
+      <data key="d12">False</data>
+      <data key="d13">9.0</data>
     </node>
     <node id="SUB-PMU-001">
       <data key="d0">SUB-PMU-001</data>
@@ -165,14 +176,15 @@
       <data key="d2">device</data>
       <data key="d3">PMU</data>
       <data key="d4">Protection</data>
-      <data key="d5">PMU for synchrophasors</data>
-      <data key="d6">Medium</data>
-      <data key="d7">GE</data>
-      <data key="d8">PMU 369</data>
-      <data key="d9">6.5</data>
-      <data key="d10">False</data>
+      <data key="d5">2</data>
+      <data key="d6">PMU for synchrophasors</data>
+      <data key="d7">Medium</data>
+      <data key="d8">GE</data>
+      <data key="d9">PMU 369</data>
+      <data key="d10">6.5</data>
       <data key="d11">False</data>
-      <data key="d12">5.0</data>
+      <data key="d12">False</data>
+      <data key="d13">5.0</data>
     </node>
     <node id="SUB-MU-001">
       <data key="d0">SUB-MU-001</data>
@@ -180,14 +192,15 @@
       <data key="d2">device</data>
       <data key="d3">Merging Unit</data>
       <data key="d4">Process</data>
-      <data key="d5">IEC 61850 process interface</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">SIO 6MD85</data>
-      <data key="d9">7.0</data>
-      <data key="d10">False</data>
+      <data key="d5">1</data>
+      <data key="d6">IEC 61850 process interface</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SIO 6MD85</data>
+      <data key="d10">7.0</data>
       <data key="d11">False</data>
-      <data key="d12">7.0</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
     </node>
     <node id="SUB-CB-001">
       <data key="d0">SUB-CB-001</data>
@@ -195,12 +208,13 @@
       <data key="d2">physical</data>
       <data key="d3">CircuitBreaker</data>
       <data key="d4">Process</data>
-      <data key="d5">High voltage circuit breaker</data>
-      <data key="d6">High</data>
-      <data key="d7">ABB</data>
-      <data key="d8">HPL 550</data>
-      <data key="d12">10.0</data>
-      <data key="d13">0.02</data>
+      <data key="d5">0</data>
+      <data key="d6">High voltage circuit breaker</data>
+      <data key="d7">High</data>
+      <data key="d8">ABB</data>
+      <data key="d9">HPL 550</data>
+      <data key="d13">10.0</data>
+      <data key="d14">0.02</data>
     </node>
     <node id="SUB-DIS-001">
       <data key="d0">SUB-DIS-001</data>
@@ -208,12 +222,13 @@
       <data key="d2">physical</data>
       <data key="d3">Disconnect</data>
       <data key="d4">Process</data>
-      <data key="d5">Disconnecting switch</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">8DA10</data>
-      <data key="d12">7.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">0</data>
+      <data key="d6">Disconnecting switch</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">8DA10</data>
+      <data key="d13">7.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="SUB-XFMR-001">
       <data key="d0">SUB-XFMR-001</data>
@@ -221,12 +236,13 @@
       <data key="d2">physical</data>
       <data key="d3">Transformer</data>
       <data key="d4">Process</data>
-      <data key="d5">Main step-down transformer</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">TRAFO 100 MVA</data>
-      <data key="d12">10.0</data>
-      <data key="d13">0.02</data>
+      <data key="d5">0</data>
+      <data key="d6">Main step-down transformer</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">TRAFO 100 MVA</data>
+      <data key="d13">10.0</data>
+      <data key="d14">0.02</data>
     </node>
     <node id="SUB-VT-001">
       <data key="d0">SUB-VT-001</data>
@@ -234,12 +250,13 @@
       <data key="d2">physical</data>
       <data key="d3">VT</data>
       <data key="d4">Process</data>
-      <data key="d5">Capacitive voltage transformer</data>
-      <data key="d6">Medium</data>
-      <data key="d7">ABB</data>
-      <data key="d8">CPD 1</data>
-      <data key="d12">6.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">0</data>
+      <data key="d6">Capacitive voltage transformer</data>
+      <data key="d7">Medium</data>
+      <data key="d8">ABB</data>
+      <data key="d9">CPD 1</data>
+      <data key="d13">6.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="SUB-CT-001">
       <data key="d0">SUB-CT-001</data>
@@ -247,12 +264,13 @@
       <data key="d2">physical</data>
       <data key="d3">CT</data>
       <data key="d4">Process</data>
-      <data key="d5">Current transformer</data>
-      <data key="d6">Medium</data>
-      <data key="d7">ABB</data>
-      <data key="d8">CT 1000:1</data>
-      <data key="d12">6.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">0</data>
+      <data key="d6">Current transformer</data>
+      <data key="d7">Medium</data>
+      <data key="d8">ABB</data>
+      <data key="d9">CT 1000:1</data>
+      <data key="d13">6.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="SUB-SENSOR-001">
       <data key="d0">SUB-SENSOR-001</data>
@@ -260,12 +278,13 @@
       <data key="d2">physical</data>
       <data key="d3">Sensor</data>
       <data key="d4">Process</data>
-      <data key="d5">Oil temperature sensor</data>
-      <data key="d6">Low</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Rosemount 214</data>
-      <data key="d12">5.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">0</data>
+      <data key="d6">Oil temperature sensor</data>
+      <data key="d7">Low</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 214</data>
+      <data key="d13">5.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="SUB-SENSOR-002">
       <data key="d0">SUB-SENSOR-002</data>
@@ -273,12 +292,13 @@
       <data key="d2">physical</data>
       <data key="d3">Sensor</data>
       <data key="d4">Process</data>
-      <data key="d5">SF6 gas density monitor</data>
-      <data key="d6">Medium</data>
-      <data key="d7">WIKA</data>
-      <data key="d8">GDM-100</data>
-      <data key="d12">6.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">0</data>
+      <data key="d6">SF6 gas density monitor</data>
+      <data key="d7">Medium</data>
+      <data key="d8">WIKA</data>
+      <data key="d9">GDM-100</data>
+      <data key="d13">6.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="SUB-HUM-DSP-001">
       <data key="d0">SUB-HUM-DSP-001</data>
@@ -286,172 +306,174 @@
       <data key="d2">human</data>
       <data key="d3">Dispatcher</data>
       <data key="d4">Substation</data>
-      <data key="d5">Utility dispatcher supervising the substation</data>
-      <data key="d6">Medium</data>
-      <data key="d12">3.0</data>
-      <data key="d14">operator</data>
-      <data key="d15">0.45</data>
-      <data key="d16">standard</data>
+      <data key="d5">3</data>
+      <data key="d6">Utility dispatcher supervising the substation</data>
+      <data key="d7">Medium</data>
+      <data key="d13">3.0</data>
+      <data key="d15">operator</data>
+      <data key="d16">0.45</data>
+      <data key="d17">standard</data>
     </node>
     <edge source="SUB-FW-001" target="SUB-SW-001">
-      <data key="d17">SUB-FW-001</data>
-      <data key="d18">SUB-SW-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">HTTP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">SUB-FW-001</data>
+      <data key="d19">SUB-SW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">HTTP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+      <data key="d24">True</data>
     </edge>
     <edge source="SUB-SW-001" target="SUB-SCADA-001">
-      <data key="d17">SUB-SW-001</data>
-      <data key="d18">SUB-SCADA-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">DNP3</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">SUB-SW-001</data>
+      <data key="d19">SUB-SCADA-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">DNP3</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
     <edge source="SUB-SW-001" target="SUB-HMI-001">
-      <data key="d17">SUB-SW-001</data>
-      <data key="d18">SUB-HMI-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">IEC 61850</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">SUB-SW-001</data>
+      <data key="d19">SUB-HMI-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">IEC 61850</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
     <edge source="SUB-SW-001" target="SUB-EWS-001">
-      <data key="d17">SUB-SW-001</data>
-      <data key="d18">SUB-EWS-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">IEC 61850</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">SUB-SW-001</data>
+      <data key="d19">SUB-EWS-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">IEC 61850</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
     <edge source="SUB-SW-001" target="SUB-RTU-001">
-      <data key="d17">SUB-SW-001</data>
-      <data key="d18">SUB-RTU-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">DNP3</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">SUB-SW-001</data>
+      <data key="d19">SUB-RTU-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">DNP3</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
     <edge source="SUB-SW-001" target="SUB-IED-001">
-      <data key="d17">SUB-SW-001</data>
-      <data key="d18">SUB-IED-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">IEC 61850</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">SUB-SW-001</data>
+      <data key="d19">SUB-IED-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">IEC 61850</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
     <edge source="SUB-SW-001" target="SUB-IED-002">
-      <data key="d17">SUB-SW-001</data>
-      <data key="d18">SUB-IED-002</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">IEC 61850</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">SUB-SW-001</data>
+      <data key="d19">SUB-IED-002</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">IEC 61850</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
     <edge source="SUB-SW-001" target="SUB-IED-003">
-      <data key="d17">SUB-SW-001</data>
-      <data key="d18">SUB-IED-003</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">IEC 61850</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">SUB-SW-001</data>
+      <data key="d19">SUB-IED-003</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">IEC 61850</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
     <edge source="SUB-SCADA-001" target="SUB-RTU-001">
-      <data key="d17">SUB-SCADA-001</data>
-      <data key="d18">SUB-RTU-001</data>
-      <data key="d19">controls</data>
-      <data key="d20">DNP3</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">SUB-SCADA-001</data>
+      <data key="d19">SUB-RTU-001</data>
+      <data key="d20">controls</data>
+      <data key="d21">DNP3</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
     <edge source="SUB-IED-001" target="SUB-MU-001">
-      <data key="d17">SUB-IED-001</data>
-      <data key="d18">SUB-MU-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">IEC 61850 (Sampled Values)</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">SUB-IED-001</data>
+      <data key="d19">SUB-MU-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">IEC 61850 (Sampled Values)</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="SUB-IED-002" target="SUB-MU-001">
-      <data key="d17">SUB-IED-002</data>
-      <data key="d18">SUB-MU-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">IEC 61850 (GOOSE)</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">SUB-IED-002</data>
+      <data key="d19">SUB-MU-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">IEC 61850 (GOOSE)</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="SUB-PMU-001" target="SUB-MU-001">
-      <data key="d17">SUB-PMU-001</data>
-      <data key="d18">SUB-MU-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">IEC 61850</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">medium</data>
+      <data key="d18">SUB-PMU-001</data>
+      <data key="d19">SUB-MU-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">IEC 61850</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
     </edge>
     <edge source="SUB-MU-001" target="SUB-CB-001">
-      <data key="d17">SUB-MU-001</data>
-      <data key="d18">SUB-CB-001</data>
-      <data key="d19">actuates</data>
-      <data key="d20">IEC 61850 (GOOSE)</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">SUB-MU-001</data>
+      <data key="d19">SUB-CB-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">IEC 61850 (GOOSE)</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="SUB-MU-001" target="SUB-DIS-001">
-      <data key="d17">SUB-MU-001</data>
-      <data key="d18">SUB-DIS-001</data>
-      <data key="d19">actuates</data>
-      <data key="d20">IEC 61850 (GOOSE)</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">SUB-MU-001</data>
+      <data key="d19">SUB-DIS-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">IEC 61850 (GOOSE)</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="SUB-MU-001" target="SUB-XFMR-001">
-      <data key="d17">SUB-MU-001</data>
-      <data key="d18">SUB-XFMR-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">IEC 61850 (Sampled Values)</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">SUB-MU-001</data>
+      <data key="d19">SUB-XFMR-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">IEC 61850 (Sampled Values)</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="SUB-MU-001" target="SUB-VT-001">
-      <data key="d17">SUB-MU-001</data>
-      <data key="d18">SUB-VT-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">IEC 61850 (Sampled Values)</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">SUB-MU-001</data>
+      <data key="d19">SUB-VT-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">IEC 61850 (Sampled Values)</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="SUB-MU-001" target="SUB-CT-001">
-      <data key="d17">SUB-MU-001</data>
-      <data key="d18">SUB-CT-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">IEC 61850 (Sampled Values)</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">SUB-MU-001</data>
+      <data key="d19">SUB-CT-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">IEC 61850 (Sampled Values)</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="SUB-MU-001" target="SUB-SENSOR-001">
-      <data key="d17">SUB-MU-001</data>
-      <data key="d18">SUB-SENSOR-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">Modbus</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">SUB-MU-001</data>
+      <data key="d19">SUB-SENSOR-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="SUB-MU-001" target="SUB-SENSOR-002">
-      <data key="d17">SUB-MU-001</data>
-      <data key="d18">SUB-SENSOR-002</data>
-      <data key="d19">monitors</data>
-      <data key="d20">Modbus</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">SUB-MU-001</data>
+      <data key="d19">SUB-SENSOR-002</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="SUB-HUM-DSP-001" target="SUB-HMI-001">
-      <data key="d17">SUB-HUM-DSP-001</data>
-      <data key="d18">SUB-HMI-001</data>
-      <data key="d19">programs / operates</data>
-      <data key="d20">HMI</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">SUB-HUM-DSP-001</data>
+      <data key="d19">SUB-HMI-001</data>
+      <data key="d20">programs / operates</data>
+      <data key="d21">HMI</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
   </graph>
 </graphml>

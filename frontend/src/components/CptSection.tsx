@@ -24,6 +24,7 @@ export default function CptSection({
           </p>
         </div>
         <input
+          name="cpt-search"
           value={cptQuery}
           onChange={(event) => onCptQueryChange(event.target.value)}
           placeholder="Search node CPTs"
@@ -55,18 +56,34 @@ export default function CptSection({
                       </tr>
                     </thead>
                     <tbody>
-                      {cpt.rows.map((row, index) => (
-                        <tr key={index} className="transition-colors hover:bg-slate-900/60">
-                          <td className="table-td font-mono text-slate-300">
-                            {Object.entries(row.parent_state)
-                              .map(([parent, state]) => `${parent}=${state}`)
-                              .join(', ') || 'Root node'}
-                          </td>
-                          <td className="table-td font-semibold text-cyan-200">
-                            {formatProbability(row.p_compromised)}
-                          </td>
-                        </tr>
-                      ))}
+                      {cpt.rows.map((row, index) => {
+                        const p = Number(row.p_compromised)
+                        return (
+                          <tr
+                            key={index}
+                            className="transition-colors hover:bg-slate-900/60"
+                          >
+                            <td className="table-td font-mono text-slate-300">
+                              {Object.entries(row.parent_state)
+                                .map(([parent, state]) => `${parent}=${state}`)
+                                .join(', ') || 'Root node'}
+                            </td>
+                            <td className="table-td">
+                              <span className="flex items-center gap-2">
+                                <span className="progress-track w-24" aria-hidden="true">
+                                  <span
+                                    className="progress-fill"
+                                    style={{ width: `${Math.min(100, p * 100)}%` }}
+                                  />
+                                </span>
+                                <span className="w-14 shrink-0 text-right font-semibold text-cyan-200">
+                                  {formatProbability(p)}
+                                </span>
+                              </span>
+                            </td>
+                          </tr>
+                        )
+                      })}
                     </tbody>
                   </table>
                 </div>

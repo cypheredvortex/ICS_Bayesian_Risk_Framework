@@ -1,4 +1,4 @@
-import { formatProbability, getRiskTone } from '../utils'
+import { formatProbability, getRiskTone, riskLevelFor } from '../utils'
 import type { ResultPayload, RiskThresholds } from '../types'
 import { riskLevelMeta } from '../constants'
 import { Badge } from './ui'
@@ -14,6 +14,7 @@ export default function ResultsDashboard({
   chartData,
   riskRanking,
   thresholds,
+  selectedNode,
   setSelectedNode,
 }: {
   result: ResultPayload
@@ -26,6 +27,9 @@ export default function ResultsDashboard({
     impact: number
   }>
   thresholds: RiskThresholds
+  // Currently inspected asset: the matching probability and ranking rows are
+  // highlighted with the same selection language as the bar chart.
+  selectedNode?: string | null
   setSelectedNode: (id: string) => void
 }) {
   const levelMeta =
@@ -103,27 +107,40 @@ export default function ResultsDashboard({
               : 'Estimated compromise probability after evidence propagates through the Bayesian network.'}
           </p>
           <div className="mt-3 max-h-64 space-y-1.5 overflow-y-auto pr-1">
-            {chartData.map(({ asset, probability, pinned }) => (
-              <button
-                key={asset}
-                onClick={() => setSelectedNode(asset)}
-                className="flex w-full items-center gap-3 rounded-lg bg-slate-900/70 px-3 py-2 text-left transition hover:bg-slate-900"
-              >
-                <span className="w-36 truncate font-mono text-sm text-slate-200">
-                  {asset}
-                  {pinned ? ' 📌' : ''}
-                </span>
-                <span className="progress-track flex-1" aria-hidden="true">
+            {chartData.map(({ asset, probability, pinned }) => {
+              const isSelected = asset === selectedNode
+              return (
+                <button
+                  key={asset}
+                  onClick={() => setSelectedNode(asset)}
+                  data-selected={isSelected || undefined}
+                  aria-pressed={isSelected}
+                  className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition hover:bg-slate-900 ${
+                    isSelected
+                      ? 'bg-slate-900 ring-1 ring-cyan-400/60'
+                      : 'bg-slate-900/70'
+                  }`}
+                >
                   <span
-                    className="progress-fill"
-                    style={{ width: `${Math.min(100, probability * 100)}%` }}
-                  />
-                </span>
-                <span className="w-12 shrink-0 text-right font-mono text-sm font-semibold text-cyan-200">
-                  {formatProbability(probability)}
-                </span>
-              </button>
-            ))}
+                    className={`w-36 truncate font-mono text-sm ${
+                      isSelected ? 'text-cyan-200' : 'text-slate-200'
+                    }`}
+                  >
+                    {asset}
+                    {pinned ? ' 📌' : ''}
+                  </span>
+                  <span className="progress-track flex-1" aria-hidden="true">
+                    <span
+                      className="progress-fill"
+                      style={{ width: `${Math.min(100, probability * 100)}%` }}
+                    />
+                  </span>
+                  <span className="w-12 shrink-0 text-right font-mono text-sm font-semibold text-cyan-200">
+                    {formatProbability(probability)}
+                  </span>
+                </button>
+              )
+            })}
           </div>
         </div>
 
@@ -141,18 +158,46 @@ export default function ResultsDashboard({
             are shown separately so the product is transparent.
           </p>
           <div className="mt-3 max-h-96 space-y-1.5 overflow-y-auto pr-1">
-            {riskRanking.map((entry, index) => (
+            {riskRanking.map((entry, index) => {
+              const isSelected = entry.asset === selectedNode
+              return (
               <button
                 key={entry.asset}
                 onClick={() => setSelectedNode(entry.asset)}
-                className="flex w-full items-center gap-3 rounded-lg bg-slate-900/70 px-3 py-2 text-left transition hover:bg-slate-900"
+                data-selected={isSelected || undefined}
+                aria-pressed={isSelected}
+                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition hover:bg-slate-900 ${
+                  isSelected
+                    ? 'bg-slate-900 ring-1 ring-cyan-400/60'
+                    : 'bg-slate-900/70'
+                }`}
               >
                 <span className="w-8 shrink-0 text-right font-mono text-xs font-semibold text-slate-500">
                   #{index + 1}
                 </span>
-                <span className="min-w-0 flex-1 truncate font-mono text-sm text-slate-200">
+                <span
+                  className={`min-w-0 flex-1 truncate font-mono text-sm ${
+                    isSelected ? 'text-cyan-200' : 'text-slate-200'
+                  }`}
+                >
                   {entry.asset}
                 </span>
+                {(() => {
+                  const meta =
+                    riskLevelMeta[riskLevelFor(entry.risk, thresholds)]
+                  return (
+                    <span
+                      className="hidden shrink-0 whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide sm:inline"
+                      style={{
+                        color: meta.hex,
+                        borderColor: `${meta.hex}55`,
+                        backgroundColor: `${meta.hex}14`,
+                      }}
+                    >
+                      {meta.label}
+                    </span>
+                  )
+                })()}
                 <span className="shrink-0 whitespace-nowrap font-mono text-xs text-slate-400">
                   P {formatProbability(entry.probability)} ×{' '}
                   {formatProbability(entry.impact)}
@@ -161,7 +206,8 @@ export default function ResultsDashboard({
                   </span>
                 </span>
               </button>
-            ))}
+              )
+            })}
           </div>
         </div>
 

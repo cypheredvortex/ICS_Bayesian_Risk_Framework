@@ -1,21 +1,21 @@
-source,target,type,protocol,direction,trust
-SUB-FW-001,SUB-SW-001,connects-to,HTTP,bidirectional,low
-SUB-SW-001,SUB-SCADA-001,connects-to,DNP3,bidirectional,high
-SUB-SW-001,SUB-HMI-001,connects-to,IEC 61850,bidirectional,high
-SUB-SW-001,SUB-EWS-001,connects-to,IEC 61850,bidirectional,high
-SUB-SW-001,SUB-RTU-001,connects-to,DNP3,bidirectional,high
-SUB-SW-001,SUB-IED-001,connects-to,IEC 61850,bidirectional,high
-SUB-SW-001,SUB-IED-002,connects-to,IEC 61850,bidirectional,high
-SUB-SW-001,SUB-IED-003,connects-to,IEC 61850,bidirectional,high
-SUB-HUM-DSP-001,SUB-HMI-001,programs / operates,HMI,bidirectional,high
-SUB-IED-001,SUB-MU-001,monitors,IEC 61850 (Sampled Values),unidirectional,low
-SUB-IED-002,SUB-MU-001,monitors,IEC 61850 (GOOSE),bidirectional,low
-SUB-MU-001,SUB-CB-001,actuates,IEC 61850 (GOOSE),bidirectional,low
-SUB-MU-001,SUB-DIS-001,actuates,IEC 61850 (GOOSE),bidirectional,low
-SUB-MU-001,SUB-XFMR-001,monitors,IEC 61850 (Sampled Values),unidirectional,low
-SUB-MU-001,SUB-VT-001,monitors,IEC 61850 (Sampled Values),unidirectional,low
-SUB-MU-001,SUB-CT-001,monitors,IEC 61850 (Sampled Values),unidirectional,low
-SUB-MU-001,SUB-SENSOR-001,monitors,Modbus,bidirectional,low
-SUB-MU-001,SUB-SENSOR-002,monitors,Modbus,bidirectional,low
-SUB-SCADA-001,SUB-RTU-001,controls,DNP3,bidirectional,high
-SUB-PMU-001,SUB-MU-001,monitors,IEC 61850,bidirectional,medium
+source,target,type,protocol,direction,trust,firewalled,transport
+SUB-FW-001,SUB-SW-001,connects-to,HTTP,bidirectional,low,true,
+SUB-SW-001,SUB-SCADA-001,connects-to,DNP3,bidirectional,high,,
+SUB-SW-001,SUB-HMI-001,connects-to,IEC 61850,bidirectional,high,,
+SUB-SW-001,SUB-EWS-001,connects-to,IEC 61850,bidirectional,high,,
+SUB-SW-001,SUB-RTU-001,connects-to,DNP3,bidirectional,high,,
+SUB-SW-001,SUB-IED-001,connects-to,IEC 61850,bidirectional,high,,
+SUB-SW-001,SUB-IED-002,connects-to,IEC 61850,bidirectional,high,,
+SUB-SW-001,SUB-IED-003,connects-to,IEC 61850,bidirectional,high,,
+SUB-HUM-DSP-001,SUB-HMI-001,programs / operates,HMI,bidirectional,high,,
+SUB-IED-001,SUB-MU-001,monitors,IEC 61850 (Sampled Values),unidirectional,low,,
+SUB-IED-002,SUB-MU-001,monitors,IEC 61850 (GOOSE),bidirectional,low,,
+SUB-MU-001,SUB-CB-001,actuates,IEC 61850 (GOOSE),bidirectional,low,,
+SUB-MU-001,SUB-DIS-001,actuates,IEC 61850 (GOOSE),bidirectional,low,,
+SUB-MU-001,SUB-XFMR-001,monitors,IEC 61850 (Sampled Values),unidirectional,low,,
+SUB-MU-001,SUB-VT-001,monitors,IEC 61850 (Sampled Values),unidirectional,low,,
+SUB-MU-001,SUB-CT-001,monitors,IEC 61850 (Sampled Values),unidirectional,low,,
+SUB-MU-001,SUB-SENSOR-001,monitors,Modbus,bidirectional,low,,
+SUB-MU-001,SUB-SENSOR-002,monitors,Modbus,bidirectional,low,,
+SUB-SCADA-001,SUB-RTU-001,controls,DNP3,bidirectional,high,,
+SUB-PMU-001,SUB-MU-001,monitors,IEC 61850,bidirectional,medium,,

@@ -19,7 +19,8 @@ Every input format is converted into one normalized model before analysis:
       "id": "plc_1",
       "name": "PLC-01",
       "kind": "device",                 // device | human | physical
-      "zone": "Level 1",                // optional
+      "zone": "Level 1",                // optional (IEC 62443-style security zone)
+      "purdue_level": "2",               // optional; "0".."5" plus "3.5" (industrial DMZ)
       "vendor": "...", "model": "...", "ip": "...",   // optional
       // device attributes (strictly validated):
       "cvss_type": 7.5,                 // effective CVSS v3.1 base score
@@ -66,7 +67,8 @@ Every input format is converted into one normalized model before analysis:
 | CVSS (`cvss_type` or `vulnerabilities`) | Intrinsic probability falls back to the physical `p_base_override` or a small default leak; severity-dependent risk is understated. |
 | `exposed` / `patched` | Exposure/patch multipliers are not applied. |
 | `consequence_severity` | Impact normalises to the model's default severity. |
-| `zone` / `network` | No zone attribution; the asset is reported as *without zone*. Zones are advisory/structural in this framework — they do not change the Bayesian computation itself. |
+| `zone` / `network` | No zone attribution; the asset is reported as *without zone*. Zones are advisory/structural — they do not change the Bayesian computation itself. |
+| `purdue_level` | The asset is assigned a default Purdue level derived from its zone (see `backend/topology.py::ZONE_PURDUE_DEFAULTS`); the architecture audit notes the omission. |
 | `firewalled` on links | The firewalled multiplier is not applied. |
 
 The web UI shows an **attribute coverage** summary after upload (e.g.
@@ -154,10 +156,15 @@ Analyst confirms → Run assessment
 - `POST /upload-topology-file` parses the file and returns the normalized
   topology, counts, the structural summary (`zones`, `kinds`,
   `relationship_types`, `firewalled_relationships`, `field_coverage`,
-  `assets_without_zone`) and the `warnings` list. The summary is computed from
-  the normalized data — the UI never fabricates review numbers.
+  `assets_without_zone`, `purdue_levels`, `architecture_issues`,
+  `architecture_issue_counts`) and the `warnings` list. The summary is
+  computed from the normalized data — the UI never fabricates review numbers.
 - The analyst reviews this summary **before** Bayesian inference runs, so a
-  malformed or surprising topology is caught early.
+  malformed or surprising topology is caught early. `architecture_issues` is
+  the advisory ICS audit (see `docs/ics_architecture.md`): it tells the
+  analyst whether the architecture is defensible (Purdue-inspired zoning,
+  IEC 62443 zone/conduit thinking, SIS isolation, controlled Enterprise/OT
+  boundary) before they trust the risk numbers.
 - `POST /analyze` re-validates the supplied topology (the API is stateless)
   and returns the full assessment.
 
@@ -192,10 +199,15 @@ Analyst confirms → Run assessment
   read.
 - **Generic XML assumes a convention.** It scans for common container tags;
   a truly arbitrary XML document is unlikely to parse into a useful topology.
-- **Zone is structural, not computational.** Zones are surfaced in the UI and
-  help analysts organize assets, but the Bayesian model itself does not use
-  zone boundaries as trust boundaries — firewall flags on relationships are
-  the mechanism that reduces propagated risk.
+- **Zone and Purdue level are structural, not computational.** Zones
+  (IEC 62443-style security boundaries) and Purdue levels (architectural
+  hierarchy) are surfaced in the UI and drive the architecture audit, but the
+  Bayesian model itself does not use zone boundaries as trust boundaries —
+  firewall flags on relationships are the mechanism that reduces propagated
+  risk. This is a deliberate modelling choice documented in
+  `docs/ics_architecture.md`: the topology's architecture improves the
+  *causal structure and auditability* of the model, while propagation
+  parameters stay explicit and calibratable.
 - **CSV/XLSX column aliases are limited** to a documented set
   (`backend/importers.py::_ASSET_FIELD_MAP` / `_REL_FIELD_MAP`). Unknown
   columns are ignored (and visible in the attribute-coverage review).

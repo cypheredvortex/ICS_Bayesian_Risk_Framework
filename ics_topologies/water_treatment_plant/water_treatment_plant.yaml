@@ -8,18 +8,27 @@ zones:
 - id: Internet
   name: Internet
   color: '#ff6b6b'
+  purdue_level: '5'
 - id: Enterprise
   name: Enterprise IT
   color: '#4dabf7'
-- id: DMZ
-  name: OT DMZ
+  purdue_level: '4'
+- id: IDMZ
+  name: Industrial DMZ (L3.5)
   color: '#ffa94d'
+  purdue_level: '3.5'
+- id: Operations
+  name: Site Operations (L3)
+  purdue_level: '3'
+  color: '#9775fa'
 - id: Control
-  name: Control Network
+  name: Control Network (L2)
   color: '#845ef7'
+  purdue_level: '2'
 - id: Field
-  name: Field Devices
+  name: Field Devices (L1)
   color: '#20c997'
+  purdue_level: '1'
 assets:
 - id: WTP-FW-001
   name: Perimeter Firewall
@@ -35,6 +44,7 @@ assets:
   exposed: true
   patched: true
   consequence_severity: 8.0
+  purdue_level: '5'
 - id: WTP-ENT-SW-001
   name: Enterprise Switch
   type: Network Switch
@@ -48,6 +58,7 @@ assets:
   exposed: false
   patched: true
   consequence_severity: 6.0
+  purdue_level: '4'
 - id: WTP-ENT-DC-001
   name: Domain Controller
   type: Server
@@ -61,6 +72,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 9.0
+  purdue_level: '4'
 - id: WTP-ENT-HIST-001
   name: Historian
   type: Server
@@ -74,11 +86,12 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 5.0
+  purdue_level: '4'
 - id: WTP-DMZ-SW-001
   name: DMZ Switch
   type: Network Switch
   kind: device
-  zone: DMZ
+  zone: IDMZ
   description: OT DMZ switch
   criticality: High
   vendor: Cisco
@@ -87,11 +100,12 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 7.0
+  purdue_level: '3.5'
 - id: WTP-DMZ-JUMP-001
   name: Jump Server
   type: Server
   kind: device
-  zone: DMZ
+  zone: IDMZ
   description: Secure jump host for OT access
   criticality: High
   vendor: Microsoft
@@ -100,11 +114,12 @@ assets:
   exposed: true
   patched: true
   consequence_severity: 8.0
-- id: WTP-DMZ-SCADA-001
+  purdue_level: '3.5'
+- id: WTP-OPS-SCADA-001
   name: SCADA Server
   type: SCADA
   kind: device
-  zone: DMZ
+  zone: Operations
   description: Primary SCADA server
   criticality: High
   vendor: Schneider
@@ -113,6 +128,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 9.0
+  purdue_level: '3'
 - id: WTP-CTRL-SW-001
   name: Control Switch
   type: Network Switch
@@ -126,11 +142,12 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 8.0
+  purdue_level: '2'
 - id: WTP-CTRL-HMI-001
   name: HMI
   type: HMI
   kind: device
-  zone: Control
+  zone: Operations
   description: Operator interface
   criticality: Medium
   vendor: Siemens
@@ -139,6 +156,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 6.0
+  purdue_level: '3'
 - id: WTP-CTRL-PLC-001
   name: Intake PLC
   type: PLC
@@ -152,6 +170,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 9.0
+  purdue_level: '2'
 - id: WTP-CTRL-PLC-002
   name: Filtration PLC
   type: PLC
@@ -165,6 +184,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 9.0
+  purdue_level: '2'
 - id: WTP-CTRL-PLC-003
   name: Chemical Dosing PLC
   type: PLC
@@ -178,6 +198,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 9.0
+  purdue_level: '2'
 - id: WTP-CTRL-PLC-004
   name: Distribution PLC
   type: PLC
@@ -191,17 +212,19 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 9.0
+  purdue_level: '2'
 - id: WTP-HUM-OPR-001
   name: Control Room Operator
   type: Operator
   kind: human
-  zone: Control
+  zone: Operations
   description: Duty operator supervising the plant from the control room
   criticality: Medium
   role: operator
   awareness: 0.4
   privilege: standard
   consequence_severity: 4.0
+  purdue_level: '3'
 - id: WTP-FLD-PUMP-001
   name: Intake Pump
   type: Pump
@@ -213,6 +236,7 @@ assets:
   model: CR 64
   p_base_override: 0.02
   consequence_severity: 8.0
+  purdue_level: '1'
 - id: WTP-FLD-PUMP-002
   name: Distribution Pump
   type: Pump
@@ -224,6 +248,7 @@ assets:
   model: CR 90
   p_base_override: 0.02
   consequence_severity: 8.0
+  purdue_level: '1'
 - id: WTP-FLD-VALVE-001
   name: Inlet Valve
   type: Valve
@@ -235,6 +260,7 @@ assets:
   model: Fisher V500
   p_base_override: 0.02
   consequence_severity: 6.0
+  purdue_level: '1'
 - id: WTP-FLD-VALVE-002
   name: Backwash Valve
   type: Valve
@@ -246,6 +272,7 @@ assets:
   model: Fisher V500
   p_base_override: 0.02
   consequence_severity: 6.0
+  purdue_level: '1'
 - id: WTP-FLD-SENSOR-001
   name: Flow Sensor
   type: Sensor
@@ -257,6 +284,7 @@ assets:
   model: Rosemount 8700
   p_base_override: 0.01
   consequence_severity: 4.0
+  purdue_level: '1'
 - id: WTP-FLD-SENSOR-002
   name: Pressure Sensor
   type: Sensor
@@ -268,6 +296,7 @@ assets:
   model: Rosemount 3051
   p_base_override: 0.01
   consequence_severity: 4.0
+  purdue_level: '1'
 - id: WTP-FLD-SENSOR-003
   name: pH Sensor
   type: Sensor
@@ -279,6 +308,7 @@ assets:
   model: SC200
   p_base_override: 0.01
   consequence_severity: 5.0
+  purdue_level: '1'
 - id: WTP-FLD-SENSOR-004
   name: Turbidity Sensor
   type: Sensor
@@ -290,6 +320,7 @@ assets:
   model: 1720E
   p_base_override: 0.01
   consequence_severity: 4.0
+  purdue_level: '1'
 - id: WTP-FLD-MOTOR-001
   name: Blower Motor
   type: Motor
@@ -301,6 +332,7 @@ assets:
   model: 1LA8
   p_base_override: 0.01
   consequence_severity: 5.0
+  purdue_level: '1'
 - id: WTP-FLD-VFD-001
   name: Pump VFD
   type: VFD
@@ -314,11 +346,12 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 7.0
+  purdue_level: '1'
 - id: WTP-FLD-ENG-001
   name: Engineering Workstation
   type: Workstation
   kind: device
-  zone: Field
+  zone: Operations
   description: Engineering laptop for maintenance
   criticality: Medium
   vendor: Dell
@@ -327,6 +360,7 @@ assets:
   exposed: false
   patched: true
   consequence_severity: 5.0
+  purdue_level: '3'
 - id: WTP-FLD-SW-001
   name: Field Switch
   type: Network Switch
@@ -340,6 +374,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 5.0
+  purdue_level: '1'
 connections:
 - source: WTP-FW-001
   target: WTP-ENT-SW-001
@@ -353,6 +388,7 @@ connections:
   protocol: HTTP
   direction: bidirectional
   trust: medium
+  firewalled: true
 - source: WTP-ENT-SW-001
   target: WTP-ENT-DC-001
   type: connects-to
@@ -372,12 +408,12 @@ connections:
   direction: bidirectional
   trust: medium
 - source: WTP-DMZ-SW-001
-  target: WTP-DMZ-SCADA-001
+  target: WTP-OPS-SCADA-001
   type: connects-to
   protocol: OPC UA
   direction: bidirectional
   trust: medium
-- source: WTP-DMZ-SCADA-001
+- source: WTP-OPS-SCADA-001
   target: WTP-CTRL-SW-001
   type: connects-to
   protocol: OPC UA

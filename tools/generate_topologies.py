@@ -28,10 +28,7 @@ Run:  python tools/generate_topologies.py
 from __future__ import annotations
 
 import csv
-import io
 import json
-import os
-import sys
 from pathlib import Path
 from xml.sax.saxutils import escape as xml_escape
 
@@ -41,12 +38,16 @@ TOPOLOGIES = ROOT / "ics_topologies"
 # Attributes that are part of the framework's normalized asset schema and are
 # therefore written into every machine-readable representation.
 ASSET_COLUMNS = [
-    "id", "name", "kind", "type", "zone", "description", "criticality",
-    "vendor", "model", "ip", "cvss_type", "exposed", "patched",
-    "consequence_severity", "role", "awareness", "privilege", "p_base_override",
+    "id", "name", "kind", "type", "zone", "purdue_level", "description",
+    "criticality", "vendor", "model", "ip", "cvss_type", "exposed",
+    "patched", "consequence_severity", "role", "awareness", "privilege",
+    "p_base_override",
 ]
 
-CONNECTION_COLUMNS = ["source", "target", "type", "protocol", "direction", "trust"]
+CONNECTION_COLUMNS = [
+    "source", "target", "type", "protocol", "direction", "trust",
+    "firewalled", "transport",
+]
 
 
 def _text(value: object) -> str:
@@ -142,6 +143,7 @@ def write_xml(canonical: dict, folder: Path) -> Path:
             _xml_element("id", [xml_escape(z["id"])]),
             _xml_element("name", [xml_escape(z.get("name", z["id"]))]),
             _xml_element("color", [xml_escape(z.get("color", ""))]),
+            _xml_element("purdue_level", [xml_escape(z.get("purdue_level", ""))]),
         ])
         for z in canonical["zones"]
     ])
@@ -208,6 +210,8 @@ def write_aml(canonical: dict, folder: Path) -> Path:
         lines.append(f"      <Type>{xml_escape(conn.get('type', 'connects-to'))}</Type>")
         lines.append(f"      <Protocol>{xml_escape(conn.get('protocol', ''))}</Protocol>")
         lines.append(f"      <Trust_level>{xml_escape(conn.get('trust', ''))}</Trust_level>")
+        lines.append(f"      <Firewalled>{xml_escape(_text(conn.get('firewalled', False)))}</Firewalled>")
+        lines.append(f"      <Transport>{xml_escape(conn.get('transport', ''))}</Transport>")
         lines.append("    </Connection>")
     lines.append("  </Connections>")
     lines.append("</AutomationML>")
@@ -215,20 +219,66 @@ def write_aml(canonical: dict, folder: Path) -> Path:
     return path
 
 
+def _annotation_value(value: object) -> str:
+    """Sanitise a value for the Visio key=value tail.
+
+    The backend parser splits the tail on ';' and on the first '=' of each
+    chunk, so a ';' inside a value would silently corrupt the annotation.
+    Values may contain commas and '=' safely; any ';' is replaced (none
+    appear in the curated topologies, but this keeps the convention robust
+    for hand-authored files).
+    """
+    return _text(value).replace(";", " - ")
+
+
+def _asset_shape_tail(asset: dict) -> str:
+    """Extended key=value tail appended to a Visio asset annotation.
+
+    The positional annotation only round-trips the security attributes;
+    these display/architectural fields (name, zone, type, description,
+    Purdue level, vendor/model/IP) would otherwise be lost when a topology
+    is loaded from .vdx/.vsdx.  Values may contain commas but not ';'
+    (the backend parser splits the tail on ';'); see _annotation_value.
+    """
+    pairs = []
+    for key, value in (
+        ("name", asset.get("name")),
+        ("zone", asset.get("zone")),
+        ("type", asset.get("type")),
+        ("desc", asset.get("description")),
+        ("purdue", asset.get("purdue_level")),
+        ("vendor", asset.get("vendor")),
+        ("model", asset.get("model")),
+        ("ip", asset.get("ip")),
+    ):
+        if value not in (None, ""):
+            pairs.append(f"{key}={_annotation_value(value)}")
+    return ";" + ";".join(pairs) if pairs else ""
+
+
 def _asset_shape_text(asset: dict) -> str:
     kind = asset.get("kind", "device")
     if kind == "human":
-        return f"asset,{asset['id']},human,{asset.get('role', 'operator')},{asset.get('awareness', 0.35)},{asset.get('privilege', 'standard')},{asset.get('consequence_severity', 3.0)}"
-    if kind == "physical":
-        return f"asset,{asset['id']},physical,{asset.get('p_base_override', 0.01)},{asset.get('consequence_severity', 4.0)}"
-    return f"asset,{asset['id']},device,{asset.get('cvss_type', 5.0)},{_text(asset.get('exposed', True))},{_text(asset.get('patched', False))},{asset.get('consequence_severity', 5.0)}"
+        base = f"asset,{asset['id']},human,{asset.get('role', 'operator')},{asset.get('awareness', 0.35)},{asset.get('privilege', 'standard')},{asset.get('consequence_severity', 3.0)}"
+    elif kind == "physical":
+        base = f"asset,{asset['id']},physical,{asset.get('p_base_override', 0.01)},{asset.get('consequence_severity', 4.0)}"
+    else:
+        base = f"asset,{asset['id']},device,{asset.get('cvss_type', 5.0)},{_text(asset.get('exposed', True))},{_text(asset.get('patched', False))},{asset.get('consequence_severity', 5.0)}"
+    return base + _asset_shape_tail(asset)
 
 
 def _connection_shape_text(conn: dict) -> str:
-    return (
+    base = (
         f"relationship,{conn['source']},{conn['target']},{conn.get('type', 'connects-to')},"
-        f"false,{conn.get('protocol', '')},{conn.get('trust', '')},"
+        f"{_text(conn.get('firewalled', False))},{conn.get('protocol', '')},{conn.get('trust', '')},"
     )
+    # Transport (e.g. "Leased line + VPN", "Radio") is conduit metadata the
+    # framework preserves; carry it in the same key=value tail the parser
+    # reads, so remote links stay explicit in every format.
+    transport = conn.get("transport")
+    if transport not in (None, ""):
+        base += f";transport={_annotation_value(transport)}"
+    return base
 
 
 def _zone_band_layout(canonical: dict) -> dict[str, tuple[float, float]]:
@@ -252,7 +302,6 @@ def _zone_band_layout(canonical: dict) -> dict[str, tuple[float, float]]:
         rows = [members[i : i + max_per_row] for i in range(0, len(members), max_per_row)]
         for row_index, row in enumerate(rows):
             spacing = 210.0
-            total = spacing * (len(row) - 1)
             x_start = 120.0
             for index, asset in enumerate(row):
                 positions[asset["id"]] = (x_start + index * spacing, y + row_index * 160.0)
@@ -414,9 +463,14 @@ def write_split_csvs(canonical: dict, folder: Path) -> None:
     zones_path = folder / f"{folder.name}_zones.csv"
     with zones_path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.writer(handle)
-        writer.writerow(["id", "name", "color"])
+        writer.writerow(["id", "name", "color", "purdue_level"])
         for zone in canonical["zones"]:
-            writer.writerow([zone["id"], zone.get("name", zone["id"]), zone.get("color", "")])
+            writer.writerow([
+                zone["id"],
+                zone.get("name", zone["id"]),
+                zone.get("color", ""),
+                zone.get("purdue_level", ""),
+            ])
 
     protocols_path = folder / f"{folder.name}_protocols.csv"
     with protocols_path.open("w", encoding="utf-8", newline="") as handle:

@@ -338,6 +338,22 @@ svg .recharts-sector {
   transition: opacity 250ms ease;
 }
 
+/* Network Viewer fullscreen: the graph canvas fills the screen while the
+   rest of the page keeps its layout. */
+.network-canvas {
+  transition: border-radius 120ms ease;
+}
+.network-canvas:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  border: none;
+  border-radius: 0;
+  background: #020617;
+}
+.network-canvas:fullscreen .react-flow {
+  height: 100%;
+}
+
 /* React Flow canvas chrome */
 .react-flow__controls {
   border-radius: 10px !important;

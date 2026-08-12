@@ -6,6 +6,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Firewall</Attribute>
       <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="purdue_level">4</Attribute>
       <Attribute Name="description">Protects control center</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Palo Alto</Attribute>
@@ -19,6 +20,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Network Switch</Attribute>
       <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="purdue_level">3</Attribute>
       <Attribute Name="description">Core switch</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Cisco</Attribute>
@@ -32,6 +34,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">SCADA</Attribute>
       <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="purdue_level">3</Attribute>
       <Attribute Name="description">Pipeline SCADA</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Schneider</Attribute>
@@ -45,6 +48,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Server</Attribute>
       <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="purdue_level">3</Attribute>
       <Attribute Name="description">Pipeline data historian</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">OSIsoft</Attribute>
@@ -58,6 +62,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">HMI</Attribute>
       <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="purdue_level">3</Attribute>
       <Attribute Name="description">Operator console</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">Schneider</Attribute>
@@ -71,6 +76,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Workstation</Attribute>
       <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="purdue_level">3</Attribute>
       <Attribute Name="description">Configuration station</Attribute>
       <Attribute Name="criticality">Low</Attribute>
       <Attribute Name="vendor">Dell</Attribute>
@@ -84,6 +90,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">RTU</Attribute>
       <Attribute Name="zone">RemoteSite</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">RTU for pump station A</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Control Microsystems</Attribute>
@@ -97,6 +104,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">RTU</Attribute>
       <Attribute Name="zone">RemoteSite</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">RTU for pump station B</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Control Microsystems</Attribute>
@@ -110,6 +118,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">RTU</Attribute>
       <Attribute Name="zone">RemoteSite</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">RTU for block valve site</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Control Microsystems</Attribute>
@@ -123,6 +132,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">RTU</Attribute>
       <Attribute Name="zone">RemoteSite</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">RTU for custody transfer</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Control Microsystems</Attribute>
@@ -136,6 +146,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Network Switch</Attribute>
       <Attribute Name="zone">RemoteSite</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Industrial switch for station A</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Siemens</Attribute>
@@ -149,6 +160,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Network Switch</Attribute>
       <Attribute Name="zone">RemoteSite</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Industrial switch for station B</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Siemens</Attribute>
@@ -162,6 +174,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Pump</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Centrifugal pump</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Sulzer</Attribute>
@@ -173,6 +186,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Pump</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Standby pump</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Sulzer</Attribute>
@@ -184,6 +198,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">VFD</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Variable frequency drive for pump</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">ABB</Attribute>
@@ -197,6 +212,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Valve</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Motor-operated valve</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">Emerson</Attribute>
@@ -208,6 +224,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Sensor</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Discharge pressure</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">Emerson</Attribute>
@@ -219,6 +236,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Sensor</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Ultrasonic flow meter</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Emerson</Attribute>
@@ -230,6 +248,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Sensor</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Product temperature</Attribute>
       <Attribute Name="criticality">Low</Attribute>
       <Attribute Name="vendor">Emerson</Attribute>
@@ -241,6 +260,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Pump</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Centrifugal pump</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Sulzer</Attribute>
@@ -252,6 +272,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">VFD</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">VFD for pump B</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">ABB</Attribute>
@@ -265,6 +286,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Valve</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Motor-operated valve</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">Emerson</Attribute>
@@ -276,6 +298,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Sensor</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Discharge pressure</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">Emerson</Attribute>
@@ -287,6 +310,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Sensor</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Ultrasonic flow meter</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Emerson</Attribute>
@@ -298,6 +322,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Valve</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Emergency block valve</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Emerson</Attribute>
@@ -309,6 +334,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Sensor</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Pressure at valve site</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">Emerson</Attribute>
@@ -320,6 +346,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Sensor</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Custody transfer meter</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Emerson</Attribute>
@@ -331,6 +358,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Sensor</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Product density</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">Emerson</Attribute>
@@ -342,6 +370,7 @@
       <Attribute Name="kind">human</Attribute>
       <Attribute Name="type">Dispatcher</Attribute>
       <Attribute Name="zone">ControlCenter</Attribute>
+      <Attribute Name="purdue_level">3</Attribute>
       <Attribute Name="description">Dispatcher monitoring pipeline operations</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="consequence_severity">4.0</Attribute>
@@ -357,6 +386,8 @@
       <Type>connects-to</Type>
       <Protocol>HTTP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>true</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-CTR-SW-001</Source>
@@ -364,6 +395,8 @@
       <Type>connects-to</Type>
       <Protocol>OPC UA</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-CTR-SW-001</Source>
@@ -371,6 +404,8 @@
       <Type>connects-to</Type>
       <Protocol>OPC UA</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-CTR-SW-001</Source>
@@ -378,6 +413,8 @@
       <Type>connects-to</Type>
       <Protocol>OPC UA</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-CTR-SW-001</Source>
@@ -385,6 +422,8 @@
       <Type>connects-to</Type>
       <Protocol>SSH</Protocol>
       <Trust_level>medium</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-HUM-DSP-001</Source>
@@ -392,6 +431,8 @@
       <Type>programs / operates</Type>
       <Protocol>HMI</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-CTR-SCADA-001</Source>
@@ -399,6 +440,8 @@
       <Type>controls</Type>
       <Protocol>DNP3</Protocol>
       <Trust_level>medium</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-CTR-SCADA-001</Source>
@@ -406,6 +449,8 @@
       <Type>controls</Type>
       <Protocol>DNP3</Protocol>
       <Trust_level>medium</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-CTR-SCADA-001</Source>
@@ -413,6 +458,8 @@
       <Type>controls</Type>
       <Protocol>DNP3</Protocol>
       <Trust_level>medium</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-CTR-SCADA-001</Source>
@@ -420,6 +467,8 @@
       <Type>controls</Type>
       <Protocol>DNP3</Protocol>
       <Trust_level>medium</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-RTU-001</Source>
@@ -427,6 +476,8 @@
       <Type>connects-to</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-RTU-002</Source>
@@ -434,6 +485,8 @@
       <Type>connects-to</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-SW-001</Source>
@@ -441,6 +494,8 @@
       <Type>actuates</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-SW-001</Source>
@@ -448,6 +503,8 @@
       <Type>actuates</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-SW-001</Source>
@@ -455,6 +512,8 @@
       <Type>connects-to</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-SW-001</Source>
@@ -462,6 +521,8 @@
       <Type>actuates</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-SW-001</Source>
@@ -469,6 +530,8 @@
       <Type>monitors</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-SW-001</Source>
@@ -476,6 +539,8 @@
       <Type>monitors</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-SW-001</Source>
@@ -483,6 +548,8 @@
       <Type>monitors</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-SW-002</Source>
@@ -490,6 +557,8 @@
       <Type>actuates</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-SW-002</Source>
@@ -497,6 +566,8 @@
       <Type>connects-to</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-SW-002</Source>
@@ -504,6 +575,8 @@
       <Type>actuates</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-SW-002</Source>
@@ -511,6 +584,8 @@
       <Type>monitors</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-SW-002</Source>
@@ -518,6 +593,8 @@
       <Type>monitors</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-RTU-003</Source>
@@ -525,6 +602,8 @@
       <Type>actuates</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-RTU-003</Source>
@@ -532,6 +611,8 @@
       <Type>monitors</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-RTU-004</Source>
@@ -539,6 +620,8 @@
       <Type>monitors</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>PIPE-RTU-004</Source>
@@ -546,6 +629,8 @@
       <Type>monitors</Type>
       <Protocol>Modbus TCP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
   </Connections>
 </AutomationML>

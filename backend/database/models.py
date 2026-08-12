@@ -51,6 +51,7 @@ class Asset(Base):
     asset_name: Mapped[str] = mapped_column(String(255), nullable=False)
     asset_type: Mapped[str | None] = mapped_column(String(255), nullable=True)
     zone: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    purdue_level: Mapped[str | None] = mapped_column(String(16), nullable=True)
     vendor: Mapped[str | None] = mapped_column(String(255), nullable=True)
     firmware_version: Mapped[str | None] = mapped_column(String(255), nullable=True)
     exposure_level: Mapped[str | None] = mapped_column(String(255), nullable=True)

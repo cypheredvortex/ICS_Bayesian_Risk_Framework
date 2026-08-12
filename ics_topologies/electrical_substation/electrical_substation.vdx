@@ -14,7 +14,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-FW-001,device,7.5,true,true,8.0
+            asset,SUB-FW-001,device,7.5,true,true,8.0;name=Substation Firewall;zone=Utility;type=Firewall;desc=Firewall to utility WAN;purdue=4;vendor=Cisco;model=ASA 5585
           </Text>
         </Shape>
         <Shape ID="2" Type="Shape" NameU="SUB-SW-001">
@@ -23,7 +23,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-SW-001,device,6.5,false,false,8.0
+            asset,SUB-SW-001,device,6.5,false,false,8.0;name=Substation Switch;zone=Substation;type=Network Switch;desc=Core substation Ethernet switch;purdue=3;vendor=Siemens;model=RUGGEDCOM RSG920P
           </Text>
         </Shape>
         <Shape ID="3" Type="Shape" NameU="SUB-SCADA-001">
@@ -32,7 +32,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-SCADA-001,device,8.0,false,false,9.0
+            asset,SUB-SCADA-001,device,8.0,false,false,9.0;name=SCADA Gateway;zone=Substation;type=SCADA;desc=Gateway to utility SCADA;purdue=3;vendor=GE;model=D400
           </Text>
         </Shape>
         <Shape ID="4" Type="Shape" NameU="SUB-HMI-001">
@@ -41,7 +41,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-HMI-001,device,7.5,false,false,7.0
+            asset,SUB-HMI-001,device,7.5,false,false,7.0;name=Substation HMI;zone=Substation;type=HMI;desc=Operator interface;purdue=3;vendor=Siemens;model=SIMATIC HMI
           </Text>
         </Shape>
         <Shape ID="5" Type="Shape" NameU="SUB-EWS-001">
@@ -50,7 +50,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-EWS-001,device,7.8,false,true,5.0
+            asset,SUB-EWS-001,device,7.8,false,true,5.0;name=Engineering Workstation;zone=Substation;type=Workstation;desc=Configuration laptop;purdue=3;vendor=Dell;model=Latitude 5420
           </Text>
         </Shape>
         <Shape ID="6" Type="Shape" NameU="SUB-RTU-001">
@@ -59,7 +59,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-RTU-001,device,8.0,false,false,8.0
+            asset,SUB-RTU-001,device,8.0,false,false,8.0;name=RTU;zone=Substation;type=RTU;desc=Remote Terminal Unit for data acquisition;purdue=3;vendor=Schweitzer;model=SEL-3530
           </Text>
         </Shape>
         <Shape ID="7" Type="Shape" NameU="SUB-IED-001">
@@ -68,7 +68,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-IED-001,device,7.5,false,false,9.0
+            asset,SUB-IED-001,device,7.5,false,false,9.0;name=Protection IED (Line);zone=Protection;type=IED;desc=Distance protection relay;purdue=2;vendor=Siemens;model=SIPROTEC 5 7SA86
           </Text>
         </Shape>
         <Shape ID="8" Type="Shape" NameU="SUB-IED-002">
@@ -77,7 +77,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-IED-002,device,7.5,false,false,9.0
+            asset,SUB-IED-002,device,7.5,false,false,9.0;name=Protection IED (Transformer);zone=Protection;type=IED;desc=Transformer differential protection;purdue=2;vendor=Siemens;model=SIPROTEC 5 7UT86
           </Text>
         </Shape>
         <Shape ID="9" Type="Shape" NameU="SUB-IED-003">
@@ -86,7 +86,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-IED-003,device,7.5,false,false,9.0
+            asset,SUB-IED-003,device,7.5,false,false,9.0;name=Protection IED (Bus);zone=Protection;type=IED;desc=Busbar protection;purdue=2;vendor=Siemens;model=SIPROTEC 5 7SS86
           </Text>
         </Shape>
         <Shape ID="10" Type="Shape" NameU="SUB-PMU-001">
@@ -95,7 +95,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-PMU-001,device,6.5,false,false,5.0
+            asset,SUB-PMU-001,device,6.5,false,false,5.0;name=Phasor Measurement Unit;zone=Protection;type=PMU;desc=PMU for synchrophasors;purdue=2;vendor=GE;model=PMU 369
           </Text>
         </Shape>
         <Shape ID="11" Type="Shape" NameU="SUB-MU-001">
@@ -104,7 +104,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-MU-001,device,7.0,false,false,7.0
+            asset,SUB-MU-001,device,7.0,false,false,7.0;name=Merging Unit;zone=Process;type=Merging Unit;desc=IEC 61850 process interface;purdue=1;vendor=Siemens;model=SIO 6MD85
           </Text>
         </Shape>
         <Shape ID="12" Type="Shape" NameU="SUB-CB-001">
@@ -113,7 +113,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-CB-001,physical,0.02,10.0
+            asset,SUB-CB-001,physical,0.02,10.0;name=Circuit Breaker;zone=Process;type=CircuitBreaker;desc=High voltage circuit breaker;purdue=0;vendor=ABB;model=HPL 550
           </Text>
         </Shape>
         <Shape ID="13" Type="Shape" NameU="SUB-DIS-001">
@@ -122,7 +122,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-DIS-001,physical,0.01,7.0
+            asset,SUB-DIS-001,physical,0.01,7.0;name=Disconnect Switch;zone=Process;type=Disconnect;desc=Disconnecting switch;purdue=0;vendor=Siemens;model=8DA10
           </Text>
         </Shape>
         <Shape ID="14" Type="Shape" NameU="SUB-XFMR-001">
@@ -131,7 +131,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-XFMR-001,physical,0.02,10.0
+            asset,SUB-XFMR-001,physical,0.02,10.0;name=Power Transformer;zone=Process;type=Transformer;desc=Main step-down transformer;purdue=0;vendor=Siemens;model=TRAFO 100 MVA
           </Text>
         </Shape>
         <Shape ID="15" Type="Shape" NameU="SUB-VT-001">
@@ -140,7 +140,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-VT-001,physical,0.01,6.0
+            asset,SUB-VT-001,physical,0.01,6.0;name=Voltage Transformer;zone=Process;type=VT;desc=Capacitive voltage transformer;purdue=0;vendor=ABB;model=CPD 1
           </Text>
         </Shape>
         <Shape ID="16" Type="Shape" NameU="SUB-CT-001">
@@ -149,7 +149,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-CT-001,physical,0.01,6.0
+            asset,SUB-CT-001,physical,0.01,6.0;name=Current Transformer;zone=Process;type=CT;desc=Current transformer;purdue=0;vendor=ABB;model=CT 1000:1
           </Text>
         </Shape>
         <Shape ID="17" Type="Shape" NameU="SUB-SENSOR-001">
@@ -158,7 +158,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-SENSOR-001,physical,0.01,5.0
+            asset,SUB-SENSOR-001,physical,0.01,5.0;name=Temperature Sensor;zone=Process;type=Sensor;desc=Oil temperature sensor;purdue=0;vendor=Emerson;model=Rosemount 214
           </Text>
         </Shape>
         <Shape ID="18" Type="Shape" NameU="SUB-SENSOR-002">
@@ -167,7 +167,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-SENSOR-002,physical,0.01,6.0
+            asset,SUB-SENSOR-002,physical,0.01,6.0;name=SF6 Pressure Sensor;zone=Process;type=Sensor;desc=SF6 gas density monitor;purdue=0;vendor=WIKA;model=GDM-100
           </Text>
         </Shape>
         <Shape ID="19" Type="Shape" NameU="SUB-HUM-DSP-001">
@@ -176,7 +176,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,SUB-HUM-DSP-001,human,operator,0.45,standard,3.0
+            asset,SUB-HUM-DSP-001,human,operator,0.45,standard,3.0;name=Control Room Dispatcher;zone=Substation;type=Dispatcher;desc=Utility dispatcher supervising the substation;purdue=3
           </Text>
         </Shape>
         <Shape ID="20" Type="Shape" NameU="conn_SUB-FW-001_SUB-SW-001">
@@ -185,7 +185,7 @@
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,SUB-FW-001,SUB-SW-001,connects-to,false,HTTP,low,
+            relationship,SUB-FW-001,SUB-SW-001,connects-to,true,HTTP,low,
           </Text>
         </Shape>
         <Shape ID="21" Type="Shape" NameU="conn_SUB-SW-001_SUB-SCADA-001">

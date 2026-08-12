@@ -22,6 +22,13 @@ export type TopologySummary = {
   relationship_types: Record<string, number>
   firewalled_relationships: number
   field_coverage: Record<string, number>
+  // Purdue level inventory ("0".."5", plus "3.5" for the industrial DMZ)
+  // and the advisory architecture-audit findings, both computed server-side.
+  // Optional so the client-side fallback can fill them in when an upload
+  // response omits the summary.
+  purdue_levels?: Record<string, number>
+  architecture_issues?: ArchitectureIssue[]
+  architecture_issue_counts?: Record<string, number>
 }
 
 // Full /upload-topology-file response: parsed topology + counts + review data.
@@ -47,7 +54,26 @@ export type TopologyReviewInfo = {
   source: 'upload'
 }
 
-export type GraphNode = { id: string; kind?: string }
+// One advisory finding from the backend ICS architecture audit. Severity is
+// deliberately NOT "pass/fail": structural validation gates uploads, while
+// these findings tell an analyst whether the architecture is defensible
+// (Purdue-inspired zoning, IEC 62443 zone/conduit thinking, SIS isolation,
+// controlled Enterprise/OT boundaries).
+export type ArchitectureIssue = {
+  severity: 'error' | 'warning' | 'info'
+  code: string
+  message: string
+  assets: string[]
+}
+
+export type GraphNode = {
+  id: string
+  kind?: string
+  // Architectural metadata carried through from the normalized topology so
+  // the viewer can group nodes into Purdue-ordered zone bands.
+  zone?: string
+  purdue_level?: string
+}
 export type GraphEdge = {
   source: string
   target: string

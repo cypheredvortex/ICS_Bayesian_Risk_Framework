@@ -1,28 +1,28 @@
-source,target,type,protocol,direction,trust
-WTP-FW-001,WTP-ENT-SW-001,connects-to,HTTP,bidirectional,low
-WTP-ENT-SW-001,WTP-DMZ-SW-001,connects-to,HTTP,bidirectional,medium
-WTP-ENT-SW-001,WTP-ENT-DC-001,connects-to,LDAP,bidirectional,high
-WTP-ENT-SW-001,WTP-ENT-HIST-001,connects-to,OPC UA,bidirectional,high
-WTP-DMZ-SW-001,WTP-DMZ-JUMP-001,connects-to,SSH,bidirectional,medium
-WTP-DMZ-SW-001,WTP-DMZ-SCADA-001,connects-to,OPC UA,bidirectional,medium
-WTP-DMZ-SCADA-001,WTP-CTRL-SW-001,connects-to,OPC UA,bidirectional,medium
-WTP-CTRL-SW-001,WTP-CTRL-HMI-001,connects-to,Ethernet/IP,bidirectional,high
-WTP-CTRL-SW-001,WTP-CTRL-PLC-001,controls,Ethernet/IP,bidirectional,high
-WTP-CTRL-SW-001,WTP-CTRL-PLC-002,controls,Ethernet/IP,bidirectional,high
-WTP-CTRL-SW-001,WTP-CTRL-PLC-003,controls,Ethernet/IP,bidirectional,high
-WTP-CTRL-SW-001,WTP-CTRL-PLC-004,controls,Ethernet/IP,bidirectional,high
-WTP-HUM-OPR-001,WTP-CTRL-HMI-001,programs / operates,HMI,bidirectional,high
-WTP-CTRL-PLC-001,WTP-FLD-PUMP-001,actuates,Modbus TCP,unidirectional,low
-WTP-CTRL-PLC-001,WTP-FLD-VALVE-001,actuates,Modbus TCP,unidirectional,low
-WTP-CTRL-PLC-001,WTP-FLD-SENSOR-001,monitors,Modbus TCP,bidirectional,low
-WTP-CTRL-PLC-002,WTP-FLD-VALVE-002,actuates,Modbus TCP,unidirectional,low
-WTP-CTRL-PLC-002,WTP-FLD-SENSOR-004,monitors,Modbus TCP,bidirectional,low
-WTP-CTRL-PLC-003,WTP-FLD-SENSOR-003,monitors,Modbus TCP,bidirectional,low
-WTP-CTRL-PLC-003,WTP-FLD-PUMP-001,actuates,Modbus TCP,unidirectional,low
-WTP-CTRL-PLC-004,WTP-FLD-PUMP-002,actuates,Modbus TCP,unidirectional,low
-WTP-CTRL-PLC-004,WTP-FLD-SENSOR-002,monitors,Modbus TCP,bidirectional,low
-WTP-CTRL-PLC-004,WTP-FLD-VFD-001,actuates,Modbus TCP,bidirectional,low
-WTP-CTRL-PLC-001,WTP-FLD-MOTOR-001,actuates,Modbus TCP,unidirectional,low
-WTP-DMZ-JUMP-001,WTP-CTRL-SW-001,connects-to,RDP,bidirectional,medium
-WTP-FLD-ENG-001,WTP-CTRL-SW-001,connects-to,SSH,bidirectional,medium
-WTP-FLD-SW-001,WTP-FLD-PUMP-001,connects-to,Modbus TCP,bidirectional,low
+source,target,type,protocol,direction,trust,firewalled,transport
+WTP-FW-001,WTP-ENT-SW-001,connects-to,HTTP,bidirectional,low,,
+WTP-ENT-SW-001,WTP-DMZ-SW-001,connects-to,HTTP,bidirectional,medium,true,
+WTP-ENT-SW-001,WTP-ENT-DC-001,connects-to,LDAP,bidirectional,high,,
+WTP-ENT-SW-001,WTP-ENT-HIST-001,connects-to,OPC UA,bidirectional,high,,
+WTP-DMZ-SW-001,WTP-DMZ-JUMP-001,connects-to,SSH,bidirectional,medium,,
+WTP-DMZ-SW-001,WTP-OPS-SCADA-001,connects-to,OPC UA,bidirectional,medium,,
+WTP-OPS-SCADA-001,WTP-CTRL-SW-001,connects-to,OPC UA,bidirectional,medium,,
+WTP-CTRL-SW-001,WTP-CTRL-HMI-001,connects-to,Ethernet/IP,bidirectional,high,,
+WTP-CTRL-SW-001,WTP-CTRL-PLC-001,controls,Ethernet/IP,bidirectional,high,,
+WTP-CTRL-SW-001,WTP-CTRL-PLC-002,controls,Ethernet/IP,bidirectional,high,,
+WTP-CTRL-SW-001,WTP-CTRL-PLC-003,controls,Ethernet/IP,bidirectional,high,,
+WTP-CTRL-SW-001,WTP-CTRL-PLC-004,controls,Ethernet/IP,bidirectional,high,,
+WTP-HUM-OPR-001,WTP-CTRL-HMI-001,programs / operates,HMI,bidirectional,high,,
+WTP-CTRL-PLC-001,WTP-FLD-PUMP-001,actuates,Modbus TCP,unidirectional,low,,
+WTP-CTRL-PLC-001,WTP-FLD-VALVE-001,actuates,Modbus TCP,unidirectional,low,,
+WTP-CTRL-PLC-001,WTP-FLD-SENSOR-001,monitors,Modbus TCP,bidirectional,low,,
+WTP-CTRL-PLC-002,WTP-FLD-VALVE-002,actuates,Modbus TCP,unidirectional,low,,
+WTP-CTRL-PLC-002,WTP-FLD-SENSOR-004,monitors,Modbus TCP,bidirectional,low,,
+WTP-CTRL-PLC-003,WTP-FLD-SENSOR-003,monitors,Modbus TCP,bidirectional,low,,
+WTP-CTRL-PLC-003,WTP-FLD-PUMP-001,actuates,Modbus TCP,unidirectional,low,,
+WTP-CTRL-PLC-004,WTP-FLD-PUMP-002,actuates,Modbus TCP,unidirectional,low,,
+WTP-CTRL-PLC-004,WTP-FLD-SENSOR-002,monitors,Modbus TCP,bidirectional,low,,
+WTP-CTRL-PLC-004,WTP-FLD-VFD-001,actuates,Modbus TCP,bidirectional,low,,
+WTP-CTRL-PLC-001,WTP-FLD-MOTOR-001,actuates,Modbus TCP,unidirectional,low,,
+WTP-DMZ-JUMP-001,WTP-CTRL-SW-001,connects-to,RDP,bidirectional,medium,,
+WTP-FLD-ENG-001,WTP-CTRL-SW-001,connects-to,SSH,bidirectional,medium,,
+WTP-FLD-SW-001,WTP-FLD-PUMP-001,connects-to,Modbus TCP,bidirectional,low,,

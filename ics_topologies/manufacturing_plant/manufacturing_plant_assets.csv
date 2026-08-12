@@ -1,28 +1,28 @@
-id,name,kind,type,zone,description,criticality,vendor,model,ip,cvss_type,exposed,patched,consequence_severity,role,awareness,privilege,p_base_override
-MFG-ENT-FW-001,Perimeter Firewall,device,Firewall,Enterprise,Edge firewall,High,Fortinet,FortiGate 600F,,7.5,true,true,8.0,,,,
-MFG-ENT-SW-001,Enterprise Switch,device,Network Switch,Enterprise,Core switch,High,Cisco,Catalyst 9300,,6.5,false,true,6.0,,,,
-MFG-ENT-DC-001,Domain Controller,device,Server,Enterprise,AD,High,Microsoft,Windows Server 2022,,8.1,false,false,9.0,,,,
-MFG-ENT-MES-001,MES Server,device,Server,Enterprise,Manufacturing Execution System,High,Siemens,SIMATIC IT,,7.5,false,false,8.0,,,,
-MFG-ENT-ERP-001,ERP Server,device,Server,Enterprise,ERP,Medium,SAP,S/4HANA,,6.5,false,false,5.0,,,,
-MFG-DMZ-SW-001,DMZ Switch,device,Network Switch,DMZ,DMZ switch,High,Cisco,IE 4000,,6.5,false,false,7.0,,,,
-MFG-DMZ-HIST-001,Historian,device,Server,DMZ,Data historian,Medium,OSIsoft,PI Server,,7.0,false,false,5.0,,,,
-MFG-DMZ-JUMP-001,Jump Server,device,Server,DMZ,OT access,High,Microsoft,Windows Server 2022,,8.1,true,true,8.0,,,,
-MFG-SF-SW-001,Shop Floor Switch,device,Network Switch,ShopFloor,Industrial Ethernet switch,High,Siemens,SCALANCE XM408,,6.5,false,false,8.0,,,,
-MFG-SF-SCADA-001,SCADA Server,device,SCADA,ShopFloor,Production SCADA,High,Siemens,WinCC,,8.5,false,false,9.0,,,,
-MFG-SF-HMI-001,Production HMI,device,HMI,ShopFloor,Operator console,Medium,Siemens,SIMATIC HMI,,7.5,false,false,6.0,,,,
-MFG-CELL1-SW-001,Cell 1 Switch,device,Network Switch,Cell,Switch for welding cell,High,Siemens,SCALANCE XB208,,6.5,false,false,7.0,,,,
-MFG-CELL1-PLC-001,Cell 1 PLC,device,PLC,Cell,Welding cell controller,High,Siemens,S7-1500,,8.1,false,false,9.0,,,,
-MFG-CELL1-ROBOT-001,Robot Controller,device,Robot,Cell,Welding robot,High,KUKA,KR Cybertech,,7.5,false,false,8.0,,,,
-MFG-CELL1-POS-001,Positioner,physical,Positioner,Cell,Workpiece positioner,Medium,FANUC,2-axis pos.,,,,,5.0,,,,0.01
-MFG-CELL2-SW-001,Cell 2 Switch,device,Network Switch,Cell,Switch for assembly cell,High,Siemens,SCALANCE XB208,,6.5,false,false,7.0,,,,
-MFG-CELL2-PLC-001,Cell 2 PLC,device,PLC,Cell,Assembly controller,High,Siemens,S7-1500,,8.1,false,false,9.0,,,,
-MFG-CELL2-HMI-001,Cell 2 HMI,device,HMI,Cell,Assembly operator panel,Medium,Siemens,SIMATIC HMI,,7.0,false,false,6.0,,,,
-MFG-SAF-PLC-001,Safety PLC,device,SafetyPLC,Safety,Safety controller for light curtains,High,Siemens,S7-1500F,,7.0,false,false,9.0,,,,
-MFG-SAF-LC-001,Light Curtain,physical,SafetyDevice,Safety,Safety light curtain,High,SICK,C4000,,,,,6.0,,,,0.01
-MFG-SAF-ESTOP-001,E-Stop,physical,SafetyDevice,Safety,Emergency stop,High,Pilz,PNOZ,,,,,6.0,,,,0.01
-MFG-FLD-VFD-001,Conveyor VFD,device,VFD,Field,VFD for conveyor,Medium,ABB,ACS580,,7.5,false,false,7.0,,,,
-MFG-FLD-MOTOR-001,Conveyor Motor,physical,Motor,Field,Conveyor drive,Medium,Siemens,1LA8,,,,,5.0,,,,0.01
-MFG-FLD-SENSOR-001,Proximity Sensor,physical,Sensor,Field,Part presence,Low,Banner,Q45,,,,,4.0,,,,0.01
-MFG-FLD-SENSOR-002,Vision Sensor,physical,Sensor,Field,Quality camera,Medium,Cognex,In-Sight 7000,,,,,5.0,,,,0.01
-MFG-FLD-ACT-001,Pneumatic Cylinder,physical,Actuator,Field,Clamp cylinder,Low,SMC,CQ2,,,,,4.0,,,,0.01
-MFG-HUM-SUP-001,Production Supervisor,human,Supervisor,ShopFloor,Supervisor monitoring production lines,Medium,,,,,,,4.0,operator,0.4,standard,
+id,name,kind,type,zone,purdue_level,description,criticality,vendor,model,ip,cvss_type,exposed,patched,consequence_severity,role,awareness,privilege,p_base_override
+MFG-ENT-FW-001,Perimeter Firewall,device,Firewall,Enterprise,4,Edge firewall,High,Fortinet,FortiGate 600F,,7.5,true,true,8.0,,,,
+MFG-ENT-SW-001,Enterprise Switch,device,Network Switch,Enterprise,4,Core switch,High,Cisco,Catalyst 9300,,6.5,false,true,6.0,,,,
+MFG-ENT-DC-001,Domain Controller,device,Server,Enterprise,4,AD,High,Microsoft,Windows Server 2022,,8.1,false,false,9.0,,,,
+MFG-ENT-MES-001,MES Server,device,Server,Enterprise,4,Manufacturing Execution System,High,Siemens,SIMATIC IT,,7.5,false,false,8.0,,,,
+MFG-ENT-ERP-001,ERP Server,device,Server,Enterprise,4,ERP,Medium,SAP,S/4HANA,,6.5,false,false,5.0,,,,
+MFG-DMZ-SW-001,DMZ Switch,device,Network Switch,DMZ,3.5,DMZ switch,High,Cisco,IE 4000,,6.5,false,false,7.0,,,,
+MFG-DMZ-HIST-001,Historian,device,Server,DMZ,3.5,Data historian,Medium,OSIsoft,PI Server,,7.0,false,false,5.0,,,,
+MFG-DMZ-JUMP-001,Jump Server,device,Server,DMZ,3.5,OT access,High,Microsoft,Windows Server 2022,,8.1,true,true,8.0,,,,
+MFG-SF-SW-001,Shop Floor Switch,device,Network Switch,ShopFloor,3,Industrial Ethernet switch,High,Siemens,SCALANCE XM408,,6.5,false,false,8.0,,,,
+MFG-SF-SCADA-001,SCADA Server,device,SCADA,ShopFloor,3,Production SCADA,High,Siemens,WinCC,,8.5,false,false,9.0,,,,
+MFG-SF-HMI-001,Production HMI,device,HMI,ShopFloor,3,Operator console,Medium,Siemens,SIMATIC HMI,,7.5,false,false,6.0,,,,
+MFG-CELL1-SW-001,Cell 1 Switch,device,Network Switch,Cell,2,Switch for welding cell,High,Siemens,SCALANCE XB208,,6.5,false,false,7.0,,,,
+MFG-CELL1-PLC-001,Cell 1 PLC,device,PLC,Cell,2,Welding cell controller,High,Siemens,S7-1500,,8.1,false,false,9.0,,,,
+MFG-CELL1-ROBOT-001,Robot Controller,device,Robot,Cell,2,Welding robot,High,KUKA,KR Cybertech,,7.5,false,false,8.0,,,,
+MFG-CELL1-POS-001,Positioner,physical,Positioner,Cell,2,Workpiece positioner,Medium,FANUC,2-axis pos.,,,,,5.0,,,,0.01
+MFG-CELL2-SW-001,Cell 2 Switch,device,Network Switch,Cell,2,Switch for assembly cell,High,Siemens,SCALANCE XB208,,6.5,false,false,7.0,,,,
+MFG-CELL2-PLC-001,Cell 2 PLC,device,PLC,Cell,2,Assembly controller,High,Siemens,S7-1500,,8.1,false,false,9.0,,,,
+MFG-CELL2-HMI-001,Cell 2 HMI,device,HMI,Cell,2,Assembly operator panel,Medium,Siemens,SIMATIC HMI,,7.0,false,false,6.0,,,,
+MFG-SAF-PLC-001,Safety PLC,device,SafetyPLC,Safety,2,Safety controller for light curtains,High,Siemens,S7-1500F,,7.0,false,false,9.0,,,,
+MFG-SAF-LC-001,Light Curtain,physical,SafetyDevice,Safety,1,Safety light curtain,High,SICK,C4000,,,,,6.0,,,,0.01
+MFG-SAF-ESTOP-001,E-Stop,physical,SafetyDevice,Safety,1,Emergency stop,High,Pilz,PNOZ,,,,,6.0,,,,0.01
+MFG-FLD-VFD-001,Conveyor VFD,device,VFD,Field,1,VFD for conveyor,Medium,ABB,ACS580,,7.5,false,false,7.0,,,,
+MFG-FLD-MOTOR-001,Conveyor Motor,physical,Motor,Field,1,Conveyor drive,Medium,Siemens,1LA8,,,,,5.0,,,,0.01
+MFG-FLD-SENSOR-001,Proximity Sensor,physical,Sensor,Field,1,Part presence,Low,Banner,Q45,,,,,4.0,,,,0.01
+MFG-FLD-SENSOR-002,Vision Sensor,physical,Sensor,Field,1,Quality camera,Medium,Cognex,In-Sight 7000,,,,,5.0,,,,0.01
+MFG-FLD-ACT-001,Pneumatic Cylinder,physical,Actuator,Field,1,Clamp cylinder,Low,SMC,CQ2,,,,,4.0,,,,0.01
+MFG-HUM-SUP-001,Production Supervisor,human,Supervisor,ShopFloor,3,Supervisor monitoring production lines,Medium,,,,,,,4.0,operator,0.4,standard,

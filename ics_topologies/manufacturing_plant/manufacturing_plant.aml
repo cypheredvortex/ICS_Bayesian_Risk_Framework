@@ -6,6 +6,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Firewall</Attribute>
       <Attribute Name="zone">Enterprise</Attribute>
+      <Attribute Name="purdue_level">4</Attribute>
       <Attribute Name="description">Edge firewall</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Fortinet</Attribute>
@@ -19,6 +20,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Network Switch</Attribute>
       <Attribute Name="zone">Enterprise</Attribute>
+      <Attribute Name="purdue_level">4</Attribute>
       <Attribute Name="description">Core switch</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Cisco</Attribute>
@@ -32,6 +34,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Server</Attribute>
       <Attribute Name="zone">Enterprise</Attribute>
+      <Attribute Name="purdue_level">4</Attribute>
       <Attribute Name="description">AD</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Microsoft</Attribute>
@@ -45,6 +48,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Server</Attribute>
       <Attribute Name="zone">Enterprise</Attribute>
+      <Attribute Name="purdue_level">4</Attribute>
       <Attribute Name="description">Manufacturing Execution System</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Siemens</Attribute>
@@ -58,6 +62,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Server</Attribute>
       <Attribute Name="zone">Enterprise</Attribute>
+      <Attribute Name="purdue_level">4</Attribute>
       <Attribute Name="description">ERP</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">SAP</Attribute>
@@ -71,6 +76,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Network Switch</Attribute>
       <Attribute Name="zone">DMZ</Attribute>
+      <Attribute Name="purdue_level">3.5</Attribute>
       <Attribute Name="description">DMZ switch</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Cisco</Attribute>
@@ -84,6 +90,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Server</Attribute>
       <Attribute Name="zone">DMZ</Attribute>
+      <Attribute Name="purdue_level">3.5</Attribute>
       <Attribute Name="description">Data historian</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">OSIsoft</Attribute>
@@ -97,6 +104,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Server</Attribute>
       <Attribute Name="zone">DMZ</Attribute>
+      <Attribute Name="purdue_level">3.5</Attribute>
       <Attribute Name="description">OT access</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Microsoft</Attribute>
@@ -110,6 +118,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Network Switch</Attribute>
       <Attribute Name="zone">ShopFloor</Attribute>
+      <Attribute Name="purdue_level">3</Attribute>
       <Attribute Name="description">Industrial Ethernet switch</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Siemens</Attribute>
@@ -123,6 +132,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">SCADA</Attribute>
       <Attribute Name="zone">ShopFloor</Attribute>
+      <Attribute Name="purdue_level">3</Attribute>
       <Attribute Name="description">Production SCADA</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Siemens</Attribute>
@@ -136,6 +146,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">HMI</Attribute>
       <Attribute Name="zone">ShopFloor</Attribute>
+      <Attribute Name="purdue_level">3</Attribute>
       <Attribute Name="description">Operator console</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">Siemens</Attribute>
@@ -149,6 +160,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Network Switch</Attribute>
       <Attribute Name="zone">Cell</Attribute>
+      <Attribute Name="purdue_level">2</Attribute>
       <Attribute Name="description">Switch for welding cell</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Siemens</Attribute>
@@ -162,6 +174,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">PLC</Attribute>
       <Attribute Name="zone">Cell</Attribute>
+      <Attribute Name="purdue_level">2</Attribute>
       <Attribute Name="description">Welding cell controller</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Siemens</Attribute>
@@ -175,6 +188,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Robot</Attribute>
       <Attribute Name="zone">Cell</Attribute>
+      <Attribute Name="purdue_level">2</Attribute>
       <Attribute Name="description">Welding robot</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">KUKA</Attribute>
@@ -188,6 +202,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Positioner</Attribute>
       <Attribute Name="zone">Cell</Attribute>
+      <Attribute Name="purdue_level">2</Attribute>
       <Attribute Name="description">Workpiece positioner</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">FANUC</Attribute>
@@ -199,6 +214,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">Network Switch</Attribute>
       <Attribute Name="zone">Cell</Attribute>
+      <Attribute Name="purdue_level">2</Attribute>
       <Attribute Name="description">Switch for assembly cell</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Siemens</Attribute>
@@ -212,6 +228,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">PLC</Attribute>
       <Attribute Name="zone">Cell</Attribute>
+      <Attribute Name="purdue_level">2</Attribute>
       <Attribute Name="description">Assembly controller</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Siemens</Attribute>
@@ -225,6 +242,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">HMI</Attribute>
       <Attribute Name="zone">Cell</Attribute>
+      <Attribute Name="purdue_level">2</Attribute>
       <Attribute Name="description">Assembly operator panel</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">Siemens</Attribute>
@@ -238,6 +256,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">SafetyPLC</Attribute>
       <Attribute Name="zone">Safety</Attribute>
+      <Attribute Name="purdue_level">2</Attribute>
       <Attribute Name="description">Safety controller for light curtains</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Siemens</Attribute>
@@ -251,6 +270,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">SafetyDevice</Attribute>
       <Attribute Name="zone">Safety</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Safety light curtain</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">SICK</Attribute>
@@ -262,6 +282,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">SafetyDevice</Attribute>
       <Attribute Name="zone">Safety</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Emergency stop</Attribute>
       <Attribute Name="criticality">High</Attribute>
       <Attribute Name="vendor">Pilz</Attribute>
@@ -273,6 +294,7 @@
       <Attribute Name="kind">device</Attribute>
       <Attribute Name="type">VFD</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">VFD for conveyor</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">ABB</Attribute>
@@ -286,6 +308,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Motor</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Conveyor drive</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">Siemens</Attribute>
@@ -297,6 +320,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Sensor</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Part presence</Attribute>
       <Attribute Name="criticality">Low</Attribute>
       <Attribute Name="vendor">Banner</Attribute>
@@ -308,6 +332,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Sensor</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Quality camera</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="vendor">Cognex</Attribute>
@@ -319,6 +344,7 @@
       <Attribute Name="kind">physical</Attribute>
       <Attribute Name="type">Actuator</Attribute>
       <Attribute Name="zone">Field</Attribute>
+      <Attribute Name="purdue_level">1</Attribute>
       <Attribute Name="description">Clamp cylinder</Attribute>
       <Attribute Name="criticality">Low</Attribute>
       <Attribute Name="vendor">SMC</Attribute>
@@ -330,6 +356,7 @@
       <Attribute Name="kind">human</Attribute>
       <Attribute Name="type">Supervisor</Attribute>
       <Attribute Name="zone">ShopFloor</Attribute>
+      <Attribute Name="purdue_level">3</Attribute>
       <Attribute Name="description">Supervisor monitoring production lines</Attribute>
       <Attribute Name="criticality">Medium</Attribute>
       <Attribute Name="consequence_severity">4.0</Attribute>
@@ -345,6 +372,8 @@
       <Type>connects-to</Type>
       <Protocol>HTTP</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>true</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-ENT-SW-001</Source>
@@ -352,6 +381,8 @@
       <Type>connects-to</Type>
       <Protocol>LDAP</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-ENT-SW-001</Source>
@@ -359,6 +390,8 @@
       <Type>connects-to</Type>
       <Protocol>OPC UA</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-ENT-SW-001</Source>
@@ -366,6 +399,8 @@
       <Type>connects-to</Type>
       <Protocol>HTTP</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-ENT-SW-001</Source>
@@ -373,6 +408,8 @@
       <Type>connects-to</Type>
       <Protocol>HTTP</Protocol>
       <Trust_level>medium</Trust_level>
+      <Firewalled>true</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-DMZ-SW-001</Source>
@@ -380,6 +417,8 @@
       <Type>connects-to</Type>
       <Protocol>OPC UA</Protocol>
       <Trust_level>medium</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-DMZ-SW-001</Source>
@@ -387,6 +426,8 @@
       <Type>connects-to</Type>
       <Protocol>SSH</Protocol>
       <Trust_level>medium</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-DMZ-JUMP-001</Source>
@@ -394,6 +435,8 @@
       <Type>connects-to</Type>
       <Protocol>RDP</Protocol>
       <Trust_level>medium</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-SF-SW-001</Source>
@@ -401,6 +444,8 @@
       <Type>connects-to</Type>
       <Protocol>OPC UA</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-SF-SW-001</Source>
@@ -408,6 +453,8 @@
       <Type>connects-to</Type>
       <Protocol>PROFINET</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-HUM-SUP-001</Source>
@@ -415,6 +462,8 @@
       <Type>programs / operates</Type>
       <Protocol>HMI</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-SF-SCADA-001</Source>
@@ -422,6 +471,8 @@
       <Type>controls</Type>
       <Protocol>PROFINET</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-SF-SCADA-001</Source>
@@ -429,6 +480,8 @@
       <Type>controls</Type>
       <Protocol>PROFINET</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-CELL1-SW-001</Source>
@@ -436,6 +489,8 @@
       <Type>connects-to</Type>
       <Protocol>PROFINET</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-CELL1-SW-001</Source>
@@ -443,6 +498,8 @@
       <Type>connects-to</Type>
       <Protocol>PROFINET</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-CELL1-SW-001</Source>
@@ -450,6 +507,8 @@
       <Type>connects-to</Type>
       <Protocol>PROFINET</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-CELL1-PLC-001</Source>
@@ -457,6 +516,8 @@
       <Type>actuates</Type>
       <Protocol>PROFINET</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-CELL1-PLC-001</Source>
@@ -464,6 +525,8 @@
       <Type>actuates</Type>
       <Protocol>PROFINET</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-CELL1-PLC-001</Source>
@@ -471,6 +534,8 @@
       <Type>monitors</Type>
       <Protocol>PROFINET</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-CELL2-SW-001</Source>
@@ -478,6 +543,8 @@
       <Type>connects-to</Type>
       <Protocol>PROFINET</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-CELL2-SW-001</Source>
@@ -485,6 +552,8 @@
       <Type>connects-to</Type>
       <Protocol>PROFINET</Protocol>
       <Trust_level>high</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-CELL2-PLC-001</Source>
@@ -492,6 +561,8 @@
       <Type>monitors</Type>
       <Protocol>PROFINET</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-CELL2-PLC-001</Source>
@@ -499,6 +570,8 @@
       <Type>actuates</Type>
       <Protocol>PROFINET</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-SAF-PLC-001</Source>
@@ -506,6 +579,8 @@
       <Type>monitors</Type>
       <Protocol>PROFIsafe</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-SAF-PLC-001</Source>
@@ -513,6 +588,8 @@
       <Type>monitors</Type>
       <Protocol>PROFIsafe</Protocol>
       <Trust_level>low</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-SAF-PLC-001</Source>
@@ -520,6 +597,8 @@
       <Type>connects-to</Type>
       <Protocol>PROFIsafe</Protocol>
       <Trust_level>medium</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
     <Connection>
       <Source>MFG-SAF-PLC-001</Source>
@@ -527,6 +606,8 @@
       <Type>connects-to</Type>
       <Protocol>PROFIsafe</Protocol>
       <Trust_level>medium</Trust_level>
+      <Firewalled>false</Firewalled>
+      <Transport></Transport>
     </Connection>
   </Connections>
 </AutomationML>

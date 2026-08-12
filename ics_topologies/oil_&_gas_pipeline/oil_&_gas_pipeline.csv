@@ -1,60 +1,60 @@
-id,name,kind,type,zone,description,criticality,vendor,model,ip,cvss_type,exposed,patched,consequence_severity,role,awareness,privilege,p_base_override
-PIPE-CTR-FW-001,Control Center Firewall,device,Firewall,ControlCenter,Protects control center,High,Palo Alto,PA-5250,,7.5,true,true,8.0,,,,
-PIPE-CTR-SW-001,Control Center Switch,device,Network Switch,ControlCenter,Core switch,High,Cisco,Catalyst 9300,,6.5,false,true,8.0,,,,
-PIPE-CTR-SCADA-001,SCADA Server,device,SCADA,ControlCenter,Pipeline SCADA,High,Schneider,OASyS DNA,,8.5,false,false,10.0,,,,
-PIPE-CTR-HIST-001,Historian,device,Server,ControlCenter,Pipeline data historian,Medium,OSIsoft,PI Server,,7.0,false,false,6.0,,,,
-PIPE-CTR-HMI-001,HMI,device,HMI,ControlCenter,Operator console,Medium,Schneider,ClearSCADA,,7.5,false,false,7.0,,,,
-PIPE-CTR-EWS-001,Engineering Workstation,device,Workstation,ControlCenter,Configuration station,Low,Dell,Precision 7920,,7.8,false,true,5.0,,,,
-PIPE-RTU-001,RTU (Station A),device,RTU,RemoteSite,RTU for pump station A,High,Control Microsystems,SCADAPack 470,,8.0,false,false,8.0,,,,
-PIPE-RTU-002,RTU (Station B),device,RTU,RemoteSite,RTU for pump station B,High,Control Microsystems,SCADAPack 470,,8.0,false,false,8.0,,,,
-PIPE-RTU-003,RTU (Valve Site),device,RTU,RemoteSite,RTU for block valve site,High,Control Microsystems,SCADAPack 470,,8.0,false,false,8.0,,,,
-PIPE-RTU-004,RTU (Metering),device,RTU,RemoteSite,RTU for custody transfer,High,Control Microsystems,SCADAPack 470,,8.0,false,false,8.0,,,,
-PIPE-SW-001,Station Switch A,device,Network Switch,RemoteSite,Industrial switch for station A,High,Siemens,SCALANCE XM408,,6.5,false,false,7.0,,,,
-PIPE-SW-002,Station Switch B,device,Network Switch,RemoteSite,Industrial switch for station B,High,Siemens,SCALANCE XM408,,6.5,false,false,7.0,,,,
-PIPE-PUMP-001,Main Pump A,physical,Pump,Field,Centrifugal pump,High,Sulzer,Z6,,,,,8.0,,,,0.02
-PIPE-PUMP-002,Standby Pump A,physical,Pump,Field,Standby pump,High,Sulzer,Z6,,,,,8.0,,,,0.02
-PIPE-VFD-001,VFD A,device,VFD,Field,Variable frequency drive for pump,High,ABB,ACS880,,7.5,false,false,7.0,,,,
-PIPE-VALVE-001,Suction Valve A,physical,Valve,Field,Motor-operated valve,Medium,Emerson,Fisher V500,,,,,7.0,,,,0.02
-PIPE-SENSOR-001,Pressure Sensor A,physical,Sensor,Field,Discharge pressure,Medium,Emerson,Rosemount 3051,,,,,5.0,,,,0.01
-PIPE-SENSOR-002,Flow Meter A,physical,Sensor,Field,Ultrasonic flow meter,High,Emerson,Daniel 3410,,,,,6.0,,,,0.01
-PIPE-SENSOR-003,Temperature Sensor A,physical,Sensor,Field,Product temperature,Low,Emerson,Rosemount 214,,,,,4.0,,,,0.01
-PIPE-PUMP-003,Main Pump B,physical,Pump,Field,Centrifugal pump,High,Sulzer,Z6,,,,,8.0,,,,0.02
-PIPE-VFD-002,VFD B,device,VFD,Field,VFD for pump B,High,ABB,ACS880,,7.5,false,false,7.0,,,,
-PIPE-VALVE-002,Discharge Valve B,physical,Valve,Field,Motor-operated valve,Medium,Emerson,Fisher V500,,,,,7.0,,,,0.02
-PIPE-SENSOR-004,Pressure Sensor B,physical,Sensor,Field,Discharge pressure,Medium,Emerson,Rosemount 3051,,,,,5.0,,,,0.01
-PIPE-SENSOR-005,Flow Meter B,physical,Sensor,Field,Ultrasonic flow meter,High,Emerson,Daniel 3410,,,,,6.0,,,,0.01
-PIPE-VALVE-003,Block Valve,physical,Valve,Field,Emergency block valve,High,Emerson,Fisher V500,,,,,8.0,,,,0.02
-PIPE-SENSOR-006,Pressure Sensor Valve,physical,Sensor,Field,Pressure at valve site,Medium,Emerson,Rosemount 3051,,,,,5.0,,,,0.01
-PIPE-SENSOR-007,Custody Meter,physical,Sensor,Field,Custody transfer meter,High,Emerson,Daniel 3410,,,,,6.0,,,,0.01
-PIPE-SENSOR-008,Density Meter,physical,Sensor,Field,Product density,Medium,Emerson,Micro Motion,,,,,5.0,,,,0.01
-PIPE-HUM-DSP-001,Pipeline Dispatcher,human,Dispatcher,ControlCenter,Dispatcher monitoring pipeline operations,Medium,,,,,,,4.0,operator,0.45,standard,
+id,name,kind,type,zone,purdue_level,description,criticality,vendor,model,ip,cvss_type,exposed,patched,consequence_severity,role,awareness,privilege,p_base_override
+PIPE-CTR-FW-001,Control Center Firewall,device,Firewall,ControlCenter,4,Protects control center,High,Palo Alto,PA-5250,,7.5,true,true,8.0,,,,
+PIPE-CTR-SW-001,Control Center Switch,device,Network Switch,ControlCenter,3,Core switch,High,Cisco,Catalyst 9300,,6.5,false,true,8.0,,,,
+PIPE-CTR-SCADA-001,SCADA Server,device,SCADA,ControlCenter,3,Pipeline SCADA,High,Schneider,OASyS DNA,,8.5,false,false,10.0,,,,
+PIPE-CTR-HIST-001,Historian,device,Server,ControlCenter,3,Pipeline data historian,Medium,OSIsoft,PI Server,,7.0,false,false,6.0,,,,
+PIPE-CTR-HMI-001,HMI,device,HMI,ControlCenter,3,Operator console,Medium,Schneider,ClearSCADA,,7.5,false,false,7.0,,,,
+PIPE-CTR-EWS-001,Engineering Workstation,device,Workstation,ControlCenter,3,Configuration station,Low,Dell,Precision 7920,,7.8,false,true,5.0,,,,
+PIPE-RTU-001,RTU (Station A),device,RTU,RemoteSite,1,RTU for pump station A,High,Control Microsystems,SCADAPack 470,,8.0,false,false,8.0,,,,
+PIPE-RTU-002,RTU (Station B),device,RTU,RemoteSite,1,RTU for pump station B,High,Control Microsystems,SCADAPack 470,,8.0,false,false,8.0,,,,
+PIPE-RTU-003,RTU (Valve Site),device,RTU,RemoteSite,1,RTU for block valve site,High,Control Microsystems,SCADAPack 470,,8.0,false,false,8.0,,,,
+PIPE-RTU-004,RTU (Metering),device,RTU,RemoteSite,1,RTU for custody transfer,High,Control Microsystems,SCADAPack 470,,8.0,false,false,8.0,,,,
+PIPE-SW-001,Station Switch A,device,Network Switch,RemoteSite,1,Industrial switch for station A,High,Siemens,SCALANCE XM408,,6.5,false,false,7.0,,,,
+PIPE-SW-002,Station Switch B,device,Network Switch,RemoteSite,1,Industrial switch for station B,High,Siemens,SCALANCE XM408,,6.5,false,false,7.0,,,,
+PIPE-PUMP-001,Main Pump A,physical,Pump,Field,1,Centrifugal pump,High,Sulzer,Z6,,,,,8.0,,,,0.02
+PIPE-PUMP-002,Standby Pump A,physical,Pump,Field,1,Standby pump,High,Sulzer,Z6,,,,,8.0,,,,0.02
+PIPE-VFD-001,VFD A,device,VFD,Field,1,Variable frequency drive for pump,High,ABB,ACS880,,7.5,false,false,7.0,,,,
+PIPE-VALVE-001,Suction Valve A,physical,Valve,Field,1,Motor-operated valve,Medium,Emerson,Fisher V500,,,,,7.0,,,,0.02
+PIPE-SENSOR-001,Pressure Sensor A,physical,Sensor,Field,1,Discharge pressure,Medium,Emerson,Rosemount 3051,,,,,5.0,,,,0.01
+PIPE-SENSOR-002,Flow Meter A,physical,Sensor,Field,1,Ultrasonic flow meter,High,Emerson,Daniel 3410,,,,,6.0,,,,0.01
+PIPE-SENSOR-003,Temperature Sensor A,physical,Sensor,Field,1,Product temperature,Low,Emerson,Rosemount 214,,,,,4.0,,,,0.01
+PIPE-PUMP-003,Main Pump B,physical,Pump,Field,1,Centrifugal pump,High,Sulzer,Z6,,,,,8.0,,,,0.02
+PIPE-VFD-002,VFD B,device,VFD,Field,1,VFD for pump B,High,ABB,ACS880,,7.5,false,false,7.0,,,,
+PIPE-VALVE-002,Discharge Valve B,physical,Valve,Field,1,Motor-operated valve,Medium,Emerson,Fisher V500,,,,,7.0,,,,0.02
+PIPE-SENSOR-004,Pressure Sensor B,physical,Sensor,Field,1,Discharge pressure,Medium,Emerson,Rosemount 3051,,,,,5.0,,,,0.01
+PIPE-SENSOR-005,Flow Meter B,physical,Sensor,Field,1,Ultrasonic flow meter,High,Emerson,Daniel 3410,,,,,6.0,,,,0.01
+PIPE-VALVE-003,Block Valve,physical,Valve,Field,1,Emergency block valve,High,Emerson,Fisher V500,,,,,8.0,,,,0.02
+PIPE-SENSOR-006,Pressure Sensor Valve,physical,Sensor,Field,1,Pressure at valve site,Medium,Emerson,Rosemount 3051,,,,,5.0,,,,0.01
+PIPE-SENSOR-007,Custody Meter,physical,Sensor,Field,1,Custody transfer meter,High,Emerson,Daniel 3410,,,,,6.0,,,,0.01
+PIPE-SENSOR-008,Density Meter,physical,Sensor,Field,1,Product density,Medium,Emerson,Micro Motion,,,,,5.0,,,,0.01
+PIPE-HUM-DSP-001,Pipeline Dispatcher,human,Dispatcher,ControlCenter,3,Dispatcher monitoring pipeline operations,Medium,,,,,,,4.0,operator,0.45,standard,
 
-source,target,type,protocol,direction,trust
-PIPE-CTR-FW-001,PIPE-CTR-SW-001,connects-to,HTTP,bidirectional,low
-PIPE-CTR-SW-001,PIPE-CTR-SCADA-001,connects-to,OPC UA,bidirectional,high
-PIPE-CTR-SW-001,PIPE-CTR-HIST-001,connects-to,OPC UA,bidirectional,high
-PIPE-CTR-SW-001,PIPE-CTR-HMI-001,connects-to,OPC UA,bidirectional,high
-PIPE-CTR-SW-001,PIPE-CTR-EWS-001,connects-to,SSH,bidirectional,medium
-PIPE-HUM-DSP-001,PIPE-CTR-HMI-001,programs / operates,HMI,bidirectional,high
-PIPE-CTR-SCADA-001,PIPE-RTU-001,controls,DNP3,bidirectional,medium
-PIPE-CTR-SCADA-001,PIPE-RTU-002,controls,DNP3,bidirectional,medium
-PIPE-CTR-SCADA-001,PIPE-RTU-003,controls,DNP3,bidirectional,medium
-PIPE-CTR-SCADA-001,PIPE-RTU-004,controls,DNP3,bidirectional,medium
-PIPE-RTU-001,PIPE-SW-001,connects-to,Modbus TCP,bidirectional,low
-PIPE-RTU-002,PIPE-SW-002,connects-to,Modbus TCP,bidirectional,low
-PIPE-SW-001,PIPE-PUMP-001,actuates,Modbus TCP,unidirectional,low
-PIPE-SW-001,PIPE-PUMP-002,actuates,Modbus TCP,unidirectional,low
-PIPE-SW-001,PIPE-VFD-001,connects-to,Modbus TCP,bidirectional,low
-PIPE-SW-001,PIPE-VALVE-001,actuates,Modbus TCP,unidirectional,low
-PIPE-SW-001,PIPE-SENSOR-001,monitors,Modbus TCP,bidirectional,low
-PIPE-SW-001,PIPE-SENSOR-002,monitors,Modbus TCP,bidirectional,low
-PIPE-SW-001,PIPE-SENSOR-003,monitors,Modbus TCP,bidirectional,low
-PIPE-SW-002,PIPE-PUMP-003,actuates,Modbus TCP,unidirectional,low
-PIPE-SW-002,PIPE-VFD-002,connects-to,Modbus TCP,bidirectional,low
-PIPE-SW-002,PIPE-VALVE-002,actuates,Modbus TCP,unidirectional,low
-PIPE-SW-002,PIPE-SENSOR-004,monitors,Modbus TCP,bidirectional,low
-PIPE-SW-002,PIPE-SENSOR-005,monitors,Modbus TCP,bidirectional,low
-PIPE-RTU-003,PIPE-VALVE-003,actuates,Modbus TCP,unidirectional,low
-PIPE-RTU-003,PIPE-SENSOR-006,monitors,Modbus TCP,bidirectional,low
-PIPE-RTU-004,PIPE-SENSOR-007,monitors,Modbus TCP,bidirectional,low
-PIPE-RTU-004,PIPE-SENSOR-008,monitors,Modbus TCP,bidirectional,low
+source,target,type,protocol,direction,trust,firewalled,transport
+PIPE-CTR-FW-001,PIPE-CTR-SW-001,connects-to,HTTP,bidirectional,low,true,
+PIPE-CTR-SW-001,PIPE-CTR-SCADA-001,connects-to,OPC UA,bidirectional,high,,
+PIPE-CTR-SW-001,PIPE-CTR-HIST-001,connects-to,OPC UA,bidirectional,high,,
+PIPE-CTR-SW-001,PIPE-CTR-HMI-001,connects-to,OPC UA,bidirectional,high,,
+PIPE-CTR-SW-001,PIPE-CTR-EWS-001,connects-to,SSH,bidirectional,medium,,
+PIPE-HUM-DSP-001,PIPE-CTR-HMI-001,programs / operates,HMI,bidirectional,high,,
+PIPE-CTR-SCADA-001,PIPE-RTU-001,controls,DNP3,bidirectional,medium,,
+PIPE-CTR-SCADA-001,PIPE-RTU-002,controls,DNP3,bidirectional,medium,,
+PIPE-CTR-SCADA-001,PIPE-RTU-003,controls,DNP3,bidirectional,medium,,
+PIPE-CTR-SCADA-001,PIPE-RTU-004,controls,DNP3,bidirectional,medium,,
+PIPE-RTU-001,PIPE-SW-001,connects-to,Modbus TCP,bidirectional,low,,
+PIPE-RTU-002,PIPE-SW-002,connects-to,Modbus TCP,bidirectional,low,,
+PIPE-SW-001,PIPE-PUMP-001,actuates,Modbus TCP,unidirectional,low,,
+PIPE-SW-001,PIPE-PUMP-002,actuates,Modbus TCP,unidirectional,low,,
+PIPE-SW-001,PIPE-VFD-001,connects-to,Modbus TCP,bidirectional,low,,
+PIPE-SW-001,PIPE-VALVE-001,actuates,Modbus TCP,unidirectional,low,,
+PIPE-SW-001,PIPE-SENSOR-001,monitors,Modbus TCP,bidirectional,low,,
+PIPE-SW-001,PIPE-SENSOR-002,monitors,Modbus TCP,bidirectional,low,,
+PIPE-SW-001,PIPE-SENSOR-003,monitors,Modbus TCP,bidirectional,low,,
+PIPE-SW-002,PIPE-PUMP-003,actuates,Modbus TCP,unidirectional,low,,
+PIPE-SW-002,PIPE-VFD-002,connects-to,Modbus TCP,bidirectional,low,,
+PIPE-SW-002,PIPE-VALVE-002,actuates,Modbus TCP,unidirectional,low,,
+PIPE-SW-002,PIPE-SENSOR-004,monitors,Modbus TCP,bidirectional,low,,
+PIPE-SW-002,PIPE-SENSOR-005,monitors,Modbus TCP,bidirectional,low,,
+PIPE-RTU-003,PIPE-VALVE-003,actuates,Modbus TCP,unidirectional,low,,
+PIPE-RTU-003,PIPE-SENSOR-006,monitors,Modbus TCP,bidirectional,low,,
+PIPE-RTU-004,PIPE-SENSOR-007,monitors,Modbus TCP,bidirectional,low,,
+PIPE-RTU-004,PIPE-SENSOR-008,monitors,Modbus TCP,bidirectional,low,,

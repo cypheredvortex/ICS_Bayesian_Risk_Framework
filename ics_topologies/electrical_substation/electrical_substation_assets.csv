@@ -1,20 +1,20 @@
-id,name,kind,type,zone,description,criticality,vendor,model,ip,cvss_type,exposed,patched,consequence_severity,role,awareness,privilege,p_base_override
-SUB-FW-001,Substation Firewall,device,Firewall,Utility,Firewall to utility WAN,High,Cisco,ASA 5585,,7.5,true,true,8.0,,,,
-SUB-SW-001,Substation Switch,device,Network Switch,Substation,Core substation Ethernet switch,High,Siemens,RUGGEDCOM RSG920P,,6.5,false,false,8.0,,,,
-SUB-SCADA-001,SCADA Gateway,device,SCADA,Substation,Gateway to utility SCADA,High,GE,D400,,8.0,false,false,9.0,,,,
-SUB-HMI-001,Substation HMI,device,HMI,Substation,Operator interface,Medium,Siemens,SIMATIC HMI,,7.5,false,false,7.0,,,,
-SUB-EWS-001,Engineering Workstation,device,Workstation,Substation,Configuration laptop,Medium,Dell,Latitude 5420,,7.8,false,true,5.0,,,,
-SUB-RTU-001,RTU,device,RTU,Substation,Remote Terminal Unit for data acquisition,High,Schweitzer,SEL-3530,,8.0,false,false,8.0,,,,
-SUB-IED-001,Protection IED (Line),device,IED,Protection,Distance protection relay,High,Siemens,SIPROTEC 5 7SA86,,7.5,false,false,9.0,,,,
-SUB-IED-002,Protection IED (Transformer),device,IED,Protection,Transformer differential protection,High,Siemens,SIPROTEC 5 7UT86,,7.5,false,false,9.0,,,,
-SUB-IED-003,Protection IED (Bus),device,IED,Protection,Busbar protection,High,Siemens,SIPROTEC 5 7SS86,,7.5,false,false,9.0,,,,
-SUB-PMU-001,Phasor Measurement Unit,device,PMU,Protection,PMU for synchrophasors,Medium,GE,PMU 369,,6.5,false,false,5.0,,,,
-SUB-MU-001,Merging Unit,device,Merging Unit,Process,IEC 61850 process interface,High,Siemens,SIO 6MD85,,7.0,false,false,7.0,,,,
-SUB-CB-001,Circuit Breaker,physical,CircuitBreaker,Process,High voltage circuit breaker,High,ABB,HPL 550,,,,,10.0,,,,0.02
-SUB-DIS-001,Disconnect Switch,physical,Disconnect,Process,Disconnecting switch,Medium,Siemens,8DA10,,,,,7.0,,,,0.01
-SUB-XFMR-001,Power Transformer,physical,Transformer,Process,Main step-down transformer,High,Siemens,TRAFO 100 MVA,,,,,10.0,,,,0.02
-SUB-VT-001,Voltage Transformer,physical,VT,Process,Capacitive voltage transformer,Medium,ABB,CPD 1,,,,,6.0,,,,0.01
-SUB-CT-001,Current Transformer,physical,CT,Process,Current transformer,Medium,ABB,CT 1000:1,,,,,6.0,,,,0.01
-SUB-SENSOR-001,Temperature Sensor,physical,Sensor,Process,Oil temperature sensor,Low,Emerson,Rosemount 214,,,,,5.0,,,,0.01
-SUB-SENSOR-002,SF6 Pressure Sensor,physical,Sensor,Process,SF6 gas density monitor,Medium,WIKA,GDM-100,,,,,6.0,,,,0.01
-SUB-HUM-DSP-001,Control Room Dispatcher,human,Dispatcher,Substation,Utility dispatcher supervising the substation,Medium,,,,,,,3.0,operator,0.45,standard,
+id,name,kind,type,zone,purdue_level,description,criticality,vendor,model,ip,cvss_type,exposed,patched,consequence_severity,role,awareness,privilege,p_base_override
+SUB-FW-001,Substation Firewall,device,Firewall,Utility,4,Firewall to utility WAN,High,Cisco,ASA 5585,,7.5,true,true,8.0,,,,
+SUB-SW-001,Substation Switch,device,Network Switch,Substation,3,Core substation Ethernet switch,High,Siemens,RUGGEDCOM RSG920P,,6.5,false,false,8.0,,,,
+SUB-SCADA-001,SCADA Gateway,device,SCADA,Substation,3,Gateway to utility SCADA,High,GE,D400,,8.0,false,false,9.0,,,,
+SUB-HMI-001,Substation HMI,device,HMI,Substation,3,Operator interface,Medium,Siemens,SIMATIC HMI,,7.5,false,false,7.0,,,,
+SUB-EWS-001,Engineering Workstation,device,Workstation,Substation,3,Configuration laptop,Medium,Dell,Latitude 5420,,7.8,false,true,5.0,,,,
+SUB-RTU-001,RTU,device,RTU,Substation,3,Remote Terminal Unit for data acquisition,High,Schweitzer,SEL-3530,,8.0,false,false,8.0,,,,
+SUB-IED-001,Protection IED (Line),device,IED,Protection,2,Distance protection relay,High,Siemens,SIPROTEC 5 7SA86,,7.5,false,false,9.0,,,,
+SUB-IED-002,Protection IED (Transformer),device,IED,Protection,2,Transformer differential protection,High,Siemens,SIPROTEC 5 7UT86,,7.5,false,false,9.0,,,,
+SUB-IED-003,Protection IED (Bus),device,IED,Protection,2,Busbar protection,High,Siemens,SIPROTEC 5 7SS86,,7.5,false,false,9.0,,,,
+SUB-PMU-001,Phasor Measurement Unit,device,PMU,Protection,2,PMU for synchrophasors,Medium,GE,PMU 369,,6.5,false,false,5.0,,,,
+SUB-MU-001,Merging Unit,device,Merging Unit,Process,1,IEC 61850 process interface,High,Siemens,SIO 6MD85,,7.0,false,false,7.0,,,,
+SUB-CB-001,Circuit Breaker,physical,CircuitBreaker,Process,0,High voltage circuit breaker,High,ABB,HPL 550,,,,,10.0,,,,0.02
+SUB-DIS-001,Disconnect Switch,physical,Disconnect,Process,0,Disconnecting switch,Medium,Siemens,8DA10,,,,,7.0,,,,0.01
+SUB-XFMR-001,Power Transformer,physical,Transformer,Process,0,Main step-down transformer,High,Siemens,TRAFO 100 MVA,,,,,10.0,,,,0.02
+SUB-VT-001,Voltage Transformer,physical,VT,Process,0,Capacitive voltage transformer,Medium,ABB,CPD 1,,,,,6.0,,,,0.01
+SUB-CT-001,Current Transformer,physical,CT,Process,0,Current transformer,Medium,ABB,CT 1000:1,,,,,6.0,,,,0.01
+SUB-SENSOR-001,Temperature Sensor,physical,Sensor,Process,0,Oil temperature sensor,Low,Emerson,Rosemount 214,,,,,5.0,,,,0.01
+SUB-SENSOR-002,SF6 Pressure Sensor,physical,Sensor,Process,0,SF6 gas density monitor,Medium,WIKA,GDM-100,,,,,6.0,,,,0.01
+SUB-HUM-DSP-001,Control Room Dispatcher,human,Dispatcher,Substation,3,Utility dispatcher supervising the substation,Medium,,,,,,,3.0,operator,0.45,standard,

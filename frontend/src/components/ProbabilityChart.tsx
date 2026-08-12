@@ -139,6 +139,7 @@ export default function ProbabilityChart({
           pieData={pieData}
           embedded
           assetsByRiskLevel={assetsByRiskLevel}
+          selectedNode={selectedAsset}
           setSelectedNode={setSelectedNode}
         />
       </div>

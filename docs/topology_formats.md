@@ -40,7 +40,8 @@ File
  ├── parser            → raw assets + relationships
  ├── normalization     → canonical model (ids, kinds, security attributes)
  ├── graph validation  → DAG check, reference check, type check
- ├── topology analysis → zones, kinds, relationship mix, field coverage
+ ├── topology analysis → zones, kinds, relationship mix, field coverage,
+ │                        Purdue levels, architecture audit (advisory)
  ├── Bayesian network  → CPT generation, inference
  └── risk calculation  → per-asset risk scores
 ```
@@ -57,9 +58,9 @@ Every supported format is converted to the same internal representation:
 
 ```
 Topology
- ├── assets          : id → { id, name, kind, zone, vendor, model, ip,
- │                          cvss_type, exposed, patched, consequence_severity,
- │                          … }
+ ├── assets          : id → { id, name, kind, type, description, zone,
+ │                          purdue_level, vendor, model, ip, cvss_type,
+ │                          exposed, patched, consequence_severity, … }
  ├── relationships   : (source, target, type, firewalled, metadata)
  ├── zones           : id → { id, name }          (optional, display aid)
  └── protocols       : id → { id, name }          (optional, display aid)
@@ -80,7 +81,10 @@ from the asset name (`device` / `human` / `physical`).
 | ----- | ---------- | ----- | ----- |
 | `name` | all | text | Human-readable label (defaults to `id`). |
 | `kind` | all | `device` / `human` / `physical` | Inferred from name if omitted. |
+| `type` | all | text | Declared asset type (e.g. `PLC`, `Firewall`, `DCS Controller`). Display metadata: preserved through normalization, shown in the asset review and used for the "what is this asset?" explanation. A `type`/`category` that is a kind alias (`device`/`human`/`physical`) is consumed by kind inference and not duplicated. |
+| `description` | all | text | Plain-language description of what the asset is/does. Display metadata, preserved through normalization; shown in the Node Details panel (authoritative over the type-dictionary fallback). |
 | `zone` | all | text | Any zone name; used for reporting. |
+| `purdue_level` | all | `0`…`5`, plus `3.5` | Purdue Enterprise Reference Architecture level. `3.5` is the industrial DMZ. Optional — when absent a default is derived from the zone. Architectural metadata only; it does not alter the Bayesian mathematics directly. |
 | `vendor`, `model` | all | text | Optional. |
 | `ip` | device | IPv4 text | Optional. |
 | `cvss_type` | device | 0.0 – 10.0 | CVSS v3.1 base score shortcut. |
@@ -106,6 +110,7 @@ error.
 | `type`   | string | One of the supported relationship types (below). |
 | `firewalled` | bool | Optional; reduces propagation. |
 | `protocol`, `trust`, `mitre_technique` | text | Optional; influence risk multipliers. |
+| `transport` | text | Optional; physical transport of the link (e.g. `Ethernet`, `Leased line + VPN`, `Radio`). Display/conduit metadata that makes remote links explicit instead of pretending everything is ordinary Ethernet. |
 
 Supported relationship types (default `connects-to`):
 
@@ -359,6 +364,24 @@ connections will be rejected for lacking relationships.
 
 ## 6. Validating your topology before upload
 
+In addition to structural validation, the backend runs an **advisory ICS
+architecture audit** on every parsed topology and returns the findings with
+the upload summary. It never rejects a file — structural validation is the
+gatekeeper — but it flags configurations that are not defensible against
+Purdue-inspired / IEC 62443 / NIST SP 800-82 practice, e.g.:
+
+| Severity | Example finding |
+| -------- | --------------- |
+| error | Control-plane asset (DCS controller, HMI, operator/engineering station) placed inside an industrial DMZ. |
+| error | SIS asset reachable from enterprise/DMZ networks. |
+| error | Enterprise-zone asset directly controlling/actuating a field or process asset. |
+| warning | No firewall-class asset mediating the Enterprise/OT boundary. |
+| warning | Direct Enterprise → control-level link bypassing the DMZ. |
+| info | Boundary links not flagged `firewalled`, or assets without an explicit `purdue_level` (a zone default is used). |
+
+See `docs/ics_architecture.md` for the full rule set and the architecture
+reference.
+
 The sample topologies in `ics_topologies/` are the reference datasets. A
 convenience audit script drives **every file** through the real import
 pipeline and reports import status, full-pipeline status and cross-format
@@ -392,30 +415,37 @@ Because there is no Microsoft Visio available to author files, the framework
 cannot make arbitrary Visio documents work. The parser relies on a **shape
 text convention** — each shape's text must carry machine-readable markers:
 
-```    asset,<id>,<kind>,<cvss_type|role|p_base_override>,…
-    relationship,<source>,<target>,<type>,<firewalled>,<protocol>,<trust>,<mitre>
+```    asset,<id>,<kind>,<cvss_type|role|p_base_override>,…[;key=value…]
+    relationship,<source>,<target>,<type>,<firewalled>,<protocol>,<trust>,<mitre>[;transport=…]
 
-**Important:** the Visio marker format is intentionally compact — it carries
-asset kind and the security-relevant fields, but **not** zone, vendor, model
-or name. Those attributes are preserved by the data formats (JSON/YAML/CSV/
-XLSX/GraphML/XML/AML); the Visio representations convey the same asset ids,
-kinds, connections and relationship types, which is what the cross-format
-audit verifies.
+The positional fields are compact (kind + security-relevant fields). An
+optional ``;``-separated ``key=value`` tail carries the remaining canonical
+attributes so the Visio representations preserve **the same attribute
+coverage as every other format** (zone, declared type, description, name,
+Purdue level, vendor/model/IP and link transport):
 ```
 
 Examples:
 
 ```
-asset,PLC-001,device,8.1,false,false,9.0
-asset,SENSOR-001,physical,0.01,4.0
-asset,OPERATOR-001,human,operator,0.4,standard,4.0
+asset,PLC-001,device,8.1,false,false,9.0;name=Intake PLC;zone=Control;type=PLC;desc=Intake process controller;purdue=2
+asset,SENSOR-001,physical,0.01,4.0;name=Flow Sensor;zone=Field;type=Sensor;purdue=1
+asset,OPERATOR-001,human,operator,0.4,standard,4.0;name=Control Room Operator;zone=Operations
 relationship,PLC-001,SENSOR-001,monitors,false,Modbus TCP,low,T0855
+relationship,PLC-001,RTU-001,connects-to,true,DNP3,low,;transport=Leased line + VPN
 ```
 
 Fields after `kind` are interpreted per kind (device → `cvss_type, exposed,
 patched, consequence_severity`; human → `role, awareness, privilege,
 consequence_severity`; physical → `p_base_override, consequence_severity`).
-Shapes whose text is a plain asset name are skipped with a warning.
+The `;`-tail is parsed first, so description values may safely contain
+commas and `=` (each chunk is split on its *first* `=`); only `;` inside a
+value must be avoided (the generator replaces it with ` - ` defensively).
+When both the positional fields and the tail carry a value, the tail wins. **Backward compatibility:** legacy files that
+omit the tail (and very old samples that put a zone name in the security
+position, ``asset,<id>,<kind>,<zone>``) still parse — a non-numeric third
+field is treated as the zone. Shapes whose text is a plain asset name are
+skipped with a warning.
 
 **Why not legacy `.vsd`?** The binary Visio format cannot be parsed without a
 Visio installation or a reverse-engineered reader; uploading a `.vsd` returns

@@ -114,6 +114,7 @@ class AssessmentPersistenceService:
                     "asset_name": asset_key,
                     "asset_type": attributes.get("kind"),
                     "zone": attributes.get("zone"),
+                    "purdue_level": attributes.get("purdue_level"),
                     "vendor": attributes.get("vendor"),
                     "firmware_version": attributes.get("firmware_version"),
                     "exposure_level": attributes.get("exposure_level"),

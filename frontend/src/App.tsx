@@ -13,6 +13,7 @@ import {
   defaultTopology,
   defaultCoreSettings,
   topologyFormats,
+  purdueLevelMeta,
 } from './constants'
 import { deriveTopologySummary, parseErrorBody, parseErrorDetail, riskLevelFor } from './utils'
 import type { RiskThresholds } from './types'
@@ -337,6 +338,9 @@ export default function App() {
       return result.graph.edges.map((edge) => ({
         source: edge.source,
         target: edge.target,
+        relType: edge.rel_type,
+        weight: typeof edge.weight === 'number' ? edge.weight : undefined,
+        firewalled: Boolean(edge.firewalled),
         label: `${edge.rel_type}${edge.firewalled ? ' 🔒' : ''}${typeof edge.weight === 'number' ? ` w=${edge.weight.toFixed(2)}` : ''}`,
       }))
     }
@@ -344,6 +348,9 @@ export default function App() {
       ([source, target, relType, firewalled]) => ({
         source,
         target,
+        relType,
+        weight: undefined,
+        firewalled: Boolean(firewalled),
         label: `${relType}${firewalled ? ' (firewalled)' : ''}`,
       }),
     )
@@ -375,6 +382,56 @@ export default function App() {
     })
     return neighbors
   }, [selectedNode, edgeList])
+
+  // Zone / Purdue metadata for the viewer's Purdue-ordered zone bands.
+  // Prefer the analyze graph nodes (they carry zone + purdue_level), falling
+  // back to the normalized topology assets before an assessment has run.
+  const nodeZoneMap = useMemo(() => {
+    const map = new Map<string, string>()
+    if (result?.graph?.nodes?.length) {
+      result.graph.nodes.forEach((node) => {
+        if (node.zone) map.set(node.id, String(node.zone))
+      })
+    }
+    Object.entries(topology.assets).forEach(([id, attrs]) => {
+      if (!map.has(id) && attrs.zone) map.set(id, String(attrs.zone))
+    })
+    return map
+  }, [result, topology.assets])
+
+  const nodePurdueMap = useMemo(() => {
+    const map = new Map<string, string | null>()
+    if (result?.graph?.nodes?.length) {
+      result.graph.nodes.forEach((node) => {
+        if (node.purdue_level) map.set(node.id, String(node.purdue_level))
+      })
+    }
+    Object.entries(topology.assets).forEach(([id, attrs]) => {
+      if (!map.has(id) && attrs.purdue_level) {
+        map.set(id, String(attrs.purdue_level))
+      }
+    })
+    return map
+  }, [result, topology.assets])
+
+  // Representative Purdue level per zone (used to order the zone columns).
+  // If a zone contains mixed levels we keep the highest (most external) one
+  // so the band lands where the zone's trust boundary starts.
+  const zonePurdueMap = useMemo(() => {
+    const rank = (level: string | null) => {
+      const meta = level && purdueLevelMeta[level] ? purdueLevelMeta[level] : null
+      return meta ? meta.order : 99
+    }
+    const map = new Map<string, string | null>()
+    nodeZoneMap.forEach((zone, id) => {
+      const level = nodePurdueMap.get(id) ?? null
+      const existing = map.get(zone) ?? null
+      if (existing === null || (level !== null && rank(level) < rank(existing))) {
+        map.set(zone, level)
+      }
+    })
+    return map
+  }, [nodeZoneMap, nodePurdueMap])
 
   const matchingNodes = useMemo(() => {
     if (!nodeQuery.trim()) return null
@@ -763,6 +820,7 @@ export default function App() {
           apiOnline={apiOnline}
           loading={loading}
           hasAssets={Object.keys(topology.assets).length > 0}
+          assessed={Boolean(result)}
           onFileUpload={handleFileUpload}
           onRemoveTopology={removeTopology}
           onRunAssessment={() => void runAssessment()}
@@ -803,6 +861,7 @@ export default function App() {
                 assets={assets}
                 evidence={evidence}
                 onUpdateEvidence={updateEvidence}
+                onClearAll={() => setEvidence({})}
                 embedded
               />
             </div>
@@ -829,6 +888,9 @@ export default function App() {
             onColorModeChange={setColorMode}
             onAttackPathToggle={() => setShowAttackPath((v) => !v)}
             result={result}
+            nodeZoneMap={nodeZoneMap}
+            nodePurdueMap={nodePurdueMap}
+            zonePurdueMap={zonePurdueMap}
           />
 
           <div ref={nodeDetailsRef}>
@@ -841,6 +903,10 @@ export default function App() {
               riskRanking={riskRanking}
               attackPathNodes={attackPathNodes}
               edgeList={edgeList}
+              // The uploaded (normalized) topology carries the asset's
+              // declared type and description — the authoritative source for
+              // the "what is this asset?" explanation before/without a run.
+              topologyAssets={topology.assets}
             />
           </div>
         </section>
@@ -852,7 +918,11 @@ export default function App() {
               chartData={chartData}
               riskRanking={riskRanking}
               thresholds={serverSettings.risk_thresholds}
-              setSelectedNode={setSelectedNode}
+              // Chart-driven selections scroll the Node Details panel into
+              // view and toggle off on re-click — same interaction as the
+              // probability chart bars.
+              selectedNode={selectedNode}
+              setSelectedNode={selectAssetFromChart}
             />
           ) : (
             <Card>

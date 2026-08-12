@@ -9,27 +9,38 @@
     {
       "id": "Internet",
       "name": "Internet",
-      "color": "#ff6b6b"
+      "color": "#ff6b6b",
+      "purdue_level": "5"
     },
     {
       "id": "Enterprise",
       "name": "Enterprise IT",
-      "color": "#4dabf7"
+      "color": "#4dabf7",
+      "purdue_level": "4"
     },
     {
-      "id": "DMZ",
-      "name": "OT DMZ",
-      "color": "#ffa94d"
+      "id": "IDMZ",
+      "name": "Industrial DMZ (L3.5)",
+      "color": "#ffa94d",
+      "purdue_level": "3.5"
+    },
+    {
+      "id": "Operations",
+      "name": "Site Operations (L3)",
+      "purdue_level": "3",
+      "color": "#9775fa"
     },
     {
       "id": "Control",
-      "name": "Control Network",
-      "color": "#845ef7"
+      "name": "Control Network (L2)",
+      "color": "#845ef7",
+      "purdue_level": "2"
     },
     {
       "id": "Field",
-      "name": "Field Devices",
-      "color": "#20c997"
+      "name": "Field Devices (L1)",
+      "color": "#20c997",
+      "purdue_level": "1"
     }
   ],
   "assets": [
@@ -47,7 +58,8 @@
       "cvss_type": 7.5,
       "exposed": true,
       "patched": true,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "5"
     },
     {
       "id": "WTP-ENT-SW-001",
@@ -62,7 +74,8 @@
       "cvss_type": 6.5,
       "exposed": false,
       "patched": true,
-      "consequence_severity": 6.0
+      "consequence_severity": 6.0,
+      "purdue_level": "4"
     },
     {
       "id": "WTP-ENT-DC-001",
@@ -77,7 +90,8 @@
       "cvss_type": 8.1,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 9.0
+      "consequence_severity": 9.0,
+      "purdue_level": "4"
     },
     {
       "id": "WTP-ENT-HIST-001",
@@ -92,14 +106,15 @@
       "cvss_type": 7.0,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 5.0
+      "consequence_severity": 5.0,
+      "purdue_level": "4"
     },
     {
       "id": "WTP-DMZ-SW-001",
       "name": "DMZ Switch",
       "type": "Network Switch",
       "kind": "device",
-      "zone": "DMZ",
+      "zone": "IDMZ",
       "description": "OT DMZ switch",
       "criticality": "High",
       "vendor": "Cisco",
@@ -107,14 +122,15 @@
       "cvss_type": 6.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 7.0
+      "consequence_severity": 7.0,
+      "purdue_level": "3.5"
     },
     {
       "id": "WTP-DMZ-JUMP-001",
       "name": "Jump Server",
       "type": "Server",
       "kind": "device",
-      "zone": "DMZ",
+      "zone": "IDMZ",
       "description": "Secure jump host for OT access",
       "criticality": "High",
       "vendor": "Microsoft",
@@ -122,14 +138,15 @@
       "cvss_type": 8.1,
       "exposed": true,
       "patched": true,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "3.5"
     },
     {
-      "id": "WTP-DMZ-SCADA-001",
+      "id": "WTP-OPS-SCADA-001",
       "name": "SCADA Server",
       "type": "SCADA",
       "kind": "device",
-      "zone": "DMZ",
+      "zone": "Operations",
       "description": "Primary SCADA server",
       "criticality": "High",
       "vendor": "Schneider",
@@ -137,7 +154,8 @@
       "cvss_type": 8.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 9.0
+      "consequence_severity": 9.0,
+      "purdue_level": "3"
     },
     {
       "id": "WTP-CTRL-SW-001",
@@ -152,14 +170,15 @@
       "cvss_type": 6.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "2"
     },
     {
       "id": "WTP-CTRL-HMI-001",
       "name": "HMI",
       "type": "HMI",
       "kind": "device",
-      "zone": "Control",
+      "zone": "Operations",
       "description": "Operator interface",
       "criticality": "Medium",
       "vendor": "Siemens",
@@ -167,7 +186,8 @@
       "cvss_type": 7.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 6.0
+      "consequence_severity": 6.0,
+      "purdue_level": "3"
     },
     {
       "id": "WTP-CTRL-PLC-001",
@@ -182,7 +202,8 @@
       "cvss_type": 8.1,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 9.0
+      "consequence_severity": 9.0,
+      "purdue_level": "2"
     },
     {
       "id": "WTP-CTRL-PLC-002",
@@ -197,7 +218,8 @@
       "cvss_type": 8.1,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 9.0
+      "consequence_severity": 9.0,
+      "purdue_level": "2"
     },
     {
       "id": "WTP-CTRL-PLC-003",
@@ -212,7 +234,8 @@
       "cvss_type": 8.1,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 9.0
+      "consequence_severity": 9.0,
+      "purdue_level": "2"
     },
     {
       "id": "WTP-CTRL-PLC-004",
@@ -227,20 +250,22 @@
       "cvss_type": 8.1,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 9.0
+      "consequence_severity": 9.0,
+      "purdue_level": "2"
     },
     {
       "id": "WTP-HUM-OPR-001",
       "name": "Control Room Operator",
       "type": "Operator",
       "kind": "human",
-      "zone": "Control",
+      "zone": "Operations",
       "description": "Duty operator supervising the plant from the control room",
       "criticality": "Medium",
       "role": "operator",
       "awareness": 0.4,
       "privilege": "standard",
-      "consequence_severity": 4.0
+      "consequence_severity": 4.0,
+      "purdue_level": "3"
     },
     {
       "id": "WTP-FLD-PUMP-001",
@@ -253,7 +278,8 @@
       "vendor": "Grundfos",
       "model": "CR 64",
       "p_base_override": 0.02,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "1"
     },
     {
       "id": "WTP-FLD-PUMP-002",
@@ -266,7 +292,8 @@
       "vendor": "Grundfos",
       "model": "CR 90",
       "p_base_override": 0.02,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "1"
     },
     {
       "id": "WTP-FLD-VALVE-001",
@@ -279,7 +306,8 @@
       "vendor": "Emerson",
       "model": "Fisher V500",
       "p_base_override": 0.02,
-      "consequence_severity": 6.0
+      "consequence_severity": 6.0,
+      "purdue_level": "1"
     },
     {
       "id": "WTP-FLD-VALVE-002",
@@ -292,7 +320,8 @@
       "vendor": "Emerson",
       "model": "Fisher V500",
       "p_base_override": 0.02,
-      "consequence_severity": 6.0
+      "consequence_severity": 6.0,
+      "purdue_level": "1"
     },
     {
       "id": "WTP-FLD-SENSOR-001",
@@ -305,7 +334,8 @@
       "vendor": "Emerson",
       "model": "Rosemount 8700",
       "p_base_override": 0.01,
-      "consequence_severity": 4.0
+      "consequence_severity": 4.0,
+      "purdue_level": "1"
     },
     {
       "id": "WTP-FLD-SENSOR-002",
@@ -318,7 +348,8 @@
       "vendor": "Emerson",
       "model": "Rosemount 3051",
       "p_base_override": 0.01,
-      "consequence_severity": 4.0
+      "consequence_severity": 4.0,
+      "purdue_level": "1"
     },
     {
       "id": "WTP-FLD-SENSOR-003",
@@ -331,7 +362,8 @@
       "vendor": "Hach",
       "model": "SC200",
       "p_base_override": 0.01,
-      "consequence_severity": 5.0
+      "consequence_severity": 5.0,
+      "purdue_level": "1"
     },
     {
       "id": "WTP-FLD-SENSOR-004",
@@ -344,7 +376,8 @@
       "vendor": "Hach",
       "model": "1720E",
       "p_base_override": 0.01,
-      "consequence_severity": 4.0
+      "consequence_severity": 4.0,
+      "purdue_level": "1"
     },
     {
       "id": "WTP-FLD-MOTOR-001",
@@ -357,7 +390,8 @@
       "vendor": "Siemens",
       "model": "1LA8",
       "p_base_override": 0.01,
-      "consequence_severity": 5.0
+      "consequence_severity": 5.0,
+      "purdue_level": "1"
     },
     {
       "id": "WTP-FLD-VFD-001",
@@ -372,14 +406,15 @@
       "cvss_type": 7.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 7.0
+      "consequence_severity": 7.0,
+      "purdue_level": "1"
     },
     {
       "id": "WTP-FLD-ENG-001",
       "name": "Engineering Workstation",
       "type": "Workstation",
       "kind": "device",
-      "zone": "Field",
+      "zone": "Operations",
       "description": "Engineering laptop for maintenance",
       "criticality": "Medium",
       "vendor": "Dell",
@@ -387,7 +422,8 @@
       "cvss_type": 7.8,
       "exposed": false,
       "patched": true,
-      "consequence_severity": 5.0
+      "consequence_severity": 5.0,
+      "purdue_level": "3"
     },
     {
       "id": "WTP-FLD-SW-001",
@@ -402,7 +438,8 @@
       "cvss_type": 6.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 5.0
+      "consequence_severity": 5.0,
+      "purdue_level": "1"
     }
   ],
   "connections": [
@@ -420,7 +457,8 @@
       "type": "connects-to",
       "protocol": "HTTP",
       "direction": "bidirectional",
-      "trust": "medium"
+      "trust": "medium",
+      "firewalled": true
     },
     {
       "source": "WTP-ENT-SW-001",
@@ -448,14 +486,14 @@
     },
     {
       "source": "WTP-DMZ-SW-001",
-      "target": "WTP-DMZ-SCADA-001",
+      "target": "WTP-OPS-SCADA-001",
       "type": "connects-to",
       "protocol": "OPC UA",
       "direction": "bidirectional",
       "trust": "medium"
     },
     {
-      "source": "WTP-DMZ-SCADA-001",
+      "source": "WTP-OPS-SCADA-001",
       "target": "WTP-CTRL-SW-001",
       "type": "connects-to",
       "protocol": "OPC UA",

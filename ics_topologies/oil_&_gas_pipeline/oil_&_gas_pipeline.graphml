@@ -1,23 +1,25 @@
 <?xml version='1.0' encoding='utf-8'?>
 <graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
-  <key id="d22" for="edge" attr.name="trust" attr.type="string" />
-  <key id="d21" for="edge" attr.name="direction" attr.type="string" />
-  <key id="d20" for="edge" attr.name="protocol" attr.type="string" />
-  <key id="d19" for="edge" attr.name="type" attr.type="string" />
-  <key id="d18" for="edge" attr.name="target" attr.type="string" />
-  <key id="d17" for="edge" attr.name="source" attr.type="string" />
-  <key id="d16" for="node" attr.name="privilege" attr.type="string" />
-  <key id="d15" for="node" attr.name="awareness" attr.type="double" />
-  <key id="d14" for="node" attr.name="role" attr.type="string" />
-  <key id="d13" for="node" attr.name="p_base_override" attr.type="double" />
-  <key id="d12" for="node" attr.name="consequence_severity" attr.type="double" />
-  <key id="d11" for="node" attr.name="patched" attr.type="boolean" />
-  <key id="d10" for="node" attr.name="exposed" attr.type="boolean" />
-  <key id="d9" for="node" attr.name="cvss_type" attr.type="double" />
-  <key id="d8" for="node" attr.name="model" attr.type="string" />
-  <key id="d7" for="node" attr.name="vendor" attr.type="string" />
-  <key id="d6" for="node" attr.name="criticality" attr.type="string" />
-  <key id="d5" for="node" attr.name="description" attr.type="string" />
+  <key id="d24" for="edge" attr.name="firewalled" attr.type="boolean" />
+  <key id="d23" for="edge" attr.name="trust" attr.type="string" />
+  <key id="d22" for="edge" attr.name="direction" attr.type="string" />
+  <key id="d21" for="edge" attr.name="protocol" attr.type="string" />
+  <key id="d20" for="edge" attr.name="type" attr.type="string" />
+  <key id="d19" for="edge" attr.name="target" attr.type="string" />
+  <key id="d18" for="edge" attr.name="source" attr.type="string" />
+  <key id="d17" for="node" attr.name="privilege" attr.type="string" />
+  <key id="d16" for="node" attr.name="awareness" attr.type="double" />
+  <key id="d15" for="node" attr.name="role" attr.type="string" />
+  <key id="d14" for="node" attr.name="p_base_override" attr.type="double" />
+  <key id="d13" for="node" attr.name="consequence_severity" attr.type="double" />
+  <key id="d12" for="node" attr.name="patched" attr.type="boolean" />
+  <key id="d11" for="node" attr.name="exposed" attr.type="boolean" />
+  <key id="d10" for="node" attr.name="cvss_type" attr.type="double" />
+  <key id="d9" for="node" attr.name="model" attr.type="string" />
+  <key id="d8" for="node" attr.name="vendor" attr.type="string" />
+  <key id="d7" for="node" attr.name="criticality" attr.type="string" />
+  <key id="d6" for="node" attr.name="description" attr.type="string" />
+  <key id="d5" for="node" attr.name="purdue_level" attr.type="string" />
   <key id="d4" for="node" attr.name="zone" attr.type="string" />
   <key id="d3" for="node" attr.name="type" attr.type="string" />
   <key id="d2" for="node" attr.name="kind" attr.type="string" />
@@ -30,14 +32,15 @@
       <data key="d2">device</data>
       <data key="d3">Firewall</data>
       <data key="d4">ControlCenter</data>
-      <data key="d5">Protects control center</data>
-      <data key="d6">High</data>
-      <data key="d7">Palo Alto</data>
-      <data key="d8">PA-5250</data>
-      <data key="d9">7.5</data>
-      <data key="d10">True</data>
+      <data key="d5">4</data>
+      <data key="d6">Protects control center</data>
+      <data key="d7">High</data>
+      <data key="d8">Palo Alto</data>
+      <data key="d9">PA-5250</data>
+      <data key="d10">7.5</data>
       <data key="d11">True</data>
-      <data key="d12">8.0</data>
+      <data key="d12">True</data>
+      <data key="d13">8.0</data>
     </node>
     <node id="PIPE-CTR-SW-001">
       <data key="d0">PIPE-CTR-SW-001</data>
@@ -45,14 +48,15 @@
       <data key="d2">device</data>
       <data key="d3">Network Switch</data>
       <data key="d4">ControlCenter</data>
-      <data key="d5">Core switch</data>
-      <data key="d6">High</data>
-      <data key="d7">Cisco</data>
-      <data key="d8">Catalyst 9300</data>
-      <data key="d9">6.5</data>
-      <data key="d10">False</data>
-      <data key="d11">True</data>
-      <data key="d12">8.0</data>
+      <data key="d5">3</data>
+      <data key="d6">Core switch</data>
+      <data key="d7">High</data>
+      <data key="d8">Cisco</data>
+      <data key="d9">Catalyst 9300</data>
+      <data key="d10">6.5</data>
+      <data key="d11">False</data>
+      <data key="d12">True</data>
+      <data key="d13">8.0</data>
     </node>
     <node id="PIPE-CTR-SCADA-001">
       <data key="d0">PIPE-CTR-SCADA-001</data>
@@ -60,14 +64,15 @@
       <data key="d2">device</data>
       <data key="d3">SCADA</data>
       <data key="d4">ControlCenter</data>
-      <data key="d5">Pipeline SCADA</data>
-      <data key="d6">High</data>
-      <data key="d7">Schneider</data>
-      <data key="d8">OASyS DNA</data>
-      <data key="d9">8.5</data>
-      <data key="d10">False</data>
+      <data key="d5">3</data>
+      <data key="d6">Pipeline SCADA</data>
+      <data key="d7">High</data>
+      <data key="d8">Schneider</data>
+      <data key="d9">OASyS DNA</data>
+      <data key="d10">8.5</data>
       <data key="d11">False</data>
-      <data key="d12">10.0</data>
+      <data key="d12">False</data>
+      <data key="d13">10.0</data>
     </node>
     <node id="PIPE-CTR-HIST-001">
       <data key="d0">PIPE-CTR-HIST-001</data>
@@ -75,14 +80,15 @@
       <data key="d2">device</data>
       <data key="d3">Server</data>
       <data key="d4">ControlCenter</data>
-      <data key="d5">Pipeline data historian</data>
-      <data key="d6">Medium</data>
-      <data key="d7">OSIsoft</data>
-      <data key="d8">PI Server</data>
-      <data key="d9">7.0</data>
-      <data key="d10">False</data>
+      <data key="d5">3</data>
+      <data key="d6">Pipeline data historian</data>
+      <data key="d7">Medium</data>
+      <data key="d8">OSIsoft</data>
+      <data key="d9">PI Server</data>
+      <data key="d10">7.0</data>
       <data key="d11">False</data>
-      <data key="d12">6.0</data>
+      <data key="d12">False</data>
+      <data key="d13">6.0</data>
     </node>
     <node id="PIPE-CTR-HMI-001">
       <data key="d0">PIPE-CTR-HMI-001</data>
@@ -90,14 +96,15 @@
       <data key="d2">device</data>
       <data key="d3">HMI</data>
       <data key="d4">ControlCenter</data>
-      <data key="d5">Operator console</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Schneider</data>
-      <data key="d8">ClearSCADA</data>
-      <data key="d9">7.5</data>
-      <data key="d10">False</data>
+      <data key="d5">3</data>
+      <data key="d6">Operator console</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Schneider</data>
+      <data key="d9">ClearSCADA</data>
+      <data key="d10">7.5</data>
       <data key="d11">False</data>
-      <data key="d12">7.0</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
     </node>
     <node id="PIPE-CTR-EWS-001">
       <data key="d0">PIPE-CTR-EWS-001</data>
@@ -105,14 +112,15 @@
       <data key="d2">device</data>
       <data key="d3">Workstation</data>
       <data key="d4">ControlCenter</data>
-      <data key="d5">Configuration station</data>
-      <data key="d6">Low</data>
-      <data key="d7">Dell</data>
-      <data key="d8">Precision 7920</data>
-      <data key="d9">7.8</data>
-      <data key="d10">False</data>
-      <data key="d11">True</data>
-      <data key="d12">5.0</data>
+      <data key="d5">3</data>
+      <data key="d6">Configuration station</data>
+      <data key="d7">Low</data>
+      <data key="d8">Dell</data>
+      <data key="d9">Precision 7920</data>
+      <data key="d10">7.8</data>
+      <data key="d11">False</data>
+      <data key="d12">True</data>
+      <data key="d13">5.0</data>
     </node>
     <node id="PIPE-RTU-001">
       <data key="d0">PIPE-RTU-001</data>
@@ -120,14 +128,15 @@
       <data key="d2">device</data>
       <data key="d3">RTU</data>
       <data key="d4">RemoteSite</data>
-      <data key="d5">RTU for pump station A</data>
-      <data key="d6">High</data>
-      <data key="d7">Control Microsystems</data>
-      <data key="d8">SCADAPack 470</data>
-      <data key="d9">8.0</data>
-      <data key="d10">False</data>
+      <data key="d5">1</data>
+      <data key="d6">RTU for pump station A</data>
+      <data key="d7">High</data>
+      <data key="d8">Control Microsystems</data>
+      <data key="d9">SCADAPack 470</data>
+      <data key="d10">8.0</data>
       <data key="d11">False</data>
-      <data key="d12">8.0</data>
+      <data key="d12">False</data>
+      <data key="d13">8.0</data>
     </node>
     <node id="PIPE-RTU-002">
       <data key="d0">PIPE-RTU-002</data>
@@ -135,14 +144,15 @@
       <data key="d2">device</data>
       <data key="d3">RTU</data>
       <data key="d4">RemoteSite</data>
-      <data key="d5">RTU for pump station B</data>
-      <data key="d6">High</data>
-      <data key="d7">Control Microsystems</data>
-      <data key="d8">SCADAPack 470</data>
-      <data key="d9">8.0</data>
-      <data key="d10">False</data>
+      <data key="d5">1</data>
+      <data key="d6">RTU for pump station B</data>
+      <data key="d7">High</data>
+      <data key="d8">Control Microsystems</data>
+      <data key="d9">SCADAPack 470</data>
+      <data key="d10">8.0</data>
       <data key="d11">False</data>
-      <data key="d12">8.0</data>
+      <data key="d12">False</data>
+      <data key="d13">8.0</data>
     </node>
     <node id="PIPE-RTU-003">
       <data key="d0">PIPE-RTU-003</data>
@@ -150,14 +160,15 @@
       <data key="d2">device</data>
       <data key="d3">RTU</data>
       <data key="d4">RemoteSite</data>
-      <data key="d5">RTU for block valve site</data>
-      <data key="d6">High</data>
-      <data key="d7">Control Microsystems</data>
-      <data key="d8">SCADAPack 470</data>
-      <data key="d9">8.0</data>
-      <data key="d10">False</data>
+      <data key="d5">1</data>
+      <data key="d6">RTU for block valve site</data>
+      <data key="d7">High</data>
+      <data key="d8">Control Microsystems</data>
+      <data key="d9">SCADAPack 470</data>
+      <data key="d10">8.0</data>
       <data key="d11">False</data>
-      <data key="d12">8.0</data>
+      <data key="d12">False</data>
+      <data key="d13">8.0</data>
     </node>
     <node id="PIPE-RTU-004">
       <data key="d0">PIPE-RTU-004</data>
@@ -165,14 +176,15 @@
       <data key="d2">device</data>
       <data key="d3">RTU</data>
       <data key="d4">RemoteSite</data>
-      <data key="d5">RTU for custody transfer</data>
-      <data key="d6">High</data>
-      <data key="d7">Control Microsystems</data>
-      <data key="d8">SCADAPack 470</data>
-      <data key="d9">8.0</data>
-      <data key="d10">False</data>
+      <data key="d5">1</data>
+      <data key="d6">RTU for custody transfer</data>
+      <data key="d7">High</data>
+      <data key="d8">Control Microsystems</data>
+      <data key="d9">SCADAPack 470</data>
+      <data key="d10">8.0</data>
       <data key="d11">False</data>
-      <data key="d12">8.0</data>
+      <data key="d12">False</data>
+      <data key="d13">8.0</data>
     </node>
     <node id="PIPE-SW-001">
       <data key="d0">PIPE-SW-001</data>
@@ -180,14 +192,15 @@
       <data key="d2">device</data>
       <data key="d3">Network Switch</data>
       <data key="d4">RemoteSite</data>
-      <data key="d5">Industrial switch for station A</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">SCALANCE XM408</data>
-      <data key="d9">6.5</data>
-      <data key="d10">False</data>
+      <data key="d5">1</data>
+      <data key="d6">Industrial switch for station A</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SCALANCE XM408</data>
+      <data key="d10">6.5</data>
       <data key="d11">False</data>
-      <data key="d12">7.0</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
     </node>
     <node id="PIPE-SW-002">
       <data key="d0">PIPE-SW-002</data>
@@ -195,14 +208,15 @@
       <data key="d2">device</data>
       <data key="d3">Network Switch</data>
       <data key="d4">RemoteSite</data>
-      <data key="d5">Industrial switch for station B</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">SCALANCE XM408</data>
-      <data key="d9">6.5</data>
-      <data key="d10">False</data>
+      <data key="d5">1</data>
+      <data key="d6">Industrial switch for station B</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SCALANCE XM408</data>
+      <data key="d10">6.5</data>
       <data key="d11">False</data>
-      <data key="d12">7.0</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
     </node>
     <node id="PIPE-PUMP-001">
       <data key="d0">PIPE-PUMP-001</data>
@@ -210,12 +224,13 @@
       <data key="d2">physical</data>
       <data key="d3">Pump</data>
       <data key="d4">Field</data>
-      <data key="d5">Centrifugal pump</data>
-      <data key="d6">High</data>
-      <data key="d7">Sulzer</data>
-      <data key="d8">Z6</data>
-      <data key="d12">8.0</data>
-      <data key="d13">0.02</data>
+      <data key="d5">1</data>
+      <data key="d6">Centrifugal pump</data>
+      <data key="d7">High</data>
+      <data key="d8">Sulzer</data>
+      <data key="d9">Z6</data>
+      <data key="d13">8.0</data>
+      <data key="d14">0.02</data>
     </node>
     <node id="PIPE-PUMP-002">
       <data key="d0">PIPE-PUMP-002</data>
@@ -223,12 +238,13 @@
       <data key="d2">physical</data>
       <data key="d3">Pump</data>
       <data key="d4">Field</data>
-      <data key="d5">Standby pump</data>
-      <data key="d6">High</data>
-      <data key="d7">Sulzer</data>
-      <data key="d8">Z6</data>
-      <data key="d12">8.0</data>
-      <data key="d13">0.02</data>
+      <data key="d5">1</data>
+      <data key="d6">Standby pump</data>
+      <data key="d7">High</data>
+      <data key="d8">Sulzer</data>
+      <data key="d9">Z6</data>
+      <data key="d13">8.0</data>
+      <data key="d14">0.02</data>
     </node>
     <node id="PIPE-VFD-001">
       <data key="d0">PIPE-VFD-001</data>
@@ -236,14 +252,15 @@
       <data key="d2">device</data>
       <data key="d3">VFD</data>
       <data key="d4">Field</data>
-      <data key="d5">Variable frequency drive for pump</data>
-      <data key="d6">High</data>
-      <data key="d7">ABB</data>
-      <data key="d8">ACS880</data>
-      <data key="d9">7.5</data>
-      <data key="d10">False</data>
+      <data key="d5">1</data>
+      <data key="d6">Variable frequency drive for pump</data>
+      <data key="d7">High</data>
+      <data key="d8">ABB</data>
+      <data key="d9">ACS880</data>
+      <data key="d10">7.5</data>
       <data key="d11">False</data>
-      <data key="d12">7.0</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
     </node>
     <node id="PIPE-VALVE-001">
       <data key="d0">PIPE-VALVE-001</data>
@@ -251,12 +268,13 @@
       <data key="d2">physical</data>
       <data key="d3">Valve</data>
       <data key="d4">Field</data>
-      <data key="d5">Motor-operated valve</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Fisher V500</data>
-      <data key="d12">7.0</data>
-      <data key="d13">0.02</data>
+      <data key="d5">1</data>
+      <data key="d6">Motor-operated valve</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Fisher V500</data>
+      <data key="d13">7.0</data>
+      <data key="d14">0.02</data>
     </node>
     <node id="PIPE-SENSOR-001">
       <data key="d0">PIPE-SENSOR-001</data>
@@ -264,12 +282,13 @@
       <data key="d2">physical</data>
       <data key="d3">Sensor</data>
       <data key="d4">Field</data>
-      <data key="d5">Discharge pressure</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Rosemount 3051</data>
-      <data key="d12">5.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">1</data>
+      <data key="d6">Discharge pressure</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 3051</data>
+      <data key="d13">5.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="PIPE-SENSOR-002">
       <data key="d0">PIPE-SENSOR-002</data>
@@ -277,12 +296,13 @@
       <data key="d2">physical</data>
       <data key="d3">Sensor</data>
       <data key="d4">Field</data>
-      <data key="d5">Ultrasonic flow meter</data>
-      <data key="d6">High</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Daniel 3410</data>
-      <data key="d12">6.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">1</data>
+      <data key="d6">Ultrasonic flow meter</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Daniel 3410</data>
+      <data key="d13">6.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="PIPE-SENSOR-003">
       <data key="d0">PIPE-SENSOR-003</data>
@@ -290,12 +310,13 @@
       <data key="d2">physical</data>
       <data key="d3">Sensor</data>
       <data key="d4">Field</data>
-      <data key="d5">Product temperature</data>
-      <data key="d6">Low</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Rosemount 214</data>
-      <data key="d12">4.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">1</data>
+      <data key="d6">Product temperature</data>
+      <data key="d7">Low</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 214</data>
+      <data key="d13">4.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="PIPE-PUMP-003">
       <data key="d0">PIPE-PUMP-003</data>
@@ -303,12 +324,13 @@
       <data key="d2">physical</data>
       <data key="d3">Pump</data>
       <data key="d4">Field</data>
-      <data key="d5">Centrifugal pump</data>
-      <data key="d6">High</data>
-      <data key="d7">Sulzer</data>
-      <data key="d8">Z6</data>
-      <data key="d12">8.0</data>
-      <data key="d13">0.02</data>
+      <data key="d5">1</data>
+      <data key="d6">Centrifugal pump</data>
+      <data key="d7">High</data>
+      <data key="d8">Sulzer</data>
+      <data key="d9">Z6</data>
+      <data key="d13">8.0</data>
+      <data key="d14">0.02</data>
     </node>
     <node id="PIPE-VFD-002">
       <data key="d0">PIPE-VFD-002</data>
@@ -316,14 +338,15 @@
       <data key="d2">device</data>
       <data key="d3">VFD</data>
       <data key="d4">Field</data>
-      <data key="d5">VFD for pump B</data>
-      <data key="d6">High</data>
-      <data key="d7">ABB</data>
-      <data key="d8">ACS880</data>
-      <data key="d9">7.5</data>
-      <data key="d10">False</data>
+      <data key="d5">1</data>
+      <data key="d6">VFD for pump B</data>
+      <data key="d7">High</data>
+      <data key="d8">ABB</data>
+      <data key="d9">ACS880</data>
+      <data key="d10">7.5</data>
       <data key="d11">False</data>
-      <data key="d12">7.0</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
     </node>
     <node id="PIPE-VALVE-002">
       <data key="d0">PIPE-VALVE-002</data>
@@ -331,12 +354,13 @@
       <data key="d2">physical</data>
       <data key="d3">Valve</data>
       <data key="d4">Field</data>
-      <data key="d5">Motor-operated valve</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Fisher V500</data>
-      <data key="d12">7.0</data>
-      <data key="d13">0.02</data>
+      <data key="d5">1</data>
+      <data key="d6">Motor-operated valve</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Fisher V500</data>
+      <data key="d13">7.0</data>
+      <data key="d14">0.02</data>
     </node>
     <node id="PIPE-SENSOR-004">
       <data key="d0">PIPE-SENSOR-004</data>
@@ -344,12 +368,13 @@
       <data key="d2">physical</data>
       <data key="d3">Sensor</data>
       <data key="d4">Field</data>
-      <data key="d5">Discharge pressure</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Rosemount 3051</data>
-      <data key="d12">5.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">1</data>
+      <data key="d6">Discharge pressure</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 3051</data>
+      <data key="d13">5.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="PIPE-SENSOR-005">
       <data key="d0">PIPE-SENSOR-005</data>
@@ -357,12 +382,13 @@
       <data key="d2">physical</data>
       <data key="d3">Sensor</data>
       <data key="d4">Field</data>
-      <data key="d5">Ultrasonic flow meter</data>
-      <data key="d6">High</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Daniel 3410</data>
-      <data key="d12">6.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">1</data>
+      <data key="d6">Ultrasonic flow meter</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Daniel 3410</data>
+      <data key="d13">6.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="PIPE-VALVE-003">
       <data key="d0">PIPE-VALVE-003</data>
@@ -370,12 +396,13 @@
       <data key="d2">physical</data>
       <data key="d3">Valve</data>
       <data key="d4">Field</data>
-      <data key="d5">Emergency block valve</data>
-      <data key="d6">High</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Fisher V500</data>
-      <data key="d12">8.0</data>
-      <data key="d13">0.02</data>
+      <data key="d5">1</data>
+      <data key="d6">Emergency block valve</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Fisher V500</data>
+      <data key="d13">8.0</data>
+      <data key="d14">0.02</data>
     </node>
     <node id="PIPE-SENSOR-006">
       <data key="d0">PIPE-SENSOR-006</data>
@@ -383,12 +410,13 @@
       <data key="d2">physical</data>
       <data key="d3">Sensor</data>
       <data key="d4">Field</data>
-      <data key="d5">Pressure at valve site</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Rosemount 3051</data>
-      <data key="d12">5.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">1</data>
+      <data key="d6">Pressure at valve site</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 3051</data>
+      <data key="d13">5.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="PIPE-SENSOR-007">
       <data key="d0">PIPE-SENSOR-007</data>
@@ -396,12 +424,13 @@
       <data key="d2">physical</data>
       <data key="d3">Sensor</data>
       <data key="d4">Field</data>
-      <data key="d5">Custody transfer meter</data>
-      <data key="d6">High</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Daniel 3410</data>
-      <data key="d12">6.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">1</data>
+      <data key="d6">Custody transfer meter</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Daniel 3410</data>
+      <data key="d13">6.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="PIPE-SENSOR-008">
       <data key="d0">PIPE-SENSOR-008</data>
@@ -409,12 +438,13 @@
       <data key="d2">physical</data>
       <data key="d3">Sensor</data>
       <data key="d4">Field</data>
-      <data key="d5">Product density</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Micro Motion</data>
-      <data key="d12">5.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">1</data>
+      <data key="d6">Product density</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Micro Motion</data>
+      <data key="d13">5.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="PIPE-HUM-DSP-001">
       <data key="d0">PIPE-HUM-DSP-001</data>
@@ -422,236 +452,238 @@
       <data key="d2">human</data>
       <data key="d3">Dispatcher</data>
       <data key="d4">ControlCenter</data>
-      <data key="d5">Dispatcher monitoring pipeline operations</data>
-      <data key="d6">Medium</data>
-      <data key="d12">4.0</data>
-      <data key="d14">operator</data>
-      <data key="d15">0.45</data>
-      <data key="d16">standard</data>
+      <data key="d5">3</data>
+      <data key="d6">Dispatcher monitoring pipeline operations</data>
+      <data key="d7">Medium</data>
+      <data key="d13">4.0</data>
+      <data key="d15">operator</data>
+      <data key="d16">0.45</data>
+      <data key="d17">standard</data>
     </node>
     <edge source="PIPE-CTR-FW-001" target="PIPE-CTR-SW-001">
-      <data key="d17">PIPE-CTR-FW-001</data>
-      <data key="d18">PIPE-CTR-SW-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">HTTP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-CTR-FW-001</data>
+      <data key="d19">PIPE-CTR-SW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">HTTP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+      <data key="d24">True</data>
     </edge>
     <edge source="PIPE-CTR-SW-001" target="PIPE-CTR-SCADA-001">
-      <data key="d17">PIPE-CTR-SW-001</data>
-      <data key="d18">PIPE-CTR-SCADA-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">OPC UA</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">PIPE-CTR-SW-001</data>
+      <data key="d19">PIPE-CTR-SCADA-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
     <edge source="PIPE-CTR-SW-001" target="PIPE-CTR-HIST-001">
-      <data key="d17">PIPE-CTR-SW-001</data>
-      <data key="d18">PIPE-CTR-HIST-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">OPC UA</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">PIPE-CTR-SW-001</data>
+      <data key="d19">PIPE-CTR-HIST-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
     <edge source="PIPE-CTR-SW-001" target="PIPE-CTR-HMI-001">
-      <data key="d17">PIPE-CTR-SW-001</data>
-      <data key="d18">PIPE-CTR-HMI-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">OPC UA</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">PIPE-CTR-SW-001</data>
+      <data key="d19">PIPE-CTR-HMI-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
     <edge source="PIPE-CTR-SW-001" target="PIPE-CTR-EWS-001">
-      <data key="d17">PIPE-CTR-SW-001</data>
-      <data key="d18">PIPE-CTR-EWS-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">SSH</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">medium</data>
+      <data key="d18">PIPE-CTR-SW-001</data>
+      <data key="d19">PIPE-CTR-EWS-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">SSH</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
     </edge>
     <edge source="PIPE-CTR-SCADA-001" target="PIPE-RTU-001">
-      <data key="d17">PIPE-CTR-SCADA-001</data>
-      <data key="d18">PIPE-RTU-001</data>
-      <data key="d19">controls</data>
-      <data key="d20">DNP3</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">medium</data>
+      <data key="d18">PIPE-CTR-SCADA-001</data>
+      <data key="d19">PIPE-RTU-001</data>
+      <data key="d20">controls</data>
+      <data key="d21">DNP3</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
     </edge>
     <edge source="PIPE-CTR-SCADA-001" target="PIPE-RTU-002">
-      <data key="d17">PIPE-CTR-SCADA-001</data>
-      <data key="d18">PIPE-RTU-002</data>
-      <data key="d19">controls</data>
-      <data key="d20">DNP3</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">medium</data>
+      <data key="d18">PIPE-CTR-SCADA-001</data>
+      <data key="d19">PIPE-RTU-002</data>
+      <data key="d20">controls</data>
+      <data key="d21">DNP3</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
     </edge>
     <edge source="PIPE-CTR-SCADA-001" target="PIPE-RTU-003">
-      <data key="d17">PIPE-CTR-SCADA-001</data>
-      <data key="d18">PIPE-RTU-003</data>
-      <data key="d19">controls</data>
-      <data key="d20">DNP3</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">medium</data>
+      <data key="d18">PIPE-CTR-SCADA-001</data>
+      <data key="d19">PIPE-RTU-003</data>
+      <data key="d20">controls</data>
+      <data key="d21">DNP3</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
     </edge>
     <edge source="PIPE-CTR-SCADA-001" target="PIPE-RTU-004">
-      <data key="d17">PIPE-CTR-SCADA-001</data>
-      <data key="d18">PIPE-RTU-004</data>
-      <data key="d19">controls</data>
-      <data key="d20">DNP3</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">medium</data>
+      <data key="d18">PIPE-CTR-SCADA-001</data>
+      <data key="d19">PIPE-RTU-004</data>
+      <data key="d20">controls</data>
+      <data key="d21">DNP3</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
     </edge>
     <edge source="PIPE-RTU-001" target="PIPE-SW-001">
-      <data key="d17">PIPE-RTU-001</data>
-      <data key="d18">PIPE-SW-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-RTU-001</data>
+      <data key="d19">PIPE-SW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-RTU-002" target="PIPE-SW-002">
-      <data key="d17">PIPE-RTU-002</data>
-      <data key="d18">PIPE-SW-002</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-RTU-002</data>
+      <data key="d19">PIPE-SW-002</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-RTU-003" target="PIPE-VALVE-003">
-      <data key="d17">PIPE-RTU-003</data>
-      <data key="d18">PIPE-VALVE-003</data>
-      <data key="d19">actuates</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-RTU-003</data>
+      <data key="d19">PIPE-VALVE-003</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-RTU-003" target="PIPE-SENSOR-006">
-      <data key="d17">PIPE-RTU-003</data>
-      <data key="d18">PIPE-SENSOR-006</data>
-      <data key="d19">monitors</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-RTU-003</data>
+      <data key="d19">PIPE-SENSOR-006</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-RTU-004" target="PIPE-SENSOR-007">
-      <data key="d17">PIPE-RTU-004</data>
-      <data key="d18">PIPE-SENSOR-007</data>
-      <data key="d19">monitors</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-RTU-004</data>
+      <data key="d19">PIPE-SENSOR-007</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-RTU-004" target="PIPE-SENSOR-008">
-      <data key="d17">PIPE-RTU-004</data>
-      <data key="d18">PIPE-SENSOR-008</data>
-      <data key="d19">monitors</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-RTU-004</data>
+      <data key="d19">PIPE-SENSOR-008</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-SW-001" target="PIPE-PUMP-001">
-      <data key="d17">PIPE-SW-001</data>
-      <data key="d18">PIPE-PUMP-001</data>
-      <data key="d19">actuates</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-SW-001</data>
+      <data key="d19">PIPE-PUMP-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-SW-001" target="PIPE-PUMP-002">
-      <data key="d17">PIPE-SW-001</data>
-      <data key="d18">PIPE-PUMP-002</data>
-      <data key="d19">actuates</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-SW-001</data>
+      <data key="d19">PIPE-PUMP-002</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-SW-001" target="PIPE-VFD-001">
-      <data key="d17">PIPE-SW-001</data>
-      <data key="d18">PIPE-VFD-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-SW-001</data>
+      <data key="d19">PIPE-VFD-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-SW-001" target="PIPE-VALVE-001">
-      <data key="d17">PIPE-SW-001</data>
-      <data key="d18">PIPE-VALVE-001</data>
-      <data key="d19">actuates</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-SW-001</data>
+      <data key="d19">PIPE-VALVE-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-SW-001" target="PIPE-SENSOR-001">
-      <data key="d17">PIPE-SW-001</data>
-      <data key="d18">PIPE-SENSOR-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-SW-001</data>
+      <data key="d19">PIPE-SENSOR-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-SW-001" target="PIPE-SENSOR-002">
-      <data key="d17">PIPE-SW-001</data>
-      <data key="d18">PIPE-SENSOR-002</data>
-      <data key="d19">monitors</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-SW-001</data>
+      <data key="d19">PIPE-SENSOR-002</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-SW-001" target="PIPE-SENSOR-003">
-      <data key="d17">PIPE-SW-001</data>
-      <data key="d18">PIPE-SENSOR-003</data>
-      <data key="d19">monitors</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-SW-001</data>
+      <data key="d19">PIPE-SENSOR-003</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-SW-002" target="PIPE-PUMP-003">
-      <data key="d17">PIPE-SW-002</data>
-      <data key="d18">PIPE-PUMP-003</data>
-      <data key="d19">actuates</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-SW-002</data>
+      <data key="d19">PIPE-PUMP-003</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-SW-002" target="PIPE-VFD-002">
-      <data key="d17">PIPE-SW-002</data>
-      <data key="d18">PIPE-VFD-002</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-SW-002</data>
+      <data key="d19">PIPE-VFD-002</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-SW-002" target="PIPE-VALVE-002">
-      <data key="d17">PIPE-SW-002</data>
-      <data key="d18">PIPE-VALVE-002</data>
-      <data key="d19">actuates</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-SW-002</data>
+      <data key="d19">PIPE-VALVE-002</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-SW-002" target="PIPE-SENSOR-004">
-      <data key="d17">PIPE-SW-002</data>
-      <data key="d18">PIPE-SENSOR-004</data>
-      <data key="d19">monitors</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-SW-002</data>
+      <data key="d19">PIPE-SENSOR-004</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-SW-002" target="PIPE-SENSOR-005">
-      <data key="d17">PIPE-SW-002</data>
-      <data key="d18">PIPE-SENSOR-005</data>
-      <data key="d19">monitors</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">PIPE-SW-002</data>
+      <data key="d19">PIPE-SENSOR-005</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="PIPE-HUM-DSP-001" target="PIPE-CTR-HMI-001">
-      <data key="d17">PIPE-HUM-DSP-001</data>
-      <data key="d18">PIPE-CTR-HMI-001</data>
-      <data key="d19">programs / operates</data>
-      <data key="d20">HMI</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">PIPE-HUM-DSP-001</data>
+      <data key="d19">PIPE-CTR-HMI-001</data>
+      <data key="d20">programs / operates</data>
+      <data key="d21">HMI</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
   </graph>
 </graphml>

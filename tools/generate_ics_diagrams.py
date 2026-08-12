@@ -13,7 +13,6 @@ Run:  python tools/generate_ics_diagrams.py
 from __future__ import annotations
 
 import json
-import sys
 import textwrap
 from pathlib import Path
 
@@ -44,11 +43,13 @@ ZONE_COLORS = {
     "Internet": "#ff6b6b",
     "Enterprise": "#4dabf7",
     "DMZ": "#ffa94d",
+    "IDMZ": "#ffa94d",
     "Control": "#845ef7",
+    "Operations": "#9775fa",
     "Field": "#20c997",
     "Utility": "#e599f7",
     "Substation": "#ffd43b",
-    "Process": "#ff922b",
+    "Process": "#37b24d",
     "Protection": "#da77f2",
     "ShopFloor": "#845ef7",
     "Cell": "#fcc419",
@@ -61,6 +62,56 @@ ZONE_COLORS = {
 }
 
 
+# Fallback zone -> Purdue level used to order zone bands top-down (Enterprise
+# first) when a zone does not declare an explicit ``purdue_level``.
+ZONE_LEVEL_FALLBACK = {
+    "Internet": "5",
+    "Enterprise": "4",
+    "Corporate": "4",
+    "DMZ": "3.5",
+    "IDMZ": "3.5",
+    "Operations": "3",
+    "Supervisory": "3",
+    "Control": "2",
+    "DCS": "2",
+    "ShopFloor": "2",
+    "Cell": "2",
+    "Safety": "2",
+    "SIS": "2",
+    "Substation": "2",
+    "Utility": "2",
+    "Field": "1",
+    "Remote": "1",
+    "RemoteSite": "1",
+    "Process": "0",
+    "Protection": "2",
+    "ControlCenter": "3",
+}
+
+# Network-topology layout constants (data units).  They are hoisted to module
+# level so the QA tool (tools/check_overlaps.py) and the layout tests can
+# reference the same geometry the generator uses; the containment guarantee
+# (every node box fully inside its band, with a visible margin) is derived
+# from these values and must never be re-derived independently elsewhere.
+NET_BOX_W = 0.85      # node box width
+NET_NODE_H = 0.74     # node box height
+NET_ROW_STEP = 1.35   # vertical distance between row centres (>= NODE_H + margin)
+NET_BAND_PAD = 0.42   # inner padding above/below a band's rows
+NET_BAND_GAP = 0.35   # explicit separation between adjacent bands
+NET_MAX_PER_ROW = 8   # assets per row before the zone wraps to a new row
+NET_BAND_X = -1.6     # band rectangle left anchor (data units)
+NET_BAND_W = 13.2     # band rectangle width (data units)
+
+
+def _zone_purdue(zone: dict) -> float:
+    """Numeric Purdue level of a zone (3.5 handled as a float)."""
+    raw = zone.get("purdue_level") or ZONE_LEVEL_FALLBACK.get(zone.get("id", ""), 0)
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        return 0.0
+
+
 def load_canonical(folder: Path) -> dict:
     with (folder / f"{folder.name}.json").open("r", encoding="utf-8") as handle:
         return json.load(handle)
@@ -70,32 +121,102 @@ def _wrap(text: str, width: int) -> str:
     return "\n".join(textwrap.wrap(text, width) or [text])
 
 
-def _zone_band_positions(canonical: dict, max_per_row: int = 6) -> dict[str, tuple[float, float]]:
-    """Zone-band layout: first zone at the top, assets spread horizontally.
+def _ordered_zones(canonical: dict) -> list[dict]:
+    """Zone definitions ordered by Purdue level (high level first, top band).
 
-    Returns a dict mapping asset id -> (x, y) on a 0..10 horizontal scale with
-    generous per-node spacing so labels do not collide.
+    Zones with the same level keep their declaration order.  This makes the
+    diagram read top-down as Enterprise (L4) -> IDMZ (L3.5) -> Operations (L3)
+    -> Control (L2) -> Field (L1) -> Process (L0) without hardcoding any
+    plant-specific ordering.
+    """
+    return sorted(
+        canonical["zones"],
+        key=lambda zone: (-_zone_purdue(zone), canonical["zones"].index(zone)),
+    )
+
+
+def _zone_band_positions(
+    canonical: dict,
+) -> tuple[dict[str, tuple[float, float]], dict[str, tuple[float, float, float]]]:
+    """Zone-band layout: highest Purdue level at the top, assets spread
+    horizontally, with cross-band edge alignment to minimise long diagonals.
+
+    Zones are processed top-down.  Within each zone, members are ordered by
+    the average x-position of their already-placed neighbours in higher
+    bands, so e.g. a DCS controller sits above the field transmitters that
+    report to it and the edges between bands stay short and near-vertical.
+    Members with no placed neighbours (root zones, intra-zone-only chains)
+    keep their declaration order.
+
+    Returns ``(positions, band_geometry)`` where:
+    * ``positions`` maps asset id -> (x, y) on a 0..10 horizontal scale;
+      y is the *centre* of the node box, in top-down coordinates.
+    * ``band_geometry`` maps zone id -> (x_anchor, y_centre, height) in the
+      same top-down coordinate system.
+
+    The layout is computed ONCE here and shared by the node drawing and the
+    band-rectangle drawing, so a node can never be placed relative to a band
+    boundary that was computed differently elsewhere: rows are placed inside
+    an inner "safe region" (``band_top + pad .. band_bottom - pad``), which
+    guarantees every node box keeps a visible margin from the band edges.
     """
     positions: dict[str, tuple[float, float]] = {}
-    zone_order = [z["id"] for z in canonical["zones"]]
+    edges = [(conn["source"], conn["target"]) for conn in canonical["connections"]]
+    zone_order = [z["id"] for z in _ordered_zones(canonical)]
     by_zone: dict[str, list[dict]] = {z: [] for z in zone_order}
     for asset in canonical["assets"]:
         by_zone.setdefault(asset.get("zone", zone_order[0] if zone_order else ""), []).append(asset)
+
+    declaration_index = {
+        asset["id"]: index for index, asset in enumerate(canonical["assets"])
+    }
+    placed_x: dict[str, float] = {}
+
+    # Row centres live strictly inside each band's safe region:
+    #   band_top + PAD + (row_index + 0.5) * ROW_STEP
+    # so the whole node box (height NET_NODE_H) keeps a visible margin
+    #   NET_BAND_PAD + NET_ROW_STEP/2 - NET_NODE_H/2
+    # from BOTH band edges, for every row in every zone.  The band geometry
+    # returned here is the SAME geometry the band rectangles are drawn from,
+    # so a node can never be placed relative to a boundary computed
+    # elsewhere.
     y = 0.0
-    band_height = 1.0
+    band_geometry: dict[str, tuple[float, float, float]] = {}
     for zone in zone_order:
         members = by_zone.get(zone, [])
         if not members:
             continue
-        rows = [members[i : i + max_per_row] for i in range(0, len(members), max_per_row)]
+
+        def sort_key(asset: dict) -> tuple:
+            aid = asset["id"]
+            neighbour_xs: list[float] = []
+            for source, target in edges:
+                if source == aid and target in placed_x:
+                    neighbour_xs.append(placed_x[target])
+                elif target == aid and source in placed_x:
+                    neighbour_xs.append(placed_x[source])
+            if neighbour_xs:
+                return (0, sum(neighbour_xs) / len(neighbour_xs), declaration_index.get(aid, 0))
+            return (1, declaration_index.get(aid, 0), 0)
+
+        ordered = sorted(members, key=sort_key)
+        rows = [ordered[i : i + NET_MAX_PER_ROW] for i in range(0, len(ordered), NET_MAX_PER_ROW)]
+        band_height = len(rows) * NET_ROW_STEP + 2 * NET_BAND_PAD
+        band_top = y
+        band_bottom = y + band_height
+        band_geometry[zone] = (NET_BAND_X, (band_top + band_bottom) / 2.0, band_height)
+
         for row_index, row in enumerate(rows):
-            spacing = 1.18
+            spacing = 1.25
             total = spacing * (len(row) - 1)
             x_start = (10.0 - total) / 2.0
+            row_centre = band_top + NET_BAND_PAD + (row_index + 0.5) * NET_ROW_STEP
             for index, asset in enumerate(row):
-                positions[asset["id"]] = (x_start + index * spacing, y + row_index * band_height * 0.92)
-        y += band_height * len(rows)
-    return positions
+                x = x_start + index * spacing
+                placed_x[asset["id"]] = x
+                positions[asset["id"]] = (x, row_centre)
+        y = band_bottom + NET_BAND_GAP
+    return positions, band_geometry
 
 
 def _box_extent(x: float, y: float, w: float, h: float) -> tuple[float, float, float, float]:
@@ -143,33 +264,87 @@ def _clipped_arrow(
     )
 
 
+def _band_geometry(
+    layout_geometry: dict[str, tuple[float, float, float]]
+) -> tuple[dict[str, tuple[float, float, float]], float]:
+    """Flip the shared layout geometry into final axes coordinates.
+
+    ``layout_geometry`` maps zone id -> (x, y_center, height) in top-down
+    layout coordinates (y=0 at the very top, growing downwards).  This flips
+    it so the first (highest Purdue level) band appears at the top of the
+    figure, and returns ``(band_geometry, y_top)`` where ``y_top`` is the
+    total layout height in data units (the y-flip origin used for nodes too).
+
+    Because both the band rectangles and every node position are derived from
+    this single flip, the node-in-band containment invariant holds in final
+    axes coordinates exactly as it does in layout coordinates.
+    """
+    y_top = max(
+        (y_center + height / 2.0 for _, (_, y_center, height) in layout_geometry.items()),
+        default=0.0,
+    )
+    return (
+        {
+            zone: (x, y_top - y_center, height)
+            for zone, (x, y_center, height) in layout_geometry.items()
+        },
+        y_top,
+    )
+
+
 def draw_network_topology(canonical: dict, out_path: Path) -> None:
-    """Network / logical topology diagram with zone bands."""
+    """Network / logical topology diagram with Purdue-ordered zone bands.
+
+    Layout is deterministic and data-driven: zones are ordered by Purdue
+    level (L5 -> L0), assets are placed with cross-band edge alignment so
+    inter-zone edges stay short and near-vertical, and the canvas is sized
+    from the layout itself so dense plants never shrink nodes to fit.
+
+    Node placement and the band rectangles come from ONE shared layout pass
+    (``_zone_band_positions``): rows live inside each band's inner safe
+    region, so every node box stays fully inside its band with a visible
+    margin from every separator line.
+    """
     assets = canonical["assets"]
     connections = canonical["connections"]
-    positions = _zone_band_positions(canonical)
-    zone_order = [z["id"] for z in canonical["zones"]]
-    by_zone = {z: [] for z in zone_order}
+    positions, layout_geometry = _zone_band_positions(canonical)
+    band_geometry, y_top = _band_geometry(layout_geometry)
+    ordered_zones = _ordered_zones(canonical)
+    zone_order = [z["id"] for z in ordered_zones]
+    zone_levels = {z["id"]: z.get("purdue_level") or ZONE_LEVEL_FALLBACK.get(z["id"], "?") for z in ordered_zones}
+    by_zone: dict[str, list[dict]] = {z: [] for z in zone_order}
     for asset in assets:
         by_zone.setdefault(asset.get("zone", zone_order[0] if zone_order else ""), []).append(asset)
 
-    box_w, box_h = 0.80, 0.66
-    fig_w, fig_h = 24.0, 14.0
+    content_rows = sum(
+        max(1, (len(by_zone[z]) + NET_MAX_PER_ROW - 1) // NET_MAX_PER_ROW)
+        for z in zone_order
+        if by_zone.get(z)
+    )
+
+    # Canvas sized from the actual layout height: the data-height to inch
+    # ratio matches the fixed width ratio so the drawing keeps its intended
+    # proportions at any density (readability over compactness).
+    fig_w = 22.0
+    y_span = y_top + 1.7
+    fig_h = max(10.0, 1.0 + y_span * (fig_w / 13.7) * 1.06)
     fig, ax = plt.subplots(figsize=(fig_w, fig_h))
-    y_top = len(zone_order) * 1.42
-    ax.set_xlim(-1.6, 11.6)
-    ax.set_ylim(-1.1, y_top + 0.5)
+    ax.set_xlim(-2.1, 11.6)
+    ax.set_ylim(-1.3, y_top + 0.4)
+
+    box_w, box_h = NET_BOX_W, NET_NODE_H
+    node_name_size = max(6.5, min(10.0, 9.6 - content_rows * 0.18))
+    node_id_size = max(5.5, node_name_size - 1.8)
 
     # zone bands
-    for index, zone in enumerate(zone_order):
-        band_y = y_top - (index + 1) * 1.42
+    for zone, (bx, by, bh) in band_geometry.items():
         members = by_zone.get(zone, [])
         color = ZONE_COLORS.get(zone, "#CCCCCC")
         ax.add_patch(
             Rectangle(
-                (-1.6, band_y - 0.10),
-                13.2,
-                1.42,
+                (bx, by - bh / 2),
+                NET_BAND_W,
+                bh,
                 facecolor=color,
                 alpha=0.09,
                 edgecolor=color,
@@ -177,17 +352,21 @@ def draw_network_topology(canonical: dict, out_path: Path) -> None:
                 zorder=0,
             )
         )
-        zone_name = next(z["name"] for z in canonical["zones"] if z["id"] == zone)
+        zone_name = _wrap(
+            next(z["name"] for z in canonical["zones"] if z["id"] == zone), 16
+        )
+        level = zone_levels.get(zone, "?")
         ax.text(
-            -1.42,
-            band_y + 0.55,
-            f"{zone_name}  ({len(members)})",
-            fontsize=14,
+            bx + 0.18,
+            by,
+            f"{zone_name}\nPurdue L{level}  ({len(members)})",
+            fontsize=12.5,
             fontweight="bold",
             color="#333333",
             ha="left",
             va="center",
             zorder=1,
+            linespacing=1.35,
         )
 
     # edges first (behind nodes)
@@ -203,7 +382,7 @@ def draw_network_topology(canonical: dict, out_path: Path) -> None:
             (p1[0], y_top - p1[1]),
             (p2[0], y_top - p2[1]),
             color=color,
-            lw=1.4,
+            lw=1.3,
             box_w=box_w,
             box_h=box_h,
             zorder=2,
@@ -227,12 +406,12 @@ def draw_network_topology(canonical: dict, out_path: Path) -> None:
             zorder=4,
         )
         ax.add_patch(rect)
-        wrapped_name = _wrap(asset["name"], 13)
+        wrapped_name = _wrap(asset["name"], 14)
         ax.text(
             x,
-            y + 0.10,
+            y + 0.12,
             wrapped_name,
-            fontsize=9,
+            fontsize=node_name_size,
             fontweight="bold",
             color="white",
             ha="center",
@@ -242,9 +421,9 @@ def draw_network_topology(canonical: dict, out_path: Path) -> None:
         )
         ax.text(
             x,
-            y - 0.22,
+            y - 0.24,
             asset["id"],
-            fontsize=7,
+            fontsize=node_id_size,
             color="#E8E8E8",
             ha="center",
             va="center",
@@ -252,47 +431,42 @@ def draw_network_topology(canonical: dict, out_path: Path) -> None:
             family="monospace",
         )
 
-    ax.set_title(
+    ax.set_axis_off()
+
+    # Title + metadata live in figure space above the axes, so they can never
+    # overlap the top zone band.
+    fig.suptitle(
         f"{canonical['metadata']['name']} — Network Topology",
-        fontsize=26,
+        fontsize=27,
         fontweight="bold",
-        pad=26,
+        y=0.992,
+        color="#111111",
     )
-    ax.text(
-        5.0,
-        y_top + 0.22,
+    fig.text(
+        0.5,
+        0.948,
         f"{len(assets)} assets  •  {len(connections)} connections  •  "
-        f"{len(zone_order)} zones",
-        fontsize=13,
+        f"{len(zone_order)} zones  •  Purdue levels L5 → L0 (top to bottom)",
+        fontsize=13.5,
         ha="center",
         color="#555555",
     )
-    ax.set_axis_off()
 
-    # legend
+    # One combined legend below the axes (never covering the topology).
     rel_patches = [mpatches.Patch(color=c, label=t) for t, c in REL_COLORS.items()]
     kind_patches = [mpatches.Patch(color=c, label=k.title()) for k, c in KIND_COLORS.items()]
-    legend1 = ax.legend(
-        handles=rel_patches,
-        title="Relationship types",
-        loc="lower left",
-        bbox_to_anchor=(0.0, 0.0),
-        fontsize=11,
-        title_fontsize=12,
-        framealpha=0.9,
-    )
-    ax.add_artist(legend1)
-    ax.legend(
-        handles=kind_patches,
-        title="Asset kinds",
-        loc="lower right",
-        bbox_to_anchor=(1.0, 0.0),
-        fontsize=11,
-        title_fontsize=12,
-        framealpha=0.9,
+    fig.legend(
+        handles=rel_patches + kind_patches,
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0.0),
+        ncol=len(rel_patches) + len(kind_patches),
+        columnspacing=1.4,
+        handlelength=1.6,
+        fontsize=12,
+        frameon=False,
     )
 
-    fig.savefig(out_path, dpi=200, bbox_inches="tight", facecolor="white")
+    fig.savefig(out_path, dpi=220, bbox_inches="tight", facecolor="white", pad_inches=0.3)
     plt.close(fig)
 
 
@@ -505,7 +679,7 @@ def draw_water_system(canonical: dict, out_path: Path) -> None:
     _layer_band(ax, 5.0, 4.0, 9.6, 6.4, "WATER TREATMENT PROCESS (Purdue L0-L1)", "#2E9E6B")
 
     # --- control room (left) ---
-    _proc_box(ax, 1.2, 8.8, 1.5, 0.9, "SCADA Server", "WTP-DMZ-SCADA-001", facecolor="#EFE7FB")
+    _proc_box(ax, 1.2, 8.8, 1.5, 0.9, "SCADA Server", "WTP-OPS-SCADA-001", facecolor="#EFE7FB")
     _proc_box(ax, 3.0, 8.8, 1.4, 0.9, "Control Room\nOperator", "WTP-HUM-OPR-001", facecolor="#F0E6F7")
     _proc_box(ax, 2.1, 7.2, 1.9, 0.8, "HMI Console", "WTP-CTRL-HMI-001", facecolor="#EFE7FB")
     _proc_box(ax, 2.1, 6.0, 1.9, 0.8, "Control Switch", "WTP-CTRL-SW-001", facecolor="#DCE9F7")
@@ -737,53 +911,89 @@ def draw_pipeline_system(canonical: dict, out_path: Path) -> None:
 
 
 def draw_chemical_system(canonical: dict, out_path: Path) -> None:
+    """Chemical plant industrial-process diagram.
+
+    Shows the physical process train (L0), the field instruments and DCS
+    controllers that command it (L1/L2), the isolated SIS safety chain, and
+    the remote tank farm — mirroring the canonical topology's architecture.
+    """
     fig, ax = plt.subplots(figsize=(25.6, 14.4))
-    _layer_band(ax, 2.0, 8.0, 3.4, 2.4, "CONTROL ROOM (DCS)", "#845ef7")
-    _layer_band(ax, 5.0, 4.0, 9.6, 6.4, "PROCESS UNITS (REACTOR • DISTILLATION • STORAGE)", "#2E9E6B")
+    _layer_band(ax, 2.0, 8.6, 3.8, 2.2, "CONTROL ROOM / OPERATIONS (L3)", "#845ef7")
+    _layer_band(ax, 2.0, 6.1, 3.8, 2.0, "DCS CONTROL NETWORK (L2)", "#4C78A8")
+    _layer_band(ax, 8.4, 6.1, 3.0, 4.6, "SAFETY INSTRUMENTED SYSTEM (SIS)", "#da77f2")
+    _layer_band(ax, 5.0, 3.6, 9.6, 5.4, "PROCESS UNITS (L0) — REACTOR → DISTILLATION → STORAGE", "#2E9E6B")
 
-    _proc_box(ax, 1.1, 8.8, 1.7, 0.9, "DCS Operator Station", "CHEM-DCS-OP-001", facecolor="#EFE7FB")
-    _proc_box(ax, 3.0, 8.8, 1.5, 0.9, "Process\nOperator", "CHEM-HUM-OPR-001", facecolor="#F0E6F7")
-    _proc_box(ax, 2.0, 7.3, 1.9, 0.8, "DCS Engineering St.", "CHEM-DCS-ENG-001", facecolor="#EFE7FB")
-    _proc_box(ax, 2.0, 6.2, 1.9, 0.8, "DCS Switch", "CHEM-DCS-SW-001", facecolor="#DCE9F7")
+    # --- control room / operations (left, top) ---
+    _proc_box(ax, 1.1, 9.2, 1.7, 0.8, "Operator Station (HMI)", "CHEM-OPS-OP-001", facecolor="#EFE7FB")
+    _proc_box(ax, 3.1, 9.2, 1.5, 0.8, "Process\nOperator", "CHEM-HUM-OPR-001", facecolor="#F0E6F7")
+    _proc_box(ax, 1.1, 7.9, 1.7, 0.8, "Engineering\nWorkstation", "CHEM-OPS-ENG-001", facecolor="#EFE7FB")
+    _proc_box(ax, 3.1, 7.9, 1.5, 0.8, "OT Historian", "CHEM-OPS-HIST-001", facecolor="#EFE7FB")
+    _proc_box(ax, 2.1, 6.7, 1.9, 0.8, "DCS App / OPC Server", "CHEM-OPS-APP-001", facecolor="#EFE7FB")
 
-    # process train
-    _proc_box(ax, 5.2, 8.5, 1.5, 0.9, "FEEDSTOCK", "", facecolor="#BFE3C0", edgecolor="#2F7D32")
-    _process_arrow(ax, (5.95, 8.05), (5.95, 7.4), color="#1F6FB2")
-    _proc_box(ax, 5.2, 6.9, 1.7, 1.1, "Reactor", "TC-001 • PT-001 • CV-001", facecolor="#D8EFDA")
-    _proc_box(ax, 7.4, 6.9, 1.5, 0.9, "DCS Controller\n(Reactor)", "CHEM-DCS-CTRL-001", facecolor="#DCE9F7")
-    _process_arrow(ax, (6.0, 6.4), (6.0, 5.6), color="#1F6FB2")
-    _proc_box(ax, 5.2, 5.1, 1.8, 1.1, "Distillation\nColumn", "TC-002 • PT-002 • CV-002", facecolor="#D8EFDA")
-    _proc_box(ax, 7.4, 5.1, 1.7, 0.9, "DCS Controller\n(Distillation)", "CHEM-DCS-CTRL-002", facecolor="#DCE9F7")
-    _process_arrow(ax, (6.05, 4.6), (6.05, 3.9), color="#1F6FB2")
-    _proc_box(ax, 5.2, 3.4, 1.8, 1.1, "Product Storage\nTank Farm", "PUMP-001 • VALVE-001", facecolor="#D8EFDA")
-    _proc_box(ax, 7.4, 3.4, 1.7, 0.9, "DCS Controller\n(Utilities)", "CHEM-DCS-CTRL-003", facecolor="#DCE9F7")
-    _process_arrow(ax, (6.05, 2.9), (6.05, 2.2), color="#1F6FB2")
-    _proc_box(ax, 5.2, 1.7, 1.8, 1.1, "Remote Tank Farm\n(rail loading)", "RTU-001 • PUMP-001", facecolor="#D8EFDA")
+    # --- control network (left, middle) ---
+    _proc_box(ax, 1.1, 5.4, 1.7, 0.8, "Control Switch", "CHEM-CTL-SW-001", facecolor="#DCE9F7")
+    _proc_box(ax, 3.1, 5.4, 1.6, 0.8, "DCS Controller\n(Reactor)", "CHEM-CTL-DCS-001", facecolor="#DCE9F7")
+    _proc_box(ax, 1.1, 4.2, 1.7, 0.8, "DCS Controller\n(Distillation)", "CHEM-CTL-DCS-002", facecolor="#DCE9F7")
+    _proc_box(ax, 3.1, 4.2, 1.6, 0.8, "DCS Controller\n(Utilities)", "CHEM-CTL-DCS-003", facecolor="#DCE9F7")
 
-    # SIS (independent safety column, clearly separated from the DCS column)
-    _proc_box(ax, 9.3, 3.4, 1.6, 1.0, "Safety PLC (SIS)", "CHEM-SIS-PLC-001", facecolor="#F5E1F7")
-    _sensor_marker(ax, 9.3, 5.2, "ESD Switch\nSIS-ESD-001")
-    _sensor_marker(ax, 9.3, 1.9, "ESD Relay\nSIS-RELAY-001")
+    # --- process train (right of centre) ---
+    _proc_box(ax, 5.4, 8.4, 1.6, 0.9, "FEEDSTOCK\nTANK", "CHEM-PRO-TANK-002", facecolor="#BFE3C0", edgecolor="#2F7D32")
+    _process_arrow(ax, (6.2, 7.95), (6.2, 7.2), color="#1F6FB2")
+    _proc_box(ax, 5.4, 6.8, 1.7, 1.0, "Reactor", "CHEM-PRO-REACTOR-001", facecolor="#D8EFDA")
+    _proc_box(ax, 7.5, 7.1, 1.5, 0.8, "Feed Valve\nFCV-001", "CHEM-FLD-FCV-001", facecolor="#D8EFDA")
+    _proc_box(ax, 7.5, 6.2, 1.5, 0.8, "Feed Pump\n+ VFD", "CHEM-FLD-PUMP-001", facecolor="#D8EFDA")
+    _process_arrow(ax, (6.15, 6.3), (6.15, 5.6), color="#1F6FB2")
+    _proc_box(ax, 5.4, 5.1, 1.8, 1.1, "Distillation\nColumn", "CHEM-PRO-COLUMN-001", facecolor="#D8EFDA")
+    _proc_box(ax, 7.5, 4.9, 1.5, 0.8, "Reboiler (HX)", "CHEM-PRO-HX-001", facecolor="#D8EFDA")
+    _proc_box(ax, 7.5, 3.6, 1.5, 0.8, "Reflux Valve\nFCV-002", "CHEM-FLD-FCV-002", facecolor="#D8EFDA")
+    _process_arrow(ax, (6.2, 4.55), (6.2, 3.7), color="#1F6FB2")
+    _proc_box(ax, 5.4, 3.1, 1.8, 0.9, "Product Storage\nTank", "CHEM-PRO-TANK-001", facecolor="#D8EFDA")
 
-    _signal(ax, (2.95, 6.2), (6.5, 6.9), color="#845ef7")
-    _signal(ax, (2.95, 6.2), (6.5, 5.1), color="#845ef7")
-    _signal(ax, (2.95, 6.2), (6.5, 3.4), color="#845ef7")
-    _signal(ax, (2.95, 6.2), (6.5, 1.7), color="#845ef7")
-    _signal(ax, (3.0, 8.35), (2.95, 7.7), color="#8E44AD")
-    _signal(ax, (2.0, 8.35), (2.0, 7.7), color="#6B7280")
-    _signal(ax, (8.15, 6.9), (9.25, 5.3), color="#da77f2")
-    _signal(ax, (8.15, 5.1), (9.25, 4.35), color="#da77f2")
-    _signal(ax, (9.3, 3.9), (9.3, 2.45), color="#da77f2")
-    _signal(ax, (9.3, 4.5), (9.3, 5.3), color="#da77f2")
-    _sensor_marker(ax, 3.9, 6.9, "TC / PT / LT")
-    _sensor_marker(ax, 3.9, 5.1, "TC / PT / FT")
+    # --- remote tank farm (bottom) ---
+    _process_arrow(ax, (6.2, 2.65), (6.2, 1.9), color="#1F6FB2", style="-|>", lw=3.2)
+    _proc_box(ax, 5.2, 1.0, 1.9, 0.9, "Remote Tank Farm\n(rail loading)", "CHEM-REM-TANK-001", facecolor="#D8EFDA")
+    _proc_box(ax, 7.5, 1.0, 1.5, 0.8, "Remote RTU", "CHEM-REM-RTU-001", facecolor="#DCE9F7")
+
+    # --- SIS chain (right, isolated) ---
+    _proc_box(ax, 9.2, 8.2, 1.7, 0.9, "Safety Logic\nSolver (SIL 3)", "CHEM-SIS-LS-001", facecolor="#F5E1F7")
+    _proc_box(ax, 9.2, 6.6, 1.7, 0.9, "SIS Status\nGateway", "CHEM-SIS-GW-001", facecolor="#F5E1F7")
+    _sensor_marker(ax, 9.2, 5.0, "SIS Pressure\nSIS-PT-001")
+    _sensor_marker(ax, 9.2, 4.2, "SIS Temp\nSIS-TT-001")
+    _proc_box(ax, 9.2, 3.2, 1.7, 0.9, "Safety Shutoff\nValve (Feed)", "CHEM-SIS-SOV-001", facecolor="#F5E1F7")
+    _proc_box(ax, 9.2, 2.0, 1.7, 0.9, "Depressurization\nValve", "CHEM-SIS-SOV-002", facecolor="#F5E1F7")
+
+    # --- field sensors ---
+    _sensor_marker(ax, 4.0, 6.8, "TT/PT/LT\n(reactor)")
+    _sensor_marker(ax, 4.0, 5.1, "TT/PT/FT\n(column)")
+    _sensor_marker(ax, 4.0, 3.1, "LT\n(storage)")
+
+    # --- control signals ---
+    _signal(ax, (2.95, 5.4), (4.55, 6.8), color="#845ef7")
+    _signal(ax, (2.95, 5.4), (4.55, 5.1), color="#845ef7")
+    _signal(ax, (2.95, 5.4), (4.55, 3.1), color="#845ef7")
+    _signal(ax, (2.95, 6.7), (2.2, 5.8), color="#6B7280")
+    _signal(ax, (3.0, 8.8), (2.95, 7.15), color="#8E44AD")
+    _signal(ax, (3.9, 5.4), (6.9, 6.8), color="#845ef7")
+    _signal(ax, (3.9, 4.2), (6.9, 5.1), color="#845ef7")
+    # DCS -> SIS status link (via the certified gateway)
+    _signal(ax, (4.5, 6.8), (8.35, 6.6), color="#da77f2", style=(0, (5, 3)))
+    # SIS chain
+    _signal(ax, (9.2, 7.75), (9.2, 7.1), color="#da77f2")
+    _signal(ax, (9.2, 6.15), (9.2, 5.5), color="#da77f2")
+    _signal(ax, (9.2, 4.6), (9.2, 3.7), color="#da77f2")
+    _signal(ax, (9.2, 2.75), (9.2, 2.45), color="#da77f2")
+    # SIS final elements act on the reactor
+    _signal(ax, (8.35, 3.2), (6.4, 7.3), color="#da77f2", style=(0, (3, 2)))
+    _signal(ax, (8.35, 2.0), (6.4, 7.3), color="#da77f2", style=(0, (3, 2)))
+    # RTU link (leased line + VPN)
+    _signal(ax, (4.6, 4.2), (7.0, 1.4), color="#ff6b6b", style=(0, (5, 3)))
 
     _finish(
         fig,
         ax,
         out_path,
         "Chemical Processing Plant — Industrial Process",
-        "Feedstock → reactor → distillation → storage → remote rail loading  (DCS with independent SIS)",
+        "Feedstock → reactor → distillation → storage → remote rail loading  (DCS with isolated SIL-3 SIS)",
     )
 
 

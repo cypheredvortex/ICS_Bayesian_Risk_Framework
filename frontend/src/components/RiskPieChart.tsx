@@ -21,6 +21,7 @@ export default function RiskPieChart({
   pieData,
   embedded = false,
   assetsByRiskLevel,
+  selectedNode,
   setSelectedNode,
 }: {
   pieData: Array<{ name: string; value: number }>
@@ -30,6 +31,9 @@ export default function RiskPieChart({
   // Per-level asset lists (with risk indices) enabling the drill-down. When
   // omitted the chart stays read-only.
   assetsByRiskLevel?: Record<string, RiskAssetRow[]>
+  // Currently inspected asset (shared selection state) — the matching row in
+  // the drill-down is highlighted like the bar chart.
+  selectedNode?: string | null
   setSelectedNode?: (id: string) => void
 }) {
   const [selected, setSelected] = useState<string | null>(null)
@@ -158,29 +162,42 @@ export default function RiskPieChart({
             </div>
             <div className="mt-2 max-h-56 space-y-1.5 overflow-y-auto pr-1">
               {selectedAssets.length ? (
-                selectedAssets.map((item, index) => (
-                  <button
-                    key={item.asset}
-                    type="button"
-                    onClick={() => setSelectedNode?.(item.asset)}
-                    disabled={!setSelectedNode}
-                    className="flex w-full items-center gap-3 rounded-lg bg-slate-900/70 px-3 py-2 text-left transition hover:bg-slate-900 disabled:cursor-default"
-                  >
-                    <span className="w-7 shrink-0 text-right font-mono text-xs text-slate-500">
-                      #{index + 1}
-                    </span>
-                    <span className="min-w-0 flex-1 truncate font-mono text-sm text-slate-200">
-                      {item.asset}
-                    </span>
-                    <span className="shrink-0 whitespace-nowrap font-mono text-xs text-slate-400">
-                      P {formatProbability(item.probability)} ×{' '}
-                      {formatProbability(item.impact)}
-                      <span className="ml-2 font-semibold text-rose-300">
-                        = {formatProbability(item.risk)}
+                selectedAssets.map((item, index) => {
+                  const isSelected = item.asset === selectedNode
+                  return (
+                    <button
+                      key={item.asset}
+                      type="button"
+                      onClick={() => setSelectedNode?.(item.asset)}
+                      disabled={!setSelectedNode}
+                      data-selected={isSelected || undefined}
+                      aria-pressed={isSelected}
+                      className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition hover:bg-slate-900 disabled:cursor-default ${
+                        isSelected
+                          ? 'bg-slate-900 ring-1 ring-cyan-400/60'
+                          : 'bg-slate-900/70'
+                      }`}
+                    >
+                      <span className="w-7 shrink-0 text-right font-mono text-xs text-slate-500">
+                        #{index + 1}
                       </span>
-                    </span>
-                  </button>
-                ))
+                      <span
+                        className={`min-w-0 flex-1 truncate font-mono text-sm ${
+                          isSelected ? 'text-cyan-200' : 'text-slate-200'
+                        }`}
+                      >
+                        {item.asset}
+                      </span>
+                      <span className="shrink-0 whitespace-nowrap font-mono text-xs text-slate-400">
+                        P {formatProbability(item.probability)} ×{' '}
+                        {formatProbability(item.impact)}
+                        <span className="ml-2 font-semibold text-rose-300">
+                          = {formatProbability(item.risk)}
+                        </span>
+                      </span>
+                    </button>
+                  )
+                })
               ) : (
                 <p className="text-sm text-slate-500">
                   No assets in this category.

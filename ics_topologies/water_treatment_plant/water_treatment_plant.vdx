@@ -14,7 +14,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-FW-001,device,7.5,true,true,8.0
+            asset,WTP-FW-001,device,7.5,true,true,8.0;name=Perimeter Firewall;zone=Internet;type=Firewall;desc=Internet edge firewall;purdue=5;vendor=Cisco;model=ASA 5585;ip=10.0.0.1
           </Text>
         </Shape>
         <Shape ID="2" Type="Shape" NameU="WTP-ENT-SW-001">
@@ -23,7 +23,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-ENT-SW-001,device,6.5,false,true,6.0
+            asset,WTP-ENT-SW-001,device,6.5,false,true,6.0;name=Enterprise Switch;zone=Enterprise;type=Network Switch;desc=Core enterprise switch;purdue=4;vendor=Cisco;model=Catalyst 9300
           </Text>
         </Shape>
         <Shape ID="3" Type="Shape" NameU="WTP-ENT-DC-001">
@@ -32,7 +32,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-ENT-DC-001,device,8.1,false,false,9.0
+            asset,WTP-ENT-DC-001,device,8.1,false,false,9.0;name=Domain Controller;zone=Enterprise;type=Server;desc=Active Directory;purdue=4;vendor=Microsoft;model=Windows Server 2022
           </Text>
         </Shape>
         <Shape ID="4" Type="Shape" NameU="WTP-ENT-HIST-001">
@@ -41,7 +41,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-ENT-HIST-001,device,7.0,false,false,5.0
+            asset,WTP-ENT-HIST-001,device,7.0,false,false,5.0;name=Historian;zone=Enterprise;type=Server;desc=Data historian;purdue=4;vendor=OSIsoft;model=PI Server
           </Text>
         </Shape>
         <Shape ID="5" Type="Shape" NameU="WTP-DMZ-SW-001">
@@ -50,7 +50,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-DMZ-SW-001,device,6.5,false,false,7.0
+            asset,WTP-DMZ-SW-001,device,6.5,false,false,7.0;name=DMZ Switch;zone=IDMZ;type=Network Switch;desc=OT DMZ switch;purdue=3.5;vendor=Cisco;model=IE 4000
           </Text>
         </Shape>
         <Shape ID="6" Type="Shape" NameU="WTP-DMZ-JUMP-001">
@@ -59,25 +59,25 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-DMZ-JUMP-001,device,8.1,true,true,8.0
+            asset,WTP-DMZ-JUMP-001,device,8.1,true,true,8.0;name=Jump Server;zone=IDMZ;type=Server;desc=Secure jump host for OT access;purdue=3.5;vendor=Microsoft;model=Windows Server 2022
           </Text>
         </Shape>
-        <Shape ID="7" Type="Shape" NameU="WTP-DMZ-SCADA-001">
-          <X>540.0</X>
-          <Y>510.0</Y>
-          <Width>150</Width>
-          <Height>60</Height>
-          <Text>
-            asset,WTP-DMZ-SCADA-001,device,8.5,false,false,9.0
-          </Text>
-        </Shape>
-        <Shape ID="8" Type="Shape" NameU="WTP-CTRL-SW-001">
+        <Shape ID="7" Type="Shape" NameU="WTP-OPS-SCADA-001">
           <X>120.0</X>
           <Y>680.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-CTRL-SW-001,device,6.5,false,false,8.0
+            asset,WTP-OPS-SCADA-001,device,8.5,false,false,9.0;name=SCADA Server;zone=Operations;type=SCADA;desc=Primary SCADA server;purdue=3;vendor=Schneider;model=EcoStruxure
+          </Text>
+        </Shape>
+        <Shape ID="8" Type="Shape" NameU="WTP-CTRL-SW-001">
+          <X>120.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-CTRL-SW-001,device,6.5,false,false,8.0;name=Control Switch;zone=Control;type=Network Switch;desc=Industrial Ethernet switch;purdue=2;vendor=Siemens;model=SCALANCE XM408
           </Text>
         </Shape>
         <Shape ID="9" Type="Shape" NameU="WTP-CTRL-HMI-001">
@@ -86,160 +86,160 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-CTRL-HMI-001,device,7.5,false,false,6.0
+            asset,WTP-CTRL-HMI-001,device,7.5,false,false,6.0;name=HMI;zone=Operations;type=HMI;desc=Operator interface;purdue=3;vendor=Siemens;model=SIMATIC HMI
           </Text>
         </Shape>
         <Shape ID="10" Type="Shape" NameU="WTP-CTRL-PLC-001">
+          <X>330.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-CTRL-PLC-001,device,8.1,false,false,9.0;name=Intake PLC;zone=Control;type=PLC;desc=Controls raw water intake pumps;purdue=2;vendor=Allen-Bradley;model=ControlLogix 5580
+          </Text>
+        </Shape>
+        <Shape ID="11" Type="Shape" NameU="WTP-CTRL-PLC-002">
+          <X>540.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-CTRL-PLC-002,device,8.1,false,false,9.0;name=Filtration PLC;zone=Control;type=PLC;desc=Controls filter backwash and flow;purdue=2;vendor=Allen-Bradley;model=ControlLogix 5580
+          </Text>
+        </Shape>
+        <Shape ID="12" Type="Shape" NameU="WTP-CTRL-PLC-003">
+          <X>750.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-CTRL-PLC-003,device,8.1,false,false,9.0;name=Chemical Dosing PLC;zone=Control;type=PLC;desc=Controls chemical dosing pumps;purdue=2;vendor=Allen-Bradley;model=ControlLogix 5580
+          </Text>
+        </Shape>
+        <Shape ID="13" Type="Shape" NameU="WTP-CTRL-PLC-004">
+          <X>960.0</X>
+          <Y>850.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,WTP-CTRL-PLC-004,device,8.1,false,false,9.0;name=Distribution PLC;zone=Control;type=PLC;desc=Controls distribution pumps;purdue=2;vendor=Allen-Bradley;model=ControlLogix 5580
+          </Text>
+        </Shape>
+        <Shape ID="14" Type="Shape" NameU="WTP-HUM-OPR-001">
           <X>540.0</X>
           <Y>680.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-CTRL-PLC-001,device,8.1,false,false,9.0
-          </Text>
-        </Shape>
-        <Shape ID="11" Type="Shape" NameU="WTP-CTRL-PLC-002">
-          <X>750.0</X>
-          <Y>680.0</Y>
-          <Width>150</Width>
-          <Height>60</Height>
-          <Text>
-            asset,WTP-CTRL-PLC-002,device,8.1,false,false,9.0
-          </Text>
-        </Shape>
-        <Shape ID="12" Type="Shape" NameU="WTP-CTRL-PLC-003">
-          <X>960.0</X>
-          <Y>680.0</Y>
-          <Width>150</Width>
-          <Height>60</Height>
-          <Text>
-            asset,WTP-CTRL-PLC-003,device,8.1,false,false,9.0
-          </Text>
-        </Shape>
-        <Shape ID="13" Type="Shape" NameU="WTP-CTRL-PLC-004">
-          <X>1170.0</X>
-          <Y>680.0</Y>
-          <Width>150</Width>
-          <Height>60</Height>
-          <Text>
-            asset,WTP-CTRL-PLC-004,device,8.1,false,false,9.0
-          </Text>
-        </Shape>
-        <Shape ID="14" Type="Shape" NameU="WTP-HUM-OPR-001">
-          <X>1380.0</X>
-          <Y>680.0</Y>
-          <Width>150</Width>
-          <Height>60</Height>
-          <Text>
-            asset,WTP-HUM-OPR-001,human,operator,0.4,standard,4.0
+            asset,WTP-HUM-OPR-001,human,operator,0.4,standard,4.0;name=Control Room Operator;zone=Operations;type=Operator;desc=Duty operator supervising the plant from the control room;purdue=3
           </Text>
         </Shape>
         <Shape ID="15" Type="Shape" NameU="WTP-FLD-PUMP-001">
           <X>120.0</X>
-          <Y>850.0</Y>
+          <Y>1020.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-FLD-PUMP-001,physical,0.02,8.0
+            asset,WTP-FLD-PUMP-001,physical,0.02,8.0;name=Intake Pump;zone=Field;type=Pump;desc=Raw water intake pump;purdue=1;vendor=Grundfos;model=CR 64
           </Text>
         </Shape>
         <Shape ID="16" Type="Shape" NameU="WTP-FLD-PUMP-002">
           <X>330.0</X>
-          <Y>850.0</Y>
+          <Y>1020.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-FLD-PUMP-002,physical,0.02,8.0
+            asset,WTP-FLD-PUMP-002,physical,0.02,8.0;name=Distribution Pump;zone=Field;type=Pump;desc=High service pump;purdue=1;vendor=Grundfos;model=CR 90
           </Text>
         </Shape>
         <Shape ID="17" Type="Shape" NameU="WTP-FLD-VALVE-001">
           <X>540.0</X>
-          <Y>850.0</Y>
+          <Y>1020.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-FLD-VALVE-001,physical,0.02,6.0
+            asset,WTP-FLD-VALVE-001,physical,0.02,6.0;name=Inlet Valve;zone=Field;type=Valve;desc=Motorized inlet valve;purdue=1;vendor=Emerson;model=Fisher V500
           </Text>
         </Shape>
         <Shape ID="18" Type="Shape" NameU="WTP-FLD-VALVE-002">
           <X>750.0</X>
-          <Y>850.0</Y>
+          <Y>1020.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-FLD-VALVE-002,physical,0.02,6.0
+            asset,WTP-FLD-VALVE-002,physical,0.02,6.0;name=Backwash Valve;zone=Field;type=Valve;desc=Filter backwash valve;purdue=1;vendor=Emerson;model=Fisher V500
           </Text>
         </Shape>
         <Shape ID="19" Type="Shape" NameU="WTP-FLD-SENSOR-001">
           <X>960.0</X>
-          <Y>850.0</Y>
+          <Y>1020.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-FLD-SENSOR-001,physical,0.01,4.0
+            asset,WTP-FLD-SENSOR-001,physical,0.01,4.0;name=Flow Sensor;zone=Field;type=Sensor;desc=Raw water flow meter;purdue=1;vendor=Emerson;model=Rosemount 8700
           </Text>
         </Shape>
         <Shape ID="20" Type="Shape" NameU="WTP-FLD-SENSOR-002">
           <X>1170.0</X>
-          <Y>850.0</Y>
+          <Y>1020.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-FLD-SENSOR-002,physical,0.01,4.0
+            asset,WTP-FLD-SENSOR-002,physical,0.01,4.0;name=Pressure Sensor;zone=Field;type=Sensor;desc=Distribution pressure sensor;purdue=1;vendor=Emerson;model=Rosemount 3051
           </Text>
         </Shape>
         <Shape ID="21" Type="Shape" NameU="WTP-FLD-SENSOR-003">
           <X>1380.0</X>
-          <Y>850.0</Y>
+          <Y>1020.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-FLD-SENSOR-003,physical,0.01,5.0
+            asset,WTP-FLD-SENSOR-003,physical,0.01,5.0;name=pH Sensor;zone=Field;type=Sensor;desc=pH in treated water;purdue=1;vendor=Hach;model=SC200
           </Text>
         </Shape>
         <Shape ID="22" Type="Shape" NameU="WTP-FLD-SENSOR-004">
           <X>1590.0</X>
-          <Y>850.0</Y>
+          <Y>1020.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-FLD-SENSOR-004,physical,0.01,4.0
+            asset,WTP-FLD-SENSOR-004,physical,0.01,4.0;name=Turbidity Sensor;zone=Field;type=Sensor;desc=Turbidity measurement;purdue=1;vendor=Hach;model=1720E
           </Text>
         </Shape>
         <Shape ID="23" Type="Shape" NameU="WTP-FLD-MOTOR-001">
           <X>1800.0</X>
-          <Y>850.0</Y>
+          <Y>1020.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-FLD-MOTOR-001,physical,0.01,5.0
+            asset,WTP-FLD-MOTOR-001,physical,0.01,5.0;name=Blower Motor;zone=Field;type=Motor;desc=Aeration blower;purdue=1;vendor=Siemens;model=1LA8
           </Text>
         </Shape>
         <Shape ID="24" Type="Shape" NameU="WTP-FLD-VFD-001">
           <X>120.0</X>
-          <Y>1010.0</Y>
+          <Y>1180.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-FLD-VFD-001,device,7.5,false,false,7.0
+            asset,WTP-FLD-VFD-001,device,7.5,false,false,7.0;name=Pump VFD;zone=Field;type=VFD;desc=Variable frequency drive for pump;purdue=1;vendor=ABB;model=ACS880
           </Text>
         </Shape>
         <Shape ID="25" Type="Shape" NameU="WTP-FLD-ENG-001">
-          <X>330.0</X>
-          <Y>1010.0</Y>
+          <X>750.0</X>
+          <Y>680.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-FLD-ENG-001,device,7.8,false,true,5.0
+            asset,WTP-FLD-ENG-001,device,7.8,false,true,5.0;name=Engineering Workstation;zone=Operations;type=Workstation;desc=Engineering laptop for maintenance;purdue=3;vendor=Dell;model=Precision 5560
           </Text>
         </Shape>
         <Shape ID="26" Type="Shape" NameU="WTP-FLD-SW-001">
-          <X>540.0</X>
-          <Y>1010.0</Y>
+          <X>330.0</X>
+          <Y>1180.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,WTP-FLD-SW-001,device,6.5,false,false,5.0
+            asset,WTP-FLD-SW-001,device,6.5,false,false,5.0;name=Field Switch;zone=Field;type=Network Switch;desc=Industrial switch at field level;purdue=1;vendor=Siemens;model=SCALANCE XB208
           </Text>
         </Shape>
         <Shape ID="27" Type="Shape" NameU="conn_WTP-FW-001_WTP-ENT-SW-001">
@@ -257,7 +257,7 @@
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,WTP-ENT-SW-001,WTP-DMZ-SW-001,connects-to,false,HTTP,medium,
+            relationship,WTP-ENT-SW-001,WTP-DMZ-SW-001,connects-to,true,HTTP,medium,
           </Text>
         </Shape>
         <Shape ID="29" Type="Shape" NameU="conn_WTP-ENT-SW-001_WTP-ENT-DC-001">
@@ -287,22 +287,22 @@
             relationship,WTP-DMZ-SW-001,WTP-DMZ-JUMP-001,connects-to,false,SSH,medium,
           </Text>
         </Shape>
-        <Shape ID="32" Type="Shape" NameU="conn_WTP-DMZ-SW-001_WTP-DMZ-SCADA-001">
+        <Shape ID="32" Type="Shape" NameU="conn_WTP-DMZ-SW-001_WTP-OPS-SCADA-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,WTP-DMZ-SW-001,WTP-DMZ-SCADA-001,connects-to,false,OPC UA,medium,
+            relationship,WTP-DMZ-SW-001,WTP-OPS-SCADA-001,connects-to,false,OPC UA,medium,
           </Text>
         </Shape>
-        <Shape ID="33" Type="Shape" NameU="conn_WTP-DMZ-SCADA-001_WTP-CTRL-SW-001">
+        <Shape ID="33" Type="Shape" NameU="conn_WTP-OPS-SCADA-001_WTP-CTRL-SW-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,WTP-DMZ-SCADA-001,WTP-CTRL-SW-001,connects-to,false,OPC UA,medium,
+            relationship,WTP-OPS-SCADA-001,WTP-CTRL-SW-001,connects-to,false,OPC UA,medium,
           </Text>
         </Shape>
         <Shape ID="34" Type="Shape" NameU="conn_WTP-CTRL-SW-001_WTP-CTRL-HMI-001">

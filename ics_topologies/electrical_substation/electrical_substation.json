@@ -9,22 +9,26 @@
     {
       "id": "Utility",
       "name": "Utility Control Center",
-      "color": "#e599f7"
+      "color": "#e599f7",
+      "purdue_level": "4"
     },
     {
       "id": "Substation",
-      "name": "Substation LAN",
-      "color": "#ffd43b"
+      "name": "Substation LAN (L3)",
+      "color": "#ffd43b",
+      "purdue_level": "3"
     },
     {
       "id": "Process",
-      "name": "Process Bus",
-      "color": "#ff922b"
+      "name": "Process Bus (L1)",
+      "color": "#ff922b",
+      "purdue_level": "1"
     },
     {
       "id": "Protection",
-      "name": "Protection Network",
-      "color": "#da77f2"
+      "name": "Protection Network (L2)",
+      "color": "#da77f2",
+      "purdue_level": "2"
     }
   ],
   "assets": [
@@ -41,7 +45,8 @@
       "cvss_type": 7.5,
       "exposed": true,
       "patched": true,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "4"
     },
     {
       "id": "SUB-SW-001",
@@ -56,7 +61,8 @@
       "cvss_type": 6.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "3"
     },
     {
       "id": "SUB-SCADA-001",
@@ -71,7 +77,8 @@
       "cvss_type": 8.0,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 9.0
+      "consequence_severity": 9.0,
+      "purdue_level": "3"
     },
     {
       "id": "SUB-HMI-001",
@@ -86,7 +93,8 @@
       "cvss_type": 7.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 7.0
+      "consequence_severity": 7.0,
+      "purdue_level": "3"
     },
     {
       "id": "SUB-EWS-001",
@@ -101,7 +109,8 @@
       "cvss_type": 7.8,
       "exposed": false,
       "patched": true,
-      "consequence_severity": 5.0
+      "consequence_severity": 5.0,
+      "purdue_level": "3"
     },
     {
       "id": "SUB-RTU-001",
@@ -116,7 +125,8 @@
       "cvss_type": 8.0,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "3"
     },
     {
       "id": "SUB-IED-001",
@@ -131,7 +141,8 @@
       "cvss_type": 7.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 9.0
+      "consequence_severity": 9.0,
+      "purdue_level": "2"
     },
     {
       "id": "SUB-IED-002",
@@ -146,7 +157,8 @@
       "cvss_type": 7.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 9.0
+      "consequence_severity": 9.0,
+      "purdue_level": "2"
     },
     {
       "id": "SUB-IED-003",
@@ -161,7 +173,8 @@
       "cvss_type": 7.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 9.0
+      "consequence_severity": 9.0,
+      "purdue_level": "2"
     },
     {
       "id": "SUB-PMU-001",
@@ -176,7 +189,8 @@
       "cvss_type": 6.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 5.0
+      "consequence_severity": 5.0,
+      "purdue_level": "2"
     },
     {
       "id": "SUB-MU-001",
@@ -191,7 +205,8 @@
       "cvss_type": 7.0,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 7.0
+      "consequence_severity": 7.0,
+      "purdue_level": "1"
     },
     {
       "id": "SUB-CB-001",
@@ -204,7 +219,8 @@
       "vendor": "ABB",
       "model": "HPL 550",
       "p_base_override": 0.02,
-      "consequence_severity": 10.0
+      "consequence_severity": 10.0,
+      "purdue_level": "0"
     },
     {
       "id": "SUB-DIS-001",
@@ -217,7 +233,8 @@
       "vendor": "Siemens",
       "model": "8DA10",
       "p_base_override": 0.01,
-      "consequence_severity": 7.0
+      "consequence_severity": 7.0,
+      "purdue_level": "0"
     },
     {
       "id": "SUB-XFMR-001",
@@ -230,7 +247,8 @@
       "vendor": "Siemens",
       "model": "TRAFO 100 MVA",
       "p_base_override": 0.02,
-      "consequence_severity": 10.0
+      "consequence_severity": 10.0,
+      "purdue_level": "0"
     },
     {
       "id": "SUB-VT-001",
@@ -243,7 +261,8 @@
       "vendor": "ABB",
       "model": "CPD 1",
       "p_base_override": 0.01,
-      "consequence_severity": 6.0
+      "consequence_severity": 6.0,
+      "purdue_level": "0"
     },
     {
       "id": "SUB-CT-001",
@@ -256,7 +275,8 @@
       "vendor": "ABB",
       "model": "CT 1000:1",
       "p_base_override": 0.01,
-      "consequence_severity": 6.0
+      "consequence_severity": 6.0,
+      "purdue_level": "0"
     },
     {
       "id": "SUB-SENSOR-001",
@@ -269,7 +289,8 @@
       "vendor": "Emerson",
       "model": "Rosemount 214",
       "p_base_override": 0.01,
-      "consequence_severity": 5.0
+      "consequence_severity": 5.0,
+      "purdue_level": "0"
     },
     {
       "id": "SUB-SENSOR-002",
@@ -282,7 +303,8 @@
       "vendor": "WIKA",
       "model": "GDM-100",
       "p_base_override": 0.01,
-      "consequence_severity": 6.0
+      "consequence_severity": 6.0,
+      "purdue_level": "0"
     },
     {
       "id": "SUB-HUM-DSP-001",
@@ -295,7 +317,8 @@
       "role": "operator",
       "awareness": 0.45,
       "privilege": "standard",
-      "consequence_severity": 3.0
+      "consequence_severity": 3.0,
+      "purdue_level": "3"
     }
   ],
   "connections": [
@@ -305,7 +328,8 @@
       "type": "connects-to",
       "protocol": "HTTP",
       "direction": "bidirectional",
-      "trust": "low"
+      "trust": "low",
+      "firewalled": true
     },
     {
       "source": "SUB-SW-001",

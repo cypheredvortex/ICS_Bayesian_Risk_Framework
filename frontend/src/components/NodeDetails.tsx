@@ -1,5 +1,6 @@
-import { formatProbability } from '../utils'
-import { kindMeta, riskLevelMeta } from '../constants'
+import { useEffect, useState } from 'react'
+import { assetDescription, formatProbability } from '../utils'
+import { kindMeta, riskLevelMeta, purdueLevelMeta } from '../constants'
 import { Badge, EmptyState, KvRow } from './ui'
 
 export default function NodeDetails({
@@ -11,6 +12,7 @@ export default function NodeDetails({
   riskRanking,
   attackPathNodes,
   edgeList,
+  topologyAssets,
 }: {
   selectedNode: string | null
   nodeKindMap: Map<string, string>
@@ -31,8 +33,21 @@ export default function NodeDetails({
   }>
   attackPathNodes: Set<string>
   edgeList: Array<{ source: string; target: string; label: string }>
+  // The uploaded (normalized) topology assets — the authoritative source for
+  // the asset's declared type/description before/without an assessment run.
+  topologyAssets?: Record<string, Record<string, unknown>>
 }) {
-  const assetAttrs = result?.assets?.[selectedNode ?? ''] ?? {}
+  // "What is this asset?" explanation: toggled from the asset name and reset
+  // whenever the selection changes so stale text never lingers.
+  const [showExplanation, setShowExplanation] = useState(false)
+  useEffect(() => setShowExplanation(false), [selectedNode])
+
+  // The result carries richer attributes once a run exists; the uploaded
+  // topology is the fallback (and the only source before a run).
+  const assetAttrs = {
+    ...(topologyAssets?.[selectedNode ?? ''] ?? {}),
+    ...(result?.assets?.[selectedNode ?? ''] ?? {}),
+  }
   const cvss = Number(assetAttrs?.cvss_type ?? 0)
   const vulnerabilities = Array.isArray(assetAttrs?.vulnerabilities)
     ? (assetAttrs?.vulnerabilities as Array<Record<string, unknown>>)
@@ -51,6 +66,18 @@ export default function NodeDetails({
     ? edgeList.filter((edge) => edge.source === selectedNode)
     : []
 
+  // Plain-language explanation of what the asset is and does: the topology's
+  // own `description` wins, then the asset-type dictionary, then a generic
+  // kind-level fallback (see assetDescription in utils).
+  const explanation =
+    selectedNode && assetAttrs
+      ? assetDescription(
+          assetAttrs,
+          String(assetAttrs.name ?? selectedNode),
+          nodeKindMap.get(selectedNode) ?? 'device',
+        )
+      : null
+
   return (
     <div className="card card-pad rounded-2xl">
       <h2 className="card-title">Node Details</h2>
@@ -63,9 +90,47 @@ export default function NodeDetails({
             </div>
             <div className="px-4 py-3">
               <div className="flex items-center justify-between gap-3">
-                <span className="truncate font-mono text-base font-bold text-white">
-                  {selectedNode}
-                </span>
+                <button
+                  type="button"
+                  onClick={() => setShowExplanation((value) => !value)}
+                  disabled={!explanation}
+                  className="group flex min-w-0 items-center gap-2 text-left"
+                  aria-expanded={showExplanation}
+                  title={
+                    explanation
+                      ? showExplanation
+                        ? 'Hide what this asset is and does'
+                        : 'Show what this asset is and does'
+                      : undefined
+                  }
+                >
+                  <span className="truncate font-mono text-base font-bold text-white transition group-hover:text-cyan-200">
+                    {selectedNode}
+                  </span>
+                  {explanation ? (
+                    <span
+                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border transition ${
+                        showExplanation
+                          ? 'border-cyan-400/60 bg-cyan-500/15 text-cyan-200'
+                          : 'border-slate-700 bg-slate-900 text-slate-400 group-hover:border-cyan-400/40 group-hover:text-cyan-200'
+                      }`}
+                      aria-hidden="true"
+                    >
+                      <svg
+                        className="h-3 w-3"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M12 8h.01M11 12h1v4h1" />
+                        <circle cx="12" cy="12" r="10" />
+                      </svg>
+                    </span>
+                  ) : null}
+                </button>
                 <Badge
                   tone={kindMeta[nodeKindMap.get(selectedNode) ?? 'device']?.badge ?? 'slate'}
                 >
@@ -74,12 +139,63 @@ export default function NodeDetails({
                     '—'}
                 </Badge>
               </div>
-              {assetAttrs?.zone ? (
-                <div className="mt-2 flex items-center gap-2 text-xs text-slate-400">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
-                    Zone
-                  </span>
-                  <Badge tone="violet">{String(assetAttrs.zone)}</Badge>
+
+              {/* Expandable "what is this asset?" explanation. Lives inside
+                  the identity block, defaults hidden, and never claims a
+                  vendor/model the topology does not name.  Leads with the
+                  asset's actual name (distinct from the ID) and its declared
+                  type, then the plain-language explanation. */}
+              {showExplanation && explanation ? (
+                <div className="mt-2 rounded-lg border border-cyan-500/20 bg-cyan-500/[0.06] px-3 py-2">
+                  <p className="text-[10px] font-semibold uppercase tracking-wider text-cyan-300/80">
+                    What this asset is
+                  </p>
+                  {(() => {
+                    const displayName = String(assetAttrs?.name ?? selectedNode)
+                    // Only repeat the name when it differs from the clickable
+                    // ID; otherwise the panel would show the ID twice.
+                    return displayName === selectedNode ? null : (
+                      <p className="mt-1.5 text-sm font-semibold text-white">
+                        {displayName}
+                      </p>
+                    )
+                  })()}
+                  {assetAttrs?.type ? (
+                    <p className="mt-0.5 text-[11px] font-medium uppercase tracking-wider text-cyan-300/80">
+                      {String(assetAttrs.type)}
+                    </p>
+                  ) : null}
+                  <p className="mt-1.5 text-xs leading-relaxed text-slate-300">
+                    {explanation}
+                  </p>
+                </div>
+              ) : null}
+              {(assetAttrs?.zone || assetAttrs?.purdue_level) ? (
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                  {assetAttrs?.zone ? (
+                    <span className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                        Zone
+                      </span>
+                      <Badge tone="violet">{String(assetAttrs.zone)}</Badge>
+                    </span>
+                  ) : null}
+                  {assetAttrs?.purdue_level ? (
+                    <span className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                        Purdue
+                      </span>
+                      <Badge tone="cyan">
+                        L{String(assetAttrs.purdue_level)}
+                      </Badge>
+                    </span>
+                  ) : null}
+                  {assetAttrs?.purdue_level &&
+                  purdueLevelMeta[String(assetAttrs.purdue_level)] ? (
+                    <span className="text-[11px] text-slate-500">
+                      {purdueLevelMeta[String(assetAttrs.purdue_level)].label}
+                    </span>
+                  ) : null}
                 </div>
               ) : null}
               {(assetAttrs?.vendor || assetAttrs?.model || assetAttrs?.ip) ? (

@@ -1,10 +1,13 @@
 id,name,osi_layer
-http,HTTP,Application
+https,HTTPS,Application
 opcua,OPC UA,Application
+profinet,PROFINET,Application
 profibus,PROFIBUS,Application
+profisafe,PROFIsafe,Application
 hart,HART,Application
 modbustcp,Modbus TCP,Application
-profisafe,PROFIsafe,Application
+dnp3,DNP3,Application
 ldap,LDAP,Application
 ssh,SSH,Application
 rdp,RDP,Application
+vpn,VPN,Network

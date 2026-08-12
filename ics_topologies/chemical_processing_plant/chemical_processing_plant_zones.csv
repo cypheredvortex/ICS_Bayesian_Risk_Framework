@@ -1,7 +1,9 @@
-id,name,color
-Enterprise,Enterprise IT,#4dabf7
-DMZ,Process DMZ,#ffa94d
-DCS,DCS Network,#845ef7
-SIS,Safety Instrumented System,#da77f2
-Field,Field Instruments,#20c997
-Remote,Remote Storage,#ff922b
+id,name,color,purdue_level
+Enterprise,Enterprise IT,#4dabf7,4
+IDMZ,Industrial DMZ,#ffa94d,3.5
+Operations,Site Operations,#9775fa,3
+Control,DCS Control Network,#845ef7,2
+SIS,Safety Instrumented System,#da77f2,2
+Field,Field Instruments,#20c997,1
+Remote,Remote Tank Farm,#ff922b,1
+Process,Physical Process,#37b24d,0

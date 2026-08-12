@@ -1,5 +1,5 @@
-id,name,color
-Utility,Utility Control Center,#e599f7
-Substation,Substation LAN,#ffd43b
-Process,Process Bus,#ff922b
-Protection,Protection Network,#da77f2
+id,name,color,purdue_level
+Utility,Utility Control Center,#e599f7,4
+Substation,Substation LAN (L3),#ffd43b,3
+Process,Process Bus (L1),#ff922b,1
+Protection,Protection Network (L2),#da77f2,2

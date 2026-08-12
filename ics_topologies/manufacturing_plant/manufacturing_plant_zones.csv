@@ -1,7 +1,7 @@
-id,name,color
-Enterprise,Enterprise IT,#4dabf7
-DMZ,Industrial DMZ,#ffa94d
-ShopFloor,Shop Floor Network,#845ef7
-Cell,Work Cell,#fcc419
-Field,Field Devices,#20c997
-Safety,Safety Network,#da77f2
+id,name,color,purdue_level
+Enterprise,Enterprise IT,#4dabf7,4
+DMZ,Industrial DMZ (L3.5),#ffa94d,3.5
+ShopFloor,Shop Floor Network (L3),#845ef7,3
+Cell,Work Cell (L2),#fcc419,2
+Field,Field Devices (L1),#20c997,1
+Safety,Safety Network,#da77f2,2

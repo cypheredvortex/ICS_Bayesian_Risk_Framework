@@ -20,6 +20,57 @@ logger = logging.getLogger(__name__)
 VALID_KINDS = {"device", "human", "physical"}
 DEFAULT_REL_TYPE = "connects-to"
 
+# Purdue Enterprise Reference Architecture levels.  "3.5" is the industrial
+# DMZ level (introduced by the ISA-99/IEC 62443 community as the controlled
+# boundary between Enterprise IT and OT).
+VALID_PURDUE_LEVELS = {"0", "1", "2", "3", "3.5", "4", "5"}
+
+# Fallback zone-name -> Purdue level mapping used when an asset does not
+# declare an explicit ``purdue_level``.  It keeps the two architectural
+# concepts distinct: a *security zone* (IEC 62443) and a *Purdue level* are
+# orthogonal — an asset's level is derived from its zone only as a sensible
+# default, and an explicit per-asset attribute always wins.
+ZONE_PURDUE_DEFAULTS = {
+    "internet": "5",
+    "enterprise": "4",
+    "corporate": "4",
+    "idmz": "3.5",
+    "industrial dmz": "3.5",
+    "dmz": "3.5",
+    "operations": "3",
+    "control room": "3",
+    "supervisory": "3",
+    "control": "2",
+    "dcs": "2",
+    "shopfloor": "2",
+    "cell": "2",
+    "sis": "2",
+    "safety": "2",
+    "substation": "2",
+    "utility": "2",
+    "field": "1",
+    "remote": "1",
+    "remotesite": "1",
+    "process": "0",
+}
+
+# Asset-type vocabulary used by the architecture audit to recognise control-
+# plane assets (which must never sit inside an industrial DMZ) and firewall-
+# class boundary assets (which mediate Enterprise <-> OT traffic).  Tokens are
+# whole words; multi-word descriptors live in _CONTROL_PLANE_PHRASES and are
+# matched as substrings of the joined lowercase name/type/id (a token set
+# cannot represent "operator station" because tokenization splits on
+# non-alphanumerics).
+_CONTROL_PLANE_TOKENS = {
+    "plc", "rtu", "dcs", "controller", "scada", "protection", "ied",
+    "hmi", "operator", "engineering", "workstation",
+}
+_CONTROL_PLANE_PHRASES = {
+    "operator station", "engineering station", "engineering workstation",
+    "logic solver", "safety plc", "safety logic", "control system",
+}
+_FIREWALL_TOKENS = {"firewall", "gateway", "diode", "proxy"}
+
 _COMMON_DEVICE_KEYWORDS = [
     "plc",
     "rtu",
@@ -163,6 +214,46 @@ def infer_asset_kind(name: str, raw: dict | None = None) -> str:
     return "device"
 
 
+def zone_to_purdue_level(zone: Any) -> str | None:
+    """Map a declared security zone to a Purdue level (heuristic default).
+
+    The zone is matched exactly first, then by whole-zone substring so
+    multi-word zone names such as "DCS Network", "Control Network",
+    "Industrial DMZ" or "Remote Tank Farm" still resolve.  Returns ``None``
+    when nothing matches — the asset simply has no derived level.
+    """
+    candidate = _normalize_text(zone).lower()
+    if candidate in ZONE_PURDUE_DEFAULTS:
+        return ZONE_PURDUE_DEFAULTS[candidate]
+    for zone_name, level in ZONE_PURDUE_DEFAULTS.items():
+        if zone_name in candidate:
+            return level
+    return None
+
+
+def infer_purdue_level(name: str, raw: dict | None = None) -> str | None:
+    """Infer a Purdue level from an asset name or its declared zone.
+
+    An explicit ``purdue_level`` attribute wins; otherwise the declared zone
+    is mapped through ``zone_to_purdue_level``; finally a zone-like name token
+    is matched.  This is a heuristic fallback only.
+    """
+    if raw is not None:
+        explicit = raw.get("purdue_level")
+        if explicit is not None and str(explicit).strip() in VALID_PURDUE_LEVELS:
+            return str(explicit).strip()
+        zone = raw.get("zone") or raw.get("network")
+        if zone:
+            level = zone_to_purdue_level(zone)
+            if level:
+                return level
+    candidate = _normalize_text(name).lower()
+    for zone_name, level in ZONE_PURDUE_DEFAULTS.items():
+        if zone_name in candidate:
+            return level
+    return None
+
+
 def infer_asset_zone(name: str, raw: dict | None = None) -> str | None:
     candidate = _normalize_text(name).lower()
     for token, zone_name in _ZONE_KEYWORDS.items():
@@ -213,6 +304,19 @@ def normalize_asset(raw: dict) -> dict | None:
         attrs["model"] = _normalize_text(model)
     if ip := raw.get("ip"):
         attrs["ip"] = _normalize_text(ip)
+    # The declared asset type (e.g. "Firewall", "DCS Controller") and a
+    # plain-language description are display/metadata fields: they never
+    # affect the risk model, but dropping them silently destroyed information
+    # the analyst sees in the UI (asset explanation, architecture audit).
+    # A `type`/`category` that is actually a kind alias ("device", "human",
+    # "physical") has already been consumed by kind inference above and is
+    # deliberately not duplicated.
+    asset_type = _normalize_text(raw.get("type") or raw.get("category"))
+    if asset_type and asset_type not in VALID_KINDS:
+        attrs["type"] = asset_type
+    description = _normalize_text(raw.get("description"))
+    if description:
+        attrs["description"] = description
     if zone := raw.get("zone"):
         attrs["zone"] = _normalize_text(zone)
     elif inferred_zone := infer_asset_zone(asset_id, raw):
@@ -221,6 +325,20 @@ def normalize_asset(raw: dict) -> dict | None:
         attrs["network"] = _normalize_text(network)
     if metadata := raw.get("metadata"):
         attrs["metadata"] = metadata
+
+    # Purdue Enterprise Reference Architecture level ("0".."5", plus "3.5"
+    # for the industrial DMZ).  It is architectural metadata that orients the
+    # asset in the OT hierarchy; it never alters the Bayesian mathematics
+    # directly.  When absent, enrichment derives a sensible default from the
+    # asset's zone.
+    if "purdue_level" in raw and raw.get("purdue_level") not in (None, ""):
+        level = _normalize_text(raw["purdue_level"])
+        if level not in VALID_PURDUE_LEVELS:
+            raise ValueError(
+                f"asset '{asset_id}': 'purdue_level' must be one of "
+                f"{sorted(VALID_PURDUE_LEVELS, key=lambda v: (float(v), v))}, got {level!r}."
+            )
+        attrs["purdue_level"] = level
 
     # Blast-radius scope (1-5) is a risk-model attribute consumed by
     # backend/risk.m_scope as the scope multiplier 1 + (scope-1)*0.1.
@@ -316,6 +434,11 @@ def normalize_relationship(raw: dict | list | tuple) -> tuple | None:
         metadata_dict["trust_level"] = _normalize_text(trust)
     if mitre := raw.get("mitre") or raw.get("mitre_technique"):
         metadata_dict["mitre_technique"] = _normalize_text(mitre)
+    # Physical transport for a link (e.g. "Ethernet", "Leased line + VPN",
+    # "Radio") — display/conduit metadata that makes remote links explicit
+    # instead of pretending everything is ordinary Ethernet.
+    if transport := raw.get("transport"):
+        metadata_dict["transport"] = _normalize_text(transport)
     if "metadata" in raw and isinstance(raw["metadata"], dict):
         metadata_dict.update(raw["metadata"])
     return source, target, rel_type, firewalled, metadata_dict
@@ -517,6 +640,244 @@ def relationship_to_dict(rel: tuple) -> dict[str, Any]:
     }
 
 
+def audit_ics_architecture(
+    assets: dict[str, dict],
+    relationships: list[tuple],
+) -> list[dict[str, Any]]:
+    """Audit a normalized topology against ICS architectural good practice.
+
+    This is deliberately advisory: it distinguishes structural *errors*
+    (architectures that violate defensible ICS segmentation principles),
+    *warnings* (configurations that should be reviewed) and *info* notes.
+    It never rejects a topology — the structural validation in
+    ``validate_graph`` is the gatekeeper for uploads.  The audit surfaces
+    findings so an analyst can see whether an architecture is defensible
+    before trusting its risk numbers.
+
+    Rules are grounded in Purdue-inspired zoning, IEC 62443 zone/conduit
+    concepts and NIST SP 800-82: control assets do not belong in a DMZ, the
+    Enterprise/OT boundary should be mediated by firewalls, field devices must
+    not be directly reachable from enterprise networks, and SIS should not be
+    exposed to enterprise networks.
+
+    Returns:
+        A list of issue dicts ``{"severity": "error"|"warning"|"info",
+        "code", "message", "assets": [...]}`` sorted by severity.
+    """
+    issues: list[dict[str, Any]] = []
+
+    def add(severity: str, code: str, message: str, involved: list[str]) -> None:
+        issues.append({
+            "severity": severity,
+            "code": code,
+            "message": message,
+            "assets": sorted(set(involved)),
+        })
+
+    zone_of = {aid: str(attrs.get("zone", "")) for aid, attrs in assets.items()}
+    kind_of = {aid: str(attrs.get("kind", "device")) for aid, attrs in assets.items()}
+    purdue_of = {
+        aid: str(attrs.get("purdue_level", "")) for aid, attrs in assets.items()
+    }
+    type_of = {aid: str(attrs.get("type", "")) for aid, attrs in assets.items()}
+
+    def is_control_plane(aid: str) -> bool:
+        # The normalized asset model preserves `name` and `id` (the original
+        # `type` is consumed for kind inference), so classify from all three.
+        # Whole-word tokens AND multi-word phrases are checked, so an
+        # "Operator Station" or "Engineering Workstation" in a DMZ is caught
+        # (phrases cannot be represented as tokens).
+        attrs = assets[aid]
+        combined = f"{type_of.get(aid, '')} {attrs.get('name', '')} {aid}".lower()
+        if any(phrase in combined for phrase in _CONTROL_PLANE_PHRASES):
+            return True
+        tokens = _name_tokens(combined)
+        return bool(tokens & _CONTROL_PLANE_TOKENS)
+
+    def is_firewall_class(aid: str) -> bool:
+        attrs = assets[aid]
+        tokens = _name_tokens(
+            f"{type_of.get(aid, '')} {attrs.get('name', '')} {aid}"
+        )
+        return bool(tokens & _FIREWALL_TOKENS)
+
+    def is_dmz_zone(zone: str) -> bool:
+        candidate = _normalize_text(zone).lower()
+        return "dmz" in candidate or "demilitar" in candidate
+
+    def is_enterprise_zone(zone: str) -> bool:
+        candidate = _normalize_text(zone).lower()
+        return candidate in {"enterprise", "corporate", "business", "internet"} \
+            or "enterprise" in candidate or "corp" in candidate
+
+    def purdue_rank(level: str) -> float:
+        try:
+            return float(level)
+        except (TypeError, ValueError):
+            return float("nan")
+
+    # --- 1. Control-plane assets inside an industrial DMZ -------------------
+    dmz_control = [
+        aid for aid, attrs in assets.items()
+        if is_dmz_zone(str(attrs.get("zone", ""))) and is_control_plane(aid)
+    ]
+    if dmz_control:
+        add(
+            "error", "CONTROL_ASSET_IN_DMZ",
+            "Control-plane assets (controllers, HMIs, operator/engineering "
+            "stations, SCADA) must not be placed inside an industrial DMZ; "
+            "the DMZ should only host broker/proxy/jump/transfer services.",
+            dmz_control,
+        )
+
+    # --- 2. SIS exposure to enterprise networks -----------------------------
+    sis_exposed: list[str] = []
+    for aid, attrs in assets.items():
+        if not (is_dmz_zone(str(attrs.get("zone", "")))
+                or is_enterprise_zone(str(attrs.get("zone", "")))):
+            continue
+        tokens = _name_tokens(
+            f"{type_of.get(aid, '')} {attrs.get('name', '')} {aid}"
+        )
+        if tokens & {"sis", "safety", "esd", "logic", "solver"}:
+            sis_exposed.append(aid)
+    if sis_exposed:
+        add(
+            "error", "SIS_EXPOSED_TO_ENTERPRISE",
+            "Safety instrumented system assets must not be reachable from "
+            "enterprise/DMZ networks; the SIS requires its own protected zone "
+            "with controlled conduits.",
+            sis_exposed,
+        )
+
+    # --- 3. Enterprise assets directly controlling/actuating field/process --
+    direct_control: list[str] = []
+    for rel in relationships:
+        source, target, rel_type, _firewalled, _meta = rel
+        src_zone = zone_of.get(source, "")
+        if not (is_enterprise_zone(src_zone) and rel_type in {"controls", "actuates"}):
+            continue
+        if kind_of.get(target) in ("physical",) or purdue_rank(purdue_of.get(target, "")) <= 1:
+            direct_control.append(f"{source} -> {target}")
+    if direct_control:
+        add(
+            "error", "ENTERPRISE_CONTROLS_FIELD",
+            "Enterprise-zone assets directly control or actuate field/process "
+            "assets; command paths to field devices must be mediated by OT "
+            "control systems (e.g. via the IDMZ and the control network).",
+            [edge.split(" -> ")[0] for edge in direct_control],
+        )
+
+    # --- 4. Field/process assets directly reachable from enterprise --------
+    direct_field: list[str] = []
+    for rel in relationships:
+        source, target, _rel_type, _firewalled, _meta = rel
+        if is_enterprise_zone(zone_of.get(source, "")) and (
+            kind_of.get(target) == "physical" or purdue_rank(purdue_of.get(target, "")) <= 1
+        ):
+            direct_field.append(f"{source} -> {target}")
+    if direct_field:
+        add(
+            "warning", "ENTERPRISE_TO_FIELD_LINK",
+            "A direct communication link exists between an enterprise-zone "
+            "asset and a field/process asset; such paths should be mediated "
+            "by the industrial DMZ and OT firewalls.",
+            [edge.split(" -> ")[0] for edge in direct_field],
+        )
+
+    # --- 5. Missing security boundary between Enterprise and OT ------------
+    boundary_paths = [
+        rel for rel in relationships
+        if is_enterprise_zone(zone_of.get(rel[0], ""))
+        and not is_enterprise_zone(zone_of.get(rel[1], ""))
+    ]
+    if boundary_paths and not any(
+        is_firewall_class(aid) for aid in assets
+    ):
+        add(
+            "warning", "MISSING_SECURITY_BOUNDARY",
+            "No firewall-class asset (firewall/gateway/data diode) was found "
+            "between the Enterprise and OT zones; a controlled security "
+            "boundary is expected where enterprise and OT traffic meet.",
+            [rel[0] for rel in boundary_paths],
+        )
+    else:
+        unfirewalled = [
+            f"{rel[0]} -> {rel[1]}" for rel in boundary_paths
+            if not rel[3]
+        ]
+        if unfirewalled:
+            add(
+                "info", "BOUNDARY_LINK_NOT_FIREWALLED",
+                "Enterprise-to-OT boundary links are not individually marked "
+                "as firewalled in the data; consider flagging them so the "
+                "propagation model applies the firewall reduction factor.",
+                [edge.split(" -> ")[0] for edge in unfirewalled],
+            )
+
+    # --- 6. Purdue level present and consistent -----------------------------
+    missing_level = [aid for aid, attrs in assets.items() if not purdue_of.get(aid)]
+    if missing_level:
+        add(
+            "info", "PURDUE_LEVEL_MISSING",
+            "Assets without an explicit Purdue level; a default will be "
+            "derived from the declared zone.",
+            missing_level,
+        )
+
+    # --- 7. SIS self-containment --------------------------------------------
+    _SIS_TOKENS = {"sis", "safety", "esd", "logic", "solver"}
+    sis_assets = [
+        aid for aid, attrs in assets.items()
+        if "sis" in str(attrs.get("zone", "")).lower()
+        or "sis" in str(attrs.get("type", "")).lower()
+        or bool(_name_tokens(f"{type_of.get(aid, '')} {aid}") & _SIS_TOKENS)
+    ]
+    if sis_assets:
+        sis_ids = set(sis_assets)
+        sis_names = {
+            aid: str(assets[aid].get("name", "")) for aid in sis_ids
+        }
+        has_final_elements = any(
+            "valve" in _name_tokens(f"{sis_names.get(aid, '')} {aid}")
+            for aid in sis_ids
+        )
+        has_sensors = any(
+            bool(_name_tokens(f"{sis_names.get(aid, '')} {aid}") & {"transmitter", "sensor"})
+            for aid in sis_ids
+        )
+        if not (has_final_elements and has_sensors):
+            add(
+                "warning", "SIS_CHAIN_INCOMPLETE",
+                "The SIS zone does not expose a complete safety chain "
+                "(dedicated safety sensors -> safety logic solver -> final "
+                "elements); verify the representation.",
+                sorted(sis_ids),
+            )
+
+    # --- 8. Cross-zone direct links that skip the IDMZ ----------------------
+    skipped_dmz: list[str] = []
+    for rel in relationships:
+        source, target, _rel_type, _firewalled, _meta = rel
+        src_p, tgt_p = purdue_of.get(source, ""), purdue_of.get(target, "")
+        if not src_p or not tgt_p:
+            continue
+        if purdue_rank(src_p) >= 4 and purdue_rank(tgt_p) <= 2:
+            skipped_dmz.append(f"{source} -> {target}")
+    if skipped_dmz:
+        add(
+            "warning", "DMZ_BYPASS_LINK",
+            "A link connects an Enterprise-level asset directly to a "
+            "control-level asset, bypassing the industrial DMZ boundary; "
+            "such paths should be mediated by the DMZ.",
+            [edge.split(" -> ")[0] for edge in skipped_dmz],
+        )
+
+    order = {"error": 0, "warning": 1, "info": 2}
+    issues.sort(key=lambda item: (order.get(item["severity"], 9), item["code"]))
+    return issues
+
+
 def build_topology_summary(
     assets: dict[str, dict], relationships: list[tuple]
 ) -> dict[str, Any]:
@@ -542,6 +903,7 @@ def build_topology_summary(
     kinds: Counter[str] = Counter()
     zones: Counter[str] = Counter()
     rel_types: Counter[str] = Counter()
+    purdue_levels: Counter[str] = Counter()
 
     field_coverage = {
         "cvss_type": 0,
@@ -550,12 +912,19 @@ def build_topology_summary(
         "consequence_severity": 0,
         "zone": 0,
         "vulnerabilities": 0,
+        # Declared device type and plain-language description (display
+        # metadata preserved by normalize_asset since the earlier rework).
+        "type": 0,
+        "description": 0,
     }
     for attrs in assets.values():
         kinds[str(attrs.get("kind", "device"))] += 1
         zone = attrs.get("zone")
         if zone:
             zones[str(zone)] += 1
+        level = attrs.get("purdue_level")
+        if level:
+            purdue_levels[str(level)] += 1
         for field in field_coverage:
             if field == "vulnerabilities":
                 if attrs.get("vulnerabilities"):
@@ -570,11 +939,25 @@ def build_topology_summary(
         if len(rel) > 3 and rel[3]:
             firewalled_relationships += 1
 
+    architecture_issues = audit_ics_architecture(assets, relationships)
+    issues_by_severity = Counter(
+        issue["severity"] for issue in architecture_issues
+    )
+
     return {
         "zones": dict(sorted(zones.items())),
         "assets_without_zone": max(0, len(assets) - sum(zones.values())),
         "kinds": {k: kinds[k] for k in sorted(kinds)},
+        "purdue_levels": {
+            level: purdue_levels[level]
+            for level in sorted(purdue_levels, key=lambda v: (float(v), v))
+        },
         "relationship_types": dict(sorted(rel_types.items())),
         "firewalled_relationships": firewalled_relationships,
         "field_coverage": field_coverage,
+        # ICS architectural review: advisory findings (errors/warnings/info)
+        # so an analyst can tell whether an architecture is defensible
+        # before trusting its risk numbers.
+        "architecture_issues": architecture_issues,
+        "architecture_issue_counts": dict(issues_by_severity),
     }

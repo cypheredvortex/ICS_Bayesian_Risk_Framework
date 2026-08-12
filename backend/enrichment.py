@@ -9,7 +9,13 @@ from __future__ import annotations
 
 from typing import Any
 
-from backend.topology import DEFAULT_REL_TYPE, infer_asset_kind, infer_asset_zone
+from backend.topology import (
+    DEFAULT_REL_TYPE,
+    VALID_PURDUE_LEVELS,
+    infer_asset_kind,
+    infer_asset_zone,
+    zone_to_purdue_level,
+)
 
 _DEFAULT_DEVICE_CVSS = 5.0
 _DEFAULT_DEVICE_EXPOSED = True
@@ -165,8 +171,21 @@ def enrich_asset(raw: dict[str, Any]) -> dict[str, Any]:
     if "protocols" in asset and isinstance(asset["protocols"], str):
         asset["protocols"] = [proto.strip().lower() for proto in asset["protocols"].split(",") if proto.strip()]
 
-    if "purdue_level" not in asset:
-        asset["purdue_level"] = asset.get("zone") or "unknown"
+    # Purdue Enterprise Reference Architecture level.  An explicit value is
+    # preserved (validate_graph/parse already checked it); otherwise a
+    # defensible default is derived from the declared security zone (e.g.
+    # IDMZ -> 3.5, Control/DCS -> 2, Field -> 1, Process -> 0).  The
+    # attribute is only set when a level was actually derived: assets without
+    # a zone (or with an unrecognised zone) keep NO level, which the
+    # architecture audit surfaces as PURDUE_LEVEL_MISSING instead of silently
+    # carrying a bogus "unknown" value.
+    level = asset.get("purdue_level")
+    if not level or str(level).strip() not in VALID_PURDUE_LEVELS:
+        level = zone_to_purdue_level(asset.get("zone") or "")
+    if level is not None:
+        asset["purdue_level"] = str(level)
+    else:
+        asset.pop("purdue_level", None)
 
     return asset
 

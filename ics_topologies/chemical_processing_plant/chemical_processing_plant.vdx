@@ -3,7 +3,7 @@
   <DocumentProperties>
     <Title>Chemical Processing Plant</Title>
     <Creator>ICS Topology Generator</Creator>
-    <Description>Continuous chemical process with reactor, distillation, and storage, using DCS and SIS.</Description>
+    <Description>Continuous chemical process (reactor, distillation, storage) operated by a DCS with a dedicated SIL-3 SIS and a Purdue-inspired segmented OT architecture: Enterprise L4, industrial DMZ L3.5, site operations L3, area control L2, field L1 and physical process L0, plus a remote tank farm connected over a leased line + VPN.</Description>
   </DocumentProperties>
   <Pages>
     <Page ID="0" Name="Chemical Processing Plant" Width="3000" Height="1600">
@@ -14,298 +14,559 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-ENT-FW-001,device,7.5,true,true,9.0
+            asset,CHEM-ENT-FW-001,device,7.5,true,true,9.0;name=Internet Edge Firewall;zone=Enterprise;type=Firewall;desc=Corporate internet edge firewall;purdue=5;vendor=Palo Alto;model=PA-5250
           </Text>
         </Shape>
-        <Shape ID="2" Type="Shape" NameU="CHEM-ENT-SW-001">
+        <Shape ID="2" Type="Shape" NameU="CHEM-ENT-WS-001">
           <X>330.0</X>
           <Y>170.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-ENT-SW-001,device,6.5,false,true,6.0
+            asset,CHEM-ENT-WS-001,device,7.8,false,false,5.0;name=Business Workstation;zone=Enterprise;type=Workstation;desc=Corporate user workstation on the business LAN;purdue=4;vendor=Dell;model=OptiPlex 7000
           </Text>
         </Shape>
-        <Shape ID="3" Type="Shape" NameU="CHEM-ENT-DC-001">
+        <Shape ID="3" Type="Shape" NameU="CHEM-ENT-SW-001">
           <X>540.0</X>
           <Y>170.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-ENT-DC-001,device,8.1,false,false,9.0
+            asset,CHEM-ENT-SW-001,device,6.5,false,true,6.0;name=Enterprise Core Switch;zone=Enterprise;type=Network Switch;desc=Core corporate network switch;purdue=4;vendor=Cisco;model=Catalyst 9300
           </Text>
         </Shape>
-        <Shape ID="4" Type="Shape" NameU="CHEM-ENT-ERP-001">
+        <Shape ID="4" Type="Shape" NameU="CHEM-ENT-DC-001">
           <X>750.0</X>
           <Y>170.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-ENT-ERP-001,device,6.5,false,false,5.0
+            asset,CHEM-ENT-DC-001,device,8.1,false,false,9.0;name=Domain Controller;zone=Enterprise;type=Server;desc=Active Directory for the corporate domain;purdue=4;vendor=Microsoft;model=Windows Server 2022
           </Text>
         </Shape>
-        <Shape ID="5" Type="Shape" NameU="CHEM-DMZ-SW-001">
+        <Shape ID="5" Type="Shape" NameU="CHEM-ENT-ERP-001">
+          <X>960.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-ENT-ERP-001,device,6.5,false,false,5.0;name=ERP Server;zone=Enterprise;type=Server;desc=Enterprise resource planning (SAP S/4HANA);purdue=4;vendor=SAP;model=S/4HANA
+          </Text>
+        </Shape>
+        <Shape ID="6" Type="Shape" NameU="CHEM-ENT-FW-002">
+          <X>1170.0</X>
+          <Y>170.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-ENT-FW-002,device,7.5,false,true,8.0;name=Enterprise Firewall;zone=Enterprise;type=Firewall;desc=Enterprise-to-IDMZ boundary firewall (stateful, allow-list);purdue=4;vendor=Palo Alto;model=PA-3260
+          </Text>
+        </Shape>
+        <Shape ID="7" Type="Shape" NameU="CHEM-IDMZ-SW-001">
           <X>120.0</X>
           <Y>340.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-DMZ-SW-001,device,6.5,false,false,7.0
+            asset,CHEM-IDMZ-SW-001,device,6.5,false,false,7.0;name=IDMZ Switch;zone=IDMZ;type=Network Switch;desc=Industrial DMZ network switch;purdue=3.5;vendor=Cisco;model=IE 4000
           </Text>
         </Shape>
-        <Shape ID="6" Type="Shape" NameU="CHEM-DMZ-HIST-001">
+        <Shape ID="8" Type="Shape" NameU="CHEM-IDMZ-JUMP-001">
           <X>330.0</X>
           <Y>340.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-DMZ-HIST-001,device,7.0,false,false,6.0
+            asset,CHEM-IDMZ-JUMP-001,device,8.1,true,true,8.0;name=Jump Server;zone=IDMZ;type=Server;desc=Bastion host for controlled administrative access into OT;purdue=3.5;vendor=Microsoft;model=Windows Server 2022
           </Text>
         </Shape>
-        <Shape ID="7" Type="Shape" NameU="CHEM-DMZ-JUMP-001">
+        <Shape ID="9" Type="Shape" NameU="CHEM-IDMZ-DB-001">
           <X>540.0</X>
           <Y>340.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-DMZ-JUMP-001,device,8.1,true,true,8.0
+            asset,CHEM-IDMZ-DB-001,device,7.0,false,false,7.0;name=Data Broker;zone=IDMZ;type=Gateway;desc=OPC UA data broker bridging OT data to the enterprise (unidirectional publisher);purdue=3.5;vendor=Software Toolbox;model=Cogent DataHub
           </Text>
         </Shape>
-        <Shape ID="8" Type="Shape" NameU="CHEM-DCS-SW-001">
+        <Shape ID="10" Type="Shape" NameU="CHEM-IDMZ-HIST-001">
+          <X>750.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-IDMZ-HIST-001,device,7.0,false,false,5.0;name=Historian Replica;zone=IDMZ;type=Server;desc=Read-only historian replica serving the enterprise;purdue=3.5;vendor=OSIsoft;model=PI Server
+          </Text>
+        </Shape>
+        <Shape ID="11" Type="Shape" NameU="CHEM-IDMZ-RAG-001">
+          <X>960.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-IDMZ-RAG-001,device,8.0,true,true,8.0;name=Remote Access Gateway;zone=IDMZ;type=Gateway;desc=VPN concentrator terminating vendor/support remote sessions;purdue=3.5;vendor=Palo Alto;model=GlobalProtect
+          </Text>
+        </Shape>
+        <Shape ID="12" Type="Shape" NameU="CHEM-IDMZ-PATCH-001">
+          <X>1170.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-IDMZ-PATCH-001,device,6.5,false,true,6.0;name=Patch &amp; Update Repository;zone=IDMZ;type=Server;desc=Staged patch/AV signature repository for OT hosts;purdue=3.5;vendor=Microsoft;model=WSUS
+          </Text>
+        </Shape>
+        <Shape ID="13" Type="Shape" NameU="CHEM-IDMZ-FW-001">
+          <X>1380.0</X>
+          <Y>340.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-IDMZ-FW-001,device,7.5,false,true,8.0;name=OT Firewall;zone=IDMZ;type=Firewall;desc=OT-side firewall between the IDMZ and the site operations network;purdue=3.5;vendor=Palo Alto;model=PA-3260
+          </Text>
+        </Shape>
+        <Shape ID="14" Type="Shape" NameU="CHEM-OPS-SW-001">
           <X>120.0</X>
           <Y>510.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-DCS-SW-001,device,6.5,false,false,8.0
+            asset,CHEM-OPS-SW-001,device,6.5,false,false,8.0;name=Operations Switch;zone=Operations;type=Network Switch;desc=Site operations (L3) network switch;purdue=3;vendor=Siemens;model=SCALANCE XM408
           </Text>
         </Shape>
-        <Shape ID="9" Type="Shape" NameU="CHEM-DCS-OP-001">
+        <Shape ID="15" Type="Shape" NameU="CHEM-OPS-OP-001">
           <X>330.0</X>
           <Y>510.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-DCS-OP-001,device,7.5,false,false,8.0
+            asset,CHEM-OPS-OP-001,device,7.5,false,false,8.0;name=Operator Station 1 (HMI);zone=Operations;type=Workstation;desc=Primary DCS operator console in the control room;purdue=3;vendor=Siemens;model=SIMATIC PCS 7
           </Text>
         </Shape>
-        <Shape ID="10" Type="Shape" NameU="CHEM-DCS-ENG-001">
+        <Shape ID="16" Type="Shape" NameU="CHEM-OPS-OP-002">
           <X>540.0</X>
           <Y>510.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-DCS-ENG-001,device,7.8,false,true,7.0
+            asset,CHEM-OPS-OP-002,device,7.5,false,false,8.0;name=Operator Station 2 (HMI);zone=Operations;type=Workstation;desc=Backup DCS operator console (utilities area);purdue=3;vendor=Siemens;model=SIMATIC PCS 7
           </Text>
         </Shape>
-        <Shape ID="11" Type="Shape" NameU="CHEM-DCS-CTRL-001">
+        <Shape ID="17" Type="Shape" NameU="CHEM-OPS-ENG-001">
           <X>750.0</X>
           <Y>510.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-DCS-CTRL-001,device,8.5,false,false,10.0
+            asset,CHEM-OPS-ENG-001,device,7.8,false,true,8.0;name=Engineering Workstation;zone=Operations;type=Workstation;desc=DCS engineering station (configuration, logic, recipes);purdue=3;vendor=Siemens;model=SIMATIC PCS 7 ES
           </Text>
         </Shape>
-        <Shape ID="12" Type="Shape" NameU="CHEM-DCS-CTRL-002">
+        <Shape ID="18" Type="Shape" NameU="CHEM-OPS-HIST-001">
           <X>960.0</X>
           <Y>510.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-DCS-CTRL-002,device,8.5,false,false,10.0
+            asset,CHEM-OPS-HIST-001,device,7.0,false,false,7.0;name=OT Historian;zone=Operations;type=Server;desc=Primary plant historian collecting process data;purdue=3;vendor=OSIsoft;model=PI Server
           </Text>
         </Shape>
-        <Shape ID="13" Type="Shape" NameU="CHEM-DCS-CTRL-003">
+        <Shape ID="19" Type="Shape" NameU="CHEM-OPS-APP-001">
           <X>1170.0</X>
           <Y>510.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-DCS-CTRL-003,device,8.0,false,false,8.0
+            asset,CHEM-OPS-APP-001,device,7.5,false,false,8.0;name=DCS Application Server;zone=Operations;type=Server;desc=PCS 7 application/OPC UA server serving the operator clients;purdue=3;vendor=Siemens;model=SIMATIC PCS 7 AS
           </Text>
         </Shape>
-        <Shape ID="14" Type="Shape" NameU="CHEM-SIS-PLC-001">
+        <Shape ID="20" Type="Shape" NameU="CHEM-CTL-SW-001">
           <X>120.0</X>
           <Y>680.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-SIS-PLC-001,device,7.0,false,false,10.0
+            asset,CHEM-CTL-SW-001,device,6.5,false,false,8.0;name=Control Switch;zone=Control;type=Network Switch;desc=Redundant L2 control network switch fabric;purdue=2;vendor=Siemens;model=SCALANCE XM408
           </Text>
         </Shape>
-        <Shape ID="15" Type="Shape" NameU="CHEM-SIS-ESD-001">
+        <Shape ID="21" Type="Shape" NameU="CHEM-CTL-DCS-001">
           <X>330.0</X>
           <Y>680.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-SIS-ESD-001,physical,0.01,9.0
+            asset,CHEM-CTL-DCS-001,device,8.5,false,false,10.0;name=DCS Controller — Reactor Area;zone=Control;type=DCSController;desc=Reactor temperature/pressure/level control loop processor;purdue=2;vendor=Siemens;model=SIMATIC PCS 7 AS 410
           </Text>
         </Shape>
-        <Shape ID="16" Type="Shape" NameU="CHEM-SIS-RELAY-001">
+        <Shape ID="22" Type="Shape" NameU="CHEM-CTL-DCS-002">
           <X>540.0</X>
           <Y>680.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-SIS-RELAY-001,physical,0.01,9.0
+            asset,CHEM-CTL-DCS-002,device,8.5,false,false,10.0;name=DCS Controller — Distillation Area;zone=Control;type=DCSController;desc=Distillation column control loop processor;purdue=2;vendor=Siemens;model=SIMATIC PCS 7 AS 410
           </Text>
         </Shape>
-        <Shape ID="17" Type="Shape" NameU="CHEM-FLD-TC-001">
+        <Shape ID="23" Type="Shape" NameU="CHEM-CTL-DCS-003">
+          <X>750.0</X>
+          <Y>680.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-CTL-DCS-003,device,8.0,false,false,9.0;name=DCS Controller — Utilities &amp; Offsites;zone=Control;type=DCSController;desc=Utilities, storage and tank-farm control loop processor;purdue=2;vendor=Siemens;model=SIMATIC PCS 7 AS 410
+          </Text>
+        </Shape>
+        <Shape ID="24" Type="Shape" NameU="CHEM-SIS-GW-001">
           <X>120.0</X>
           <Y>850.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-FLD-TC-001,physical,0.01,8.0
+            asset,CHEM-SIS-GW-001,device,6.5,false,true,9.0;name=SIS Status Gateway;zone=SIS;type=Gateway;desc=Certified status-only interface between the DCS and the SIS;purdue=2;vendor=HIMA;model=HIQuad X Gateway
           </Text>
         </Shape>
-        <Shape ID="18" Type="Shape" NameU="CHEM-FLD-PT-001">
+        <Shape ID="25" Type="Shape" NameU="CHEM-SIS-LS-001">
           <X>330.0</X>
           <Y>850.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-FLD-PT-001,physical,0.01,8.0
+            asset,CHEM-SIS-LS-001,device,7.0,false,false,10.0;name=Safety Logic Solver;zone=SIS;type=SafetyPLC;desc=SIL-3 certified safety logic solver executing ESD logic;purdue=2;vendor=HIMA;model=HIQuad X
           </Text>
         </Shape>
-        <Shape ID="19" Type="Shape" NameU="CHEM-FLD-LT-001">
+        <Shape ID="26" Type="Shape" NameU="CHEM-SIS-ENG-001">
           <X>540.0</X>
           <Y>850.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-FLD-LT-001,physical,0.01,7.0
+            asset,CHEM-SIS-ENG-001,device,7.8,false,true,9.0;name=SIS Engineering Workstation;zone=SIS;type=Workstation;desc=Dedicated engineering station for SIS logic (isolated from the DCS engineering LAN);purdue=3;vendor=HIMA;model=SIMATIC Manager SIS
           </Text>
         </Shape>
-        <Shape ID="20" Type="Shape" NameU="CHEM-FLD-CV-001">
+        <Shape ID="27" Type="Shape" NameU="CHEM-SIS-PT-001">
           <X>750.0</X>
           <Y>850.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-FLD-CV-001,physical,0.02,8.0
+            asset,CHEM-SIS-PT-001,physical,0.01,9.0;name=High-Integrity Pressure Transmitter;zone=SIS;type=Transmitter;desc=SIL-rated pressure transmitter on the reactor (SIS input);purdue=1;vendor=Emerson;model=Rosemount 3051S
           </Text>
         </Shape>
-        <Shape ID="21" Type="Shape" NameU="CHEM-FLD-TC-002">
+        <Shape ID="28" Type="Shape" NameU="CHEM-SIS-TT-001">
           <X>960.0</X>
           <Y>850.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-FLD-TC-002,physical,0.01,8.0
+            asset,CHEM-SIS-TT-001,physical,0.01,9.0;name=High-Integrity Temperature Transmitter;zone=SIS;type=Transmitter;desc=SIL-rated temperature element on the reactor (SIS input);purdue=1;vendor=Emerson;model=Rosemount 214S
           </Text>
         </Shape>
-        <Shape ID="22" Type="Shape" NameU="CHEM-FLD-PT-002">
+        <Shape ID="29" Type="Shape" NameU="CHEM-SIS-SOV-001">
           <X>1170.0</X>
           <Y>850.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-FLD-PT-002,physical,0.01,8.0
+            asset,CHEM-SIS-SOV-001,physical,0.01,9.0;name=Safety Shutoff Valve (Feed);zone=SIS;type=SafetyValve;desc=Fail-closed SIS final element isolating the reactor feed;purdue=1;vendor=Emerson;model=Fisher FIELDVUE DVC6200
           </Text>
         </Shape>
-        <Shape ID="23" Type="Shape" NameU="CHEM-FLD-FT-001">
+        <Shape ID="30" Type="Shape" NameU="CHEM-SIS-SOV-002">
           <X>1380.0</X>
           <Y>850.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-FLD-FT-001,physical,0.01,7.0
+            asset,CHEM-SIS-SOV-002,physical,0.01,9.0;name=Emergency Depressurization Valve;zone=SIS;type=SafetyValve;desc=Fail-open SIS final element venting the reactor to the flare (safe state);purdue=1;vendor=Emerson;model=Fisher FIELDVUE DVC6200
           </Text>
         </Shape>
-        <Shape ID="24" Type="Shape" NameU="CHEM-FLD-CV-002">
+        <Shape ID="31" Type="Shape" NameU="CHEM-FLD-IO-001">
+          <X>120.0</X>
+          <Y>1020.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-FLD-IO-001,device,7.0,false,false,7.0;name=Field Remote I/O Rack;zone=Field;type=RemoteIO;desc=Fieldbus remote I/O marshalling rack feeding the DCS controllers;purdue=1;vendor=Siemens;model=ET 200M
+          </Text>
+        </Shape>
+        <Shape ID="32" Type="Shape" NameU="CHEM-FLD-TT-001">
+          <X>330.0</X>
+          <Y>1020.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-FLD-TT-001,physical,0.01,8.0;name=Temperature Transmitter (Reactor);zone=Field;type=Transmitter;desc=Reactor temperature (thermocouple) transmitter;purdue=1;vendor=Emerson;model=Rosemount 214
+          </Text>
+        </Shape>
+        <Shape ID="33" Type="Shape" NameU="CHEM-FLD-PT-001">
+          <X>540.0</X>
+          <Y>1020.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-FLD-PT-001,physical,0.01,8.0;name=Pressure Transmitter (Reactor);zone=Field;type=Transmitter;desc=Reactor pressure transmitter;purdue=1;vendor=Emerson;model=Rosemount 3051
+          </Text>
+        </Shape>
+        <Shape ID="34" Type="Shape" NameU="CHEM-FLD-LT-001">
+          <X>750.0</X>
+          <Y>1020.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-FLD-LT-001,physical,0.01,7.0;name=Level Transmitter (Reactor);zone=Field;type=Transmitter;desc=Reactor level transmitter;purdue=1;vendor=Emerson;model=Rosemount 3300
+          </Text>
+        </Shape>
+        <Shape ID="35" Type="Shape" NameU="CHEM-FLD-FCV-001">
+          <X>960.0</X>
+          <Y>1020.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-FLD-FCV-001,physical,0.02,8.0;name=Feed Control Valve (Reactor);zone=Field;type=ControlValve;desc=Reactor feed flow control valve (final element);purdue=1;vendor=Emerson;model=Fisher V500
+          </Text>
+        </Shape>
+        <Shape ID="36" Type="Shape" NameU="CHEM-FLD-PUMP-001">
+          <X>1170.0</X>
+          <Y>1020.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-FLD-PUMP-001,physical,0.02,8.0;name=Reactor Feed Pump;zone=Field;type=Pump;desc=Centrifugal feed pump supplying the reactor;purdue=1;vendor=Grundfos;model=CR 64
+          </Text>
+        </Shape>
+        <Shape ID="37" Type="Shape" NameU="CHEM-FLD-VFD-001">
+          <X>1380.0</X>
+          <Y>1020.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-FLD-VFD-001,device,7.5,false,false,7.0;name=Feed Pump VFD;zone=Field;type=VFD;desc=Variable frequency drive for the reactor feed pump;purdue=1;vendor=ABB;model=ACS880
+          </Text>
+        </Shape>
+        <Shape ID="38" Type="Shape" NameU="CHEM-FLD-TT-002">
           <X>1590.0</X>
-          <Y>850.0</Y>
+          <Y>1020.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-FLD-CV-002,physical,0.02,8.0
+            asset,CHEM-FLD-TT-002,physical,0.01,8.0;name=Temperature Transmitter (Column);zone=Field;type=Transmitter;desc=Distillation column temperature transmitter;purdue=1;vendor=Emerson;model=Rosemount 214
           </Text>
         </Shape>
-        <Shape ID="25" Type="Shape" NameU="CHEM-FLD-PUMP-001">
+        <Shape ID="39" Type="Shape" NameU="CHEM-FLD-PT-002">
           <X>1800.0</X>
-          <Y>850.0</Y>
+          <Y>1020.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-FLD-PUMP-001,physical,0.02,7.0
+            asset,CHEM-FLD-PT-002,physical,0.01,8.0;name=Pressure Transmitter (Column);zone=Field;type=Transmitter;desc=Distillation column pressure transmitter;purdue=1;vendor=Emerson;model=Rosemount 3051
           </Text>
         </Shape>
-        <Shape ID="26" Type="Shape" NameU="CHEM-FLD-VALVE-001">
+        <Shape ID="40" Type="Shape" NameU="CHEM-FLD-FT-001">
           <X>120.0</X>
-          <Y>1010.0</Y>
+          <Y>1180.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-FLD-VALVE-001,physical,0.02,7.0
+            asset,CHEM-FLD-FT-001,physical,0.01,7.0;name=Flow Transmitter (Reflux);zone=Field;type=Transmitter;desc=Column reflux flow transmitter;purdue=1;vendor=Emerson;model=Rosemount 8700
           </Text>
         </Shape>
-        <Shape ID="27" Type="Shape" NameU="CHEM-FLD-SENSOR-001">
+        <Shape ID="41" Type="Shape" NameU="CHEM-FLD-FCV-002">
           <X>330.0</X>
-          <Y>1010.0</Y>
+          <Y>1180.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-FLD-SENSOR-001,physical,0.01,6.0
+            asset,CHEM-FLD-FCV-002,physical,0.02,8.0;name=Reflux Control Valve;zone=Field;type=ControlValve;desc=Column reflux control valve (final element);purdue=1;vendor=Emerson;model=Fisher V500
           </Text>
         </Shape>
-        <Shape ID="28" Type="Shape" NameU="CHEM-REM-SW-001">
-          <X>120.0</X>
-          <Y>1190.0</Y>
-          <Width>150</Width>
-          <Height>60</Height>
-          <Text>
-            asset,CHEM-REM-SW-001,device,6.5,false,false,6.0
-          </Text>
-        </Shape>
-        <Shape ID="29" Type="Shape" NameU="CHEM-REM-RTU-001">
-          <X>330.0</X>
-          <Y>1190.0</Y>
-          <Width>150</Width>
-          <Height>60</Height>
-          <Text>
-            asset,CHEM-REM-RTU-001,device,8.0,false,false,7.0
-          </Text>
-        </Shape>
-        <Shape ID="30" Type="Shape" NameU="CHEM-REM-PUMP-001">
+        <Shape ID="42" Type="Shape" NameU="CHEM-FLD-FCV-003">
           <X>540.0</X>
-          <Y>1190.0</Y>
+          <Y>1180.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-REM-PUMP-001,physical,0.02,6.0
+            asset,CHEM-FLD-FCV-003,physical,0.02,8.0;name=Steam Reboiler Control Valve;zone=Field;type=ControlValve;desc=Reboiler steam supply control valve (final element);purdue=1;vendor=Emerson;model=Fisher V500
           </Text>
         </Shape>
-        <Shape ID="31" Type="Shape" NameU="CHEM-REM-VALVE-001">
+        <Shape ID="43" Type="Shape" NameU="CHEM-FLD-LT-002">
           <X>750.0</X>
-          <Y>1190.0</Y>
+          <Y>1180.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-REM-VALVE-001,physical,0.02,6.0
+            asset,CHEM-FLD-LT-002,physical,0.01,6.0;name=Level Transmitter (Storage);zone=Field;type=Transmitter;desc=Product storage tank level transmitter;purdue=1;vendor=Emerson;model=Rosemount 3300
           </Text>
         </Shape>
-        <Shape ID="32" Type="Shape" NameU="CHEM-HUM-OPR-001">
+        <Shape ID="44" Type="Shape" NameU="CHEM-FLD-SENSOR-001">
+          <X>960.0</X>
+          <Y>1180.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-FLD-SENSOR-001,physical,0.01,6.0;name=Cooling Water Flow Transmitter;zone=Field;type=Transmitter;desc=Cooling water flow transmitter;purdue=1;vendor=Emerson;model=Rosemount 8700
+          </Text>
+        </Shape>
+        <Shape ID="45" Type="Shape" NameU="CHEM-FLD-VALVE-001">
+          <X>1170.0</X>
+          <Y>1180.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-FLD-VALVE-001,physical,0.02,6.0;name=Cooling Water Control Valve;zone=Field;type=ControlValve;desc=Cooling water supply control valve;purdue=1;vendor=Emerson;model=Fisher V500
+          </Text>
+        </Shape>
+        <Shape ID="46" Type="Shape" NameU="CHEM-FLD-PUMP-002">
+          <X>1380.0</X>
+          <Y>1180.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-FLD-PUMP-002,physical,0.02,7.0;name=Product Transfer Pump;zone=Field;type=Pump;desc=Product transfer pump to storage;purdue=1;vendor=Grundfos;model=CR 90
+          </Text>
+        </Shape>
+        <Shape ID="47" Type="Shape" NameU="CHEM-PRO-REACTOR-001">
+          <X>120.0</X>
+          <Y>1530.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-PRO-REACTOR-001,physical,0.01,10.0;name=Reactor Vessel;zone=Process;type=Reactor;desc=Exothermic stirred-tank reactor — primary hazard source;purdue=0;vendor=Zeton;model=CSTR-10m3
+          </Text>
+        </Shape>
+        <Shape ID="48" Type="Shape" NameU="CHEM-PRO-COLUMN-001">
+          <X>330.0</X>
+          <Y>1530.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-PRO-COLUMN-001,physical,0.01,9.0;name=Distillation Column;zone=Process;type=DistillationColumn;desc=Continuous distillation column separating the reactor product;purdue=0;vendor=Sulzer;model=Packed Column
+          </Text>
+        </Shape>
+        <Shape ID="49" Type="Shape" NameU="CHEM-PRO-HX-001">
+          <X>540.0</X>
+          <Y>1530.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-PRO-HX-001,physical,0.01,7.0;name=Heat Exchanger (Reboiler);zone=Process;type=HeatExchanger;desc=Steam reboiler providing column heat input;purdue=0;vendor=Alfa Laval;model=T20
+          </Text>
+        </Shape>
+        <Shape ID="50" Type="Shape" NameU="CHEM-PRO-PIPE-001">
+          <X>750.0</X>
+          <Y>1530.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-PRO-PIPE-001,physical,0.005,6.0;name=Reactor-to-Column Transfer Piping;zone=Process;type=Pipeline;desc=Product transfer line from the reactor to the distillation column;purdue=0;vendor=N/A;model=DN150
+          </Text>
+        </Shape>
+        <Shape ID="51" Type="Shape" NameU="CHEM-PRO-TANK-001">
+          <X>960.0</X>
+          <Y>1530.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-PRO-TANK-001,physical,0.01,7.0;name=Product Storage Tank;zone=Process;type=StorageTank;desc=Finished product storage tank;purdue=0;vendor=Chicago Bridge &amp; Iron;model=Fixed Roof 500m3
+          </Text>
+        </Shape>
+        <Shape ID="52" Type="Shape" NameU="CHEM-PRO-TANK-002">
+          <X>1170.0</X>
+          <Y>1530.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-PRO-TANK-002,physical,0.01,7.0;name=Feedstock Storage Tank;zone=Process;type=StorageTank;desc=Raw feedstock storage tank feeding the reactor;purdue=0;vendor=Chicago Bridge &amp; Iron;model=Fixed Roof 1000m3
+          </Text>
+        </Shape>
+        <Shape ID="53" Type="Shape" NameU="CHEM-REM-SW-001">
+          <X>120.0</X>
+          <Y>1360.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-REM-SW-001,device,6.5,false,false,6.0;name=Remote Site Switch;zone=Remote;type=Network Switch;desc=Industrial switch at the remote tank farm;purdue=1;vendor=Siemens;model=SCALANCE XB208
+          </Text>
+        </Shape>
+        <Shape ID="54" Type="Shape" NameU="CHEM-REM-RTU-001">
+          <X>330.0</X>
+          <Y>1360.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-REM-RTU-001,device,8.0,false,false,8.0;name=Remote RTU — Tank Farm;zone=Remote;type=RTU;desc=Remote terminal unit controlling tank-farm loading;purdue=1;vendor=Control Microsystems;model=SCADAPack 470
+          </Text>
+        </Shape>
+        <Shape ID="55" Type="Shape" NameU="CHEM-REM-LT-001">
+          <X>540.0</X>
+          <Y>1360.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-REM-LT-001,physical,0.01,6.0;name=Remote Tank Level Transmitter;zone=Remote;type=Transmitter;desc=Level transmitter on the remote product tank;purdue=1;vendor=Emerson;model=Rosemount 3300
+          </Text>
+        </Shape>
+        <Shape ID="56" Type="Shape" NameU="CHEM-REM-PUMP-001">
+          <X>750.0</X>
+          <Y>1360.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-REM-PUMP-001,physical,0.02,7.0;name=Remote Transfer Pump;zone=Remote;type=Pump;desc=Transfer pump at the remote tank farm;purdue=1;vendor=Grundfos;model=CR 90
+          </Text>
+        </Shape>
+        <Shape ID="57" Type="Shape" NameU="CHEM-REM-VALVE-001">
+          <X>960.0</X>
+          <Y>1360.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-REM-VALVE-001,physical,0.02,6.0;name=Rail Loading Valve;zone=Remote;type=ControlValve;desc=Rail-car loading isolation valve at the tank farm;purdue=1;vendor=Emerson;model=Fisher V500
+          </Text>
+        </Shape>
+        <Shape ID="58" Type="Shape" NameU="CHEM-REM-TANK-001">
+          <X>1170.0</X>
+          <Y>1360.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-REM-TANK-001,physical,0.01,8.0;name=Remote Product Tank;zone=Remote;type=StorageTank;desc=Product storage tank at the remote tank farm;purdue=0;vendor=Chicago Bridge &amp; Iron;model=Floating Roof 2000m3
+          </Text>
+        </Shape>
+        <Shape ID="59" Type="Shape" NameU="CHEM-HUM-OPR-001">
           <X>1380.0</X>
           <Y>510.0</Y>
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,CHEM-HUM-OPR-001,human,operator,0.4,standard,5.0
+            asset,CHEM-HUM-OPR-001,human,operator,0.4,standard,5.0;name=Process Operator;zone=Operations;type=Operator;desc=Board operator supervising the DCS from the control room;purdue=3
           </Text>
         </Shape>
-        <Shape ID="33" Type="Shape" NameU="conn_CHEM-ENT-FW-001_CHEM-ENT-SW-001">
+        <Shape ID="60" Type="Shape" NameU="CHEM-HUM-ENG-001">
+          <X>1590.0</X>
+          <Y>510.0</Y>
+          <Width>150</Width>
+          <Height>60</Height>
+          <Text>
+            asset,CHEM-HUM-ENG-001,human,engineer,0.5,elevated,6.0;name=Control Systems Engineer;zone=Operations;type=Engineer;desc=Engineer maintaining DCS configuration and control logic;purdue=3
+          </Text>
+        </Shape>
+        <Shape ID="61" Type="Shape" NameU="conn_CHEM-ENT-FW-001_CHEM-ENT-SW-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-ENT-FW-001,CHEM-ENT-SW-001,connects-to,false,HTTP,low,
+            relationship,CHEM-ENT-FW-001,CHEM-ENT-SW-001,connects-to,true,HTTPS,low,
           </Text>
         </Shape>
-        <Shape ID="34" Type="Shape" NameU="conn_CHEM-ENT-SW-001_CHEM-ENT-DC-001">
+        <Shape ID="62" Type="Shape" NameU="conn_CHEM-ENT-WS-001_CHEM-ENT-SW-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-ENT-WS-001,CHEM-ENT-SW-001,connects-to,false,HTTPS,high,
+          </Text>
+        </Shape>
+        <Shape ID="63" Type="Shape" NameU="conn_CHEM-ENT-SW-001_CHEM-ENT-DC-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
@@ -314,232 +575,673 @@
             relationship,CHEM-ENT-SW-001,CHEM-ENT-DC-001,connects-to,false,LDAP,high,
           </Text>
         </Shape>
-        <Shape ID="35" Type="Shape" NameU="conn_CHEM-ENT-SW-001_CHEM-ENT-ERP-001">
+        <Shape ID="64" Type="Shape" NameU="conn_CHEM-ENT-SW-001_CHEM-ENT-ERP-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-ENT-SW-001,CHEM-ENT-ERP-001,connects-to,false,HTTP,high,
+            relationship,CHEM-ENT-SW-001,CHEM-ENT-ERP-001,connects-to,false,HTTPS,high,
           </Text>
         </Shape>
-        <Shape ID="36" Type="Shape" NameU="conn_CHEM-ENT-SW-001_CHEM-DMZ-SW-001">
+        <Shape ID="65" Type="Shape" NameU="conn_CHEM-ENT-SW-001_CHEM-ENT-FW-002">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-ENT-SW-001,CHEM-DMZ-SW-001,connects-to,false,HTTP,medium,
+            relationship,CHEM-ENT-SW-001,CHEM-ENT-FW-002,connects-to,true,HTTPS,medium,
           </Text>
         </Shape>
-        <Shape ID="37" Type="Shape" NameU="conn_CHEM-DMZ-SW-001_CHEM-DMZ-HIST-001">
+        <Shape ID="66" Type="Shape" NameU="conn_CHEM-ENT-FW-002_CHEM-IDMZ-SW-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DMZ-SW-001,CHEM-DMZ-HIST-001,connects-to,false,OPC UA,medium,
+            relationship,CHEM-ENT-FW-002,CHEM-IDMZ-SW-001,connects-to,true,HTTPS,medium,
           </Text>
         </Shape>
-        <Shape ID="38" Type="Shape" NameU="conn_CHEM-DMZ-SW-001_CHEM-DMZ-JUMP-001">
+        <Shape ID="67" Type="Shape" NameU="conn_CHEM-IDMZ-SW-001_CHEM-IDMZ-JUMP-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DMZ-SW-001,CHEM-DMZ-JUMP-001,connects-to,false,SSH,medium,
+            relationship,CHEM-IDMZ-SW-001,CHEM-IDMZ-JUMP-001,connects-to,false,SSH,medium,
           </Text>
         </Shape>
-        <Shape ID="39" Type="Shape" NameU="conn_CHEM-DMZ-JUMP-001_CHEM-DCS-SW-001">
+        <Shape ID="68" Type="Shape" NameU="conn_CHEM-IDMZ-SW-001_CHEM-IDMZ-DB-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DMZ-JUMP-001,CHEM-DCS-SW-001,connects-to,false,RDP,medium,
+            relationship,CHEM-IDMZ-SW-001,CHEM-IDMZ-DB-001,connects-to,false,OPC UA,medium,
           </Text>
         </Shape>
-        <Shape ID="40" Type="Shape" NameU="conn_CHEM-DCS-SW-001_CHEM-DCS-OP-001">
+        <Shape ID="69" Type="Shape" NameU="conn_CHEM-IDMZ-SW-001_CHEM-IDMZ-HIST-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-SW-001,CHEM-DCS-OP-001,connects-to,false,OPC UA,high,
+            relationship,CHEM-IDMZ-SW-001,CHEM-IDMZ-HIST-001,connects-to,false,OPC UA,medium,
           </Text>
         </Shape>
-        <Shape ID="41" Type="Shape" NameU="conn_CHEM-DCS-SW-001_CHEM-DCS-ENG-001">
+        <Shape ID="70" Type="Shape" NameU="conn_CHEM-IDMZ-SW-001_CHEM-IDMZ-RAG-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-SW-001,CHEM-DCS-ENG-001,connects-to,false,OPC UA,high,
+            relationship,CHEM-IDMZ-SW-001,CHEM-IDMZ-RAG-001,connects-to,false,VPN,low,
           </Text>
         </Shape>
-        <Shape ID="42" Type="Shape" NameU="conn_CHEM-DCS-SW-001_CHEM-DCS-CTRL-001">
+        <Shape ID="71" Type="Shape" NameU="conn_CHEM-IDMZ-SW-001_CHEM-IDMZ-PATCH-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-SW-001,CHEM-DCS-CTRL-001,connects-to,false,PROFIBUS,high,
+            relationship,CHEM-IDMZ-SW-001,CHEM-IDMZ-PATCH-001,connects-to,false,HTTPS,medium,
           </Text>
         </Shape>
-        <Shape ID="43" Type="Shape" NameU="conn_CHEM-DCS-SW-001_CHEM-DCS-CTRL-002">
+        <Shape ID="72" Type="Shape" NameU="conn_CHEM-IDMZ-RAG-001_CHEM-IDMZ-JUMP-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-SW-001,CHEM-DCS-CTRL-002,connects-to,false,PROFIBUS,high,
+            relationship,CHEM-IDMZ-RAG-001,CHEM-IDMZ-JUMP-001,connects-to,false,RDP,low,
           </Text>
         </Shape>
-        <Shape ID="44" Type="Shape" NameU="conn_CHEM-DCS-SW-001_CHEM-DCS-CTRL-003">
+        <Shape ID="73" Type="Shape" NameU="conn_CHEM-IDMZ-SW-001_CHEM-IDMZ-FW-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-SW-001,CHEM-DCS-CTRL-003,connects-to,false,PROFIBUS,high,
+            relationship,CHEM-IDMZ-SW-001,CHEM-IDMZ-FW-001,connects-to,true,HTTPS,medium,
           </Text>
         </Shape>
-        <Shape ID="45" Type="Shape" NameU="conn_CHEM-HUM-OPR-001_CHEM-DCS-OP-001">
+        <Shape ID="74" Type="Shape" NameU="conn_CHEM-IDMZ-FW-001_CHEM-OPS-SW-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-HUM-OPR-001,CHEM-DCS-OP-001,programs / operates,false,HMI,high,
+            relationship,CHEM-IDMZ-FW-001,CHEM-OPS-SW-001,connects-to,true,OPC UA,medium,
           </Text>
         </Shape>
-        <Shape ID="46" Type="Shape" NameU="conn_CHEM-DCS-CTRL-001_CHEM-FLD-TC-001">
+        <Shape ID="75" Type="Shape" NameU="conn_CHEM-IDMZ-JUMP-001_CHEM-OPS-ENG-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-CTRL-001,CHEM-FLD-TC-001,monitors,false,HART,low,
+            relationship,CHEM-IDMZ-JUMP-001,CHEM-OPS-ENG-001,connects-to,true,RDP,low,
           </Text>
         </Shape>
-        <Shape ID="47" Type="Shape" NameU="conn_CHEM-DCS-CTRL-001_CHEM-FLD-PT-001">
+        <Shape ID="76" Type="Shape" NameU="conn_CHEM-OPS-SW-001_CHEM-OPS-OP-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-CTRL-001,CHEM-FLD-PT-001,monitors,false,HART,low,
+            relationship,CHEM-OPS-SW-001,CHEM-OPS-OP-001,connects-to,false,OPC UA,high,
           </Text>
         </Shape>
-        <Shape ID="48" Type="Shape" NameU="conn_CHEM-DCS-CTRL-001_CHEM-FLD-LT-001">
+        <Shape ID="77" Type="Shape" NameU="conn_CHEM-OPS-SW-001_CHEM-OPS-OP-002">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-CTRL-001,CHEM-FLD-LT-001,monitors,false,HART,low,
+            relationship,CHEM-OPS-SW-001,CHEM-OPS-OP-002,connects-to,false,OPC UA,high,
           </Text>
         </Shape>
-        <Shape ID="49" Type="Shape" NameU="conn_CHEM-DCS-CTRL-001_CHEM-FLD-CV-001">
+        <Shape ID="78" Type="Shape" NameU="conn_CHEM-OPS-SW-001_CHEM-OPS-ENG-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-CTRL-001,CHEM-FLD-CV-001,actuates,false,HART,low,
+            relationship,CHEM-OPS-SW-001,CHEM-OPS-ENG-001,connects-to,false,HTTPS,high,
           </Text>
         </Shape>
-        <Shape ID="50" Type="Shape" NameU="conn_CHEM-DCS-CTRL-002_CHEM-FLD-TC-002">
+        <Shape ID="79" Type="Shape" NameU="conn_CHEM-OPS-SW-001_CHEM-OPS-HIST-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-CTRL-002,CHEM-FLD-TC-002,monitors,false,HART,low,
+            relationship,CHEM-OPS-SW-001,CHEM-OPS-HIST-001,connects-to,false,OPC UA,high,
           </Text>
         </Shape>
-        <Shape ID="51" Type="Shape" NameU="conn_CHEM-DCS-CTRL-002_CHEM-FLD-PT-002">
+        <Shape ID="80" Type="Shape" NameU="conn_CHEM-OPS-SW-001_CHEM-OPS-APP-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-CTRL-002,CHEM-FLD-PT-002,monitors,false,HART,low,
+            relationship,CHEM-OPS-SW-001,CHEM-OPS-APP-001,connects-to,false,OPC UA,high,
           </Text>
         </Shape>
-        <Shape ID="52" Type="Shape" NameU="conn_CHEM-DCS-CTRL-002_CHEM-FLD-FT-001">
+        <Shape ID="81" Type="Shape" NameU="conn_CHEM-HUM-OPR-001_CHEM-OPS-OP-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-CTRL-002,CHEM-FLD-FT-001,monitors,false,HART,low,
+            relationship,CHEM-HUM-OPR-001,CHEM-OPS-OP-001,programs / operates,false,HMI,high,
           </Text>
         </Shape>
-        <Shape ID="53" Type="Shape" NameU="conn_CHEM-DCS-CTRL-002_CHEM-FLD-CV-002">
+        <Shape ID="82" Type="Shape" NameU="conn_CHEM-HUM-OPR-001_CHEM-OPS-OP-002">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-CTRL-002,CHEM-FLD-CV-002,actuates,false,HART,low,
+            relationship,CHEM-HUM-OPR-001,CHEM-OPS-OP-002,programs / operates,false,HMI,high,
           </Text>
         </Shape>
-        <Shape ID="54" Type="Shape" NameU="conn_CHEM-DCS-CTRL-001_CHEM-SIS-PLC-001">
+        <Shape ID="83" Type="Shape" NameU="conn_CHEM-HUM-ENG-001_CHEM-OPS-ENG-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-CTRL-001,CHEM-SIS-PLC-001,connects-to,false,PROFIsafe,medium,
+            relationship,CHEM-HUM-ENG-001,CHEM-OPS-ENG-001,programs / operates,false,HTTPS,high,
           </Text>
         </Shape>
-        <Shape ID="55" Type="Shape" NameU="conn_CHEM-DCS-CTRL-002_CHEM-SIS-PLC-001">
+        <Shape ID="84" Type="Shape" NameU="conn_CHEM-OPS-SW-001_CHEM-CTL-SW-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-CTRL-002,CHEM-SIS-PLC-001,connects-to,false,PROFIsafe,medium,
+            relationship,CHEM-OPS-SW-001,CHEM-CTL-SW-001,connects-to,true,PROFINET,high,
           </Text>
         </Shape>
-        <Shape ID="56" Type="Shape" NameU="conn_CHEM-SIS-PLC-001_CHEM-SIS-ESD-001">
+        <Shape ID="85" Type="Shape" NameU="conn_CHEM-CTL-SW-001_CHEM-CTL-DCS-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-SIS-PLC-001,CHEM-SIS-ESD-001,monitors,false,PROFIsafe,low,
+            relationship,CHEM-CTL-SW-001,CHEM-CTL-DCS-001,connects-to,false,PROFINET,high,
           </Text>
         </Shape>
-        <Shape ID="57" Type="Shape" NameU="conn_CHEM-SIS-PLC-001_CHEM-SIS-RELAY-001">
+        <Shape ID="86" Type="Shape" NameU="conn_CHEM-CTL-SW-001_CHEM-CTL-DCS-002">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-SIS-PLC-001,CHEM-SIS-RELAY-001,monitors,false,PROFIsafe,low,
+            relationship,CHEM-CTL-SW-001,CHEM-CTL-DCS-002,connects-to,false,PROFINET,high,
           </Text>
         </Shape>
-        <Shape ID="58" Type="Shape" NameU="conn_CHEM-DCS-CTRL-003_CHEM-REM-RTU-001">
+        <Shape ID="87" Type="Shape" NameU="conn_CHEM-CTL-SW-001_CHEM-CTL-DCS-003">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-CTRL-003,CHEM-REM-RTU-001,controls,false,Modbus TCP,medium,
+            relationship,CHEM-CTL-SW-001,CHEM-CTL-DCS-003,connects-to,false,PROFINET,high,
           </Text>
         </Shape>
-        <Shape ID="59" Type="Shape" NameU="conn_CHEM-REM-RTU-001_CHEM-REM-SW-001">
+        <Shape ID="88" Type="Shape" NameU="conn_CHEM-OPS-ENG-001_CHEM-CTL-DCS-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-REM-RTU-001,CHEM-REM-SW-001,connects-to,false,Modbus TCP,low,
+            relationship,CHEM-OPS-ENG-001,CHEM-CTL-DCS-001,programs / operates,false,PROFINET,high,
           </Text>
         </Shape>
-        <Shape ID="60" Type="Shape" NameU="conn_CHEM-REM-RTU-001_CHEM-REM-PUMP-001">
+        <Shape ID="89" Type="Shape" NameU="conn_CHEM-OPS-ENG-001_CHEM-CTL-DCS-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-OPS-ENG-001,CHEM-CTL-DCS-002,programs / operates,false,PROFINET,high,
+          </Text>
+        </Shape>
+        <Shape ID="90" Type="Shape" NameU="conn_CHEM-OPS-ENG-001_CHEM-CTL-DCS-003">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-OPS-ENG-001,CHEM-CTL-DCS-003,programs / operates,false,PROFINET,high,
+          </Text>
+        </Shape>
+        <Shape ID="91" Type="Shape" NameU="conn_CHEM-OPS-OP-001_CHEM-OPS-APP-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-OPS-OP-001,CHEM-OPS-APP-001,connects-to,false,OPC UA,high,
+          </Text>
+        </Shape>
+        <Shape ID="92" Type="Shape" NameU="conn_CHEM-OPS-OP-002_CHEM-OPS-APP-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-OPS-OP-002,CHEM-OPS-APP-001,connects-to,false,OPC UA,high,
+          </Text>
+        </Shape>
+        <Shape ID="93" Type="Shape" NameU="conn_CHEM-OPS-APP-001_CHEM-CTL-DCS-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-OPS-APP-001,CHEM-CTL-DCS-001,connects-to,false,OPC UA,high,
+          </Text>
+        </Shape>
+        <Shape ID="94" Type="Shape" NameU="conn_CHEM-OPS-APP-001_CHEM-CTL-DCS-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-OPS-APP-001,CHEM-CTL-DCS-002,connects-to,false,OPC UA,high,
+          </Text>
+        </Shape>
+        <Shape ID="95" Type="Shape" NameU="conn_CHEM-OPS-APP-001_CHEM-CTL-DCS-003">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-OPS-APP-001,CHEM-CTL-DCS-003,connects-to,false,OPC UA,high,
+          </Text>
+        </Shape>
+        <Shape ID="96" Type="Shape" NameU="conn_CHEM-OPS-HIST-001_CHEM-CTL-DCS-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-OPS-HIST-001,CHEM-CTL-DCS-001,connects-to,false,OPC UA,high,
+          </Text>
+        </Shape>
+        <Shape ID="97" Type="Shape" NameU="conn_CHEM-OPS-HIST-001_CHEM-CTL-DCS-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-OPS-HIST-001,CHEM-CTL-DCS-002,connects-to,false,OPC UA,high,
+          </Text>
+        </Shape>
+        <Shape ID="98" Type="Shape" NameU="conn_CHEM-FLD-TT-001_CHEM-CTL-DCS-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-TT-001,CHEM-CTL-DCS-001,monitors,false,HART,low,
+          </Text>
+        </Shape>
+        <Shape ID="99" Type="Shape" NameU="conn_CHEM-FLD-PT-001_CHEM-CTL-DCS-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-PT-001,CHEM-CTL-DCS-001,monitors,false,HART,low,
+          </Text>
+        </Shape>
+        <Shape ID="100" Type="Shape" NameU="conn_CHEM-FLD-LT-001_CHEM-CTL-DCS-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-LT-001,CHEM-CTL-DCS-001,monitors,false,HART,low,
+          </Text>
+        </Shape>
+        <Shape ID="101" Type="Shape" NameU="conn_CHEM-FLD-IO-001_CHEM-CTL-DCS-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-IO-001,CHEM-CTL-DCS-001,connects-to,false,PROFIBUS,medium,
+          </Text>
+        </Shape>
+        <Shape ID="102" Type="Shape" NameU="conn_CHEM-FLD-IO-001_CHEM-CTL-DCS-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-IO-001,CHEM-CTL-DCS-002,connects-to,false,PROFIBUS,medium,
+          </Text>
+        </Shape>
+        <Shape ID="103" Type="Shape" NameU="conn_CHEM-CTL-DCS-001_CHEM-FLD-FCV-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-CTL-DCS-001,CHEM-FLD-FCV-001,actuates,false,HART,low,
+          </Text>
+        </Shape>
+        <Shape ID="104" Type="Shape" NameU="conn_CHEM-CTL-DCS-001_CHEM-FLD-PUMP-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-CTL-DCS-001,CHEM-FLD-PUMP-001,controls,false,PROFINET,low,
+          </Text>
+        </Shape>
+        <Shape ID="105" Type="Shape" NameU="conn_CHEM-CTL-DCS-001_CHEM-FLD-VFD-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-CTL-DCS-001,CHEM-FLD-VFD-001,actuates,false,PROFINET,low,
+          </Text>
+        </Shape>
+        <Shape ID="106" Type="Shape" NameU="conn_CHEM-FLD-TT-002_CHEM-CTL-DCS-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-TT-002,CHEM-CTL-DCS-002,monitors,false,HART,low,
+          </Text>
+        </Shape>
+        <Shape ID="107" Type="Shape" NameU="conn_CHEM-FLD-PT-002_CHEM-CTL-DCS-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-PT-002,CHEM-CTL-DCS-002,monitors,false,HART,low,
+          </Text>
+        </Shape>
+        <Shape ID="108" Type="Shape" NameU="conn_CHEM-FLD-FT-001_CHEM-CTL-DCS-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-FT-001,CHEM-CTL-DCS-002,monitors,false,HART,low,
+          </Text>
+        </Shape>
+        <Shape ID="109" Type="Shape" NameU="conn_CHEM-CTL-DCS-002_CHEM-FLD-FCV-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-CTL-DCS-002,CHEM-FLD-FCV-002,actuates,false,HART,low,
+          </Text>
+        </Shape>
+        <Shape ID="110" Type="Shape" NameU="conn_CHEM-CTL-DCS-002_CHEM-FLD-FCV-003">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-CTL-DCS-002,CHEM-FLD-FCV-003,actuates,false,HART,low,
+          </Text>
+        </Shape>
+        <Shape ID="111" Type="Shape" NameU="conn_CHEM-FLD-LT-002_CHEM-CTL-DCS-003">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-LT-002,CHEM-CTL-DCS-003,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="112" Type="Shape" NameU="conn_CHEM-FLD-SENSOR-001_CHEM-CTL-DCS-003">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-SENSOR-001,CHEM-CTL-DCS-003,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="113" Type="Shape" NameU="conn_CHEM-CTL-DCS-003_CHEM-FLD-VALVE-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-CTL-DCS-003,CHEM-FLD-VALVE-001,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="114" Type="Shape" NameU="conn_CHEM-CTL-DCS-003_CHEM-FLD-PUMP-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-CTL-DCS-003,CHEM-FLD-PUMP-002,controls,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="115" Type="Shape" NameU="conn_CHEM-CTL-DCS-001_CHEM-SIS-GW-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-CTL-DCS-001,CHEM-SIS-GW-001,connects-to,true,PROFIsafe,medium,
+          </Text>
+        </Shape>
+        <Shape ID="116" Type="Shape" NameU="conn_CHEM-SIS-GW-001_CHEM-SIS-LS-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-SIS-GW-001,CHEM-SIS-LS-001,connects-to,true,PROFIsafe,medium,
+          </Text>
+        </Shape>
+        <Shape ID="117" Type="Shape" NameU="conn_CHEM-SIS-PT-001_CHEM-SIS-LS-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-SIS-PT-001,CHEM-SIS-LS-001,monitors,false,PROFIsafe,low,
+          </Text>
+        </Shape>
+        <Shape ID="118" Type="Shape" NameU="conn_CHEM-SIS-TT-001_CHEM-SIS-LS-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-SIS-TT-001,CHEM-SIS-LS-001,monitors,false,PROFIsafe,low,
+          </Text>
+        </Shape>
+        <Shape ID="119" Type="Shape" NameU="conn_CHEM-SIS-ENG-001_CHEM-SIS-LS-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-SIS-ENG-001,CHEM-SIS-LS-001,programs / operates,false,PROFIsafe,medium,
+          </Text>
+        </Shape>
+        <Shape ID="120" Type="Shape" NameU="conn_CHEM-SIS-LS-001_CHEM-SIS-SOV-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-SIS-LS-001,CHEM-SIS-SOV-001,actuates,false,PROFIsafe,low,
+          </Text>
+        </Shape>
+        <Shape ID="121" Type="Shape" NameU="conn_CHEM-SIS-LS-001_CHEM-SIS-SOV-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-SIS-LS-001,CHEM-SIS-SOV-002,actuates,false,PROFIsafe,low,
+          </Text>
+        </Shape>
+        <Shape ID="122" Type="Shape" NameU="conn_CHEM-FLD-FCV-001_CHEM-PRO-REACTOR-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-FCV-001,CHEM-PRO-REACTOR-001,actuates,false,HART,low,
+          </Text>
+        </Shape>
+        <Shape ID="123" Type="Shape" NameU="conn_CHEM-FLD-PUMP-001_CHEM-PRO-REACTOR-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-PUMP-001,CHEM-PRO-REACTOR-001,actuates,false,PROFINET,low,
+          </Text>
+        </Shape>
+        <Shape ID="124" Type="Shape" NameU="conn_CHEM-FLD-PUMP-001_CHEM-PRO-PIPE-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-PUMP-001,CHEM-PRO-PIPE-001,actuates,false,PROFINET,low,
+          </Text>
+        </Shape>
+        <Shape ID="125" Type="Shape" NameU="conn_CHEM-FLD-PUMP-001_CHEM-PRO-TANK-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-PUMP-001,CHEM-PRO-TANK-002,actuates,false,PROFINET,low,
+          </Text>
+        </Shape>
+        <Shape ID="126" Type="Shape" NameU="conn_CHEM-FLD-LT-002_CHEM-PRO-TANK-002">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-LT-002,CHEM-PRO-TANK-002,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="127" Type="Shape" NameU="conn_CHEM-PRO-PIPE-001_CHEM-PRO-COLUMN-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-PRO-PIPE-001,CHEM-PRO-COLUMN-001,connects-to,false,Piping,high,
+          </Text>
+        </Shape>
+        <Shape ID="128" Type="Shape" NameU="conn_CHEM-FLD-FCV-002_CHEM-PRO-COLUMN-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-FCV-002,CHEM-PRO-COLUMN-001,actuates,false,HART,low,
+          </Text>
+        </Shape>
+        <Shape ID="129" Type="Shape" NameU="conn_CHEM-FLD-FCV-003_CHEM-PRO-HX-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-FCV-003,CHEM-PRO-HX-001,actuates,false,HART,low,
+          </Text>
+        </Shape>
+        <Shape ID="130" Type="Shape" NameU="conn_CHEM-PRO-HX-001_CHEM-PRO-COLUMN-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-PRO-HX-001,CHEM-PRO-COLUMN-001,actuates,false,Piping,high,
+          </Text>
+        </Shape>
+        <Shape ID="131" Type="Shape" NameU="conn_CHEM-FLD-VALVE-001_CHEM-PRO-HX-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-VALVE-001,CHEM-PRO-HX-001,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="132" Type="Shape" NameU="conn_CHEM-FLD-PUMP-002_CHEM-PRO-TANK-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-FLD-PUMP-002,CHEM-PRO-TANK-001,actuates,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="133" Type="Shape" NameU="conn_CHEM-SIS-SOV-001_CHEM-PRO-REACTOR-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-SIS-SOV-001,CHEM-PRO-REACTOR-001,actuates,false,PROFIsafe,low,
+          </Text>
+        </Shape>
+        <Shape ID="134" Type="Shape" NameU="conn_CHEM-SIS-SOV-002_CHEM-PRO-REACTOR-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-SIS-SOV-002,CHEM-PRO-REACTOR-001,actuates,false,PROFIsafe,low,
+          </Text>
+        </Shape>
+        <Shape ID="135" Type="Shape" NameU="conn_CHEM-CTL-DCS-003_CHEM-REM-RTU-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-CTL-DCS-003,CHEM-REM-RTU-001,controls,true,DNP3,low,;transport=Leased line + VPN
+          </Text>
+        </Shape>
+        <Shape ID="136" Type="Shape" NameU="conn_CHEM-REM-SW-001_CHEM-REM-RTU-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-REM-SW-001,CHEM-REM-RTU-001,connects-to,false,DNP3,low,
+          </Text>
+        </Shape>
+        <Shape ID="137" Type="Shape" NameU="conn_CHEM-REM-LT-001_CHEM-REM-RTU-001">
+          <X>0</X>
+          <Y>0</Y>
+          <Width>0</Width>
+          <Height>0</Height>
+          <Text>
+            relationship,CHEM-REM-LT-001,CHEM-REM-RTU-001,monitors,false,Modbus TCP,low,
+          </Text>
+        </Shape>
+        <Shape ID="138" Type="Shape" NameU="conn_CHEM-REM-RTU-001_CHEM-REM-PUMP-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
@@ -548,7 +1250,7 @@
             relationship,CHEM-REM-RTU-001,CHEM-REM-PUMP-001,actuates,false,Modbus TCP,low,
           </Text>
         </Shape>
-        <Shape ID="61" Type="Shape" NameU="conn_CHEM-REM-RTU-001_CHEM-REM-VALVE-001">
+        <Shape ID="139" Type="Shape" NameU="conn_CHEM-REM-RTU-001_CHEM-REM-VALVE-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
@@ -557,31 +1259,22 @@
             relationship,CHEM-REM-RTU-001,CHEM-REM-VALVE-001,actuates,false,Modbus TCP,low,
           </Text>
         </Shape>
-        <Shape ID="62" Type="Shape" NameU="conn_CHEM-DCS-CTRL-003_CHEM-FLD-PUMP-001">
+        <Shape ID="140" Type="Shape" NameU="conn_CHEM-REM-PUMP-001_CHEM-REM-TANK-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-CTRL-003,CHEM-FLD-PUMP-001,actuates,false,Modbus TCP,low,
+            relationship,CHEM-REM-PUMP-001,CHEM-REM-TANK-001,actuates,false,Modbus TCP,low,
           </Text>
         </Shape>
-        <Shape ID="63" Type="Shape" NameU="conn_CHEM-DCS-CTRL-003_CHEM-FLD-VALVE-001">
+        <Shape ID="141" Type="Shape" NameU="conn_CHEM-REM-VALVE-001_CHEM-REM-TANK-001">
           <X>0</X>
           <Y>0</Y>
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,CHEM-DCS-CTRL-003,CHEM-FLD-VALVE-001,actuates,false,Modbus TCP,low,
-          </Text>
-        </Shape>
-        <Shape ID="64" Type="Shape" NameU="conn_CHEM-DCS-CTRL-003_CHEM-FLD-SENSOR-001">
-          <X>0</X>
-          <Y>0</Y>
-          <Width>0</Width>
-          <Height>0</Height>
-          <Text>
-            relationship,CHEM-DCS-CTRL-003,CHEM-FLD-SENSOR-001,monitors,false,Modbus TCP,low,
+            relationship,CHEM-REM-VALVE-001,CHEM-REM-TANK-001,actuates,false,Modbus TCP,low,
           </Text>
         </Shape>
       </Shapes>

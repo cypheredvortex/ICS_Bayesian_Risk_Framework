@@ -10,6 +10,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import logging
 import os
 import re
 import tempfile
@@ -25,6 +26,8 @@ try:
     import vsdx
 except ImportError:  # pragma: no cover
     vsdx = None
+
+logger = logging.getLogger(__name__)
 
 from backend.topology import (
     DEFAULT_REL_TYPE,
@@ -92,8 +95,12 @@ _ASSET_FIELD_MAP = {
     "vendor": "vendor",
     "model": "model",
     "zone": "zone",
+    "purdue_level": "purdue_level",
+    "purdue": "purdue_level",
     "network": "network",
     "ip": "ip",
+    "description": "description",
+    "desc": "description",
     "protocols": "protocols",
     "metadata": "metadata",
     # Cybersecurity attributes (must reach normalize_asset for strict
@@ -127,6 +134,7 @@ _REL_FIELD_MAP = {
     "trust_level": "trust_level",
     "mitre": "mitre",
     "mitre_technique": "mitre_technique",
+    "transport": "transport",
     "metadata": "metadata",
 }
 
@@ -361,6 +369,10 @@ def _parse_graphml_bytes(content: bytes) -> dict[str, Any]:
     relationships: list[Any] = []
     _PROMOTED_NODE_ATTRS = {
         "label", "name", "kind", "type", "vendor", "model", "zone", "ip",
+        "purdue_level", "purdue",
+        # Display metadata: preserved so every format yields the same
+        # attribute coverage as the canonical JSON.
+        "description",
         # Security attributes: promote so they reach normalize_asset's strict
         # validation instead of being silently buried in metadata.
         "cvss_type", "cvss", "exposed", "patched",
@@ -371,12 +383,21 @@ def _parse_graphml_bytes(content: bytes) -> dict[str, Any]:
         raw: dict[str, Any] = {
             "id": node,
             "name": data.get("label") or data.get("name") or node,
-            "kind": data.get("kind") or data.get("type"),
+            # `kind` and `type` are distinct concepts: kind is the model
+            # category (device/human/physical) while type is the declared
+            # device type ("Firewall", "DCS Controller").  Keep both so the
+            # canonical `type` attribute survives the round-trip instead of
+            # being consumed by kind inference.
+            "kind": data.get("kind"),
+            "type": data.get("type"),
             "vendor": data.get("vendor"),
             "model": data.get("model"),
             "zone": data.get("zone"),
+            "purdue_level": data.get("purdue_level", data.get("purdue")),
             "ip": data.get("ip"),
         }
+        if data.get("description"):
+            raw["description"] = data.get("description")
         # Promote security attributes so they reach normalize_asset's strict
         # validation instead of being silently buried in metadata.  Only keys
         # actually present in the file are set (a bare None would be rejected
@@ -398,6 +419,8 @@ def _parse_graphml_bytes(content: bytes) -> dict[str, Any]:
         for key, value in promoted.items():
             if value is not None:
                 raw[key] = value
+        if raw.get("purdue_level") is None:
+            raw.pop("purdue_level", None)
         raw["metadata"] = {
             k: v for k, v in data.items() if k not in _PROMOTED_NODE_ATTRS
         }
@@ -514,6 +537,7 @@ def _parse_aml_bytes(content: bytes) -> dict[str, Any]:
             source = None
             target = None
             rel_type = DEFAULT_REL_TYPE
+            firewalled = False
             metadata: dict[str, Any] = {}
             for child in element:
                 child_tag = strip_ns(child.tag)
@@ -527,8 +551,20 @@ def _parse_aml_bytes(content: bytes) -> dict[str, Any]:
                     metadata["protocol"] = _normalize_text(child.text)
                 elif child_tag in {"Trust_level", "Trust"}:
                     metadata["trust_level"] = _normalize_text(child.text)
+                elif child_tag in {"Firewalled", "Protected"}:
+                    firewalled = _normalize_text(child.text).lower() in {"1", "true", "yes", "y", "on"}
+                elif child_tag == "Transport":
+                    transport = _normalize_text(child.text)
+                    if transport:
+                        metadata["transport"] = transport
             if source and target:
-                relationships.append({"source": source, "target": target, "type": rel_type, "metadata": metadata})
+                relationships.append({
+                    "source": source,
+                    "target": target,
+                    "type": rel_type,
+                    "firewalled": firewalled,
+                    "metadata": metadata,
+                })
 
     if not assets:
         try:
@@ -538,11 +574,162 @@ def _parse_aml_bytes(content: bytes) -> dict[str, Any]:
     return {"assets": assets, "relationships": relationships}
 
 
+def _parse_shape_annotation(text: str) -> tuple[str, dict[str, Any]] | None:
+    """Parse a Visio shape-text annotation into ``(record_kind, raw)``.
+
+    The annotation convention is documented in docs/topology_formats.md:
+    an asset shape carries ``asset,<id>,<kind>,<kind-specific fields>`` and a
+    relationship shape carries ``relationship,<src>,<tgt>,<type>,...``.
+
+    The extended convention appends a ``;``-separated ``key=value`` tail so
+    .vdx/.vsdx files preserve the same attribute coverage as every other
+    topology format:
+
+        asset,<id>,device,<cvss>,<exposed>,<patched>,<severity>;\
+        name=...;zone=...;type=...;desc=...;purdue=...;vendor=...
+
+    The tail is parsed by splitting on ``;`` first, so values may safely
+    contain commas (e.g. a description).  Legacy files without a tail parse
+    exactly as before (fully backward compatible).
+
+    Returns ``("asset"|"relationship", raw_dict)`` or ``None`` when the
+    text does not follow the convention.
+    """
+    text = _normalize_text(text)
+    lowered = text.lower()
+    if lowered.startswith("relationship,"):
+        record_kind = "relationship"
+    elif lowered.startswith("asset,"):
+        record_kind = "asset"
+    else:
+        return None
+
+    # Split the tail off first: positional fields stay comma-delimited while
+    # the extended key=value tail is semicolon-delimited (so a description
+    # containing commas cannot shift the positional field indexes).
+    body = text[len(record_kind) + 1 :]
+    head, _, tail = body.partition(";")
+    parts = [part.strip() for part in head.split(",")]
+    extra: dict[str, str] = {}
+    if tail:
+        for chunk in tail.split(";"):
+            if "=" in chunk:
+                key, _, value = chunk.partition("=")
+                extra[key.strip().lower()] = value.strip()
+
+    if record_kind == "relationship":
+        rel = {
+            "source": parts[0] if len(parts) > 0 else None,
+            "target": parts[1] if len(parts) > 1 else None,
+            "type": parts[2] if len(parts) > 2 else DEFAULT_REL_TYPE,
+            "firewalled": parts[3].lower() in {"1", "true", "yes"} if len(parts) > 3 else False,
+            "protocol": parts[4] if len(parts) > 4 else None,
+            "trust_level": parts[5] if len(parts) > 5 else None,
+            "mitre_technique": parts[6] if len(parts) > 6 else None,
+        }
+        # Transport (e.g. "Leased line + VPN") rides in the same key=value
+        # tail as the asset metadata, keeping remote conduits explicit.
+        if extra.get("transport"):
+            rel["transport"] = extra["transport"]
+        return record_kind, rel
+
+    raw = {"id": parts[0] if len(parts) > 0 else None, "name": parts[0] if len(parts) > 0 else None}
+    asset_kind = parts[1].lower() if len(parts) > 1 else ""
+    if asset_kind in VALID_KINDS:
+        raw["kind"] = asset_kind
+    elif asset_kind:
+        raw["type"] = asset_kind
+
+    # Legacy annotation compatibility: the very first .vsdx/.vdx samples
+    # used ``asset,<id>,<kind>,<zone>`` (a zone name in the CVSS position).
+    # A device/physical security field must be numeric, so when the third
+    # field is not a number we interpret it as the zone instead of failing
+    # validation.  (Human assets are exempt: their third field is a role
+    # like "operator", which is legitimately non-numeric.)
+    def _is_number(value: str) -> bool:
+        try:
+            float(value)
+            return True
+        except (TypeError, ValueError):
+            return False
+
+    legacy_zone = (
+        parts[2]
+        if asset_kind in ("device", "physical")
+        and len(parts) > 2
+        and not _is_number(parts[2])
+        else None
+    )
+    if legacy_zone:
+        # Silent acceptance would hide typos in modern files; log it so a
+        # genuinely malformed line is still diagnosable.  Modern files carry
+        # the zone in the `;zone=` tail, so this path only fires for the
+        # legacy ``asset,<id>,<kind>,<zone>`` convention.
+        logger.warning(
+            "Visio annotation '%s' has a non-numeric security field "
+            "(%r) interpreted as a legacy zone.",
+            raw.get("id"),
+            legacy_zone,
+        )
+        raw["zone"] = legacy_zone
+
+    # Fields after the kind are interpreted per asset kind so the Visio
+    # annotation convention (see tests/generate_vsdx.py) round-trips the
+    # same security attributes as JSON/YAML/CSV.  The extended tail always
+    # wins over these positional values (see below).
+    if asset_kind == "human":
+        if len(parts) > 2:
+            raw["role"] = parts[2]
+        if len(parts) > 3:
+            raw["awareness"] = parts[3]
+        if len(parts) > 4:
+            raw["privilege"] = parts[4]
+        if len(parts) > 5:
+            raw["consequence_severity"] = parts[5]
+    elif asset_kind == "physical":
+        if not legacy_zone and len(parts) > 2:
+            raw["p_base_override"] = parts[2]
+        if len(parts) > 3:
+            raw["consequence_severity"] = parts[3]
+    else:  # device (or legacy shapes without a valid kind token)
+        if not legacy_zone and len(parts) > 2:
+            raw["cvss_type"] = parts[2]
+        if not legacy_zone and len(parts) > 3:
+            raw["exposed"] = parts[3]
+        if not legacy_zone and len(parts) > 4:
+            raw["patched"] = parts[4]
+        if not legacy_zone and len(parts) > 5:
+            raw["consequence_severity"] = parts[5]
+
+    # Extended tail: display/architectural metadata that every other format
+    # carries.  A tail `type` is the declared device type (distinct from
+    # `kind`); the legacy positional fallback above only sets `type` for a
+    # non-kind token, so the tail wins when both are present.
+    if extra.get("name"):
+        raw["name"] = extra["name"]
+    if extra.get("zone"):
+        raw["zone"] = extra["zone"]
+    if extra.get("type"):
+        raw["type"] = extra["type"]
+    if extra.get("desc") or extra.get("description"):
+        raw["description"] = extra.get("desc") or extra["description"]
+    if extra.get("purdue") or extra.get("purdue_level"):
+        raw["purdue_level"] = extra.get("purdue") or extra["purdue_level"]
+    if extra.get("vendor"):
+        raw["vendor"] = extra["vendor"]
+    if extra.get("model"):
+        raw["model"] = extra["model"]
+    if extra.get("ip"):
+        raw["ip"] = extra["ip"]
+    return record_kind, raw
+
+
 def _parse_vdx_bytes(content: bytes) -> dict[str, Any]:
     """Parse Visio 2003-2010 XML (.vdx) format.
 
     .vdx is an XML-based format (not ZIP-based like .vsdx).  We extract
-    shape text that follows the 'asset,...' or 'relationship,...' convention.
+    shape text that follows the 'asset,...' or 'relationship,...' convention
+    (see ``_parse_shape_annotation``).
     """
     text = content.decode("utf-8-sig", errors="replace")
     root = ET.fromstring(text)
@@ -571,55 +758,16 @@ def _parse_vdx_bytes(content: bytes) -> dict[str, Any]:
             continue
 
         # Check for asset/relationship markers
-        if shape_text.lower().startswith("relationship,"):
-            parts = [part.strip() for part in shape_text.split(",")]
-            rel = {
-                "source": parts[1] if len(parts) > 1 else None,
-                "target": parts[2] if len(parts) > 2 else None,
-                "type": parts[3] if len(parts) > 3 else DEFAULT_REL_TYPE,
-                "firewalled": parts[4].lower() in {"1", "true", "yes"} if len(parts) > 4 else False,
-                "protocol": parts[5] if len(parts) > 5 else None,
-                "trust_level": parts[6] if len(parts) > 6 else None,
-                "mitre_technique": parts[7] if len(parts) > 7 else None,
-            }
+        parsed = _parse_shape_annotation(shape_text)
+        if parsed is None:
+            pass  # fall through to custom-property extraction below
+        elif parsed[0] == "relationship":
+            rel = parsed[1]
             if rel["source"] and rel["target"]:
                 relationships.append(rel)
             continue
-
-        if shape_text.lower().startswith("asset,"):
-            parts = [part.strip() for part in shape_text.split(",")]
-            raw = {"id": parts[1] if len(parts) > 1 else None, "name": parts[1] if len(parts) > 1 else None}
-            asset_kind = parts[2].lower() if len(parts) > 2 else ""
-            if asset_kind in VALID_KINDS:
-                raw["kind"] = asset_kind
-            elif asset_kind:
-                raw["type"] = asset_kind
-            # Fields after the kind are interpreted per asset kind so the
-            # Visio annotation convention (see tests/generate_vsdx.py)
-            # round-trips the same security attributes as JSON/YAML/CSV.
-            if asset_kind == "human":
-                if len(parts) > 3:
-                    raw["role"] = parts[3]
-                if len(parts) > 4:
-                    raw["awareness"] = parts[4]
-                if len(parts) > 5:
-                    raw["privilege"] = parts[5]
-                if len(parts) > 6:
-                    raw["consequence_severity"] = parts[6]
-            elif asset_kind == "physical":
-                if len(parts) > 3:
-                    raw["p_base_override"] = parts[3]
-                if len(parts) > 4:
-                    raw["consequence_severity"] = parts[4]
-            else:  # device (or legacy shapes without a valid kind token)
-                if len(parts) > 3:
-                    raw["cvss_type"] = parts[3]
-                if len(parts) > 4:
-                    raw["exposed"] = parts[4]
-                if len(parts) > 5:
-                    raw["patched"] = parts[5]
-                if len(parts) > 6:
-                    raw["consequence_severity"] = parts[6]
+        else:
+            raw = parsed[1]
             asset_id = raw.get("id")
             if asset_id:
                 assets[asset_id] = raw
@@ -695,52 +843,17 @@ def _parse_vsdx_bytes(content: bytes, filename: str) -> dict[str, Any]:
                             props.update(raw_props)
 
                 if text:
-                    if text.lower().startswith("relationship,"):
-                        parts = [part.strip() for part in text.split(",")]
-                        rel = {
-                            "source": parts[1] if len(parts) > 1 else None,
-                            "target": parts[2] if len(parts) > 2 else None,
-                            "type": parts[3] if len(parts) > 3 else DEFAULT_REL_TYPE,
-                            "firewalled": parts[4].lower() in {"1", "true", "yes"} if len(parts) > 4 else False,
-                            "protocol": parts[5] if len(parts) > 5 else None,
-                            "trust_level": parts[6] if len(parts) > 6 else None,
-                            "mitre_technique": parts[7] if len(parts) > 7 else None,
-                        }
-                        if rel["source"] and rel["target"]:
-                            relationships.append(rel)
-                        continue
-
-                    if text.lower().startswith("asset,"):
-                        parts = [part.strip() for part in text.split(",")]
-                        raw = {"id": parts[1] if len(parts) > 1 else None, "name": parts[1] if len(parts) > 1 else None}
-                        asset_kind = parts[2].lower() if len(parts) > 2 else ""
-                        if asset_kind in VALID_KINDS:
-                            raw["kind"] = asset_kind
-                        elif asset_kind:
-                            raw["type"] = asset_kind
-                        if asset_kind == "human":
-                            if len(parts) > 3:
-                                raw["role"] = parts[3]
-                            if len(parts) > 4:
-                                raw["awareness"] = parts[4]
-                            if len(parts) > 5:
-                                raw["privilege"] = parts[5]
-                            if len(parts) > 6:
-                                raw["consequence_severity"] = parts[6]
-                        elif asset_kind == "physical":
-                            if len(parts) > 3:
-                                raw["p_base_override"] = parts[3]
-                            if len(parts) > 4:
-                                raw["consequence_severity"] = parts[4]
-                        else:  # device (or legacy shapes without a valid kind token)
-                            if len(parts) > 3:
-                                raw["cvss_type"] = parts[3]
-                            if len(parts) > 4:
-                                raw["exposed"] = parts[4]
-                            if len(parts) > 5:
-                                raw["patched"] = parts[5]
-                            if len(parts) > 6:
-                                raw["consequence_severity"] = parts[6]
+                    # The extended annotation (see _parse_shape_annotation)
+                    # carries zone/type/description/purdue so .vsdx files
+                    # preserve the same attribute coverage as every other
+                    # topology format.
+                    parsed = _parse_shape_annotation(text)
+                    if parsed is not None:
+                        record_kind, raw = parsed
+                        if record_kind == "relationship":
+                            if raw.get("source") and raw.get("target"):
+                                relationships.append(raw)
+                            continue
                         asset_id = raw.get("id")
                         if asset_id:
                             assets[asset_id] = raw
@@ -776,26 +889,17 @@ def _parse_vsdx_bytes(content: bytes, filename: str) -> dict[str, Any]:
                         except Exception:
                             continue
                         for m in re.finditer(r"(asset|relationship),([^<\r\n]+)", xml_text, flags=re.IGNORECASE):
-                            parts = [p.strip() for p in m.group(2).split(',')]
-                            if m.group(1).lower() == 'asset':
-                                aid = parts[0] if parts else None
+                            parsed = _parse_shape_annotation(f"{m.group(1)},{m.group(2)}")
+                            if parsed is None:
+                                continue
+                            record_kind, raw = parsed
+                            if record_kind == 'asset':
+                                aid = raw.get("id")
                                 if aid:
-                                    raw_asset = {"id": aid, "name": aid}
-                                    if len(parts) > 1:
-                                        raw_asset["type"] = parts[1]
-                                    assets[aid] = raw_asset
+                                    assets[aid] = raw
                             else:  # relationship
-                                src = parts[0] if len(parts) > 0 else None
-                                tgt = parts[1] if len(parts) > 1 else None
-                                if src and tgt:
-                                    rel_type = parts[2] if len(parts) > 2 else DEFAULT_REL_TYPE
-                                    firewalled = parts[3].lower() in {"1", "true", "yes"} if len(parts) > 3 else False
-                                    relationships.append({
-                                        "source": src,
-                                        "target": tgt,
-                                        "type": rel_type,
-                                        "firewalled": firewalled,
-                                    })
+                                if raw.get("source") and raw.get("target"):
+                                    relationships.append(raw)
             except Exception:
                 pass
 

@@ -1,29 +1,29 @@
-source,target,type,protocol,direction,trust
-PIPE-CTR-FW-001,PIPE-CTR-SW-001,connects-to,HTTP,bidirectional,low
-PIPE-CTR-SW-001,PIPE-CTR-SCADA-001,connects-to,OPC UA,bidirectional,high
-PIPE-CTR-SW-001,PIPE-CTR-HIST-001,connects-to,OPC UA,bidirectional,high
-PIPE-CTR-SW-001,PIPE-CTR-HMI-001,connects-to,OPC UA,bidirectional,high
-PIPE-CTR-SW-001,PIPE-CTR-EWS-001,connects-to,SSH,bidirectional,medium
-PIPE-HUM-DSP-001,PIPE-CTR-HMI-001,programs / operates,HMI,bidirectional,high
-PIPE-CTR-SCADA-001,PIPE-RTU-001,controls,DNP3,bidirectional,medium
-PIPE-CTR-SCADA-001,PIPE-RTU-002,controls,DNP3,bidirectional,medium
-PIPE-CTR-SCADA-001,PIPE-RTU-003,controls,DNP3,bidirectional,medium
-PIPE-CTR-SCADA-001,PIPE-RTU-004,controls,DNP3,bidirectional,medium
-PIPE-RTU-001,PIPE-SW-001,connects-to,Modbus TCP,bidirectional,low
-PIPE-RTU-002,PIPE-SW-002,connects-to,Modbus TCP,bidirectional,low
-PIPE-SW-001,PIPE-PUMP-001,actuates,Modbus TCP,unidirectional,low
-PIPE-SW-001,PIPE-PUMP-002,actuates,Modbus TCP,unidirectional,low
-PIPE-SW-001,PIPE-VFD-001,connects-to,Modbus TCP,bidirectional,low
-PIPE-SW-001,PIPE-VALVE-001,actuates,Modbus TCP,unidirectional,low
-PIPE-SW-001,PIPE-SENSOR-001,monitors,Modbus TCP,bidirectional,low
-PIPE-SW-001,PIPE-SENSOR-002,monitors,Modbus TCP,bidirectional,low
-PIPE-SW-001,PIPE-SENSOR-003,monitors,Modbus TCP,bidirectional,low
-PIPE-SW-002,PIPE-PUMP-003,actuates,Modbus TCP,unidirectional,low
-PIPE-SW-002,PIPE-VFD-002,connects-to,Modbus TCP,bidirectional,low
-PIPE-SW-002,PIPE-VALVE-002,actuates,Modbus TCP,unidirectional,low
-PIPE-SW-002,PIPE-SENSOR-004,monitors,Modbus TCP,bidirectional,low
-PIPE-SW-002,PIPE-SENSOR-005,monitors,Modbus TCP,bidirectional,low
-PIPE-RTU-003,PIPE-VALVE-003,actuates,Modbus TCP,unidirectional,low
-PIPE-RTU-003,PIPE-SENSOR-006,monitors,Modbus TCP,bidirectional,low
-PIPE-RTU-004,PIPE-SENSOR-007,monitors,Modbus TCP,bidirectional,low
-PIPE-RTU-004,PIPE-SENSOR-008,monitors,Modbus TCP,bidirectional,low
+source,target,type,protocol,direction,trust,firewalled,transport
+PIPE-CTR-FW-001,PIPE-CTR-SW-001,connects-to,HTTP,bidirectional,low,true,
+PIPE-CTR-SW-001,PIPE-CTR-SCADA-001,connects-to,OPC UA,bidirectional,high,,
+PIPE-CTR-SW-001,PIPE-CTR-HIST-001,connects-to,OPC UA,bidirectional,high,,
+PIPE-CTR-SW-001,PIPE-CTR-HMI-001,connects-to,OPC UA,bidirectional,high,,
+PIPE-CTR-SW-001,PIPE-CTR-EWS-001,connects-to,SSH,bidirectional,medium,,
+PIPE-HUM-DSP-001,PIPE-CTR-HMI-001,programs / operates,HMI,bidirectional,high,,
+PIPE-CTR-SCADA-001,PIPE-RTU-001,controls,DNP3,bidirectional,medium,,
+PIPE-CTR-SCADA-001,PIPE-RTU-002,controls,DNP3,bidirectional,medium,,
+PIPE-CTR-SCADA-001,PIPE-RTU-003,controls,DNP3,bidirectional,medium,,
+PIPE-CTR-SCADA-001,PIPE-RTU-004,controls,DNP3,bidirectional,medium,,
+PIPE-RTU-001,PIPE-SW-001,connects-to,Modbus TCP,bidirectional,low,,
+PIPE-RTU-002,PIPE-SW-002,connects-to,Modbus TCP,bidirectional,low,,
+PIPE-SW-001,PIPE-PUMP-001,actuates,Modbus TCP,unidirectional,low,,
+PIPE-SW-001,PIPE-PUMP-002,actuates,Modbus TCP,unidirectional,low,,
+PIPE-SW-001,PIPE-VFD-001,connects-to,Modbus TCP,bidirectional,low,,
+PIPE-SW-001,PIPE-VALVE-001,actuates,Modbus TCP,unidirectional,low,,
+PIPE-SW-001,PIPE-SENSOR-001,monitors,Modbus TCP,bidirectional,low,,
+PIPE-SW-001,PIPE-SENSOR-002,monitors,Modbus TCP,bidirectional,low,,
+PIPE-SW-001,PIPE-SENSOR-003,monitors,Modbus TCP,bidirectional,low,,
+PIPE-SW-002,PIPE-PUMP-003,actuates,Modbus TCP,unidirectional,low,,
+PIPE-SW-002,PIPE-VFD-002,connects-to,Modbus TCP,bidirectional,low,,
+PIPE-SW-002,PIPE-VALVE-002,actuates,Modbus TCP,unidirectional,low,,
+PIPE-SW-002,PIPE-SENSOR-004,monitors,Modbus TCP,bidirectional,low,,
+PIPE-SW-002,PIPE-SENSOR-005,monitors,Modbus TCP,bidirectional,low,,
+PIPE-RTU-003,PIPE-VALVE-003,actuates,Modbus TCP,unidirectional,low,,
+PIPE-RTU-003,PIPE-SENSOR-006,monitors,Modbus TCP,bidirectional,low,,
+PIPE-RTU-004,PIPE-SENSOR-007,monitors,Modbus TCP,bidirectional,low,,
+PIPE-RTU-004,PIPE-SENSOR-008,monitors,Modbus TCP,bidirectional,low,,

@@ -84,6 +84,7 @@ class AssetRepository(BaseRepository[Asset]):
         asset = Asset(project_id=project_id, asset_name=asset_name)
         asset.asset_type = asset_data.get("asset_type")
         asset.zone = asset_data.get("zone")
+        asset.purdue_level = asset_data.get("purdue_level")
         asset.vendor = asset_data.get("vendor")
         asset.firmware_version = asset_data.get("firmware_version")
         asset.exposure_level = asset_data.get("exposure_level")

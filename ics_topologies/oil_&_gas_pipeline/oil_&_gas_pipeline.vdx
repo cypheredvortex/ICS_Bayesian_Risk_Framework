@@ -14,7 +14,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-CTR-FW-001,device,7.5,true,true,8.0
+            asset,PIPE-CTR-FW-001,device,7.5,true,true,8.0;name=Control Center Firewall;zone=ControlCenter;type=Firewall;desc=Protects control center;purdue=4;vendor=Palo Alto;model=PA-5250
           </Text>
         </Shape>
         <Shape ID="2" Type="Shape" NameU="PIPE-CTR-SW-001">
@@ -23,7 +23,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-CTR-SW-001,device,6.5,false,true,8.0
+            asset,PIPE-CTR-SW-001,device,6.5,false,true,8.0;name=Control Center Switch;zone=ControlCenter;type=Network Switch;desc=Core switch;purdue=3;vendor=Cisco;model=Catalyst 9300
           </Text>
         </Shape>
         <Shape ID="3" Type="Shape" NameU="PIPE-CTR-SCADA-001">
@@ -32,7 +32,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-CTR-SCADA-001,device,8.5,false,false,10.0
+            asset,PIPE-CTR-SCADA-001,device,8.5,false,false,10.0;name=SCADA Server;zone=ControlCenter;type=SCADA;desc=Pipeline SCADA;purdue=3;vendor=Schneider;model=OASyS DNA
           </Text>
         </Shape>
         <Shape ID="4" Type="Shape" NameU="PIPE-CTR-HIST-001">
@@ -41,7 +41,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-CTR-HIST-001,device,7.0,false,false,6.0
+            asset,PIPE-CTR-HIST-001,device,7.0,false,false,6.0;name=Historian;zone=ControlCenter;type=Server;desc=Pipeline data historian;purdue=3;vendor=OSIsoft;model=PI Server
           </Text>
         </Shape>
         <Shape ID="5" Type="Shape" NameU="PIPE-CTR-HMI-001">
@@ -50,7 +50,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-CTR-HMI-001,device,7.5,false,false,7.0
+            asset,PIPE-CTR-HMI-001,device,7.5,false,false,7.0;name=HMI;zone=ControlCenter;type=HMI;desc=Operator console;purdue=3;vendor=Schneider;model=ClearSCADA
           </Text>
         </Shape>
         <Shape ID="6" Type="Shape" NameU="PIPE-CTR-EWS-001">
@@ -59,7 +59,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-CTR-EWS-001,device,7.8,false,true,5.0
+            asset,PIPE-CTR-EWS-001,device,7.8,false,true,5.0;name=Engineering Workstation;zone=ControlCenter;type=Workstation;desc=Configuration station;purdue=3;vendor=Dell;model=Precision 7920
           </Text>
         </Shape>
         <Shape ID="7" Type="Shape" NameU="PIPE-RTU-001">
@@ -68,7 +68,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-RTU-001,device,8.0,false,false,8.0
+            asset,PIPE-RTU-001,device,8.0,false,false,8.0;name=RTU (Station A);zone=RemoteSite;type=RTU;desc=RTU for pump station A;purdue=1;vendor=Control Microsystems;model=SCADAPack 470
           </Text>
         </Shape>
         <Shape ID="8" Type="Shape" NameU="PIPE-RTU-002">
@@ -77,7 +77,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-RTU-002,device,8.0,false,false,8.0
+            asset,PIPE-RTU-002,device,8.0,false,false,8.0;name=RTU (Station B);zone=RemoteSite;type=RTU;desc=RTU for pump station B;purdue=1;vendor=Control Microsystems;model=SCADAPack 470
           </Text>
         </Shape>
         <Shape ID="9" Type="Shape" NameU="PIPE-RTU-003">
@@ -86,7 +86,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-RTU-003,device,8.0,false,false,8.0
+            asset,PIPE-RTU-003,device,8.0,false,false,8.0;name=RTU (Valve Site);zone=RemoteSite;type=RTU;desc=RTU for block valve site;purdue=1;vendor=Control Microsystems;model=SCADAPack 470
           </Text>
         </Shape>
         <Shape ID="10" Type="Shape" NameU="PIPE-RTU-004">
@@ -95,7 +95,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-RTU-004,device,8.0,false,false,8.0
+            asset,PIPE-RTU-004,device,8.0,false,false,8.0;name=RTU (Metering);zone=RemoteSite;type=RTU;desc=RTU for custody transfer;purdue=1;vendor=Control Microsystems;model=SCADAPack 470
           </Text>
         </Shape>
         <Shape ID="11" Type="Shape" NameU="PIPE-SW-001">
@@ -104,7 +104,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-SW-001,device,6.5,false,false,7.0
+            asset,PIPE-SW-001,device,6.5,false,false,7.0;name=Station Switch A;zone=RemoteSite;type=Network Switch;desc=Industrial switch for station A;purdue=1;vendor=Siemens;model=SCALANCE XM408
           </Text>
         </Shape>
         <Shape ID="12" Type="Shape" NameU="PIPE-SW-002">
@@ -113,7 +113,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-SW-002,device,6.5,false,false,7.0
+            asset,PIPE-SW-002,device,6.5,false,false,7.0;name=Station Switch B;zone=RemoteSite;type=Network Switch;desc=Industrial switch for station B;purdue=1;vendor=Siemens;model=SCALANCE XM408
           </Text>
         </Shape>
         <Shape ID="13" Type="Shape" NameU="PIPE-PUMP-001">
@@ -122,7 +122,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-PUMP-001,physical,0.02,8.0
+            asset,PIPE-PUMP-001,physical,0.02,8.0;name=Main Pump A;zone=Field;type=Pump;desc=Centrifugal pump;purdue=1;vendor=Sulzer;model=Z6
           </Text>
         </Shape>
         <Shape ID="14" Type="Shape" NameU="PIPE-PUMP-002">
@@ -131,7 +131,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-PUMP-002,physical,0.02,8.0
+            asset,PIPE-PUMP-002,physical,0.02,8.0;name=Standby Pump A;zone=Field;type=Pump;desc=Standby pump;purdue=1;vendor=Sulzer;model=Z6
           </Text>
         </Shape>
         <Shape ID="15" Type="Shape" NameU="PIPE-VFD-001">
@@ -140,7 +140,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-VFD-001,device,7.5,false,false,7.0
+            asset,PIPE-VFD-001,device,7.5,false,false,7.0;name=VFD A;zone=Field;type=VFD;desc=Variable frequency drive for pump;purdue=1;vendor=ABB;model=ACS880
           </Text>
         </Shape>
         <Shape ID="16" Type="Shape" NameU="PIPE-VALVE-001">
@@ -149,7 +149,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-VALVE-001,physical,0.02,7.0
+            asset,PIPE-VALVE-001,physical,0.02,7.0;name=Suction Valve A;zone=Field;type=Valve;desc=Motor-operated valve;purdue=1;vendor=Emerson;model=Fisher V500
           </Text>
         </Shape>
         <Shape ID="17" Type="Shape" NameU="PIPE-SENSOR-001">
@@ -158,7 +158,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-SENSOR-001,physical,0.01,5.0
+            asset,PIPE-SENSOR-001,physical,0.01,5.0;name=Pressure Sensor A;zone=Field;type=Sensor;desc=Discharge pressure;purdue=1;vendor=Emerson;model=Rosemount 3051
           </Text>
         </Shape>
         <Shape ID="18" Type="Shape" NameU="PIPE-SENSOR-002">
@@ -167,7 +167,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-SENSOR-002,physical,0.01,6.0
+            asset,PIPE-SENSOR-002,physical,0.01,6.0;name=Flow Meter A;zone=Field;type=Sensor;desc=Ultrasonic flow meter;purdue=1;vendor=Emerson;model=Daniel 3410
           </Text>
         </Shape>
         <Shape ID="19" Type="Shape" NameU="PIPE-SENSOR-003">
@@ -176,7 +176,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-SENSOR-003,physical,0.01,4.0
+            asset,PIPE-SENSOR-003,physical,0.01,4.0;name=Temperature Sensor A;zone=Field;type=Sensor;desc=Product temperature;purdue=1;vendor=Emerson;model=Rosemount 214
           </Text>
         </Shape>
         <Shape ID="20" Type="Shape" NameU="PIPE-PUMP-003">
@@ -185,7 +185,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-PUMP-003,physical,0.02,8.0
+            asset,PIPE-PUMP-003,physical,0.02,8.0;name=Main Pump B;zone=Field;type=Pump;desc=Centrifugal pump;purdue=1;vendor=Sulzer;model=Z6
           </Text>
         </Shape>
         <Shape ID="21" Type="Shape" NameU="PIPE-VFD-002">
@@ -194,7 +194,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-VFD-002,device,7.5,false,false,7.0
+            asset,PIPE-VFD-002,device,7.5,false,false,7.0;name=VFD B;zone=Field;type=VFD;desc=VFD for pump B;purdue=1;vendor=ABB;model=ACS880
           </Text>
         </Shape>
         <Shape ID="22" Type="Shape" NameU="PIPE-VALVE-002">
@@ -203,7 +203,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-VALVE-002,physical,0.02,7.0
+            asset,PIPE-VALVE-002,physical,0.02,7.0;name=Discharge Valve B;zone=Field;type=Valve;desc=Motor-operated valve;purdue=1;vendor=Emerson;model=Fisher V500
           </Text>
         </Shape>
         <Shape ID="23" Type="Shape" NameU="PIPE-SENSOR-004">
@@ -212,7 +212,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-SENSOR-004,physical,0.01,5.0
+            asset,PIPE-SENSOR-004,physical,0.01,5.0;name=Pressure Sensor B;zone=Field;type=Sensor;desc=Discharge pressure;purdue=1;vendor=Emerson;model=Rosemount 3051
           </Text>
         </Shape>
         <Shape ID="24" Type="Shape" NameU="PIPE-SENSOR-005">
@@ -221,7 +221,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-SENSOR-005,physical,0.01,6.0
+            asset,PIPE-SENSOR-005,physical,0.01,6.0;name=Flow Meter B;zone=Field;type=Sensor;desc=Ultrasonic flow meter;purdue=1;vendor=Emerson;model=Daniel 3410
           </Text>
         </Shape>
         <Shape ID="25" Type="Shape" NameU="PIPE-VALVE-003">
@@ -230,7 +230,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-VALVE-003,physical,0.02,8.0
+            asset,PIPE-VALVE-003,physical,0.02,8.0;name=Block Valve;zone=Field;type=Valve;desc=Emergency block valve;purdue=1;vendor=Emerson;model=Fisher V500
           </Text>
         </Shape>
         <Shape ID="26" Type="Shape" NameU="PIPE-SENSOR-006">
@@ -239,7 +239,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-SENSOR-006,physical,0.01,5.0
+            asset,PIPE-SENSOR-006,physical,0.01,5.0;name=Pressure Sensor Valve;zone=Field;type=Sensor;desc=Pressure at valve site;purdue=1;vendor=Emerson;model=Rosemount 3051
           </Text>
         </Shape>
         <Shape ID="27" Type="Shape" NameU="PIPE-SENSOR-007">
@@ -248,7 +248,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-SENSOR-007,physical,0.01,6.0
+            asset,PIPE-SENSOR-007,physical,0.01,6.0;name=Custody Meter;zone=Field;type=Sensor;desc=Custody transfer meter;purdue=1;vendor=Emerson;model=Daniel 3410
           </Text>
         </Shape>
         <Shape ID="28" Type="Shape" NameU="PIPE-SENSOR-008">
@@ -257,7 +257,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-SENSOR-008,physical,0.01,5.0
+            asset,PIPE-SENSOR-008,physical,0.01,5.0;name=Density Meter;zone=Field;type=Sensor;desc=Product density;purdue=1;vendor=Emerson;model=Micro Motion
           </Text>
         </Shape>
         <Shape ID="29" Type="Shape" NameU="PIPE-HUM-DSP-001">
@@ -266,7 +266,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,PIPE-HUM-DSP-001,human,operator,0.45,standard,4.0
+            asset,PIPE-HUM-DSP-001,human,operator,0.45,standard,4.0;name=Pipeline Dispatcher;zone=ControlCenter;type=Dispatcher;desc=Dispatcher monitoring pipeline operations;purdue=3
           </Text>
         </Shape>
         <Shape ID="30" Type="Shape" NameU="conn_PIPE-CTR-FW-001_PIPE-CTR-SW-001">
@@ -275,7 +275,7 @@
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,PIPE-CTR-FW-001,PIPE-CTR-SW-001,connects-to,false,HTTP,low,
+            relationship,PIPE-CTR-FW-001,PIPE-CTR-SW-001,connects-to,true,HTTP,low,
           </Text>
         </Shape>
         <Shape ID="31" Type="Shape" NameU="conn_PIPE-CTR-SW-001_PIPE-CTR-SCADA-001">

@@ -6,14 +6,17 @@ metadata:
   created: '2026-08-09T11:43:32.591323'
 zones:
 - id: ControlCenter
-  name: Control Center
+  name: Control Center (L3)
   color: '#ff6b6b'
+  purdue_level: '3'
 - id: RemoteSite
-  name: Remote Sites
+  name: Remote Sites (L1)
   color: '#ffa94d'
+  purdue_level: '1'
 - id: Field
-  name: Field Instruments
+  name: Field Instruments (L1)
   color: '#20c997'
+  purdue_level: '1'
 assets:
 - id: PIPE-CTR-FW-001
   name: Control Center Firewall
@@ -28,6 +31,7 @@ assets:
   exposed: true
   patched: true
   consequence_severity: 8.0
+  purdue_level: '4'
 - id: PIPE-CTR-SW-001
   name: Control Center Switch
   type: Network Switch
@@ -41,6 +45,7 @@ assets:
   exposed: false
   patched: true
   consequence_severity: 8.0
+  purdue_level: '3'
 - id: PIPE-CTR-SCADA-001
   name: SCADA Server
   type: SCADA
@@ -54,6 +59,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 10.0
+  purdue_level: '3'
 - id: PIPE-CTR-HIST-001
   name: Historian
   type: Server
@@ -67,6 +73,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 6.0
+  purdue_level: '3'
 - id: PIPE-CTR-HMI-001
   name: HMI
   type: HMI
@@ -80,6 +87,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 7.0
+  purdue_level: '3'
 - id: PIPE-CTR-EWS-001
   name: Engineering Workstation
   type: Workstation
@@ -93,6 +101,7 @@ assets:
   exposed: false
   patched: true
   consequence_severity: 5.0
+  purdue_level: '3'
 - id: PIPE-RTU-001
   name: RTU (Station A)
   type: RTU
@@ -106,6 +115,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 8.0
+  purdue_level: '1'
 - id: PIPE-RTU-002
   name: RTU (Station B)
   type: RTU
@@ -119,6 +129,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 8.0
+  purdue_level: '1'
 - id: PIPE-RTU-003
   name: RTU (Valve Site)
   type: RTU
@@ -132,6 +143,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 8.0
+  purdue_level: '1'
 - id: PIPE-RTU-004
   name: RTU (Metering)
   type: RTU
@@ -145,6 +157,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 8.0
+  purdue_level: '1'
 - id: PIPE-SW-001
   name: Station Switch A
   type: Network Switch
@@ -158,6 +171,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 7.0
+  purdue_level: '1'
 - id: PIPE-SW-002
   name: Station Switch B
   type: Network Switch
@@ -171,6 +185,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 7.0
+  purdue_level: '1'
 - id: PIPE-PUMP-001
   name: Main Pump A
   type: Pump
@@ -182,6 +197,7 @@ assets:
   model: Z6
   p_base_override: 0.02
   consequence_severity: 8.0
+  purdue_level: '1'
 - id: PIPE-PUMP-002
   name: Standby Pump A
   type: Pump
@@ -193,6 +209,7 @@ assets:
   model: Z6
   p_base_override: 0.02
   consequence_severity: 8.0
+  purdue_level: '1'
 - id: PIPE-VFD-001
   name: VFD A
   type: VFD
@@ -206,6 +223,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 7.0
+  purdue_level: '1'
 - id: PIPE-VALVE-001
   name: Suction Valve A
   type: Valve
@@ -217,6 +235,7 @@ assets:
   model: Fisher V500
   p_base_override: 0.02
   consequence_severity: 7.0
+  purdue_level: '1'
 - id: PIPE-SENSOR-001
   name: Pressure Sensor A
   type: Sensor
@@ -228,6 +247,7 @@ assets:
   model: Rosemount 3051
   p_base_override: 0.01
   consequence_severity: 5.0
+  purdue_level: '1'
 - id: PIPE-SENSOR-002
   name: Flow Meter A
   type: Sensor
@@ -239,6 +259,7 @@ assets:
   model: Daniel 3410
   p_base_override: 0.01
   consequence_severity: 6.0
+  purdue_level: '1'
 - id: PIPE-SENSOR-003
   name: Temperature Sensor A
   type: Sensor
@@ -250,6 +271,7 @@ assets:
   model: Rosemount 214
   p_base_override: 0.01
   consequence_severity: 4.0
+  purdue_level: '1'
 - id: PIPE-PUMP-003
   name: Main Pump B
   type: Pump
@@ -261,6 +283,7 @@ assets:
   model: Z6
   p_base_override: 0.02
   consequence_severity: 8.0
+  purdue_level: '1'
 - id: PIPE-VFD-002
   name: VFD B
   type: VFD
@@ -274,6 +297,7 @@ assets:
   exposed: false
   patched: false
   consequence_severity: 7.0
+  purdue_level: '1'
 - id: PIPE-VALVE-002
   name: Discharge Valve B
   type: Valve
@@ -285,6 +309,7 @@ assets:
   model: Fisher V500
   p_base_override: 0.02
   consequence_severity: 7.0
+  purdue_level: '1'
 - id: PIPE-SENSOR-004
   name: Pressure Sensor B
   type: Sensor
@@ -296,6 +321,7 @@ assets:
   model: Rosemount 3051
   p_base_override: 0.01
   consequence_severity: 5.0
+  purdue_level: '1'
 - id: PIPE-SENSOR-005
   name: Flow Meter B
   type: Sensor
@@ -307,6 +333,7 @@ assets:
   model: Daniel 3410
   p_base_override: 0.01
   consequence_severity: 6.0
+  purdue_level: '1'
 - id: PIPE-VALVE-003
   name: Block Valve
   type: Valve
@@ -318,6 +345,7 @@ assets:
   model: Fisher V500
   p_base_override: 0.02
   consequence_severity: 8.0
+  purdue_level: '1'
 - id: PIPE-SENSOR-006
   name: Pressure Sensor Valve
   type: Sensor
@@ -329,6 +357,7 @@ assets:
   model: Rosemount 3051
   p_base_override: 0.01
   consequence_severity: 5.0
+  purdue_level: '1'
 - id: PIPE-SENSOR-007
   name: Custody Meter
   type: Sensor
@@ -340,6 +369,7 @@ assets:
   model: Daniel 3410
   p_base_override: 0.01
   consequence_severity: 6.0
+  purdue_level: '1'
 - id: PIPE-SENSOR-008
   name: Density Meter
   type: Sensor
@@ -351,6 +381,7 @@ assets:
   model: Micro Motion
   p_base_override: 0.01
   consequence_severity: 5.0
+  purdue_level: '1'
 - id: PIPE-HUM-DSP-001
   name: Pipeline Dispatcher
   type: Dispatcher
@@ -362,6 +393,7 @@ assets:
   awareness: 0.45
   privilege: standard
   consequence_severity: 4.0
+  purdue_level: '3'
 connections:
 - source: PIPE-CTR-FW-001
   target: PIPE-CTR-SW-001
@@ -369,6 +401,7 @@ connections:
   protocol: HTTP
   direction: bidirectional
   trust: low
+  firewalled: true
 - source: PIPE-CTR-SW-001
   target: PIPE-CTR-SCADA-001
   type: connects-to

@@ -1,4 +1,4 @@
-id,name,color
-ControlCenter,Control Center,#ff6b6b
-RemoteSite,Remote Sites,#ffa94d
-Field,Field Instruments,#20c997
+id,name,color,purdue_level
+ControlCenter,Control Center (L3),#ff6b6b,3
+RemoteSite,Remote Sites (L1),#ffa94d,1
+Field,Field Instruments (L1),#20c997,1

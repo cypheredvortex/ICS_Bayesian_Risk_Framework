@@ -1,23 +1,26 @@
 <?xml version='1.0' encoding='utf-8'?>
 <graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
-  <key id="d22" for="edge" attr.name="trust" attr.type="string" />
-  <key id="d21" for="edge" attr.name="direction" attr.type="string" />
-  <key id="d20" for="edge" attr.name="protocol" attr.type="string" />
-  <key id="d19" for="edge" attr.name="type" attr.type="string" />
-  <key id="d18" for="edge" attr.name="target" attr.type="string" />
-  <key id="d17" for="edge" attr.name="source" attr.type="string" />
-  <key id="d16" for="node" attr.name="privilege" attr.type="string" />
-  <key id="d15" for="node" attr.name="awareness" attr.type="double" />
-  <key id="d14" for="node" attr.name="role" attr.type="string" />
-  <key id="d13" for="node" attr.name="p_base_override" attr.type="double" />
-  <key id="d12" for="node" attr.name="consequence_severity" attr.type="double" />
-  <key id="d11" for="node" attr.name="patched" attr.type="boolean" />
-  <key id="d10" for="node" attr.name="exposed" attr.type="boolean" />
-  <key id="d9" for="node" attr.name="cvss_type" attr.type="double" />
-  <key id="d8" for="node" attr.name="model" attr.type="string" />
-  <key id="d7" for="node" attr.name="vendor" attr.type="string" />
-  <key id="d6" for="node" attr.name="criticality" attr.type="string" />
-  <key id="d5" for="node" attr.name="description" attr.type="string" />
+  <key id="d25" for="edge" attr.name="transport" attr.type="string" />
+  <key id="d24" for="edge" attr.name="firewalled" attr.type="boolean" />
+  <key id="d23" for="edge" attr.name="trust" attr.type="string" />
+  <key id="d22" for="edge" attr.name="direction" attr.type="string" />
+  <key id="d21" for="edge" attr.name="protocol" attr.type="string" />
+  <key id="d20" for="edge" attr.name="type" attr.type="string" />
+  <key id="d19" for="edge" attr.name="target" attr.type="string" />
+  <key id="d18" for="edge" attr.name="source" attr.type="string" />
+  <key id="d17" for="node" attr.name="privilege" attr.type="string" />
+  <key id="d16" for="node" attr.name="awareness" attr.type="double" />
+  <key id="d15" for="node" attr.name="role" attr.type="string" />
+  <key id="d14" for="node" attr.name="p_base_override" attr.type="double" />
+  <key id="d13" for="node" attr.name="consequence_severity" attr.type="double" />
+  <key id="d12" for="node" attr.name="patched" attr.type="boolean" />
+  <key id="d11" for="node" attr.name="exposed" attr.type="boolean" />
+  <key id="d10" for="node" attr.name="cvss_type" attr.type="double" />
+  <key id="d9" for="node" attr.name="model" attr.type="string" />
+  <key id="d8" for="node" attr.name="vendor" attr.type="string" />
+  <key id="d7" for="node" attr.name="criticality" attr.type="string" />
+  <key id="d6" for="node" attr.name="description" attr.type="string" />
+  <key id="d5" for="node" attr.name="purdue_level" attr.type="string" />
   <key id="d4" for="node" attr.name="zone" attr.type="string" />
   <key id="d3" for="node" attr.name="type" attr.type="string" />
   <key id="d2" for="node" attr.name="kind" attr.type="string" />
@@ -26,33 +29,51 @@
   <graph edgedefault="directed">
     <node id="CHEM-ENT-FW-001">
       <data key="d0">CHEM-ENT-FW-001</data>
-      <data key="d1">Corporate Firewall</data>
+      <data key="d1">Internet Edge Firewall</data>
       <data key="d2">device</data>
       <data key="d3">Firewall</data>
       <data key="d4">Enterprise</data>
-      <data key="d5">Internet edge</data>
-      <data key="d6">High</data>
-      <data key="d7">Palo Alto</data>
-      <data key="d8">PA-5250</data>
-      <data key="d9">7.5</data>
-      <data key="d10">True</data>
+      <data key="d5">5</data>
+      <data key="d6">Corporate internet edge firewall</data>
+      <data key="d7">High</data>
+      <data key="d8">Palo Alto</data>
+      <data key="d9">PA-5250</data>
+      <data key="d10">7.5</data>
       <data key="d11">True</data>
-      <data key="d12">9.0</data>
+      <data key="d12">True</data>
+      <data key="d13">9.0</data>
+    </node>
+    <node id="CHEM-ENT-WS-001">
+      <data key="d0">CHEM-ENT-WS-001</data>
+      <data key="d1">Business Workstation</data>
+      <data key="d2">device</data>
+      <data key="d3">Workstation</data>
+      <data key="d4">Enterprise</data>
+      <data key="d5">4</data>
+      <data key="d6">Corporate user workstation on the business LAN</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Dell</data>
+      <data key="d9">OptiPlex 7000</data>
+      <data key="d10">7.8</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">5.0</data>
     </node>
     <node id="CHEM-ENT-SW-001">
       <data key="d0">CHEM-ENT-SW-001</data>
-      <data key="d1">Enterprise Switch</data>
+      <data key="d1">Enterprise Core Switch</data>
       <data key="d2">device</data>
       <data key="d3">Network Switch</data>
       <data key="d4">Enterprise</data>
-      <data key="d5">Corporate network</data>
-      <data key="d6">High</data>
-      <data key="d7">Cisco</data>
-      <data key="d8">Catalyst 9300</data>
-      <data key="d9">6.5</data>
-      <data key="d10">False</data>
-      <data key="d11">True</data>
-      <data key="d12">6.0</data>
+      <data key="d5">4</data>
+      <data key="d6">Core corporate network switch</data>
+      <data key="d7">High</data>
+      <data key="d8">Cisco</data>
+      <data key="d9">Catalyst 9300</data>
+      <data key="d10">6.5</data>
+      <data key="d11">False</data>
+      <data key="d12">True</data>
+      <data key="d13">6.0</data>
     </node>
     <node id="CHEM-ENT-DC-001">
       <data key="d0">CHEM-ENT-DC-001</data>
@@ -60,14 +81,15 @@
       <data key="d2">device</data>
       <data key="d3">Server</data>
       <data key="d4">Enterprise</data>
-      <data key="d5">AD</data>
-      <data key="d6">High</data>
-      <data key="d7">Microsoft</data>
-      <data key="d8">Windows Server 2022</data>
-      <data key="d9">8.1</data>
-      <data key="d10">False</data>
+      <data key="d5">4</data>
+      <data key="d6">Active Directory for the corporate domain</data>
+      <data key="d7">High</data>
+      <data key="d8">Microsoft</data>
+      <data key="d9">Windows Server 2022</data>
+      <data key="d10">8.1</data>
       <data key="d11">False</data>
-      <data key="d12">9.0</data>
+      <data key="d12">False</data>
+      <data key="d13">9.0</data>
     </node>
     <node id="CHEM-ENT-ERP-001">
       <data key="d0">CHEM-ENT-ERP-001</data>
@@ -75,363 +97,765 @@
       <data key="d2">device</data>
       <data key="d3">Server</data>
       <data key="d4">Enterprise</data>
-      <data key="d5">ERP</data>
-      <data key="d6">Medium</data>
-      <data key="d7">SAP</data>
-      <data key="d8">S/4HANA</data>
-      <data key="d9">6.5</data>
-      <data key="d10">False</data>
+      <data key="d5">4</data>
+      <data key="d6">Enterprise resource planning (SAP S/4HANA)</data>
+      <data key="d7">Medium</data>
+      <data key="d8">SAP</data>
+      <data key="d9">S/4HANA</data>
+      <data key="d10">6.5</data>
       <data key="d11">False</data>
-      <data key="d12">5.0</data>
+      <data key="d12">False</data>
+      <data key="d13">5.0</data>
     </node>
-    <node id="CHEM-DMZ-SW-001">
-      <data key="d0">CHEM-DMZ-SW-001</data>
-      <data key="d1">DMZ Switch</data>
+    <node id="CHEM-ENT-FW-002">
+      <data key="d0">CHEM-ENT-FW-002</data>
+      <data key="d1">Enterprise Firewall</data>
+      <data key="d2">device</data>
+      <data key="d3">Firewall</data>
+      <data key="d4">Enterprise</data>
+      <data key="d5">4</data>
+      <data key="d6">Enterprise-to-IDMZ boundary firewall (stateful, allow-list)</data>
+      <data key="d7">High</data>
+      <data key="d8">Palo Alto</data>
+      <data key="d9">PA-3260</data>
+      <data key="d10">7.5</data>
+      <data key="d11">False</data>
+      <data key="d12">True</data>
+      <data key="d13">8.0</data>
+    </node>
+    <node id="CHEM-IDMZ-SW-001">
+      <data key="d0">CHEM-IDMZ-SW-001</data>
+      <data key="d1">IDMZ Switch</data>
       <data key="d2">device</data>
       <data key="d3">Network Switch</data>
-      <data key="d4">DMZ</data>
-      <data key="d5">Process DMZ</data>
-      <data key="d6">High</data>
-      <data key="d7">Cisco</data>
-      <data key="d8">IE 4000</data>
-      <data key="d9">6.5</data>
-      <data key="d10">False</data>
+      <data key="d4">IDMZ</data>
+      <data key="d5">3.5</data>
+      <data key="d6">Industrial DMZ network switch</data>
+      <data key="d7">High</data>
+      <data key="d8">Cisco</data>
+      <data key="d9">IE 4000</data>
+      <data key="d10">6.5</data>
       <data key="d11">False</data>
-      <data key="d12">7.0</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
     </node>
-    <node id="CHEM-DMZ-HIST-001">
-      <data key="d0">CHEM-DMZ-HIST-001</data>
-      <data key="d1">Historian</data>
-      <data key="d2">device</data>
-      <data key="d3">Server</data>
-      <data key="d4">DMZ</data>
-      <data key="d5">Plant historian</data>
-      <data key="d6">High</data>
-      <data key="d7">OSIsoft</data>
-      <data key="d8">PI Server</data>
-      <data key="d9">7.0</data>
-      <data key="d10">False</data>
-      <data key="d11">False</data>
-      <data key="d12">6.0</data>
-    </node>
-    <node id="CHEM-DMZ-JUMP-001">
-      <data key="d0">CHEM-DMZ-JUMP-001</data>
+    <node id="CHEM-IDMZ-JUMP-001">
+      <data key="d0">CHEM-IDMZ-JUMP-001</data>
       <data key="d1">Jump Server</data>
       <data key="d2">device</data>
       <data key="d3">Server</data>
-      <data key="d4">DMZ</data>
-      <data key="d5">OT jump host</data>
-      <data key="d6">High</data>
-      <data key="d7">Microsoft</data>
-      <data key="d8">Windows Server 2022</data>
-      <data key="d9">8.1</data>
-      <data key="d10">True</data>
+      <data key="d4">IDMZ</data>
+      <data key="d5">3.5</data>
+      <data key="d6">Bastion host for controlled administrative access into OT</data>
+      <data key="d7">High</data>
+      <data key="d8">Microsoft</data>
+      <data key="d9">Windows Server 2022</data>
+      <data key="d10">8.1</data>
       <data key="d11">True</data>
-      <data key="d12">8.0</data>
+      <data key="d12">True</data>
+      <data key="d13">8.0</data>
     </node>
-    <node id="CHEM-DCS-SW-001">
-      <data key="d0">CHEM-DCS-SW-001</data>
-      <data key="d1">DCS Switch</data>
+    <node id="CHEM-IDMZ-DB-001">
+      <data key="d0">CHEM-IDMZ-DB-001</data>
+      <data key="d1">Data Broker</data>
+      <data key="d2">device</data>
+      <data key="d3">Gateway</data>
+      <data key="d4">IDMZ</data>
+      <data key="d5">3.5</data>
+      <data key="d6">OPC UA data broker bridging OT data to the enterprise (unidirectional publisher)</data>
+      <data key="d7">High</data>
+      <data key="d8">Software Toolbox</data>
+      <data key="d9">Cogent DataHub</data>
+      <data key="d10">7.0</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
+    </node>
+    <node id="CHEM-IDMZ-HIST-001">
+      <data key="d0">CHEM-IDMZ-HIST-001</data>
+      <data key="d1">Historian Replica</data>
+      <data key="d2">device</data>
+      <data key="d3">Server</data>
+      <data key="d4">IDMZ</data>
+      <data key="d5">3.5</data>
+      <data key="d6">Read-only historian replica serving the enterprise</data>
+      <data key="d7">Medium</data>
+      <data key="d8">OSIsoft</data>
+      <data key="d9">PI Server</data>
+      <data key="d10">7.0</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">5.0</data>
+    </node>
+    <node id="CHEM-IDMZ-RAG-001">
+      <data key="d0">CHEM-IDMZ-RAG-001</data>
+      <data key="d1">Remote Access Gateway</data>
+      <data key="d2">device</data>
+      <data key="d3">Gateway</data>
+      <data key="d4">IDMZ</data>
+      <data key="d5">3.5</data>
+      <data key="d6">VPN concentrator terminating vendor/support remote sessions</data>
+      <data key="d7">High</data>
+      <data key="d8">Palo Alto</data>
+      <data key="d9">GlobalProtect</data>
+      <data key="d10">8.0</data>
+      <data key="d11">True</data>
+      <data key="d12">True</data>
+      <data key="d13">8.0</data>
+    </node>
+    <node id="CHEM-IDMZ-PATCH-001">
+      <data key="d0">CHEM-IDMZ-PATCH-001</data>
+      <data key="d1">Patch &amp; Update Repository</data>
+      <data key="d2">device</data>
+      <data key="d3">Server</data>
+      <data key="d4">IDMZ</data>
+      <data key="d5">3.5</data>
+      <data key="d6">Staged patch/AV signature repository for OT hosts</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Microsoft</data>
+      <data key="d9">WSUS</data>
+      <data key="d10">6.5</data>
+      <data key="d11">False</data>
+      <data key="d12">True</data>
+      <data key="d13">6.0</data>
+    </node>
+    <node id="CHEM-IDMZ-FW-001">
+      <data key="d0">CHEM-IDMZ-FW-001</data>
+      <data key="d1">OT Firewall</data>
+      <data key="d2">device</data>
+      <data key="d3">Firewall</data>
+      <data key="d4">IDMZ</data>
+      <data key="d5">3.5</data>
+      <data key="d6">OT-side firewall between the IDMZ and the site operations network</data>
+      <data key="d7">High</data>
+      <data key="d8">Palo Alto</data>
+      <data key="d9">PA-3260</data>
+      <data key="d10">7.5</data>
+      <data key="d11">False</data>
+      <data key="d12">True</data>
+      <data key="d13">8.0</data>
+    </node>
+    <node id="CHEM-OPS-SW-001">
+      <data key="d0">CHEM-OPS-SW-001</data>
+      <data key="d1">Operations Switch</data>
       <data key="d2">device</data>
       <data key="d3">Network Switch</data>
-      <data key="d4">DCS</data>
-      <data key="d5">DCS backbone</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">SCALANCE XM408</data>
-      <data key="d9">6.5</data>
-      <data key="d10">False</data>
+      <data key="d4">Operations</data>
+      <data key="d5">3</data>
+      <data key="d6">Site operations (L3) network switch</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SCALANCE XM408</data>
+      <data key="d10">6.5</data>
       <data key="d11">False</data>
-      <data key="d12">8.0</data>
+      <data key="d12">False</data>
+      <data key="d13">8.0</data>
     </node>
-    <node id="CHEM-DCS-OP-001">
-      <data key="d0">CHEM-DCS-OP-001</data>
-      <data key="d1">Operator Station</data>
+    <node id="CHEM-OPS-OP-001">
+      <data key="d0">CHEM-OPS-OP-001</data>
+      <data key="d1">Operator Station 1 (HMI)</data>
       <data key="d2">device</data>
       <data key="d3">Workstation</data>
-      <data key="d4">DCS</data>
-      <data key="d5">DCS operator console</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">SIMATIC PCS 7</data>
-      <data key="d9">7.5</data>
-      <data key="d10">False</data>
+      <data key="d4">Operations</data>
+      <data key="d5">3</data>
+      <data key="d6">Primary DCS operator console in the control room</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SIMATIC PCS 7</data>
+      <data key="d10">7.5</data>
       <data key="d11">False</data>
-      <data key="d12">8.0</data>
+      <data key="d12">False</data>
+      <data key="d13">8.0</data>
     </node>
-    <node id="CHEM-DCS-ENG-001">
-      <data key="d0">CHEM-DCS-ENG-001</data>
-      <data key="d1">Engineering Station</data>
+    <node id="CHEM-OPS-OP-002">
+      <data key="d0">CHEM-OPS-OP-002</data>
+      <data key="d1">Operator Station 2 (HMI)</data>
       <data key="d2">device</data>
       <data key="d3">Workstation</data>
-      <data key="d4">DCS</data>
-      <data key="d5">DCS engineering</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">SIMATIC PCS 7</data>
-      <data key="d9">7.8</data>
-      <data key="d10">False</data>
-      <data key="d11">True</data>
-      <data key="d12">7.0</data>
+      <data key="d4">Operations</data>
+      <data key="d5">3</data>
+      <data key="d6">Backup DCS operator console (utilities area)</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SIMATIC PCS 7</data>
+      <data key="d10">7.5</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">8.0</data>
     </node>
-    <node id="CHEM-DCS-CTRL-001">
-      <data key="d0">CHEM-DCS-CTRL-001</data>
-      <data key="d1">DCS Controller (Reactor)</data>
+    <node id="CHEM-OPS-ENG-001">
+      <data key="d0">CHEM-OPS-ENG-001</data>
+      <data key="d1">Engineering Workstation</data>
+      <data key="d2">device</data>
+      <data key="d3">Workstation</data>
+      <data key="d4">Operations</data>
+      <data key="d5">3</data>
+      <data key="d6">DCS engineering station (configuration, logic, recipes)</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SIMATIC PCS 7 ES</data>
+      <data key="d10">7.8</data>
+      <data key="d11">False</data>
+      <data key="d12">True</data>
+      <data key="d13">8.0</data>
+    </node>
+    <node id="CHEM-OPS-HIST-001">
+      <data key="d0">CHEM-OPS-HIST-001</data>
+      <data key="d1">OT Historian</data>
+      <data key="d2">device</data>
+      <data key="d3">Server</data>
+      <data key="d4">Operations</data>
+      <data key="d5">3</data>
+      <data key="d6">Primary plant historian collecting process data</data>
+      <data key="d7">High</data>
+      <data key="d8">OSIsoft</data>
+      <data key="d9">PI Server</data>
+      <data key="d10">7.0</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
+    </node>
+    <node id="CHEM-OPS-APP-001">
+      <data key="d0">CHEM-OPS-APP-001</data>
+      <data key="d1">DCS Application Server</data>
+      <data key="d2">device</data>
+      <data key="d3">Server</data>
+      <data key="d4">Operations</data>
+      <data key="d5">3</data>
+      <data key="d6">PCS 7 application/OPC UA server serving the operator clients</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SIMATIC PCS 7 AS</data>
+      <data key="d10">7.5</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">8.0</data>
+    </node>
+    <node id="CHEM-CTL-SW-001">
+      <data key="d0">CHEM-CTL-SW-001</data>
+      <data key="d1">Control Switch</data>
+      <data key="d2">device</data>
+      <data key="d3">Network Switch</data>
+      <data key="d4">Control</data>
+      <data key="d5">2</data>
+      <data key="d6">Redundant L2 control network switch fabric</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SCALANCE XM408</data>
+      <data key="d10">6.5</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">8.0</data>
+    </node>
+    <node id="CHEM-CTL-DCS-001">
+      <data key="d0">CHEM-CTL-DCS-001</data>
+      <data key="d1">DCS Controller — Reactor Area</data>
       <data key="d2">device</data>
       <data key="d3">DCSController</data>
-      <data key="d4">DCS</data>
-      <data key="d5">Reactor temperature/pressure control</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">AS 410</data>
-      <data key="d9">8.5</data>
-      <data key="d10">False</data>
+      <data key="d4">Control</data>
+      <data key="d5">2</data>
+      <data key="d6">Reactor temperature/pressure/level control loop processor</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SIMATIC PCS 7 AS 410</data>
+      <data key="d10">8.5</data>
       <data key="d11">False</data>
-      <data key="d12">10.0</data>
+      <data key="d12">False</data>
+      <data key="d13">10.0</data>
     </node>
-    <node id="CHEM-DCS-CTRL-002">
-      <data key="d0">CHEM-DCS-CTRL-002</data>
-      <data key="d1">DCS Controller (Distillation)</data>
+    <node id="CHEM-CTL-DCS-002">
+      <data key="d0">CHEM-CTL-DCS-002</data>
+      <data key="d1">DCS Controller — Distillation Area</data>
       <data key="d2">device</data>
       <data key="d3">DCSController</data>
-      <data key="d4">DCS</data>
-      <data key="d5">Distillation column control</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">AS 410</data>
-      <data key="d9">8.5</data>
-      <data key="d10">False</data>
+      <data key="d4">Control</data>
+      <data key="d5">2</data>
+      <data key="d6">Distillation column control loop processor</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SIMATIC PCS 7 AS 410</data>
+      <data key="d10">8.5</data>
       <data key="d11">False</data>
-      <data key="d12">10.0</data>
+      <data key="d12">False</data>
+      <data key="d13">10.0</data>
     </node>
-    <node id="CHEM-DCS-CTRL-003">
-      <data key="d0">CHEM-DCS-CTRL-003</data>
-      <data key="d1">DCS Controller (Utilities)</data>
+    <node id="CHEM-CTL-DCS-003">
+      <data key="d0">CHEM-CTL-DCS-003</data>
+      <data key="d1">DCS Controller — Utilities &amp; Offsites</data>
       <data key="d2">device</data>
       <data key="d3">DCSController</data>
-      <data key="d4">DCS</data>
-      <data key="d5">Utilities (steam, cooling)</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">AS 410</data>
-      <data key="d9">8.0</data>
-      <data key="d10">False</data>
+      <data key="d4">Control</data>
+      <data key="d5">2</data>
+      <data key="d6">Utilities, storage and tank-farm control loop processor</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SIMATIC PCS 7 AS 410</data>
+      <data key="d10">8.0</data>
       <data key="d11">False</data>
-      <data key="d12">8.0</data>
+      <data key="d12">False</data>
+      <data key="d13">9.0</data>
     </node>
-    <node id="CHEM-SIS-PLC-001">
-      <data key="d0">CHEM-SIS-PLC-001</data>
-      <data key="d1">Safety PLC</data>
+    <node id="CHEM-SIS-GW-001">
+      <data key="d0">CHEM-SIS-GW-001</data>
+      <data key="d1">SIS Status Gateway</data>
+      <data key="d2">device</data>
+      <data key="d3">Gateway</data>
+      <data key="d4">SIS</data>
+      <data key="d5">2</data>
+      <data key="d6">Certified status-only interface between the DCS and the SIS</data>
+      <data key="d7">High</data>
+      <data key="d8">HIMA</data>
+      <data key="d9">HIQuad X Gateway</data>
+      <data key="d10">6.5</data>
+      <data key="d11">False</data>
+      <data key="d12">True</data>
+      <data key="d13">9.0</data>
+    </node>
+    <node id="CHEM-SIS-LS-001">
+      <data key="d0">CHEM-SIS-LS-001</data>
+      <data key="d1">Safety Logic Solver</data>
       <data key="d2">device</data>
       <data key="d3">SafetyPLC</data>
       <data key="d4">SIS</data>
-      <data key="d5">Safety Instrumented System</data>
-      <data key="d6">High</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">S7-400F</data>
-      <data key="d9">7.0</data>
-      <data key="d10">False</data>
+      <data key="d5">2</data>
+      <data key="d6">SIL-3 certified safety logic solver executing ESD logic</data>
+      <data key="d7">High</data>
+      <data key="d8">HIMA</data>
+      <data key="d9">HIQuad X</data>
+      <data key="d10">7.0</data>
       <data key="d11">False</data>
-      <data key="d12">10.0</data>
+      <data key="d12">False</data>
+      <data key="d13">10.0</data>
     </node>
-    <node id="CHEM-SIS-ESD-001">
-      <data key="d0">CHEM-SIS-ESD-001</data>
-      <data key="d1">ESD Switch</data>
-      <data key="d2">physical</data>
-      <data key="d3">SafetyDevice</data>
+    <node id="CHEM-SIS-ENG-001">
+      <data key="d0">CHEM-SIS-ENG-001</data>
+      <data key="d1">SIS Engineering Workstation</data>
+      <data key="d2">device</data>
+      <data key="d3">Workstation</data>
       <data key="d4">SIS</data>
-      <data key="d5">Emergency shutdown button</data>
-      <data key="d6">High</data>
-      <data key="d7">Pilz</data>
-      <data key="d8">PNOZ</data>
-      <data key="d12">9.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">3</data>
+      <data key="d6">Dedicated engineering station for SIS logic (isolated from the DCS engineering LAN)</data>
+      <data key="d7">High</data>
+      <data key="d8">HIMA</data>
+      <data key="d9">SIMATIC Manager SIS</data>
+      <data key="d10">7.8</data>
+      <data key="d11">False</data>
+      <data key="d12">True</data>
+      <data key="d13">9.0</data>
     </node>
-    <node id="CHEM-SIS-RELAY-001">
-      <data key="d0">CHEM-SIS-RELAY-001</data>
-      <data key="d1">ESD Relay</data>
+    <node id="CHEM-SIS-PT-001">
+      <data key="d0">CHEM-SIS-PT-001</data>
+      <data key="d1">High-Integrity Pressure Transmitter</data>
       <data key="d2">physical</data>
-      <data key="d3">SafetyRelay</data>
+      <data key="d3">Transmitter</data>
       <data key="d4">SIS</data>
-      <data key="d5">Safety relay</data>
-      <data key="d6">High</data>
-      <data key="d7">Pilz</data>
-      <data key="d8">PNOZ X3</data>
-      <data key="d12">9.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">1</data>
+      <data key="d6">SIL-rated pressure transmitter on the reactor (SIS input)</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 3051S</data>
+      <data key="d13">9.0</data>
+      <data key="d14">0.01</data>
     </node>
-    <node id="CHEM-FLD-TC-001">
-      <data key="d0">CHEM-FLD-TC-001</data>
-      <data key="d1">Thermocouple (Reactor)</data>
+    <node id="CHEM-SIS-TT-001">
+      <data key="d0">CHEM-SIS-TT-001</data>
+      <data key="d1">High-Integrity Temperature Transmitter</data>
       <data key="d2">physical</data>
-      <data key="d3">Sensor</data>
+      <data key="d3">Transmitter</data>
+      <data key="d4">SIS</data>
+      <data key="d5">1</data>
+      <data key="d6">SIL-rated temperature element on the reactor (SIS input)</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 214S</data>
+      <data key="d13">9.0</data>
+      <data key="d14">0.01</data>
+    </node>
+    <node id="CHEM-SIS-SOV-001">
+      <data key="d0">CHEM-SIS-SOV-001</data>
+      <data key="d1">Safety Shutoff Valve (Feed)</data>
+      <data key="d2">physical</data>
+      <data key="d3">SafetyValve</data>
+      <data key="d4">SIS</data>
+      <data key="d5">1</data>
+      <data key="d6">Fail-closed SIS final element isolating the reactor feed</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Fisher FIELDVUE DVC6200</data>
+      <data key="d13">9.0</data>
+      <data key="d14">0.01</data>
+    </node>
+    <node id="CHEM-SIS-SOV-002">
+      <data key="d0">CHEM-SIS-SOV-002</data>
+      <data key="d1">Emergency Depressurization Valve</data>
+      <data key="d2">physical</data>
+      <data key="d3">SafetyValve</data>
+      <data key="d4">SIS</data>
+      <data key="d5">1</data>
+      <data key="d6">Fail-open SIS final element venting the reactor to the flare (safe state)</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Fisher FIELDVUE DVC6200</data>
+      <data key="d13">9.0</data>
+      <data key="d14">0.01</data>
+    </node>
+    <node id="CHEM-FLD-IO-001">
+      <data key="d0">CHEM-FLD-IO-001</data>
+      <data key="d1">Field Remote I/O Rack</data>
+      <data key="d2">device</data>
+      <data key="d3">RemoteIO</data>
       <data key="d4">Field</data>
-      <data key="d5">Reactor temperature</data>
-      <data key="d6">High</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Rosemount 214</data>
-      <data key="d12">8.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">1</data>
+      <data key="d6">Fieldbus remote I/O marshalling rack feeding the DCS controllers</data>
+      <data key="d7">High</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">ET 200M</data>
+      <data key="d10">7.0</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
+    </node>
+    <node id="CHEM-FLD-TT-001">
+      <data key="d0">CHEM-FLD-TT-001</data>
+      <data key="d1">Temperature Transmitter (Reactor)</data>
+      <data key="d2">physical</data>
+      <data key="d3">Transmitter</data>
+      <data key="d4">Field</data>
+      <data key="d5">1</data>
+      <data key="d6">Reactor temperature (thermocouple) transmitter</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 214</data>
+      <data key="d13">8.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="CHEM-FLD-PT-001">
       <data key="d0">CHEM-FLD-PT-001</data>
       <data key="d1">Pressure Transmitter (Reactor)</data>
       <data key="d2">physical</data>
-      <data key="d3">Sensor</data>
+      <data key="d3">Transmitter</data>
       <data key="d4">Field</data>
-      <data key="d5">Reactor pressure</data>
-      <data key="d6">High</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Rosemount 3051</data>
-      <data key="d12">8.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">1</data>
+      <data key="d6">Reactor pressure transmitter</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 3051</data>
+      <data key="d13">8.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="CHEM-FLD-LT-001">
       <data key="d0">CHEM-FLD-LT-001</data>
       <data key="d1">Level Transmitter (Reactor)</data>
       <data key="d2">physical</data>
-      <data key="d3">Sensor</data>
+      <data key="d3">Transmitter</data>
       <data key="d4">Field</data>
-      <data key="d5">Reactor level</data>
-      <data key="d6">High</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Rosemount 3300</data>
-      <data key="d12">7.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">1</data>
+      <data key="d6">Reactor level transmitter</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 3300</data>
+      <data key="d13">7.0</data>
+      <data key="d14">0.01</data>
     </node>
-    <node id="CHEM-FLD-CV-001">
-      <data key="d0">CHEM-FLD-CV-001</data>
-      <data key="d1">Control Valve (Reactor)</data>
+    <node id="CHEM-FLD-FCV-001">
+      <data key="d0">CHEM-FLD-FCV-001</data>
+      <data key="d1">Feed Control Valve (Reactor)</data>
       <data key="d2">physical</data>
-      <data key="d3">Valve</data>
+      <data key="d3">ControlValve</data>
       <data key="d4">Field</data>
-      <data key="d5">Feed control valve</data>
-      <data key="d6">High</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Fisher V500</data>
-      <data key="d12">8.0</data>
-      <data key="d13">0.02</data>
-    </node>
-    <node id="CHEM-FLD-TC-002">
-      <data key="d0">CHEM-FLD-TC-002</data>
-      <data key="d1">Thermocouple (Distillation)</data>
-      <data key="d2">physical</data>
-      <data key="d3">Sensor</data>
-      <data key="d4">Field</data>
-      <data key="d5">Column temperature</data>
-      <data key="d6">High</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Rosemount 214</data>
-      <data key="d12">8.0</data>
-      <data key="d13">0.01</data>
-    </node>
-    <node id="CHEM-FLD-PT-002">
-      <data key="d0">CHEM-FLD-PT-002</data>
-      <data key="d1">Pressure Transmitter (Distillation)</data>
-      <data key="d2">physical</data>
-      <data key="d3">Sensor</data>
-      <data key="d4">Field</data>
-      <data key="d5">Column pressure</data>
-      <data key="d6">High</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Rosemount 3051</data>
-      <data key="d12">8.0</data>
-      <data key="d13">0.01</data>
-    </node>
-    <node id="CHEM-FLD-FT-001">
-      <data key="d0">CHEM-FLD-FT-001</data>
-      <data key="d1">Flow Transmitter (Distillation)</data>
-      <data key="d2">physical</data>
-      <data key="d3">Sensor</data>
-      <data key="d4">Field</data>
-      <data key="d5">Reflux flow</data>
-      <data key="d6">High</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Rosemount 8700</data>
-      <data key="d12">7.0</data>
-      <data key="d13">0.01</data>
-    </node>
-    <node id="CHEM-FLD-CV-002">
-      <data key="d0">CHEM-FLD-CV-002</data>
-      <data key="d1">Control Valve (Distillation)</data>
-      <data key="d2">physical</data>
-      <data key="d3">Valve</data>
-      <data key="d4">Field</data>
-      <data key="d5">Reflux valve</data>
-      <data key="d6">High</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Fisher V500</data>
-      <data key="d12">8.0</data>
-      <data key="d13">0.02</data>
+      <data key="d5">1</data>
+      <data key="d6">Reactor feed flow control valve (final element)</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Fisher V500</data>
+      <data key="d13">8.0</data>
+      <data key="d14">0.02</data>
     </node>
     <node id="CHEM-FLD-PUMP-001">
       <data key="d0">CHEM-FLD-PUMP-001</data>
-      <data key="d1">Product Pump</data>
+      <data key="d1">Reactor Feed Pump</data>
       <data key="d2">physical</data>
       <data key="d3">Pump</data>
       <data key="d4">Field</data>
-      <data key="d5">Transfer pump to storage</data>
-      <data key="d6">High</data>
-      <data key="d7">Grundfos</data>
-      <data key="d8">CR 64</data>
-      <data key="d12">7.0</data>
-      <data key="d13">0.02</data>
+      <data key="d5">1</data>
+      <data key="d6">Centrifugal feed pump supplying the reactor</data>
+      <data key="d7">High</data>
+      <data key="d8">Grundfos</data>
+      <data key="d9">CR 64</data>
+      <data key="d13">8.0</data>
+      <data key="d14">0.02</data>
     </node>
-    <node id="CHEM-FLD-VALVE-001">
-      <data key="d0">CHEM-FLD-VALVE-001</data>
-      <data key="d1">Storage Tank Valve</data>
-      <data key="d2">physical</data>
-      <data key="d3">Valve</data>
+    <node id="CHEM-FLD-VFD-001">
+      <data key="d0">CHEM-FLD-VFD-001</data>
+      <data key="d1">Feed Pump VFD</data>
+      <data key="d2">device</data>
+      <data key="d3">VFD</data>
       <data key="d4">Field</data>
-      <data key="d5">Tank inlet/outlet</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Fisher V500</data>
-      <data key="d12">7.0</data>
-      <data key="d13">0.02</data>
+      <data key="d5">1</data>
+      <data key="d6">Variable frequency drive for the reactor feed pump</data>
+      <data key="d7">Medium</data>
+      <data key="d8">ABB</data>
+      <data key="d9">ACS880</data>
+      <data key="d10">7.5</data>
+      <data key="d11">False</data>
+      <data key="d12">False</data>
+      <data key="d13">7.0</data>
+    </node>
+    <node id="CHEM-FLD-TT-002">
+      <data key="d0">CHEM-FLD-TT-002</data>
+      <data key="d1">Temperature Transmitter (Column)</data>
+      <data key="d2">physical</data>
+      <data key="d3">Transmitter</data>
+      <data key="d4">Field</data>
+      <data key="d5">1</data>
+      <data key="d6">Distillation column temperature transmitter</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 214</data>
+      <data key="d13">8.0</data>
+      <data key="d14">0.01</data>
+    </node>
+    <node id="CHEM-FLD-PT-002">
+      <data key="d0">CHEM-FLD-PT-002</data>
+      <data key="d1">Pressure Transmitter (Column)</data>
+      <data key="d2">physical</data>
+      <data key="d3">Transmitter</data>
+      <data key="d4">Field</data>
+      <data key="d5">1</data>
+      <data key="d6">Distillation column pressure transmitter</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 3051</data>
+      <data key="d13">8.0</data>
+      <data key="d14">0.01</data>
+    </node>
+    <node id="CHEM-FLD-FT-001">
+      <data key="d0">CHEM-FLD-FT-001</data>
+      <data key="d1">Flow Transmitter (Reflux)</data>
+      <data key="d2">physical</data>
+      <data key="d3">Transmitter</data>
+      <data key="d4">Field</data>
+      <data key="d5">1</data>
+      <data key="d6">Column reflux flow transmitter</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 8700</data>
+      <data key="d13">7.0</data>
+      <data key="d14">0.01</data>
+    </node>
+    <node id="CHEM-FLD-FCV-002">
+      <data key="d0">CHEM-FLD-FCV-002</data>
+      <data key="d1">Reflux Control Valve</data>
+      <data key="d2">physical</data>
+      <data key="d3">ControlValve</data>
+      <data key="d4">Field</data>
+      <data key="d5">1</data>
+      <data key="d6">Column reflux control valve (final element)</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Fisher V500</data>
+      <data key="d13">8.0</data>
+      <data key="d14">0.02</data>
+    </node>
+    <node id="CHEM-FLD-FCV-003">
+      <data key="d0">CHEM-FLD-FCV-003</data>
+      <data key="d1">Steam Reboiler Control Valve</data>
+      <data key="d2">physical</data>
+      <data key="d3">ControlValve</data>
+      <data key="d4">Field</data>
+      <data key="d5">1</data>
+      <data key="d6">Reboiler steam supply control valve (final element)</data>
+      <data key="d7">High</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Fisher V500</data>
+      <data key="d13">8.0</data>
+      <data key="d14">0.02</data>
+    </node>
+    <node id="CHEM-FLD-LT-002">
+      <data key="d0">CHEM-FLD-LT-002</data>
+      <data key="d1">Level Transmitter (Storage)</data>
+      <data key="d2">physical</data>
+      <data key="d3">Transmitter</data>
+      <data key="d4">Field</data>
+      <data key="d5">1</data>
+      <data key="d6">Product storage tank level transmitter</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 3300</data>
+      <data key="d13">6.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="CHEM-FLD-SENSOR-001">
       <data key="d0">CHEM-FLD-SENSOR-001</data>
-      <data key="d1">Tank Level Sensor</data>
+      <data key="d1">Cooling Water Flow Transmitter</data>
       <data key="d2">physical</data>
-      <data key="d3">Sensor</data>
+      <data key="d3">Transmitter</data>
       <data key="d4">Field</data>
-      <data key="d5">Storage tank level</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Rosemount 3300</data>
-      <data key="d12">6.0</data>
-      <data key="d13">0.01</data>
+      <data key="d5">1</data>
+      <data key="d6">Cooling water flow transmitter</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 8700</data>
+      <data key="d13">6.0</data>
+      <data key="d14">0.01</data>
+    </node>
+    <node id="CHEM-FLD-VALVE-001">
+      <data key="d0">CHEM-FLD-VALVE-001</data>
+      <data key="d1">Cooling Water Control Valve</data>
+      <data key="d2">physical</data>
+      <data key="d3">ControlValve</data>
+      <data key="d4">Field</data>
+      <data key="d5">1</data>
+      <data key="d6">Cooling water supply control valve</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Fisher V500</data>
+      <data key="d13">6.0</data>
+      <data key="d14">0.02</data>
+    </node>
+    <node id="CHEM-FLD-PUMP-002">
+      <data key="d0">CHEM-FLD-PUMP-002</data>
+      <data key="d1">Product Transfer Pump</data>
+      <data key="d2">physical</data>
+      <data key="d3">Pump</data>
+      <data key="d4">Field</data>
+      <data key="d5">1</data>
+      <data key="d6">Product transfer pump to storage</data>
+      <data key="d7">High</data>
+      <data key="d8">Grundfos</data>
+      <data key="d9">CR 90</data>
+      <data key="d13">7.0</data>
+      <data key="d14">0.02</data>
+    </node>
+    <node id="CHEM-PRO-REACTOR-001">
+      <data key="d0">CHEM-PRO-REACTOR-001</data>
+      <data key="d1">Reactor Vessel</data>
+      <data key="d2">physical</data>
+      <data key="d3">Reactor</data>
+      <data key="d4">Process</data>
+      <data key="d5">0</data>
+      <data key="d6">Exothermic stirred-tank reactor — primary hazard source</data>
+      <data key="d7">High</data>
+      <data key="d8">Zeton</data>
+      <data key="d9">CSTR-10m3</data>
+      <data key="d13">10.0</data>
+      <data key="d14">0.01</data>
+    </node>
+    <node id="CHEM-PRO-COLUMN-001">
+      <data key="d0">CHEM-PRO-COLUMN-001</data>
+      <data key="d1">Distillation Column</data>
+      <data key="d2">physical</data>
+      <data key="d3">DistillationColumn</data>
+      <data key="d4">Process</data>
+      <data key="d5">0</data>
+      <data key="d6">Continuous distillation column separating the reactor product</data>
+      <data key="d7">High</data>
+      <data key="d8">Sulzer</data>
+      <data key="d9">Packed Column</data>
+      <data key="d13">9.0</data>
+      <data key="d14">0.01</data>
+    </node>
+    <node id="CHEM-PRO-HX-001">
+      <data key="d0">CHEM-PRO-HX-001</data>
+      <data key="d1">Heat Exchanger (Reboiler)</data>
+      <data key="d2">physical</data>
+      <data key="d3">HeatExchanger</data>
+      <data key="d4">Process</data>
+      <data key="d5">0</data>
+      <data key="d6">Steam reboiler providing column heat input</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Alfa Laval</data>
+      <data key="d9">T20</data>
+      <data key="d13">7.0</data>
+      <data key="d14">0.01</data>
+    </node>
+    <node id="CHEM-PRO-PIPE-001">
+      <data key="d0">CHEM-PRO-PIPE-001</data>
+      <data key="d1">Reactor-to-Column Transfer Piping</data>
+      <data key="d2">physical</data>
+      <data key="d3">Pipeline</data>
+      <data key="d4">Process</data>
+      <data key="d5">0</data>
+      <data key="d6">Product transfer line from the reactor to the distillation column</data>
+      <data key="d7">Medium</data>
+      <data key="d8">N/A</data>
+      <data key="d9">DN150</data>
+      <data key="d13">6.0</data>
+      <data key="d14">0.005</data>
+    </node>
+    <node id="CHEM-PRO-TANK-001">
+      <data key="d0">CHEM-PRO-TANK-001</data>
+      <data key="d1">Product Storage Tank</data>
+      <data key="d2">physical</data>
+      <data key="d3">StorageTank</data>
+      <data key="d4">Process</data>
+      <data key="d5">0</data>
+      <data key="d6">Finished product storage tank</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Chicago Bridge &amp; Iron</data>
+      <data key="d9">Fixed Roof 500m3</data>
+      <data key="d13">7.0</data>
+      <data key="d14">0.01</data>
+    </node>
+    <node id="CHEM-PRO-TANK-002">
+      <data key="d0">CHEM-PRO-TANK-002</data>
+      <data key="d1">Feedstock Storage Tank</data>
+      <data key="d2">physical</data>
+      <data key="d3">StorageTank</data>
+      <data key="d4">Process</data>
+      <data key="d5">0</data>
+      <data key="d6">Raw feedstock storage tank feeding the reactor</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Chicago Bridge &amp; Iron</data>
+      <data key="d9">Fixed Roof 1000m3</data>
+      <data key="d13">7.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="CHEM-REM-SW-001">
       <data key="d0">CHEM-REM-SW-001</data>
-      <data key="d1">Remote Switch</data>
+      <data key="d1">Remote Site Switch</data>
       <data key="d2">device</data>
       <data key="d3">Network Switch</data>
       <data key="d4">Remote</data>
-      <data key="d5">Switch at remote tank farm</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Siemens</data>
-      <data key="d8">SCALANCE XB208</data>
-      <data key="d9">6.5</data>
-      <data key="d10">False</data>
+      <data key="d5">1</data>
+      <data key="d6">Industrial switch at the remote tank farm</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Siemens</data>
+      <data key="d9">SCALANCE XB208</data>
+      <data key="d10">6.5</data>
       <data key="d11">False</data>
-      <data key="d12">6.0</data>
+      <data key="d12">False</data>
+      <data key="d13">6.0</data>
     </node>
     <node id="CHEM-REM-RTU-001">
       <data key="d0">CHEM-REM-RTU-001</data>
-      <data key="d1">Remote RTU</data>
+      <data key="d1">Remote RTU — Tank Farm</data>
       <data key="d2">device</data>
       <data key="d3">RTU</data>
       <data key="d4">Remote</data>
-      <data key="d5">RTU for tank farm</data>
-      <data key="d6">High</data>
-      <data key="d7">Control Microsystems</data>
-      <data key="d8">SCADAPack 470</data>
-      <data key="d9">8.0</data>
-      <data key="d10">False</data>
+      <data key="d5">1</data>
+      <data key="d6">Remote terminal unit controlling tank-farm loading</data>
+      <data key="d7">High</data>
+      <data key="d8">Control Microsystems</data>
+      <data key="d9">SCADAPack 470</data>
+      <data key="d10">8.0</data>
       <data key="d11">False</data>
-      <data key="d12">7.0</data>
+      <data key="d12">False</data>
+      <data key="d13">8.0</data>
+    </node>
+    <node id="CHEM-REM-LT-001">
+      <data key="d0">CHEM-REM-LT-001</data>
+      <data key="d1">Remote Tank Level Transmitter</data>
+      <data key="d2">physical</data>
+      <data key="d3">Transmitter</data>
+      <data key="d4">Remote</data>
+      <data key="d5">1</data>
+      <data key="d6">Level transmitter on the remote product tank</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Rosemount 3300</data>
+      <data key="d13">6.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="CHEM-REM-PUMP-001">
       <data key="d0">CHEM-REM-PUMP-001</data>
@@ -439,294 +863,728 @@
       <data key="d2">physical</data>
       <data key="d3">Pump</data>
       <data key="d4">Remote</data>
-      <data key="d5">Pump to rail cars</data>
-      <data key="d6">High</data>
-      <data key="d7">Grundfos</data>
-      <data key="d8">CR 90</data>
-      <data key="d12">6.0</data>
-      <data key="d13">0.02</data>
+      <data key="d5">1</data>
+      <data key="d6">Transfer pump at the remote tank farm</data>
+      <data key="d7">High</data>
+      <data key="d8">Grundfos</data>
+      <data key="d9">CR 90</data>
+      <data key="d13">7.0</data>
+      <data key="d14">0.02</data>
     </node>
     <node id="CHEM-REM-VALVE-001">
       <data key="d0">CHEM-REM-VALVE-001</data>
-      <data key="d1">Remote Valve</data>
+      <data key="d1">Rail Loading Valve</data>
       <data key="d2">physical</data>
-      <data key="d3">Valve</data>
+      <data key="d3">ControlValve</data>
       <data key="d4">Remote</data>
-      <data key="d5">Rail loading valve</data>
-      <data key="d6">Medium</data>
-      <data key="d7">Emerson</data>
-      <data key="d8">Fisher V500</data>
-      <data key="d12">6.0</data>
-      <data key="d13">0.02</data>
+      <data key="d5">1</data>
+      <data key="d6">Rail-car loading isolation valve at the tank farm</data>
+      <data key="d7">Medium</data>
+      <data key="d8">Emerson</data>
+      <data key="d9">Fisher V500</data>
+      <data key="d13">6.0</data>
+      <data key="d14">0.02</data>
+    </node>
+    <node id="CHEM-REM-TANK-001">
+      <data key="d0">CHEM-REM-TANK-001</data>
+      <data key="d1">Remote Product Tank</data>
+      <data key="d2">physical</data>
+      <data key="d3">StorageTank</data>
+      <data key="d4">Remote</data>
+      <data key="d5">0</data>
+      <data key="d6">Product storage tank at the remote tank farm</data>
+      <data key="d7">High</data>
+      <data key="d8">Chicago Bridge &amp; Iron</data>
+      <data key="d9">Floating Roof 2000m3</data>
+      <data key="d13">8.0</data>
+      <data key="d14">0.01</data>
     </node>
     <node id="CHEM-HUM-OPR-001">
       <data key="d0">CHEM-HUM-OPR-001</data>
       <data key="d1">Process Operator</data>
       <data key="d2">human</data>
       <data key="d3">Operator</data>
-      <data key="d4">DCS</data>
-      <data key="d5">Board operator supervising the DCS</data>
-      <data key="d6">Medium</data>
-      <data key="d12">5.0</data>
-      <data key="d14">operator</data>
-      <data key="d15">0.4</data>
-      <data key="d16">standard</data>
+      <data key="d4">Operations</data>
+      <data key="d5">3</data>
+      <data key="d6">Board operator supervising the DCS from the control room</data>
+      <data key="d7">Medium</data>
+      <data key="d13">5.0</data>
+      <data key="d15">operator</data>
+      <data key="d16">0.4</data>
+      <data key="d17">standard</data>
+    </node>
+    <node id="CHEM-HUM-ENG-001">
+      <data key="d0">CHEM-HUM-ENG-001</data>
+      <data key="d1">Control Systems Engineer</data>
+      <data key="d2">human</data>
+      <data key="d3">Engineer</data>
+      <data key="d4">Operations</data>
+      <data key="d5">3</data>
+      <data key="d6">Engineer maintaining DCS configuration and control logic</data>
+      <data key="d7">Medium</data>
+      <data key="d13">6.0</data>
+      <data key="d15">engineer</data>
+      <data key="d16">0.5</data>
+      <data key="d17">elevated</data>
     </node>
     <edge source="CHEM-ENT-FW-001" target="CHEM-ENT-SW-001">
-      <data key="d17">CHEM-ENT-FW-001</data>
-      <data key="d18">CHEM-ENT-SW-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">HTTP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">CHEM-ENT-FW-001</data>
+      <data key="d19">CHEM-ENT-SW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">HTTPS</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+      <data key="d24">True</data>
+    </edge>
+    <edge source="CHEM-ENT-WS-001" target="CHEM-ENT-SW-001">
+      <data key="d18">CHEM-ENT-WS-001</data>
+      <data key="d19">CHEM-ENT-SW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">HTTPS</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
     <edge source="CHEM-ENT-SW-001" target="CHEM-ENT-DC-001">
-      <data key="d17">CHEM-ENT-SW-001</data>
-      <data key="d18">CHEM-ENT-DC-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">LDAP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">CHEM-ENT-SW-001</data>
+      <data key="d19">CHEM-ENT-DC-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">LDAP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
     <edge source="CHEM-ENT-SW-001" target="CHEM-ENT-ERP-001">
-      <data key="d17">CHEM-ENT-SW-001</data>
-      <data key="d18">CHEM-ENT-ERP-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">HTTP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+      <data key="d18">CHEM-ENT-SW-001</data>
+      <data key="d19">CHEM-ENT-ERP-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">HTTPS</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
-    <edge source="CHEM-ENT-SW-001" target="CHEM-DMZ-SW-001">
-      <data key="d17">CHEM-ENT-SW-001</data>
-      <data key="d18">CHEM-DMZ-SW-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">HTTP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">medium</data>
+    <edge source="CHEM-ENT-SW-001" target="CHEM-ENT-FW-002">
+      <data key="d18">CHEM-ENT-SW-001</data>
+      <data key="d19">CHEM-ENT-FW-002</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">HTTPS</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+      <data key="d24">True</data>
     </edge>
-    <edge source="CHEM-DMZ-SW-001" target="CHEM-DMZ-HIST-001">
-      <data key="d17">CHEM-DMZ-SW-001</data>
-      <data key="d18">CHEM-DMZ-HIST-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">OPC UA</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">medium</data>
+    <edge source="CHEM-ENT-FW-002" target="CHEM-IDMZ-SW-001">
+      <data key="d18">CHEM-ENT-FW-002</data>
+      <data key="d19">CHEM-IDMZ-SW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">HTTPS</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+      <data key="d24">True</data>
     </edge>
-    <edge source="CHEM-DMZ-SW-001" target="CHEM-DMZ-JUMP-001">
-      <data key="d17">CHEM-DMZ-SW-001</data>
-      <data key="d18">CHEM-DMZ-JUMP-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">SSH</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">medium</data>
+    <edge source="CHEM-IDMZ-SW-001" target="CHEM-IDMZ-JUMP-001">
+      <data key="d18">CHEM-IDMZ-SW-001</data>
+      <data key="d19">CHEM-IDMZ-JUMP-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">SSH</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
     </edge>
-    <edge source="CHEM-DMZ-JUMP-001" target="CHEM-DCS-SW-001">
-      <data key="d17">CHEM-DMZ-JUMP-001</data>
-      <data key="d18">CHEM-DCS-SW-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">RDP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">medium</data>
+    <edge source="CHEM-IDMZ-SW-001" target="CHEM-IDMZ-DB-001">
+      <data key="d18">CHEM-IDMZ-SW-001</data>
+      <data key="d19">CHEM-IDMZ-DB-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
     </edge>
-    <edge source="CHEM-DCS-SW-001" target="CHEM-DCS-OP-001">
-      <data key="d17">CHEM-DCS-SW-001</data>
-      <data key="d18">CHEM-DCS-OP-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">OPC UA</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+    <edge source="CHEM-IDMZ-SW-001" target="CHEM-IDMZ-HIST-001">
+      <data key="d18">CHEM-IDMZ-SW-001</data>
+      <data key="d19">CHEM-IDMZ-HIST-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
     </edge>
-    <edge source="CHEM-DCS-SW-001" target="CHEM-DCS-ENG-001">
-      <data key="d17">CHEM-DCS-SW-001</data>
-      <data key="d18">CHEM-DCS-ENG-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">OPC UA</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+    <edge source="CHEM-IDMZ-SW-001" target="CHEM-IDMZ-RAG-001">
+      <data key="d18">CHEM-IDMZ-SW-001</data>
+      <data key="d19">CHEM-IDMZ-RAG-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">VPN</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
-    <edge source="CHEM-DCS-SW-001" target="CHEM-DCS-CTRL-001">
-      <data key="d17">CHEM-DCS-SW-001</data>
-      <data key="d18">CHEM-DCS-CTRL-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">PROFIBUS</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+    <edge source="CHEM-IDMZ-SW-001" target="CHEM-IDMZ-PATCH-001">
+      <data key="d18">CHEM-IDMZ-SW-001</data>
+      <data key="d19">CHEM-IDMZ-PATCH-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">HTTPS</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
     </edge>
-    <edge source="CHEM-DCS-SW-001" target="CHEM-DCS-CTRL-002">
-      <data key="d17">CHEM-DCS-SW-001</data>
-      <data key="d18">CHEM-DCS-CTRL-002</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">PROFIBUS</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+    <edge source="CHEM-IDMZ-SW-001" target="CHEM-IDMZ-FW-001">
+      <data key="d18">CHEM-IDMZ-SW-001</data>
+      <data key="d19">CHEM-IDMZ-FW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">HTTPS</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+      <data key="d24">True</data>
     </edge>
-    <edge source="CHEM-DCS-SW-001" target="CHEM-DCS-CTRL-003">
-      <data key="d17">CHEM-DCS-SW-001</data>
-      <data key="d18">CHEM-DCS-CTRL-003</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">PROFIBUS</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+    <edge source="CHEM-IDMZ-JUMP-001" target="CHEM-OPS-ENG-001">
+      <data key="d18">CHEM-IDMZ-JUMP-001</data>
+      <data key="d19">CHEM-OPS-ENG-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">RDP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+      <data key="d24">True</data>
     </edge>
-    <edge source="CHEM-DCS-CTRL-001" target="CHEM-FLD-TC-001">
-      <data key="d17">CHEM-DCS-CTRL-001</data>
-      <data key="d18">CHEM-FLD-TC-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">HART</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+    <edge source="CHEM-IDMZ-RAG-001" target="CHEM-IDMZ-JUMP-001">
+      <data key="d18">CHEM-IDMZ-RAG-001</data>
+      <data key="d19">CHEM-IDMZ-JUMP-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">RDP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
-    <edge source="CHEM-DCS-CTRL-001" target="CHEM-FLD-PT-001">
-      <data key="d17">CHEM-DCS-CTRL-001</data>
+    <edge source="CHEM-IDMZ-FW-001" target="CHEM-OPS-SW-001">
+      <data key="d18">CHEM-IDMZ-FW-001</data>
+      <data key="d19">CHEM-OPS-SW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+      <data key="d24">True</data>
+    </edge>
+    <edge source="CHEM-OPS-SW-001" target="CHEM-OPS-OP-001">
+      <data key="d18">CHEM-OPS-SW-001</data>
+      <data key="d19">CHEM-OPS-OP-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-SW-001" target="CHEM-OPS-OP-002">
+      <data key="d18">CHEM-OPS-SW-001</data>
+      <data key="d19">CHEM-OPS-OP-002</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-SW-001" target="CHEM-OPS-ENG-001">
+      <data key="d18">CHEM-OPS-SW-001</data>
+      <data key="d19">CHEM-OPS-ENG-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">HTTPS</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-SW-001" target="CHEM-OPS-HIST-001">
+      <data key="d18">CHEM-OPS-SW-001</data>
+      <data key="d19">CHEM-OPS-HIST-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-SW-001" target="CHEM-OPS-APP-001">
+      <data key="d18">CHEM-OPS-SW-001</data>
+      <data key="d19">CHEM-OPS-APP-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-SW-001" target="CHEM-CTL-SW-001">
+      <data key="d18">CHEM-OPS-SW-001</data>
+      <data key="d19">CHEM-CTL-SW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">PROFINET</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+      <data key="d24">True</data>
+    </edge>
+    <edge source="CHEM-OPS-OP-001" target="CHEM-OPS-APP-001">
+      <data key="d18">CHEM-OPS-OP-001</data>
+      <data key="d19">CHEM-OPS-APP-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-OP-002" target="CHEM-OPS-APP-001">
+      <data key="d18">CHEM-OPS-OP-002</data>
+      <data key="d19">CHEM-OPS-APP-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-ENG-001" target="CHEM-CTL-DCS-001">
+      <data key="d18">CHEM-OPS-ENG-001</data>
+      <data key="d19">CHEM-CTL-DCS-001</data>
+      <data key="d20">programs / operates</data>
+      <data key="d21">PROFINET</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-ENG-001" target="CHEM-CTL-DCS-002">
+      <data key="d18">CHEM-OPS-ENG-001</data>
+      <data key="d19">CHEM-CTL-DCS-002</data>
+      <data key="d20">programs / operates</data>
+      <data key="d21">PROFINET</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-ENG-001" target="CHEM-CTL-DCS-003">
+      <data key="d18">CHEM-OPS-ENG-001</data>
+      <data key="d19">CHEM-CTL-DCS-003</data>
+      <data key="d20">programs / operates</data>
+      <data key="d21">PROFINET</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-HIST-001" target="CHEM-CTL-DCS-001">
+      <data key="d18">CHEM-OPS-HIST-001</data>
+      <data key="d19">CHEM-CTL-DCS-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-HIST-001" target="CHEM-CTL-DCS-002">
+      <data key="d18">CHEM-OPS-HIST-001</data>
+      <data key="d19">CHEM-CTL-DCS-002</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-APP-001" target="CHEM-CTL-DCS-001">
+      <data key="d18">CHEM-OPS-APP-001</data>
+      <data key="d19">CHEM-CTL-DCS-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-APP-001" target="CHEM-CTL-DCS-002">
+      <data key="d18">CHEM-OPS-APP-001</data>
+      <data key="d19">CHEM-CTL-DCS-002</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-OPS-APP-001" target="CHEM-CTL-DCS-003">
+      <data key="d18">CHEM-OPS-APP-001</data>
+      <data key="d19">CHEM-CTL-DCS-003</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">OPC UA</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-CTL-SW-001" target="CHEM-CTL-DCS-001">
+      <data key="d18">CHEM-CTL-SW-001</data>
+      <data key="d19">CHEM-CTL-DCS-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">PROFINET</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-CTL-SW-001" target="CHEM-CTL-DCS-002">
+      <data key="d18">CHEM-CTL-SW-001</data>
+      <data key="d19">CHEM-CTL-DCS-002</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">PROFINET</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-CTL-SW-001" target="CHEM-CTL-DCS-003">
+      <data key="d18">CHEM-CTL-SW-001</data>
+      <data key="d19">CHEM-CTL-DCS-003</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">PROFINET</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-CTL-DCS-001" target="CHEM-FLD-FCV-001">
+      <data key="d18">CHEM-CTL-DCS-001</data>
+      <data key="d19">CHEM-FLD-FCV-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">HART</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-CTL-DCS-001" target="CHEM-FLD-PUMP-001">
+      <data key="d18">CHEM-CTL-DCS-001</data>
+      <data key="d19">CHEM-FLD-PUMP-001</data>
+      <data key="d20">controls</data>
+      <data key="d21">PROFINET</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-CTL-DCS-001" target="CHEM-FLD-VFD-001">
+      <data key="d18">CHEM-CTL-DCS-001</data>
+      <data key="d19">CHEM-FLD-VFD-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">PROFINET</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-CTL-DCS-001" target="CHEM-SIS-GW-001">
+      <data key="d18">CHEM-CTL-DCS-001</data>
+      <data key="d19">CHEM-SIS-GW-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">PROFIsafe</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+      <data key="d24">True</data>
+    </edge>
+    <edge source="CHEM-CTL-DCS-002" target="CHEM-FLD-FCV-002">
+      <data key="d18">CHEM-CTL-DCS-002</data>
+      <data key="d19">CHEM-FLD-FCV-002</data>
+      <data key="d20">actuates</data>
+      <data key="d21">HART</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-CTL-DCS-002" target="CHEM-FLD-FCV-003">
+      <data key="d18">CHEM-CTL-DCS-002</data>
+      <data key="d19">CHEM-FLD-FCV-003</data>
+      <data key="d20">actuates</data>
+      <data key="d21">HART</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-CTL-DCS-003" target="CHEM-FLD-VALVE-001">
+      <data key="d18">CHEM-CTL-DCS-003</data>
+      <data key="d19">CHEM-FLD-VALVE-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-CTL-DCS-003" target="CHEM-FLD-PUMP-002">
+      <data key="d18">CHEM-CTL-DCS-003</data>
+      <data key="d19">CHEM-FLD-PUMP-002</data>
+      <data key="d20">controls</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-CTL-DCS-003" target="CHEM-REM-RTU-001">
+      <data key="d18">CHEM-CTL-DCS-003</data>
+      <data key="d19">CHEM-REM-RTU-001</data>
+      <data key="d20">controls</data>
+      <data key="d21">DNP3</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+      <data key="d24">True</data>
+      <data key="d25">Leased line + VPN</data>
+    </edge>
+    <edge source="CHEM-SIS-GW-001" target="CHEM-SIS-LS-001">
+      <data key="d18">CHEM-SIS-GW-001</data>
+      <data key="d19">CHEM-SIS-LS-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">PROFIsafe</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+      <data key="d24">True</data>
+    </edge>
+    <edge source="CHEM-SIS-LS-001" target="CHEM-SIS-SOV-001">
+      <data key="d18">CHEM-SIS-LS-001</data>
+      <data key="d19">CHEM-SIS-SOV-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">PROFIsafe</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-SIS-LS-001" target="CHEM-SIS-SOV-002">
+      <data key="d18">CHEM-SIS-LS-001</data>
+      <data key="d19">CHEM-SIS-SOV-002</data>
+      <data key="d20">actuates</data>
+      <data key="d21">PROFIsafe</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-SIS-ENG-001" target="CHEM-SIS-LS-001">
+      <data key="d18">CHEM-SIS-ENG-001</data>
+      <data key="d19">CHEM-SIS-LS-001</data>
+      <data key="d20">programs / operates</data>
+      <data key="d21">PROFIsafe</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+    </edge>
+    <edge source="CHEM-SIS-PT-001" target="CHEM-SIS-LS-001">
+      <data key="d18">CHEM-SIS-PT-001</data>
+      <data key="d19">CHEM-SIS-LS-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">PROFIsafe</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-SIS-TT-001" target="CHEM-SIS-LS-001">
+      <data key="d18">CHEM-SIS-TT-001</data>
+      <data key="d19">CHEM-SIS-LS-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">PROFIsafe</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-SIS-SOV-001" target="CHEM-PRO-REACTOR-001">
+      <data key="d18">CHEM-SIS-SOV-001</data>
+      <data key="d19">CHEM-PRO-REACTOR-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">PROFIsafe</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-SIS-SOV-002" target="CHEM-PRO-REACTOR-001">
+      <data key="d18">CHEM-SIS-SOV-002</data>
+      <data key="d19">CHEM-PRO-REACTOR-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">PROFIsafe</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-FLD-IO-001" target="CHEM-CTL-DCS-001">
+      <data key="d18">CHEM-FLD-IO-001</data>
+      <data key="d19">CHEM-CTL-DCS-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">PROFIBUS</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+    </edge>
+    <edge source="CHEM-FLD-IO-001" target="CHEM-CTL-DCS-002">
+      <data key="d18">CHEM-FLD-IO-001</data>
+      <data key="d19">CHEM-CTL-DCS-002</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">PROFIBUS</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">medium</data>
+    </edge>
+    <edge source="CHEM-FLD-TT-001" target="CHEM-CTL-DCS-001">
+      <data key="d18">CHEM-FLD-TT-001</data>
+      <data key="d19">CHEM-CTL-DCS-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">HART</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-FLD-PT-001" target="CHEM-CTL-DCS-001">
       <data key="d18">CHEM-FLD-PT-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">HART</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d19">CHEM-CTL-DCS-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">HART</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
-    <edge source="CHEM-DCS-CTRL-001" target="CHEM-FLD-LT-001">
-      <data key="d17">CHEM-DCS-CTRL-001</data>
+    <edge source="CHEM-FLD-LT-001" target="CHEM-CTL-DCS-001">
       <data key="d18">CHEM-FLD-LT-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">HART</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d19">CHEM-CTL-DCS-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">HART</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
-    <edge source="CHEM-DCS-CTRL-001" target="CHEM-FLD-CV-001">
-      <data key="d17">CHEM-DCS-CTRL-001</data>
-      <data key="d18">CHEM-FLD-CV-001</data>
-      <data key="d19">actuates</data>
-      <data key="d20">HART</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+    <edge source="CHEM-FLD-FCV-001" target="CHEM-PRO-REACTOR-001">
+      <data key="d18">CHEM-FLD-FCV-001</data>
+      <data key="d19">CHEM-PRO-REACTOR-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">HART</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
-    <edge source="CHEM-DCS-CTRL-001" target="CHEM-SIS-PLC-001">
-      <data key="d17">CHEM-DCS-CTRL-001</data>
-      <data key="d18">CHEM-SIS-PLC-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">PROFIsafe</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">medium</data>
-    </edge>
-    <edge source="CHEM-DCS-CTRL-002" target="CHEM-FLD-TC-002">
-      <data key="d17">CHEM-DCS-CTRL-002</data>
-      <data key="d18">CHEM-FLD-TC-002</data>
-      <data key="d19">monitors</data>
-      <data key="d20">HART</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
-    </edge>
-    <edge source="CHEM-DCS-CTRL-002" target="CHEM-FLD-PT-002">
-      <data key="d17">CHEM-DCS-CTRL-002</data>
-      <data key="d18">CHEM-FLD-PT-002</data>
-      <data key="d19">monitors</data>
-      <data key="d20">HART</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
-    </edge>
-    <edge source="CHEM-DCS-CTRL-002" target="CHEM-FLD-FT-001">
-      <data key="d17">CHEM-DCS-CTRL-002</data>
-      <data key="d18">CHEM-FLD-FT-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">HART</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
-    </edge>
-    <edge source="CHEM-DCS-CTRL-002" target="CHEM-FLD-CV-002">
-      <data key="d17">CHEM-DCS-CTRL-002</data>
-      <data key="d18">CHEM-FLD-CV-002</data>
-      <data key="d19">actuates</data>
-      <data key="d20">HART</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
-    </edge>
-    <edge source="CHEM-DCS-CTRL-002" target="CHEM-SIS-PLC-001">
-      <data key="d17">CHEM-DCS-CTRL-002</data>
-      <data key="d18">CHEM-SIS-PLC-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">PROFIsafe</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">medium</data>
-    </edge>
-    <edge source="CHEM-DCS-CTRL-003" target="CHEM-REM-RTU-001">
-      <data key="d17">CHEM-DCS-CTRL-003</data>
-      <data key="d18">CHEM-REM-RTU-001</data>
-      <data key="d19">controls</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">medium</data>
-    </edge>
-    <edge source="CHEM-DCS-CTRL-003" target="CHEM-FLD-PUMP-001">
-      <data key="d17">CHEM-DCS-CTRL-003</data>
+    <edge source="CHEM-FLD-PUMP-001" target="CHEM-PRO-REACTOR-001">
       <data key="d18">CHEM-FLD-PUMP-001</data>
-      <data key="d19">actuates</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+      <data key="d19">CHEM-PRO-REACTOR-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">PROFINET</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
-    <edge source="CHEM-DCS-CTRL-003" target="CHEM-FLD-VALVE-001">
-      <data key="d17">CHEM-DCS-CTRL-003</data>
-      <data key="d18">CHEM-FLD-VALVE-001</data>
-      <data key="d19">actuates</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+    <edge source="CHEM-FLD-PUMP-001" target="CHEM-PRO-PIPE-001">
+      <data key="d18">CHEM-FLD-PUMP-001</data>
+      <data key="d19">CHEM-PRO-PIPE-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">PROFINET</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
-    <edge source="CHEM-DCS-CTRL-003" target="CHEM-FLD-SENSOR-001">
-      <data key="d17">CHEM-DCS-CTRL-003</data>
+    <edge source="CHEM-FLD-PUMP-001" target="CHEM-PRO-TANK-002">
+      <data key="d18">CHEM-FLD-PUMP-001</data>
+      <data key="d19">CHEM-PRO-TANK-002</data>
+      <data key="d20">actuates</data>
+      <data key="d21">PROFINET</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-FLD-TT-002" target="CHEM-CTL-DCS-002">
+      <data key="d18">CHEM-FLD-TT-002</data>
+      <data key="d19">CHEM-CTL-DCS-002</data>
+      <data key="d20">monitors</data>
+      <data key="d21">HART</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-FLD-PT-002" target="CHEM-CTL-DCS-002">
+      <data key="d18">CHEM-FLD-PT-002</data>
+      <data key="d19">CHEM-CTL-DCS-002</data>
+      <data key="d20">monitors</data>
+      <data key="d21">HART</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-FLD-FT-001" target="CHEM-CTL-DCS-002">
+      <data key="d18">CHEM-FLD-FT-001</data>
+      <data key="d19">CHEM-CTL-DCS-002</data>
+      <data key="d20">monitors</data>
+      <data key="d21">HART</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-FLD-FCV-002" target="CHEM-PRO-COLUMN-001">
+      <data key="d18">CHEM-FLD-FCV-002</data>
+      <data key="d19">CHEM-PRO-COLUMN-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">HART</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-FLD-FCV-003" target="CHEM-PRO-HX-001">
+      <data key="d18">CHEM-FLD-FCV-003</data>
+      <data key="d19">CHEM-PRO-HX-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">HART</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-FLD-LT-002" target="CHEM-CTL-DCS-003">
+      <data key="d18">CHEM-FLD-LT-002</data>
+      <data key="d19">CHEM-CTL-DCS-003</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-FLD-LT-002" target="CHEM-PRO-TANK-002">
+      <data key="d18">CHEM-FLD-LT-002</data>
+      <data key="d19">CHEM-PRO-TANK-002</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-FLD-SENSOR-001" target="CHEM-CTL-DCS-003">
       <data key="d18">CHEM-FLD-SENSOR-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d19">CHEM-CTL-DCS-003</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
-    <edge source="CHEM-SIS-PLC-001" target="CHEM-SIS-ESD-001">
-      <data key="d17">CHEM-SIS-PLC-001</data>
-      <data key="d18">CHEM-SIS-ESD-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">PROFIsafe</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+    <edge source="CHEM-FLD-VALVE-001" target="CHEM-PRO-HX-001">
+      <data key="d18">CHEM-FLD-VALVE-001</data>
+      <data key="d19">CHEM-PRO-HX-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
-    <edge source="CHEM-SIS-PLC-001" target="CHEM-SIS-RELAY-001">
-      <data key="d17">CHEM-SIS-PLC-001</data>
-      <data key="d18">CHEM-SIS-RELAY-001</data>
-      <data key="d19">monitors</data>
-      <data key="d20">PROFIsafe</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+    <edge source="CHEM-FLD-PUMP-002" target="CHEM-PRO-TANK-001">
+      <data key="d18">CHEM-FLD-PUMP-002</data>
+      <data key="d19">CHEM-PRO-TANK-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
-    <edge source="CHEM-REM-RTU-001" target="CHEM-REM-SW-001">
-      <data key="d17">CHEM-REM-RTU-001</data>
+    <edge source="CHEM-PRO-HX-001" target="CHEM-PRO-COLUMN-001">
+      <data key="d18">CHEM-PRO-HX-001</data>
+      <data key="d19">CHEM-PRO-COLUMN-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Piping</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-PRO-PIPE-001" target="CHEM-PRO-COLUMN-001">
+      <data key="d18">CHEM-PRO-PIPE-001</data>
+      <data key="d19">CHEM-PRO-COLUMN-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">Piping</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-REM-SW-001" target="CHEM-REM-RTU-001">
       <data key="d18">CHEM-REM-SW-001</data>
-      <data key="d19">connects-to</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">low</data>
+      <data key="d19">CHEM-REM-RTU-001</data>
+      <data key="d20">connects-to</data>
+      <data key="d21">DNP3</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="CHEM-REM-RTU-001" target="CHEM-REM-PUMP-001">
-      <data key="d17">CHEM-REM-RTU-001</data>
-      <data key="d18">CHEM-REM-PUMP-001</data>
-      <data key="d19">actuates</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">CHEM-REM-RTU-001</data>
+      <data key="d19">CHEM-REM-PUMP-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
     <edge source="CHEM-REM-RTU-001" target="CHEM-REM-VALVE-001">
-      <data key="d17">CHEM-REM-RTU-001</data>
-      <data key="d18">CHEM-REM-VALVE-001</data>
-      <data key="d19">actuates</data>
-      <data key="d20">Modbus TCP</data>
-      <data key="d21">unidirectional</data>
-      <data key="d22">low</data>
+      <data key="d18">CHEM-REM-RTU-001</data>
+      <data key="d19">CHEM-REM-VALVE-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
     </edge>
-    <edge source="CHEM-HUM-OPR-001" target="CHEM-DCS-OP-001">
-      <data key="d17">CHEM-HUM-OPR-001</data>
-      <data key="d18">CHEM-DCS-OP-001</data>
-      <data key="d19">programs / operates</data>
-      <data key="d20">HMI</data>
-      <data key="d21">bidirectional</data>
-      <data key="d22">high</data>
+    <edge source="CHEM-REM-LT-001" target="CHEM-REM-RTU-001">
+      <data key="d18">CHEM-REM-LT-001</data>
+      <data key="d19">CHEM-REM-RTU-001</data>
+      <data key="d20">monitors</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-REM-PUMP-001" target="CHEM-REM-TANK-001">
+      <data key="d18">CHEM-REM-PUMP-001</data>
+      <data key="d19">CHEM-REM-TANK-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-REM-VALVE-001" target="CHEM-REM-TANK-001">
+      <data key="d18">CHEM-REM-VALVE-001</data>
+      <data key="d19">CHEM-REM-TANK-001</data>
+      <data key="d20">actuates</data>
+      <data key="d21">Modbus TCP</data>
+      <data key="d22">unidirectional</data>
+      <data key="d23">low</data>
+    </edge>
+    <edge source="CHEM-HUM-OPR-001" target="CHEM-OPS-OP-001">
+      <data key="d18">CHEM-HUM-OPR-001</data>
+      <data key="d19">CHEM-OPS-OP-001</data>
+      <data key="d20">programs / operates</data>
+      <data key="d21">HMI</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-HUM-OPR-001" target="CHEM-OPS-OP-002">
+      <data key="d18">CHEM-HUM-OPR-001</data>
+      <data key="d19">CHEM-OPS-OP-002</data>
+      <data key="d20">programs / operates</data>
+      <data key="d21">HMI</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
+    </edge>
+    <edge source="CHEM-HUM-ENG-001" target="CHEM-OPS-ENG-001">
+      <data key="d18">CHEM-HUM-ENG-001</data>
+      <data key="d19">CHEM-OPS-ENG-001</data>
+      <data key="d20">programs / operates</data>
+      <data key="d21">HTTPS</data>
+      <data key="d22">bidirectional</data>
+      <data key="d23">high</data>
     </edge>
   </graph>
 </graphml>

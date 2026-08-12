@@ -14,6 +14,7 @@ from pathlib import Path
 from backend.assets import load_topology
 from backend.attack_paths import compute_attack_paths
 from backend.enrichment import enrich_graph
+from backend.topology import audit_ics_architecture
 from backend.graph_builder import build_graph_skeleton, graph_to_dict
 from backend.probability import compute_base_probs
 from backend.cpt_generator import cpts_to_dict, parameterize
@@ -136,6 +137,8 @@ def run(
             # Topology warnings stay strictly about input normalisation; any
             # configuration deviation is reported separately below.
             "topology_warnings": topology_warnings,
+            # Advisory ICS architectural review (Purdue/zoning/SIS findings).
+            "architecture_issues": audit_ics_architecture(assets, relationships),
             "settings_warnings": settings_warnings,
             # Active risk thresholds so every consumer (UI, reports) reads the
             # same values the backend used for classification.

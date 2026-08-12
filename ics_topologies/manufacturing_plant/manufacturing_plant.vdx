@@ -14,7 +14,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-ENT-FW-001,device,7.5,true,true,8.0
+            asset,MFG-ENT-FW-001,device,7.5,true,true,8.0;name=Perimeter Firewall;zone=Enterprise;type=Firewall;desc=Edge firewall;purdue=4;vendor=Fortinet;model=FortiGate 600F
           </Text>
         </Shape>
         <Shape ID="2" Type="Shape" NameU="MFG-ENT-SW-001">
@@ -23,7 +23,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-ENT-SW-001,device,6.5,false,true,6.0
+            asset,MFG-ENT-SW-001,device,6.5,false,true,6.0;name=Enterprise Switch;zone=Enterprise;type=Network Switch;desc=Core switch;purdue=4;vendor=Cisco;model=Catalyst 9300
           </Text>
         </Shape>
         <Shape ID="3" Type="Shape" NameU="MFG-ENT-DC-001">
@@ -32,7 +32,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-ENT-DC-001,device,8.1,false,false,9.0
+            asset,MFG-ENT-DC-001,device,8.1,false,false,9.0;name=Domain Controller;zone=Enterprise;type=Server;desc=AD;purdue=4;vendor=Microsoft;model=Windows Server 2022
           </Text>
         </Shape>
         <Shape ID="4" Type="Shape" NameU="MFG-ENT-MES-001">
@@ -41,7 +41,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-ENT-MES-001,device,7.5,false,false,8.0
+            asset,MFG-ENT-MES-001,device,7.5,false,false,8.0;name=MES Server;zone=Enterprise;type=Server;desc=Manufacturing Execution System;purdue=4;vendor=Siemens;model=SIMATIC IT
           </Text>
         </Shape>
         <Shape ID="5" Type="Shape" NameU="MFG-ENT-ERP-001">
@@ -50,7 +50,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-ENT-ERP-001,device,6.5,false,false,5.0
+            asset,MFG-ENT-ERP-001,device,6.5,false,false,5.0;name=ERP Server;zone=Enterprise;type=Server;desc=ERP;purdue=4;vendor=SAP;model=S/4HANA
           </Text>
         </Shape>
         <Shape ID="6" Type="Shape" NameU="MFG-DMZ-SW-001">
@@ -59,7 +59,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-DMZ-SW-001,device,6.5,false,false,7.0
+            asset,MFG-DMZ-SW-001,device,6.5,false,false,7.0;name=DMZ Switch;zone=DMZ;type=Network Switch;desc=DMZ switch;purdue=3.5;vendor=Cisco;model=IE 4000
           </Text>
         </Shape>
         <Shape ID="7" Type="Shape" NameU="MFG-DMZ-HIST-001">
@@ -68,7 +68,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-DMZ-HIST-001,device,7.0,false,false,5.0
+            asset,MFG-DMZ-HIST-001,device,7.0,false,false,5.0;name=Historian;zone=DMZ;type=Server;desc=Data historian;purdue=3.5;vendor=OSIsoft;model=PI Server
           </Text>
         </Shape>
         <Shape ID="8" Type="Shape" NameU="MFG-DMZ-JUMP-001">
@@ -77,7 +77,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-DMZ-JUMP-001,device,8.1,true,true,8.0
+            asset,MFG-DMZ-JUMP-001,device,8.1,true,true,8.0;name=Jump Server;zone=DMZ;type=Server;desc=OT access;purdue=3.5;vendor=Microsoft;model=Windows Server 2022
           </Text>
         </Shape>
         <Shape ID="9" Type="Shape" NameU="MFG-SF-SW-001">
@@ -86,7 +86,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-SF-SW-001,device,6.5,false,false,8.0
+            asset,MFG-SF-SW-001,device,6.5,false,false,8.0;name=Shop Floor Switch;zone=ShopFloor;type=Network Switch;desc=Industrial Ethernet switch;purdue=3;vendor=Siemens;model=SCALANCE XM408
           </Text>
         </Shape>
         <Shape ID="10" Type="Shape" NameU="MFG-SF-SCADA-001">
@@ -95,7 +95,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-SF-SCADA-001,device,8.5,false,false,9.0
+            asset,MFG-SF-SCADA-001,device,8.5,false,false,9.0;name=SCADA Server;zone=ShopFloor;type=SCADA;desc=Production SCADA;purdue=3;vendor=Siemens;model=WinCC
           </Text>
         </Shape>
         <Shape ID="11" Type="Shape" NameU="MFG-SF-HMI-001">
@@ -104,7 +104,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-SF-HMI-001,device,7.5,false,false,6.0
+            asset,MFG-SF-HMI-001,device,7.5,false,false,6.0;name=Production HMI;zone=ShopFloor;type=HMI;desc=Operator console;purdue=3;vendor=Siemens;model=SIMATIC HMI
           </Text>
         </Shape>
         <Shape ID="12" Type="Shape" NameU="MFG-CELL1-SW-001">
@@ -113,7 +113,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-CELL1-SW-001,device,6.5,false,false,7.0
+            asset,MFG-CELL1-SW-001,device,6.5,false,false,7.0;name=Cell 1 Switch;zone=Cell;type=Network Switch;desc=Switch for welding cell;purdue=2;vendor=Siemens;model=SCALANCE XB208
           </Text>
         </Shape>
         <Shape ID="13" Type="Shape" NameU="MFG-CELL1-PLC-001">
@@ -122,7 +122,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-CELL1-PLC-001,device,8.1,false,false,9.0
+            asset,MFG-CELL1-PLC-001,device,8.1,false,false,9.0;name=Cell 1 PLC;zone=Cell;type=PLC;desc=Welding cell controller;purdue=2;vendor=Siemens;model=S7-1500
           </Text>
         </Shape>
         <Shape ID="14" Type="Shape" NameU="MFG-CELL1-ROBOT-001">
@@ -131,7 +131,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-CELL1-ROBOT-001,device,7.5,false,false,8.0
+            asset,MFG-CELL1-ROBOT-001,device,7.5,false,false,8.0;name=Robot Controller;zone=Cell;type=Robot;desc=Welding robot;purdue=2;vendor=KUKA;model=KR Cybertech
           </Text>
         </Shape>
         <Shape ID="15" Type="Shape" NameU="MFG-CELL1-POS-001">
@@ -140,7 +140,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-CELL1-POS-001,physical,0.01,5.0
+            asset,MFG-CELL1-POS-001,physical,0.01,5.0;name=Positioner;zone=Cell;type=Positioner;desc=Workpiece positioner;purdue=2;vendor=FANUC;model=2-axis pos.
           </Text>
         </Shape>
         <Shape ID="16" Type="Shape" NameU="MFG-CELL2-SW-001">
@@ -149,7 +149,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-CELL2-SW-001,device,6.5,false,false,7.0
+            asset,MFG-CELL2-SW-001,device,6.5,false,false,7.0;name=Cell 2 Switch;zone=Cell;type=Network Switch;desc=Switch for assembly cell;purdue=2;vendor=Siemens;model=SCALANCE XB208
           </Text>
         </Shape>
         <Shape ID="17" Type="Shape" NameU="MFG-CELL2-PLC-001">
@@ -158,7 +158,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-CELL2-PLC-001,device,8.1,false,false,9.0
+            asset,MFG-CELL2-PLC-001,device,8.1,false,false,9.0;name=Cell 2 PLC;zone=Cell;type=PLC;desc=Assembly controller;purdue=2;vendor=Siemens;model=S7-1500
           </Text>
         </Shape>
         <Shape ID="18" Type="Shape" NameU="MFG-CELL2-HMI-001">
@@ -167,7 +167,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-CELL2-HMI-001,device,7.0,false,false,6.0
+            asset,MFG-CELL2-HMI-001,device,7.0,false,false,6.0;name=Cell 2 HMI;zone=Cell;type=HMI;desc=Assembly operator panel;purdue=2;vendor=Siemens;model=SIMATIC HMI
           </Text>
         </Shape>
         <Shape ID="19" Type="Shape" NameU="MFG-SAF-PLC-001">
@@ -176,7 +176,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-SAF-PLC-001,device,7.0,false,false,9.0
+            asset,MFG-SAF-PLC-001,device,7.0,false,false,9.0;name=Safety PLC;zone=Safety;type=SafetyPLC;desc=Safety controller for light curtains;purdue=2;vendor=Siemens;model=S7-1500F
           </Text>
         </Shape>
         <Shape ID="20" Type="Shape" NameU="MFG-SAF-LC-001">
@@ -185,7 +185,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-SAF-LC-001,physical,0.01,6.0
+            asset,MFG-SAF-LC-001,physical,0.01,6.0;name=Light Curtain;zone=Safety;type=SafetyDevice;desc=Safety light curtain;purdue=1;vendor=SICK;model=C4000
           </Text>
         </Shape>
         <Shape ID="21" Type="Shape" NameU="MFG-SAF-ESTOP-001">
@@ -194,7 +194,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-SAF-ESTOP-001,physical,0.01,6.0
+            asset,MFG-SAF-ESTOP-001,physical,0.01,6.0;name=E-Stop;zone=Safety;type=SafetyDevice;desc=Emergency stop;purdue=1;vendor=Pilz;model=PNOZ
           </Text>
         </Shape>
         <Shape ID="22" Type="Shape" NameU="MFG-FLD-VFD-001">
@@ -203,7 +203,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-FLD-VFD-001,device,7.5,false,false,7.0
+            asset,MFG-FLD-VFD-001,device,7.5,false,false,7.0;name=Conveyor VFD;zone=Field;type=VFD;desc=VFD for conveyor;purdue=1;vendor=ABB;model=ACS580
           </Text>
         </Shape>
         <Shape ID="23" Type="Shape" NameU="MFG-FLD-MOTOR-001">
@@ -212,7 +212,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-FLD-MOTOR-001,physical,0.01,5.0
+            asset,MFG-FLD-MOTOR-001,physical,0.01,5.0;name=Conveyor Motor;zone=Field;type=Motor;desc=Conveyor drive;purdue=1;vendor=Siemens;model=1LA8
           </Text>
         </Shape>
         <Shape ID="24" Type="Shape" NameU="MFG-FLD-SENSOR-001">
@@ -221,7 +221,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-FLD-SENSOR-001,physical,0.01,4.0
+            asset,MFG-FLD-SENSOR-001,physical,0.01,4.0;name=Proximity Sensor;zone=Field;type=Sensor;desc=Part presence;purdue=1;vendor=Banner;model=Q45
           </Text>
         </Shape>
         <Shape ID="25" Type="Shape" NameU="MFG-FLD-SENSOR-002">
@@ -230,7 +230,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-FLD-SENSOR-002,physical,0.01,5.0
+            asset,MFG-FLD-SENSOR-002,physical,0.01,5.0;name=Vision Sensor;zone=Field;type=Sensor;desc=Quality camera;purdue=1;vendor=Cognex;model=In-Sight 7000
           </Text>
         </Shape>
         <Shape ID="26" Type="Shape" NameU="MFG-FLD-ACT-001">
@@ -239,7 +239,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-FLD-ACT-001,physical,0.01,4.0
+            asset,MFG-FLD-ACT-001,physical,0.01,4.0;name=Pneumatic Cylinder;zone=Field;type=Actuator;desc=Clamp cylinder;purdue=1;vendor=SMC;model=CQ2
           </Text>
         </Shape>
         <Shape ID="27" Type="Shape" NameU="MFG-HUM-SUP-001">
@@ -248,7 +248,7 @@
           <Width>150</Width>
           <Height>60</Height>
           <Text>
-            asset,MFG-HUM-SUP-001,human,operator,0.4,standard,4.0
+            asset,MFG-HUM-SUP-001,human,operator,0.4,standard,4.0;name=Production Supervisor;zone=ShopFloor;type=Supervisor;desc=Supervisor monitoring production lines;purdue=3
           </Text>
         </Shape>
         <Shape ID="28" Type="Shape" NameU="conn_MFG-ENT-FW-001_MFG-ENT-SW-001">
@@ -257,7 +257,7 @@
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,MFG-ENT-FW-001,MFG-ENT-SW-001,connects-to,false,HTTP,low,
+            relationship,MFG-ENT-FW-001,MFG-ENT-SW-001,connects-to,true,HTTP,low,
           </Text>
         </Shape>
         <Shape ID="29" Type="Shape" NameU="conn_MFG-ENT-SW-001_MFG-ENT-DC-001">
@@ -293,7 +293,7 @@
           <Width>0</Width>
           <Height>0</Height>
           <Text>
-            relationship,MFG-ENT-SW-001,MFG-DMZ-SW-001,connects-to,false,HTTP,medium,
+            relationship,MFG-ENT-SW-001,MFG-DMZ-SW-001,connects-to,true,HTTP,medium,
           </Text>
         </Shape>
         <Shape ID="33" Type="Shape" NameU="conn_MFG-DMZ-SW-001_MFG-DMZ-HIST-001">

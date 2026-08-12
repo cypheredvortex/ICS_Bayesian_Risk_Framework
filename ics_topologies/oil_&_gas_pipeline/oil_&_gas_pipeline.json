@@ -8,18 +8,21 @@
   "zones": [
     {
       "id": "ControlCenter",
-      "name": "Control Center",
-      "color": "#ff6b6b"
+      "name": "Control Center (L3)",
+      "color": "#ff6b6b",
+      "purdue_level": "3"
     },
     {
       "id": "RemoteSite",
-      "name": "Remote Sites",
-      "color": "#ffa94d"
+      "name": "Remote Sites (L1)",
+      "color": "#ffa94d",
+      "purdue_level": "1"
     },
     {
       "id": "Field",
-      "name": "Field Instruments",
-      "color": "#20c997"
+      "name": "Field Instruments (L1)",
+      "color": "#20c997",
+      "purdue_level": "1"
     }
   ],
   "assets": [
@@ -36,7 +39,8 @@
       "cvss_type": 7.5,
       "exposed": true,
       "patched": true,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "4"
     },
     {
       "id": "PIPE-CTR-SW-001",
@@ -51,7 +55,8 @@
       "cvss_type": 6.5,
       "exposed": false,
       "patched": true,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "3"
     },
     {
       "id": "PIPE-CTR-SCADA-001",
@@ -66,7 +71,8 @@
       "cvss_type": 8.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 10.0
+      "consequence_severity": 10.0,
+      "purdue_level": "3"
     },
     {
       "id": "PIPE-CTR-HIST-001",
@@ -81,7 +87,8 @@
       "cvss_type": 7.0,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 6.0
+      "consequence_severity": 6.0,
+      "purdue_level": "3"
     },
     {
       "id": "PIPE-CTR-HMI-001",
@@ -96,7 +103,8 @@
       "cvss_type": 7.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 7.0
+      "consequence_severity": 7.0,
+      "purdue_level": "3"
     },
     {
       "id": "PIPE-CTR-EWS-001",
@@ -111,7 +119,8 @@
       "cvss_type": 7.8,
       "exposed": false,
       "patched": true,
-      "consequence_severity": 5.0
+      "consequence_severity": 5.0,
+      "purdue_level": "3"
     },
     {
       "id": "PIPE-RTU-001",
@@ -126,7 +135,8 @@
       "cvss_type": 8.0,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-RTU-002",
@@ -141,7 +151,8 @@
       "cvss_type": 8.0,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-RTU-003",
@@ -156,7 +167,8 @@
       "cvss_type": 8.0,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-RTU-004",
@@ -171,7 +183,8 @@
       "cvss_type": 8.0,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-SW-001",
@@ -186,7 +199,8 @@
       "cvss_type": 6.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 7.0
+      "consequence_severity": 7.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-SW-002",
@@ -201,7 +215,8 @@
       "cvss_type": 6.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 7.0
+      "consequence_severity": 7.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-PUMP-001",
@@ -214,7 +229,8 @@
       "vendor": "Sulzer",
       "model": "Z6",
       "p_base_override": 0.02,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-PUMP-002",
@@ -227,7 +243,8 @@
       "vendor": "Sulzer",
       "model": "Z6",
       "p_base_override": 0.02,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-VFD-001",
@@ -242,7 +259,8 @@
       "cvss_type": 7.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 7.0
+      "consequence_severity": 7.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-VALVE-001",
@@ -255,7 +273,8 @@
       "vendor": "Emerson",
       "model": "Fisher V500",
       "p_base_override": 0.02,
-      "consequence_severity": 7.0
+      "consequence_severity": 7.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-SENSOR-001",
@@ -268,7 +287,8 @@
       "vendor": "Emerson",
       "model": "Rosemount 3051",
       "p_base_override": 0.01,
-      "consequence_severity": 5.0
+      "consequence_severity": 5.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-SENSOR-002",
@@ -281,7 +301,8 @@
       "vendor": "Emerson",
       "model": "Daniel 3410",
       "p_base_override": 0.01,
-      "consequence_severity": 6.0
+      "consequence_severity": 6.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-SENSOR-003",
@@ -294,7 +315,8 @@
       "vendor": "Emerson",
       "model": "Rosemount 214",
       "p_base_override": 0.01,
-      "consequence_severity": 4.0
+      "consequence_severity": 4.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-PUMP-003",
@@ -307,7 +329,8 @@
       "vendor": "Sulzer",
       "model": "Z6",
       "p_base_override": 0.02,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-VFD-002",
@@ -322,7 +345,8 @@
       "cvss_type": 7.5,
       "exposed": false,
       "patched": false,
-      "consequence_severity": 7.0
+      "consequence_severity": 7.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-VALVE-002",
@@ -335,7 +359,8 @@
       "vendor": "Emerson",
       "model": "Fisher V500",
       "p_base_override": 0.02,
-      "consequence_severity": 7.0
+      "consequence_severity": 7.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-SENSOR-004",
@@ -348,7 +373,8 @@
       "vendor": "Emerson",
       "model": "Rosemount 3051",
       "p_base_override": 0.01,
-      "consequence_severity": 5.0
+      "consequence_severity": 5.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-SENSOR-005",
@@ -361,7 +387,8 @@
       "vendor": "Emerson",
       "model": "Daniel 3410",
       "p_base_override": 0.01,
-      "consequence_severity": 6.0
+      "consequence_severity": 6.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-VALVE-003",
@@ -374,7 +401,8 @@
       "vendor": "Emerson",
       "model": "Fisher V500",
       "p_base_override": 0.02,
-      "consequence_severity": 8.0
+      "consequence_severity": 8.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-SENSOR-006",
@@ -387,7 +415,8 @@
       "vendor": "Emerson",
       "model": "Rosemount 3051",
       "p_base_override": 0.01,
-      "consequence_severity": 5.0
+      "consequence_severity": 5.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-SENSOR-007",
@@ -400,7 +429,8 @@
       "vendor": "Emerson",
       "model": "Daniel 3410",
       "p_base_override": 0.01,
-      "consequence_severity": 6.0
+      "consequence_severity": 6.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-SENSOR-008",
@@ -413,7 +443,8 @@
       "vendor": "Emerson",
       "model": "Micro Motion",
       "p_base_override": 0.01,
-      "consequence_severity": 5.0
+      "consequence_severity": 5.0,
+      "purdue_level": "1"
     },
     {
       "id": "PIPE-HUM-DSP-001",
@@ -426,7 +457,8 @@
       "role": "operator",
       "awareness": 0.45,
       "privilege": "standard",
-      "consequence_severity": 4.0
+      "consequence_severity": 4.0,
+      "purdue_level": "3"
     }
   ],
   "connections": [
@@ -436,7 +468,8 @@
       "type": "connects-to",
       "protocol": "HTTP",
       "direction": "bidirectional",
-      "trust": "low"
+      "trust": "low",
+      "firewalled": true
     },
     {
       "source": "PIPE-CTR-SW-001",

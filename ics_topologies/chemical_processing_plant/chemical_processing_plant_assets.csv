@@ -1,33 +1,61 @@
-id,name,kind,type,zone,description,criticality,vendor,model,ip,cvss_type,exposed,patched,consequence_severity,role,awareness,privilege,p_base_override
-CHEM-ENT-FW-001,Corporate Firewall,device,Firewall,Enterprise,Internet edge,High,Palo Alto,PA-5250,,7.5,true,true,9.0,,,,
-CHEM-ENT-SW-001,Enterprise Switch,device,Network Switch,Enterprise,Corporate network,High,Cisco,Catalyst 9300,,6.5,false,true,6.0,,,,
-CHEM-ENT-DC-001,Domain Controller,device,Server,Enterprise,AD,High,Microsoft,Windows Server 2022,,8.1,false,false,9.0,,,,
-CHEM-ENT-ERP-001,ERP Server,device,Server,Enterprise,ERP,Medium,SAP,S/4HANA,,6.5,false,false,5.0,,,,
-CHEM-DMZ-SW-001,DMZ Switch,device,Network Switch,DMZ,Process DMZ,High,Cisco,IE 4000,,6.5,false,false,7.0,,,,
-CHEM-DMZ-HIST-001,Historian,device,Server,DMZ,Plant historian,High,OSIsoft,PI Server,,7.0,false,false,6.0,,,,
-CHEM-DMZ-JUMP-001,Jump Server,device,Server,DMZ,OT jump host,High,Microsoft,Windows Server 2022,,8.1,true,true,8.0,,,,
-CHEM-DCS-SW-001,DCS Switch,device,Network Switch,DCS,DCS backbone,High,Siemens,SCALANCE XM408,,6.5,false,false,8.0,,,,
-CHEM-DCS-OP-001,Operator Station,device,Workstation,DCS,DCS operator console,High,Siemens,SIMATIC PCS 7,,7.5,false,false,8.0,,,,
-CHEM-DCS-ENG-001,Engineering Station,device,Workstation,DCS,DCS engineering,High,Siemens,SIMATIC PCS 7,,7.8,false,true,7.0,,,,
-CHEM-DCS-CTRL-001,DCS Controller (Reactor),device,DCSController,DCS,Reactor temperature/pressure control,High,Siemens,AS 410,,8.5,false,false,10.0,,,,
-CHEM-DCS-CTRL-002,DCS Controller (Distillation),device,DCSController,DCS,Distillation column control,High,Siemens,AS 410,,8.5,false,false,10.0,,,,
-CHEM-DCS-CTRL-003,DCS Controller (Utilities),device,DCSController,DCS,"Utilities (steam, cooling)",Medium,Siemens,AS 410,,8.0,false,false,8.0,,,,
-CHEM-SIS-PLC-001,Safety PLC,device,SafetyPLC,SIS,Safety Instrumented System,High,Siemens,S7-400F,,7.0,false,false,10.0,,,,
-CHEM-SIS-ESD-001,ESD Switch,physical,SafetyDevice,SIS,Emergency shutdown button,High,Pilz,PNOZ,,,,,9.0,,,,0.01
-CHEM-SIS-RELAY-001,ESD Relay,physical,SafetyRelay,SIS,Safety relay,High,Pilz,PNOZ X3,,,,,9.0,,,,0.01
-CHEM-FLD-TC-001,Thermocouple (Reactor),physical,Sensor,Field,Reactor temperature,High,Emerson,Rosemount 214,,,,,8.0,,,,0.01
-CHEM-FLD-PT-001,Pressure Transmitter (Reactor),physical,Sensor,Field,Reactor pressure,High,Emerson,Rosemount 3051,,,,,8.0,,,,0.01
-CHEM-FLD-LT-001,Level Transmitter (Reactor),physical,Sensor,Field,Reactor level,High,Emerson,Rosemount 3300,,,,,7.0,,,,0.01
-CHEM-FLD-CV-001,Control Valve (Reactor),physical,Valve,Field,Feed control valve,High,Emerson,Fisher V500,,,,,8.0,,,,0.02
-CHEM-FLD-TC-002,Thermocouple (Distillation),physical,Sensor,Field,Column temperature,High,Emerson,Rosemount 214,,,,,8.0,,,,0.01
-CHEM-FLD-PT-002,Pressure Transmitter (Distillation),physical,Sensor,Field,Column pressure,High,Emerson,Rosemount 3051,,,,,8.0,,,,0.01
-CHEM-FLD-FT-001,Flow Transmitter (Distillation),physical,Sensor,Field,Reflux flow,High,Emerson,Rosemount 8700,,,,,7.0,,,,0.01
-CHEM-FLD-CV-002,Control Valve (Distillation),physical,Valve,Field,Reflux valve,High,Emerson,Fisher V500,,,,,8.0,,,,0.02
-CHEM-FLD-PUMP-001,Product Pump,physical,Pump,Field,Transfer pump to storage,High,Grundfos,CR 64,,,,,7.0,,,,0.02
-CHEM-FLD-VALVE-001,Storage Tank Valve,physical,Valve,Field,Tank inlet/outlet,Medium,Emerson,Fisher V500,,,,,7.0,,,,0.02
-CHEM-FLD-SENSOR-001,Tank Level Sensor,physical,Sensor,Field,Storage tank level,Medium,Emerson,Rosemount 3300,,,,,6.0,,,,0.01
-CHEM-REM-SW-001,Remote Switch,device,Network Switch,Remote,Switch at remote tank farm,Medium,Siemens,SCALANCE XB208,,6.5,false,false,6.0,,,,
-CHEM-REM-RTU-001,Remote RTU,device,RTU,Remote,RTU for tank farm,High,Control Microsystems,SCADAPack 470,,8.0,false,false,7.0,,,,
-CHEM-REM-PUMP-001,Remote Transfer Pump,physical,Pump,Remote,Pump to rail cars,High,Grundfos,CR 90,,,,,6.0,,,,0.02
-CHEM-REM-VALVE-001,Remote Valve,physical,Valve,Remote,Rail loading valve,Medium,Emerson,Fisher V500,,,,,6.0,,,,0.02
-CHEM-HUM-OPR-001,Process Operator,human,Operator,DCS,Board operator supervising the DCS,Medium,,,,,,,5.0,operator,0.4,standard,
+id,name,kind,type,zone,purdue_level,description,criticality,vendor,model,ip,cvss_type,exposed,patched,consequence_severity,role,awareness,privilege,p_base_override
+CHEM-ENT-FW-001,Internet Edge Firewall,device,Firewall,Enterprise,5,Corporate internet edge firewall,High,Palo Alto,PA-5250,,7.5,true,true,9.0,,,,
+CHEM-ENT-WS-001,Business Workstation,device,Workstation,Enterprise,4,Corporate user workstation on the business LAN,Medium,Dell,OptiPlex 7000,,7.8,false,false,5.0,,,,
+CHEM-ENT-SW-001,Enterprise Core Switch,device,Network Switch,Enterprise,4,Core corporate network switch,High,Cisco,Catalyst 9300,,6.5,false,true,6.0,,,,
+CHEM-ENT-DC-001,Domain Controller,device,Server,Enterprise,4,Active Directory for the corporate domain,High,Microsoft,Windows Server 2022,,8.1,false,false,9.0,,,,
+CHEM-ENT-ERP-001,ERP Server,device,Server,Enterprise,4,Enterprise resource planning (SAP S/4HANA),Medium,SAP,S/4HANA,,6.5,false,false,5.0,,,,
+CHEM-ENT-FW-002,Enterprise Firewall,device,Firewall,Enterprise,4,"Enterprise-to-IDMZ boundary firewall (stateful, allow-list)",High,Palo Alto,PA-3260,,7.5,false,true,8.0,,,,
+CHEM-IDMZ-SW-001,IDMZ Switch,device,Network Switch,IDMZ,3.5,Industrial DMZ network switch,High,Cisco,IE 4000,,6.5,false,false,7.0,,,,
+CHEM-IDMZ-JUMP-001,Jump Server,device,Server,IDMZ,3.5,Bastion host for controlled administrative access into OT,High,Microsoft,Windows Server 2022,,8.1,true,true,8.0,,,,
+CHEM-IDMZ-DB-001,Data Broker,device,Gateway,IDMZ,3.5,OPC UA data broker bridging OT data to the enterprise (unidirectional publisher),High,Software Toolbox,Cogent DataHub,,7.0,false,false,7.0,,,,
+CHEM-IDMZ-HIST-001,Historian Replica,device,Server,IDMZ,3.5,Read-only historian replica serving the enterprise,Medium,OSIsoft,PI Server,,7.0,false,false,5.0,,,,
+CHEM-IDMZ-RAG-001,Remote Access Gateway,device,Gateway,IDMZ,3.5,VPN concentrator terminating vendor/support remote sessions,High,Palo Alto,GlobalProtect,,8.0,true,true,8.0,,,,
+CHEM-IDMZ-PATCH-001,Patch & Update Repository,device,Server,IDMZ,3.5,Staged patch/AV signature repository for OT hosts,Medium,Microsoft,WSUS,,6.5,false,true,6.0,,,,
+CHEM-IDMZ-FW-001,OT Firewall,device,Firewall,IDMZ,3.5,OT-side firewall between the IDMZ and the site operations network,High,Palo Alto,PA-3260,,7.5,false,true,8.0,,,,
+CHEM-OPS-SW-001,Operations Switch,device,Network Switch,Operations,3,Site operations (L3) network switch,High,Siemens,SCALANCE XM408,,6.5,false,false,8.0,,,,
+CHEM-OPS-OP-001,Operator Station 1 (HMI),device,Workstation,Operations,3,Primary DCS operator console in the control room,High,Siemens,SIMATIC PCS 7,,7.5,false,false,8.0,,,,
+CHEM-OPS-OP-002,Operator Station 2 (HMI),device,Workstation,Operations,3,Backup DCS operator console (utilities area),High,Siemens,SIMATIC PCS 7,,7.5,false,false,8.0,,,,
+CHEM-OPS-ENG-001,Engineering Workstation,device,Workstation,Operations,3,"DCS engineering station (configuration, logic, recipes)",High,Siemens,SIMATIC PCS 7 ES,,7.8,false,true,8.0,,,,
+CHEM-OPS-HIST-001,OT Historian,device,Server,Operations,3,Primary plant historian collecting process data,High,OSIsoft,PI Server,,7.0,false,false,7.0,,,,
+CHEM-OPS-APP-001,DCS Application Server,device,Server,Operations,3,PCS 7 application/OPC UA server serving the operator clients,High,Siemens,SIMATIC PCS 7 AS,,7.5,false,false,8.0,,,,
+CHEM-CTL-SW-001,Control Switch,device,Network Switch,Control,2,Redundant L2 control network switch fabric,High,Siemens,SCALANCE XM408,,6.5,false,false,8.0,,,,
+CHEM-CTL-DCS-001,DCS Controller — Reactor Area,device,DCSController,Control,2,Reactor temperature/pressure/level control loop processor,High,Siemens,SIMATIC PCS 7 AS 410,,8.5,false,false,10.0,,,,
+CHEM-CTL-DCS-002,DCS Controller — Distillation Area,device,DCSController,Control,2,Distillation column control loop processor,High,Siemens,SIMATIC PCS 7 AS 410,,8.5,false,false,10.0,,,,
+CHEM-CTL-DCS-003,DCS Controller — Utilities & Offsites,device,DCSController,Control,2,"Utilities, storage and tank-farm control loop processor",Medium,Siemens,SIMATIC PCS 7 AS 410,,8.0,false,false,9.0,,,,
+CHEM-SIS-GW-001,SIS Status Gateway,device,Gateway,SIS,2,Certified status-only interface between the DCS and the SIS,High,HIMA,HIQuad X Gateway,,6.5,false,true,9.0,,,,
+CHEM-SIS-LS-001,Safety Logic Solver,device,SafetyPLC,SIS,2,SIL-3 certified safety logic solver executing ESD logic,High,HIMA,HIQuad X,,7.0,false,false,10.0,,,,
+CHEM-SIS-ENG-001,SIS Engineering Workstation,device,Workstation,SIS,3,Dedicated engineering station for SIS logic (isolated from the DCS engineering LAN),High,HIMA,SIMATIC Manager SIS,,7.8,false,true,9.0,,,,
+CHEM-SIS-PT-001,High-Integrity Pressure Transmitter,physical,Transmitter,SIS,1,SIL-rated pressure transmitter on the reactor (SIS input),High,Emerson,Rosemount 3051S,,,,,9.0,,,,0.01
+CHEM-SIS-TT-001,High-Integrity Temperature Transmitter,physical,Transmitter,SIS,1,SIL-rated temperature element on the reactor (SIS input),High,Emerson,Rosemount 214S,,,,,9.0,,,,0.01
+CHEM-SIS-SOV-001,Safety Shutoff Valve (Feed),physical,SafetyValve,SIS,1,Fail-closed SIS final element isolating the reactor feed,High,Emerson,Fisher FIELDVUE DVC6200,,,,,9.0,,,,0.01
+CHEM-SIS-SOV-002,Emergency Depressurization Valve,physical,SafetyValve,SIS,1,Fail-open SIS final element venting the reactor to the flare (safe state),High,Emerson,Fisher FIELDVUE DVC6200,,,,,9.0,,,,0.01
+CHEM-FLD-IO-001,Field Remote I/O Rack,device,RemoteIO,Field,1,Fieldbus remote I/O marshalling rack feeding the DCS controllers,High,Siemens,ET 200M,,7.0,false,false,7.0,,,,
+CHEM-FLD-TT-001,Temperature Transmitter (Reactor),physical,Transmitter,Field,1,Reactor temperature (thermocouple) transmitter,High,Emerson,Rosemount 214,,,,,8.0,,,,0.01
+CHEM-FLD-PT-001,Pressure Transmitter (Reactor),physical,Transmitter,Field,1,Reactor pressure transmitter,High,Emerson,Rosemount 3051,,,,,8.0,,,,0.01
+CHEM-FLD-LT-001,Level Transmitter (Reactor),physical,Transmitter,Field,1,Reactor level transmitter,High,Emerson,Rosemount 3300,,,,,7.0,,,,0.01
+CHEM-FLD-FCV-001,Feed Control Valve (Reactor),physical,ControlValve,Field,1,Reactor feed flow control valve (final element),High,Emerson,Fisher V500,,,,,8.0,,,,0.02
+CHEM-FLD-PUMP-001,Reactor Feed Pump,physical,Pump,Field,1,Centrifugal feed pump supplying the reactor,High,Grundfos,CR 64,,,,,8.0,,,,0.02
+CHEM-FLD-VFD-001,Feed Pump VFD,device,VFD,Field,1,Variable frequency drive for the reactor feed pump,Medium,ABB,ACS880,,7.5,false,false,7.0,,,,
+CHEM-FLD-TT-002,Temperature Transmitter (Column),physical,Transmitter,Field,1,Distillation column temperature transmitter,High,Emerson,Rosemount 214,,,,,8.0,,,,0.01
+CHEM-FLD-PT-002,Pressure Transmitter (Column),physical,Transmitter,Field,1,Distillation column pressure transmitter,High,Emerson,Rosemount 3051,,,,,8.0,,,,0.01
+CHEM-FLD-FT-001,Flow Transmitter (Reflux),physical,Transmitter,Field,1,Column reflux flow transmitter,High,Emerson,Rosemount 8700,,,,,7.0,,,,0.01
+CHEM-FLD-FCV-002,Reflux Control Valve,physical,ControlValve,Field,1,Column reflux control valve (final element),High,Emerson,Fisher V500,,,,,8.0,,,,0.02
+CHEM-FLD-FCV-003,Steam Reboiler Control Valve,physical,ControlValve,Field,1,Reboiler steam supply control valve (final element),High,Emerson,Fisher V500,,,,,8.0,,,,0.02
+CHEM-FLD-LT-002,Level Transmitter (Storage),physical,Transmitter,Field,1,Product storage tank level transmitter,Medium,Emerson,Rosemount 3300,,,,,6.0,,,,0.01
+CHEM-FLD-SENSOR-001,Cooling Water Flow Transmitter,physical,Transmitter,Field,1,Cooling water flow transmitter,Medium,Emerson,Rosemount 8700,,,,,6.0,,,,0.01
+CHEM-FLD-VALVE-001,Cooling Water Control Valve,physical,ControlValve,Field,1,Cooling water supply control valve,Medium,Emerson,Fisher V500,,,,,6.0,,,,0.02
+CHEM-FLD-PUMP-002,Product Transfer Pump,physical,Pump,Field,1,Product transfer pump to storage,High,Grundfos,CR 90,,,,,7.0,,,,0.02
+CHEM-PRO-REACTOR-001,Reactor Vessel,physical,Reactor,Process,0,Exothermic stirred-tank reactor — primary hazard source,High,Zeton,CSTR-10m3,,,,,10.0,,,,0.01
+CHEM-PRO-COLUMN-001,Distillation Column,physical,DistillationColumn,Process,0,Continuous distillation column separating the reactor product,High,Sulzer,Packed Column,,,,,9.0,,,,0.01
+CHEM-PRO-HX-001,Heat Exchanger (Reboiler),physical,HeatExchanger,Process,0,Steam reboiler providing column heat input,Medium,Alfa Laval,T20,,,,,7.0,,,,0.01
+CHEM-PRO-PIPE-001,Reactor-to-Column Transfer Piping,physical,Pipeline,Process,0,Product transfer line from the reactor to the distillation column,Medium,N/A,DN150,,,,,6.0,,,,0.005
+CHEM-PRO-TANK-001,Product Storage Tank,physical,StorageTank,Process,0,Finished product storage tank,Medium,Chicago Bridge & Iron,Fixed Roof 500m3,,,,,7.0,,,,0.01
+CHEM-PRO-TANK-002,Feedstock Storage Tank,physical,StorageTank,Process,0,Raw feedstock storage tank feeding the reactor,Medium,Chicago Bridge & Iron,Fixed Roof 1000m3,,,,,7.0,,,,0.01
+CHEM-REM-SW-001,Remote Site Switch,device,Network Switch,Remote,1,Industrial switch at the remote tank farm,Medium,Siemens,SCALANCE XB208,,6.5,false,false,6.0,,,,
+CHEM-REM-RTU-001,Remote RTU — Tank Farm,device,RTU,Remote,1,Remote terminal unit controlling tank-farm loading,High,Control Microsystems,SCADAPack 470,,8.0,false,false,8.0,,,,
+CHEM-REM-LT-001,Remote Tank Level Transmitter,physical,Transmitter,Remote,1,Level transmitter on the remote product tank,Medium,Emerson,Rosemount 3300,,,,,6.0,,,,0.01
+CHEM-REM-PUMP-001,Remote Transfer Pump,physical,Pump,Remote,1,Transfer pump at the remote tank farm,High,Grundfos,CR 90,,,,,7.0,,,,0.02
+CHEM-REM-VALVE-001,Rail Loading Valve,physical,ControlValve,Remote,1,Rail-car loading isolation valve at the tank farm,Medium,Emerson,Fisher V500,,,,,6.0,,,,0.02
+CHEM-REM-TANK-001,Remote Product Tank,physical,StorageTank,Remote,0,Product storage tank at the remote tank farm,High,Chicago Bridge & Iron,Floating Roof 2000m3,,,,,8.0,,,,0.01
+CHEM-HUM-OPR-001,Process Operator,human,Operator,Operations,3,Board operator supervising the DCS from the control room,Medium,,,,,,,5.0,operator,0.4,standard,
+CHEM-HUM-ENG-001,Control Systems Engineer,human,Engineer,Operations,3,Engineer maintaining DCS configuration and control logic,Medium,,,,,,,6.0,engineer,0.5,elevated,

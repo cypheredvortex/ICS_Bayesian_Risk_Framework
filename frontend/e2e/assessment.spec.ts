@@ -42,8 +42,16 @@ test('full assessment workflow', async ({ page }) => {
   await expect(page.getByText('Posterior probabilities')).toBeVisible()
   await expect(page.getByText('Risk Ranking by Asset')).toBeVisible()
   // Click the first asset row in the posterior list to select it in the
-  // details panel.
-  await page.getByRole('button', { name: /^plc_1/ }).first().click()
+  // details panel. Scoped to the list: the Node Details panel also renders a
+  // clickable asset-name button ("what is this asset?"), which would
+  // otherwise match a bare /^plc_1/ locator first.
+  const posteriorSection = page.locator('.stat-card', {
+    hasText: 'Posterior probabilities',
+  })
+  await posteriorSection
+    .getByRole('button', { name: /^plc_1/ })
+    .first()
+    .click()
   // Node details show intrinsic probability, posterior and risk index.
   // Some metric labels also appear in the Bayesian results panel, so scope
   // the assertions to the Node Details panel.
@@ -57,7 +65,7 @@ test('full assessment workflow', async ({ page }) => {
   ).toBeVisible()
 
   // --- Capture a posterior value before applying evidence ---
-  const posteriorBefore = await page
+  const posteriorBefore = await posteriorSection
     .getByRole('button', { name: /^plc_1/ })
     .first()
     .textContent()
@@ -80,7 +88,9 @@ test('full assessment workflow', async ({ page }) => {
   // The posterior of the evidence-pinned asset must become 1.000 (pinned):
   // this polls until the rerun completes and proves the value CHANGED as a
   // direct consequence of the evidence + rerun.
-  const posteriorButton = page.getByRole('button', { name: /^plc_1/ }).first()
+  const posteriorButton = posteriorSection
+    .getByRole('button', { name: /^plc_1/ })
+    .first()
   await expect(posteriorButton).toContainText('1.000', { timeout: 60_000 })
   const posteriorAfter = await posteriorButton.textContent()
   expect(posteriorAfter).not.toEqual(posteriorBefore)

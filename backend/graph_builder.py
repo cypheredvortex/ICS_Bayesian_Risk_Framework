@@ -52,7 +52,14 @@ def graph_to_dict(model, edge_weights: dict, relationships: list, assets: dict |
     for node_id in model.nodes():
         node = {"id": node_id}
         if assets and node_id in assets:
-            node["kind"] = assets[node_id].get("kind", "device")
+            attrs = assets[node_id]
+            node["kind"] = attrs.get("kind", "device")
+            # Zone and Purdue level are display/architecture metadata that let
+            # the frontend render zone bands without re-deriving them.
+            if attrs.get("zone"):
+                node["zone"] = attrs["zone"]
+            if attrs.get("purdue_level"):
+                node["purdue_level"] = attrs["purdue_level"]
         nodes.append(node)
 
     edges = []
@@ -72,6 +79,8 @@ def graph_to_dict(model, edge_weights: dict, relationships: list, assets: dict |
                 edge["trust"] = metadata.get("trust", metadata.get("trust_level"))
             if "mitre" in metadata or "mitre_technique" in metadata:
                 edge["mitre"] = metadata.get("mitre", metadata.get("mitre_technique"))
+            if "transport" in metadata:
+                edge["transport"] = metadata.get("transport")
         edges.append(edge)
 
     return {"nodes": nodes, "edges": edges}
