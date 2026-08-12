@@ -182,6 +182,8 @@ dropzone is replaced by a review workspace:
 - **`Attribute coverage`**: badges counting how many assets carry each
   attribute — `CVSS`, `Exposure`, `Patch state`, `Impact`, `Zone`,
   `Vulnerabilities` — e.g. `CVSS: 7/7`. A leading `✓` marks full coverage.
+  See [§4.4](#44-how-the-attribute-coverage-badges-are-calculated) for how
+  these counts are computed.
 - **`Detected zones`**: violet badges with per-zone counts.
 - **`Normalization warnings`** (amber, only when present): non-destructive
   adjustments (self-loops removed, duplicate edges collapsed, unidentifiable
@@ -190,7 +192,54 @@ dropzone is replaced by a review workspace:
   removing clears the current assessment and evidence."* Removing returns to
   the empty state.
 
-### 4.4 Evidence Selection (disclosure inside the card)
+### 4.4 How the `Attribute coverage` badges are calculated
+
+The badges count, per attribute, how many of the **normalized** assets carry
+that attribute. The authoritative computation is
+`backend/topology.py::build_topology_summary`; the frontend recomputes an
+equivalent summary client-side as a fallback when an upload response omits it
+(`utils.ts::deriveTopologySummary`). "Normalized" matters: the count runs
+over the assets *after* validation, kind inference and field normalisation —
+not over the raw file.
+
+| Badge | Normalized field | An asset counts when … |
+| --- | --- | --- |
+| `CVSS` | `cvss_type` | the record has a `cvss_type` — declared directly, **or derived from a declared `vulnerabilities` list** (effective CVSS = max over the vulnerabilities). Device assets only. |
+| `Exposure` | `exposed` | the asset **declared** `exposed` (true/false). |
+| `Patch state` | `patched` | the asset **declared** `patched` (true/false). |
+| `Impact` | `consequence_severity` | the asset declared a consequence severity (a value of `0` still counts — the field is present). |
+| `Zone` | `zone` | the asset has a zone — declared, **or inferred from its name** (e.g. `corp_net` → `Corporate`, via the keyword table in `backend/topology.py`). |
+| `Vulnerabilities` | `vulnerabilities` | the asset has a **non-empty** vulnerability list. |
+
+The counting loop, exactly as implemented in `backend/topology.py`:
+
+```python
+for attrs in assets.values():
+    for field in field_coverage:
+        if field == "vulnerabilities":
+            if attrs.get("vulnerabilities"):      # non-empty list
+                field_coverage[field] += 1
+        elif attrs.get(field) is not None:        # field present on the record
+            field_coverage[field] += 1
+```
+
+The badge displays `label: n/total` (e.g. `CVSS: 5/7`), with a leading `✓`
+when **every** asset carries that attribute (`n == total`). Its purpose is to
+show, *before* running the assessment, which security-relevant attributes are
+missing so the analyst can read the resulting probabilities with that in
+mind.
+
+Two things to keep in mind when reading the badges:
+
+- **Coverage ≠ model defaults.** An asset that omits `exposed` / `patched`
+  still receives the conservative model defaults (`exposed = true`,
+  `patched = false`) — it just does not count as "covered".
+- **Kind-dependent fields.** `CVSS`, `Exposure`, `Patch state` and
+  `Vulnerabilities` apply to `device` assets only; `human` and `physical`
+  assets never count toward them. A topology with mixed kinds can therefore
+  never reach `✓` on those badges — that is expected, not an error.
+
+### 4.5 Evidence Selection (disclosure inside the card)
 
 `EvidencePanel.tsx`, embedded in the Topology card and collapsed by default.
 The summary line shows the count, e.g. `3 of 7 assets marked` or
@@ -496,6 +545,82 @@ The panel also states that the **same thresholds** drive the backend
 classification, the PDF colours and the dashboard — they are not hardcoded
 anywhere else, and the backend enforces the ordering `critical > high >
 moderate`.
+
+#### What each setting does
+
+All settings are **modelling assumptions**, not measurements: changing one
+changes the output of the next run. This is what each control actually does.
+
+**Weights (`Exposure weight`, `Patch weight`, `Impact weight`).**
+
+- `Exposure weight` and `Patch weight` (default 1.0, slider 0–2) control how
+  strongly an asset's exposure and patch state move its *intrinsic
+  probability*, applied in log-odds space
+  (`backend/probability.py`):
+
+  ```
+  logit(P) = logit(P₀) + Σ wᵢ · ln(Mᵢ)
+  ```
+
+  with multipliers `M_exposed = 1.3`, `M_not exposed = 0.3`, `M_patched =
+  0.9`, `M_unpatched = 1.2`. A weight of **0 disables** that factor; a
+  higher weight amplifies its effect.
+- `Impact weight` (default 1.0) scales the consequence impact inside the risk
+  formula (`Impact = (severity/10) × scope_multiplier × impact_weight`), so
+  it is a risk-appetite knob: raising it raises every risk index uniformly.
+  It is the one weight that can push risk indices above the nominal ~1.4
+  bound (the slider reaches 2.0).
+
+**CVSS → probability mapping (the key modelling assumption).** CVSS Base
+Score is a *severity* metric (0–10), not a probability; this section chooses
+the function that converts severity into an intrinsic probability:
+
+- `logistic (recommended)` — `P₀ = 1 / (1 + exp(−k·(CVSS − x₀)))`. An
+  S-curve: CVSS 5 → ≈ 0.50, CVSS 10 → ≈ 0.98 (never exactly 1), CVSS 0 → ≈
+  0.02. `k` (default 0.8) is the steepness, `x₀` (default 5.0) the midpoint
+  where P = 0.50.
+- `linear (legacy, not recommended)` — `P₀ = CVSS / 10`. Kept only for
+  backward compatibility; it is indefensible because it assigns P = 1.0
+  (certainty) to a CVSS-10 vulnerability.
+
+  These parameters are **expert defaults, not empirically calibrated** — the
+  panel says so explicitly and recommends calibration against your own
+  incident data.
+
+**Risk thresholds (single source of truth).** `Critical ≥`, `High ≥`,
+`Moderate ≥` (defaults 0.75 / 0.50 / 0.25) classify each asset's **risk
+index** into a qualitative level. The same values drive the backend
+classification, the dashboard, the pie chart and the PDF colours — nothing is
+hardcoded elsewhere — and the backend rejects any configuration that breaks
+`critical > high > moderate`.
+
+**Noisy-OR causal weights (per relationship type).** Each relationship type
+carries a causal weight `w` (defaults `controls` 0.70, `monitors` 0.20,
+`actuates` 0.60, `connects-to` 0.50, `programs / operates` 0.80). This is
+*not* a conditional probability; it is the Noisy-OR causal parameter used to
+build the CPTs (`backend/cpt_generator.py`):
+
+```
+P(node = 1 | active parents) = 1 − (1 − leak) · Π (1 − wᵢ)
+```
+
+A higher weight means a compromised parent is more likely to compromise the
+child along that link type. The same base weight feeds the edge weight shown
+on the network (`w_edge = min(0.99, base × firewall × protocol × trust ×
+mitre)`, `backend/graph_builder.py`).
+
+**Firewall multiplier.** `Link is firewalled` (default 0.30) / `Link is not
+firewalled` (default 1.00). A firewalled link's propagated risk is dampened
+by 0.30 — a ~70% reduction, consistent with NIST SP 800-41 guidance. A
+firewall can only *reduce* propagated risk: the backend rejects a
+configuration where the firewalled value exceeds the not-firewalled value.
+
+**Settings not editable in the panel.** The settings store also contains
+`protocol_multipliers`, `trust_multipliers`, `mitre_multipliers`,
+`exposure_multipliers` and `patch_multipliers` tables used by the pipeline
+but deliberately not exposed as sliders (to keep the panel usable). They
+appear in the `Default values (framework defaults)` disclosure and in the
+`settings_used` snapshot recorded with every run.
 
 ### 10.2 Reports panel
 

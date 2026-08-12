@@ -346,7 +346,7 @@ Les systèmes de contrôle industriels (ICS) pilotent des procédés physiques d
 
 Ce rapport présente un framework générique qui transforme une architecture ICS en un réseau bayésien discret. Chaque actif reçoit une probabilité intrinsèque de compromission calculée à partir de son score CVSS v3.1 via un modèle logistique calibré, ajusté par des facteurs de contexte. Les relations entre actifs portent un poids causal Noisy-OR dépendant du type de liaison et des protections. Les tables de probabilités conditionnelles (CPT) sont générées automatiquement par un modèle Noisy-OR, évitant une saisie manuelle exponentielle. Une inférence exacte par élimination de variables actualise les probabilités à partir de preuves observées, classe les actifs selon un indice de risque et identifie les chemins d'attaque critiques.
 
-Le framework est concrétisé par une application Web combinant un backend FastAPI/Python avec \texttt{pgmpy} et un frontend React/TypeScript. Elle permet d'importer une topologie dans plusieurs formats, de valider, de sélectionner des preuves, d'ajuster les paramètres, d'exécuter l'analyse, d'explorer le réseau bayésien, de conduire une analyse de sensibilité et d'exporter un registre des risques, un rapport de synthèse et un enregistrement complet au format JSON.
+Le framework est concrétisé par une application Web combinant un backend FastAPI/Python avec \texttt{pgmpy} et un frontend React/TypeScript. Elle permet d'importer une topologie dans plusieurs formats, de valider, de sélectionner des preuves, d'ajuster les paramètres, d'exécuter l'analyse, d'explorer le réseau bayésien et d'exporter un registre des risques, un rapport de synthèse et un enregistrement complet au format JSON.
 
 Chaque évaluation enregistre l'instantané des paramètres actifs (\texttt{settings\_used}) et signale tout écart par rapport aux valeurs par défaut, garantissant la reproductibilité des résultats. Le prototype est fonctionnel, modulaire et adaptable à des contextes industriels réels.
 \end{abstractbox}
@@ -363,7 +363,7 @@ Industrial Control Systems (ICS) drive physical processes whose compromise can l
 
 This report presents a generic framework that transforms an ICS architecture into a discrete Bayesian network. Each asset is assigned an intrinsic compromise probability computed from its CVSS v3.1 score via a calibrated logistic model, adjusted by contextual factors. Relationships between assets carry a Noisy-OR causal weight depending on the link type and protections. Conditional probability tables (CPTs) are automatically generated using a Noisy-OR model, avoiding exponential manual entry. Exact inference by variable elimination updates compromise probabilities from observed evidence, ranks assets according to a bounded risk index, and identifies critical attack paths.
 
-The framework is implemented as a Web application combining a FastAPI/Python backend with \texttt{pgmpy} and a React/TypeScript frontend. It allows users to import a topology in several formats, validate it, select evidence, adjust parameters, run the analysis, interactively explore the Bayesian network, conduct a sensitivity analysis, and export a risk register, a summary report and a complete JSON record of the assessment.
+The framework is implemented as a Web application combining a FastAPI/Python backend with \texttt{pgmpy} and a React/TypeScript frontend. It allows users to import a topology in several formats, validate it, select evidence, adjust parameters, run the analysis, interactively explore the Bayesian network and export a risk register, a summary report and a complete JSON record of the assessment.
 
 Every assessment records a snapshot of the active parameters (\texttt{settings\_used}) and flags any deviation from defaults, guaranteeing reproducibility. The prototype is functional, modular, and adaptable to real industrial contexts.
 \end{abstractbox}
@@ -1501,7 +1501,7 @@ Construit avec \texttt{@xyflow/react}, positionnement par BFS, coloré selon pro
 \subsection{Résultats et CPT}
 \forcereset{4}
 
-Tableau de bord synthétique : risque global (pire cas), niveau, preuves appliquées, classement complet des actifs par indice de risque (rang 1 = risque le plus élevé), chemin prioritaire et liste des chemins. Les preuves sélectionnées s'affichent sous forme de puces compactes ; au-delà de huit éléments, une section extensible « Show all » révèle l'ensemble sans déborder la carte. Graphiques en barres (probabilités postérieures) et en secteurs (répartition des actifs par niveau de risque) ; le graphique en secteurs est interactif — cliquer sur une portion ou sur une entrée de légende liste les actifs de ce niveau avec leur indice de risque. Tables de CPT consultables et filtrables. Analyse de sensibilité. Les légendes sont dynamiques : elles reflètent les résultats réels de l'évaluation (nombre de preuves appliquées, nombre d'actifs classés, seuils actifs). Une section « Settings used » liste les paramètres actifs de l'évaluation et un bandeau avertit de tout réglage non par défaut.
+Tableau de bord synthétique : risque global (pire cas), niveau, preuves appliquées, classement complet des actifs par indice de risque (rang 1 = risque le plus élevé), chemin prioritaire et liste des chemins. Les preuves sélectionnées s'affichent sous forme de puces compactes ; au-delà de huit éléments, une section extensible « Show all » révèle l'ensemble sans déborder la carte. Graphiques en barres (probabilités postérieures) et en secteurs (répartition des actifs par niveau de risque) ; le graphique en secteurs est interactif — cliquer sur une portion ou sur une entrée de légende liste les actifs de ce niveau avec leur indice de risque. Tables de CPT consultables et filtrables. Les légendes sont dynamiques : elles reflètent les résultats réels de l'évaluation (nombre de preuves appliquées, nombre d'actifs classés, seuils actifs). Une section « Settings used » liste les paramètres actifs de l'évaluation et un bandeau avertit de tout réglage non par défaut.
 
 \subsection{Exports}
 \forcereset{4}
@@ -1560,7 +1560,7 @@ La chaîne de traitement s'organise en onze étapes séquencées (figure~\ref{fi
     \item \textbf{Inférence} : \texttt{inference.compute\_posteriors\_with\_evidence} exécute Variable Elimination, produit les postérieurs.
     \item \textbf{Calcul des risques} : \texttt{risk.build\_risk\_table} applique $\text{Indice} = P_{\text{post}} \times \text{Impact}$.
     \item \textbf{Classement et chemins} : classement des actifs, \texttt{attack\_paths.compute\_attack\_paths} identifie les chemins.
-    \item \textbf{Visualisation, sensibilité, export} : tableau de bord, analyse de sensibilité, CSV, PDF et JSON.
+    \item \textbf{Visualisation, sensibilité, export} : tableau de bord et exports CSV, PDF et JSON ; l'analyse de sensibilité est fournie par le module dédié \texttt{sensitivity.py}.
 \end{enumerate}
 
 % ============================================================
@@ -1619,7 +1619,7 @@ Traçabilité & instantané \texttt{settings\_used} et avertissements non par d�
 \end{tabularx}
 \end{table}
 
-La suite backend compte \textbf{267 tests} (pytest), dont \textbf{40 tests de validation scientifique} qui recalculent les formules clés de manière indépendante (logistique, log-odds, Noisy-OR, inférence par énumération de la distribution jointe, indice de risque). La suite frontend compte \textbf{36 tests} unitaires (Vitest + Testing Library) et \textbf{3 scénarios E2E} (Playwright). Une intégration continue (GitHub Actions) exécute l'ensemble à chaque poussée.
+La suite backend compte \textbf{267 tests} (pytest), dont \textbf{40 tests de validation scientifique} qui recalculent les formules clés de manière indépendante (logistique, log-odds, Noisy-OR, inférence par énumération de la distribution jointe, indice de risque). La suite frontend compte \textbf{40 tests} unitaires (Vitest + Testing Library) et \textbf{3 scénarios E2E} (Playwright). Une intégration continue (GitHub Actions) exécute l'ensemble à chaque poussée.
 
 % ============================================================
 % 18. LIMITES

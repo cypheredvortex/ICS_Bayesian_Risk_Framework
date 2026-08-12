@@ -152,7 +152,7 @@ Writes `output/` artifacts (graph, CPTs, posteriors, risk register CSV, summary)
 ## 3. The assessment workflow at a glance
 
 ```
-Import topology            (upload a file or use a preset dataset)
+Import topology            (upload a file or use the Sample topology)
       ↓
 Validate topology          (DAG checks, cycle rejection, non-destructive warnings)
       ↓
