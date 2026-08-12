@@ -148,6 +148,36 @@ describe('ResultsDashboard', () => {
     ).toBeInTheDocument()
   })
 
+  it('makes the highest-priority attack path score prominent', () => {
+    const withAttackPaths = {
+      ...sampleResult,
+      attack_paths: [
+        { source: 'hmi_1', path: ['hmi_1', 'plc_1'], score: 0.85 },
+      ],
+    }
+    render(
+      <ResultsDashboard
+        result={withAttackPaths}
+        chartData={[]}
+        riskRanking={[]}
+        thresholds={defaults}
+        setSelectedNode={() => {}}
+      />,
+    )
+    // The route itself (rendered both as the headline and inside the
+    // "All calculated attack paths" list), a dedicated "Path score" stat
+    // with the formatted score, and the priority badge are all visible.
+    expect(screen.getByText('Highest-priority attack path')).toBeInTheDocument()
+    expect(screen.getAllByText('hmi_1 → plc_1').length).toBeGreaterThan(0)
+    expect(screen.getByText('Path score')).toBeInTheDocument()
+    expect(screen.getByText('0.850')).toBeInTheDocument()
+    expect(screen.getByText('Top priority')).toBeInTheDocument()
+    // The explanation remains, phrased around the score it annotates.
+    expect(
+      screen.getByText(/combines link propagation weights with destination risk/),
+    ).toBeInTheDocument()
+  })
+
   it('shows the active threshold scale, not a hardcoded one', () => {
     render(
       <ResultsDashboard

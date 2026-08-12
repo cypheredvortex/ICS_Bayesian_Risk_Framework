@@ -128,6 +128,10 @@ export default function App() {
 
   const searchInputRef = useRef<HTMLInputElement>(null)
   const toastCounter = useRef(0)
+  // Target of chart-driven selections: clicking a bar in the probability
+  // chart selects an asset, so the Node Details panel must scroll into view
+  // for the user to actually see the details.
+  const nodeDetailsRef = useRef<HTMLDivElement>(null)
 
   const pushToast = useCallback(
     (message: string, tone: ToastItem['tone'] = 'info') => {
@@ -144,6 +148,24 @@ export default function App() {
   const dismissToast = useCallback((id: number) => {
     setToasts((current) => current.filter((toast) => toast.id !== id))
   }, [])
+
+  // Clicking a bar in the Compromise probability chart must surface the
+  // asset's details in the Node Details panel. The panel lives in the section
+  // above the chart, so besides sharing the selection state, scroll it into
+  // view — otherwise the click would change an off-screen card invisibly.
+  // Re-clicking the already-selected bar is a no-op scroll (no page yank),
+  // and reduced-motion users get an instant jump instead of smooth scrolling.
+  const selectAssetFromChart = (asset: string) => {
+    setSelectedNode(asset)
+    if (asset === selectedNode) return
+    const reduceMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+    nodeDetailsRef.current?.scrollIntoView({
+      behavior: reduceMotion ? 'auto' : 'smooth',
+      block: 'start',
+    })
+  }
 
   // Settings live server-side (GET/PUT /settings), independent of any one
   // analysis run, so pull the current values in on mount.
@@ -805,16 +827,18 @@ export default function App() {
             result={result}
           />
 
-          <NodeDetails
-            selectedNode={selectedNode}
-            nodeKindMap={nodeKindMap}
-            combinedProbabilities={combinedProbabilities}
-            isEvidenceNode={isEvidenceNode}
-            result={result}
-            riskRanking={riskRanking}
-            attackPathNodes={attackPathNodes}
-            edgeList={edgeList}
-          />
+          <div ref={nodeDetailsRef}>
+            <NodeDetails
+              selectedNode={selectedNode}
+              nodeKindMap={nodeKindMap}
+              combinedProbabilities={combinedProbabilities}
+              isEvidenceNode={isEvidenceNode}
+              result={result}
+              riskRanking={riskRanking}
+              attackPathNodes={attackPathNodes}
+              edgeList={edgeList}
+            />
+          </div>
         </section>
 
         <section className="grid gap-6 xl:grid-cols-2">
@@ -838,7 +862,8 @@ export default function App() {
 
           <ProbabilityChart
             chartData={chartData}
-            setSelectedNode={setSelectedNode}
+            setSelectedNode={selectAssetFromChart}
+            selectedAsset={selectedNode}
             pieData={pieData}
             assetsByRiskLevel={assetsByRiskLevel}
           />

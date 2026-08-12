@@ -17,6 +17,7 @@ export default function ProbabilityChart({
   setSelectedNode,
   pieData,
   assetsByRiskLevel,
+  selectedAsset,
 }: {
   chartData: Array<{ asset: string; probability: number; pinned: boolean }>
   setSelectedNode: (id: string) => void
@@ -25,13 +26,17 @@ export default function ProbabilityChart({
   pieData: Array<{ name: string; value: number }>
   // Per-level asset lists powering the pie chart drill-down.
   assetsByRiskLevel?: Record<string, RiskAssetRow[]>
+  // Currently inspected asset; its bar is outlined so the selection made
+  // elsewhere (network, ranking, this chart) stays visible in the graph.
+  selectedAsset?: string | null
 }) {
   return (
     <div className="card card-pad">
       <h2 className="card-title">Compromise probability by asset</h2>
       <p className="card-subtitle">
         Posterior probability for each asset after the current evidence is
-        applied. This chart shows probability, not the risk score.
+        applied. This chart shows probability, not the risk score. Click a bar
+        to inspect that asset's details in the Node Details panel.
       </p>
       <div className="mt-4 h-80 w-full">
         {chartData.length ? (
@@ -90,12 +95,18 @@ export default function ProbabilityChart({
                 }
                 cursor="pointer"
               >
-                {chartData.map((entry) => (
-                  <Cell
-                    key={entry.asset}
-                    fill={getProbabilityColor(entry.probability)}
-                  />
-                ))}
+                {chartData.map((entry) => {
+                  const isSelected = entry.asset === selectedAsset
+                  return (
+                    <Cell
+                      key={entry.asset}
+                      fill={getProbabilityColor(entry.probability)}
+                      stroke={isSelected ? '#22d3ee' : 'transparent'}
+                      strokeWidth={isSelected ? 2 : 0}
+                      opacity={isSelected ? 1 : 0.9}
+                    />
+                  )
+                })}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -106,6 +117,18 @@ export default function ProbabilityChart({
           />
         )}
       </div>
+
+      {/* Feedback for the bar click: the Node Details panel lives above this
+          section, so confirm the selection here even while it scrolls away. */}
+      {selectedAsset ? (
+        <p className="mt-3 text-xs leading-relaxed text-slate-400">
+          Selected asset:{' '}
+          <span className="font-mono font-semibold text-cyan-300">
+            {selectedAsset}
+          </span>{' '}
+          — its details are shown in the Node Details panel above.
+        </p>
+      ) : null}
 
       {/* Risk ranking — the direct interpretation of the probabilities above:
           assets classified into risk levels with the active thresholds. */}

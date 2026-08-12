@@ -171,15 +171,27 @@ export default function ResultsDashboard({
           </h3>
           {result.attack_paths?.length ? (
             <>
-              <p className="mt-2 break-words font-mono text-sm leading-relaxed text-slate-200">
+              <p className="mt-2 break-words font-mono text-sm font-medium leading-relaxed text-slate-100">
                 {((result.attack_paths[0].path as string[] | undefined) ?? []).join(' → ')}
               </p>
-              <p className="mt-2 text-xs text-slate-500">
-                Score {formatProbability(Number(result.attack_paths[0].score ?? 0))}
-                : this modelled route combines link propagation weights and
-                destination risk. It prioritises investigation; it is not proof
-                of a real intrusion.
-              </p>
+              <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-3 rounded-xl border border-rose-500/20 bg-rose-500/[0.06] px-4 py-3">
+                <div>
+                  <p className="stat-label">Path score</p>
+                  <p className="mt-1 font-mono text-3xl font-bold tracking-tight text-rose-300">
+                    {formatProbability(Number(result.attack_paths[0].score ?? 0))}
+                  </p>
+                </div>
+                <div
+                  className="hidden h-10 w-px bg-slate-700 sm:block"
+                  aria-hidden="true"
+                />
+                <p className="min-w-0 flex-1 text-xs leading-relaxed text-slate-400">
+                  The score combines link propagation weights with destination
+                  risk to rank investigation targets. It prioritises
+                  investigation; it is not proof of a real intrusion.
+                </p>
+                <Badge tone="rose">Top priority</Badge>
+              </div>
               <details className="details-card mt-3">
                 <summary className="details-summary">
                   All calculated attack paths ({result.attack_paths.length})
