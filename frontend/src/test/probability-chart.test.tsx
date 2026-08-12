@@ -23,6 +23,9 @@ describe('ProbabilityChart', () => {
     expect(
       screen.getByText(/Click a bar to inspect that asset's details/),
     ).toBeInTheDocument()
+    expect(
+      screen.getByText(/click it again to clear the selection/),
+    ).toBeInTheDocument()
   })
 
   it('confirms the selected asset and points to the Node Details panel', () => {
@@ -37,6 +40,7 @@ describe('ProbabilityChart', () => {
     expect(screen.getByText(/Selected asset:/)).toBeInTheDocument()
     expect(screen.getByText('plc_1')).toBeInTheDocument()
     expect(screen.getByText(/Node Details panel above/)).toBeInTheDocument()
+    expect(screen.getByText(/Click the bar again to clear the selection/)).toBeInTheDocument()
   })
 
   it('shows the empty state when there is no probability data', () => {

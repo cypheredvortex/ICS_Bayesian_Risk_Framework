@@ -479,7 +479,10 @@ axis). Bars are coloured with the probability scale (§5.4).
   **Node Details** card into view so the analyst immediately sees the asset's
   details, the clicked bar is outlined in cyan, and a note appears under the
   chart: `Selected asset: <asset> — its details are shown in the Node Details
-  panel above.` Re-clicking the already-selected bar does not re-scroll.
+  panel above. Click the bar again to clear the selection.` Re-clicking the
+  already-selected bar **clears the selection**: the cyan outline and the note
+  disappear and the Node Details card returns to its empty state
+  (`No asset selected`).
 - The subtitle states: *"This chart shows probability, not the risk score.
   Click a bar to inspect that asset's details in the Node Details panel."*
 
@@ -822,7 +825,8 @@ Any of these selects an asset and updates the **Node Details** card:
 2. Click a row in the dashboard's **Posterior probabilities** list.
 3. Click a row in the **Risk Ranking by Asset** list.
 4. Click a **bar** in the *Compromise probability by asset* chart (also
-   scrolls the Node Details card into view).
+   scrolls the Node Details card into view). Clicking the same bar again
+   clears the selection and returns the Node Details card to its empty state.
 5. Click a row in the pie-chart **drill-down** list.
 
 ### 13.3 The reports workflow

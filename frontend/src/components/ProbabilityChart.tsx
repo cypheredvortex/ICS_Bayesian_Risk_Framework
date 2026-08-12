@@ -36,7 +36,8 @@ export default function ProbabilityChart({
       <p className="card-subtitle">
         Posterior probability for each asset after the current evidence is
         applied. This chart shows probability, not the risk score. Click a bar
-        to inspect that asset's details in the Node Details panel.
+        to inspect that asset's details in the Node Details panel — click it
+        again to clear the selection.
       </p>
       <div className="mt-4 h-80 w-full">
         {chartData.length ? (
@@ -126,7 +127,8 @@ export default function ProbabilityChart({
           <span className="font-mono font-semibold text-cyan-300">
             {selectedAsset}
           </span>{' '}
-          — its details are shown in the Node Details panel above.
+          — its details are shown in the Node Details panel above. Click the
+          bar again to clear the selection.
         </p>
       ) : null}
 

@@ -153,11 +153,15 @@ export default function App() {
   // asset's details in the Node Details panel. The panel lives in the section
   // above the chart, so besides sharing the selection state, scroll it into
   // view — otherwise the click would change an off-screen card invisibly.
-  // Re-clicking the already-selected bar is a no-op scroll (no page yank),
-  // and reduced-motion users get an instant jump instead of smooth scrolling.
+  // Re-clicking the already-selected bar toggles the selection off (the Node
+  // Details card returns to its empty state), and reduced-motion users get an
+  // instant jump instead of smooth scrolling.
   const selectAssetFromChart = (asset: string) => {
+    if (asset === selectedNode) {
+      setSelectedNode(null)
+      return
+    }
     setSelectedNode(asset)
-    if (asset === selectedNode) return
     const reduceMotion = window.matchMedia(
       '(prefers-reduced-motion: reduce)',
     ).matches
