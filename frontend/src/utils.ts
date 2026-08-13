@@ -114,6 +114,83 @@ export function assetDescription(
   return fallback ?? null
 }
 
+// Acronyms whose full expansion is not written parenthesised in the
+// explanation texts (e.g. "A SCADA system …" never spells out "Supervisory
+// Control and Data Acquisition"), keyed by the uppercased declared type.
+// Used by assetTypeMeaning as a fallback when regex extraction finds no
+// "full name (ACRONYM)" pattern.
+const KNOWN_ACRONYM_MEANINGS: Record<string, string> = {
+  SCADA: 'Supervisory Control and Data Acquisition',
+  ERP: 'Enterprise Resource Planning',
+  OPC: 'Open Platform Communications',
+}
+
+// Resolve the "meaning of the abbreviation" for an asset: e.g. the declared
+// type "PLC" paired with the explanation "A programmable logic controller
+// (PLC) is …" yields { acronym: "PLC", meaning: "Programmable logic
+// controller" }.  Uses the same resolution chain as assetDescription, so the
+// meaning always matches the explanation actually shown.  Returns null when
+// no acronym expansion can be derived (plain-word types, no description).
+export function assetTypeMeaning(
+  attrs: Record<string, unknown> | undefined,
+  name: string,
+  kind: string,
+): { acronym: string; meaning: string } | null {
+  const description = assetDescription(attrs, name, kind)
+  if (!description) return null
+
+  const declaredType =
+    typeof attrs?.type === 'string' && attrs.type.trim()
+      ? attrs.type.trim()
+      : ''
+  // The candidate is the declared type when present ("PLC"), otherwise the
+  // asset name ("plc_1") — the parenthesised acronym is matched against it.
+  const candidate = (declaredType || name).trim()
+  if (!candidate) return null
+
+  const candidateUpper = candidate.toUpperCase()
+
+  // Known acronyms whose expansion never appears parenthesised in the
+  // explanation text (e.g. "A SCADA system collects …" uses the acronym
+  // directly), so the regex below cannot extract them. The exact declared
+  // type wins; a multi-word declared type ("SCADA System") falls back to
+  // its leading token. The asset name alone never triggers this, so a
+  // device named "SCADA-01" without a declared type gets no fabricated
+  // meaning.
+  const known = KNOWN_ACRONYM_MEANINGS[candidateUpper]
+  if (known) return { acronym: candidateUpper, meaning: known }
+  if (declaredType) {
+    const leadingToken = candidateUpper.split(/[^A-Z0-9]+/).filter(Boolean)[0]
+    if (leadingToken) {
+      const knownLeading = KNOWN_ACRONYM_MEANINGS[leadingToken]
+      if (knownLeading) return { acronym: leadingToken, meaning: knownLeading }
+    }
+  }
+
+  // Match "full name (ACRONYM)" inside the explanation, e.g.
+  // "A programmable logic controller (PLC) is an industrial computer …".
+  const match = description.match(
+    /([A-Za-z][A-Za-z0-9\-–— .]{1,60}?)\s*\(([A-Za-z0-9.]+)\)/,
+  )
+  if (!match) return null
+  const [, full, acronym] = match
+
+  // The acronym must be the declared type itself or one of its words
+  // ("DCS" inside "DCS Controller"). A bare substring match would accept
+  // nonsense like a single-letter "(H)" for an "HMI" asset.
+  const candidateTokens = candidateUpper.split(/[^A-Z0-9]+/).filter(Boolean)
+  const acronymUpper = acronym.toUpperCase()
+  if (
+    acronymUpper === candidateUpper ||
+    candidateTokens.includes(acronymUpper)
+  ) {
+    const stripped = full.replace(/^(?:an?|the)\s+/i, '')
+    const meaning = stripped.charAt(0).toUpperCase() + stripped.slice(1)
+    return { acronym, meaning }
+  }
+  return null
+}
+
 // Derive the structural summary client-side from a normalized topology
 // payload. Used as a graceful fallback when an upload response omits
 // `summary`. It reads the exact same normalized fields the backend computes
@@ -327,11 +404,21 @@ export function computeZonedPositions(
   zoneOrder: string[],
   // Geometry constants — kept as parameters so tests can verify the packing
   // without magic numbers. COLUMN_STEP and ROW_STEP include the visual gaps
-  // between adjacent nodes.
-  columnStep = 208,
-  rowStep = 132,
+  // between adjacent nodes. They are tuned so nodes read as clearly separated
+  // and the relationship labels ("controls w=0.70" …) fully fit in the gaps:
+  // the 184px-wide cards keep ~146px horizontal and ~135px vertical breathing
+  // room — enough for the widest label pill ("programs / operates w=0.80",
+  // ~137px) to sit between cards without overlapping them. MAX_ROWS_PER_COLUMN
+  // is set high enough that dense same-level layers pack vertically instead of
+  // spilling into extra sub-columns, so the extra spacing does not blow up the
+  // canvas width and fitView still fits everything on load. ZONE_GAP is the
+  // spacing between level bands so the Purdue hierarchy reads as distinct
+  // columns without wasting canvas width.
+  columnStep = 330,
+  rowStep = 220,
   nodeHeight = 76,
-  maxRowsPerColumn = 7,
+  maxRowsPerColumn = 10,
+  zoneGap = 150,
 ) {
   const positions = new Map<string, { x: number; y: number }>()
   const bandExtents = new Map<string, { x: number; width: number; height: number }>()
@@ -422,7 +509,7 @@ export function computeZonedPositions(
 
     const width = 40 + (maxColumnIndex + 1) * columnStep + 24
     bandExtents.set(zone, { x: columnX, width, height: bandBottom + 24 })
-    columnX += width + 40
+    columnX += width + zoneGap
   })
 
   return { positions, bandExtents }

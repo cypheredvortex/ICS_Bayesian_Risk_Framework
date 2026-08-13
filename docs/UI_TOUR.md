@@ -269,8 +269,18 @@ the topology using React Flow.
 - **`Search nodes… ( / )`** — filters/highlights nodes; non-matching nodes are
   dimmed. `/` focuses it.
 - **Colour-mode toggle** — `By risk` | `By asset type` (risk is the default).
-- **`Attack path` toggle** (`aria-pressed`) — toggles the rose highlighting of
-  the highest-priority attack path after an assessment.
+- **`Attack path` toggle** (`aria-pressed`, on by default) — toggles the rose
+  highlighting of the highest-priority attack path after an assessment. When
+  on, a rose **`Attack path` indicator chip** is overlaid on the top-left of
+  the canvas showing the route (`entry → target`) so the highlighted path
+  cannot be missed.
+- **`Edge labels` toggle** (`aria-pressed`, on by default) — shows/hides the
+  relationship label on every edge. Labels default to ON so relationship
+  types and causal weights are readable at a glance; hide them on dense
+  graphs.
+- **`Fullscreen` toggle** — expands the graph canvas to fill the screen (an
+  in-canvas `Exit fullscreen` control stays reachable while fullscreen is
+  active).
 
 ### 5.2 Nodes
 
@@ -300,7 +310,9 @@ click the empty pane to clear the selection.
 Directed edges carry labels like `connects-to w=0.50`, `controls 🔒 w=0.70`
 — the relationship type, a 🔒 when the link is firewalled, and the
 **Noisy-OR causal weight** `w` (a modelling parameter, *not* a conditional
-probability). Edges on the attack path are animated, thicker and rose.
+probability). Labels are shown on every edge by default (the `Edge labels`
+toggle hides them). Edges on the attack path are animated, thicker and rose,
+with a stronger glow and arrowheads so they stand out from ordinary links.
 
 The `How to read this network` disclosure explains:
 > *"Edge labels show the relationship type and its Noisy-OR causal weight
@@ -348,7 +360,14 @@ probability, risk and relationship details."*
 
 ### 6.1 Asset identity
 
-- Asset id and a **kind badge** (`Human`, `Device`, `Physical process`).
+- Asset id and a clickable **asset-type chip** — the declared device type
+  (e.g. `PLC`) when the topology names one, otherwise the kind badge
+  (`Human`, `Device`, `Physical process`). Clicking the chip toggles the
+  **"What this asset is"** panel, which shows the asset's display name (when
+  it differs from the id), the **meaning of the abbreviation** (e.g.
+  `PLC = Programmable Logic Controller`, derived from the explanation text),
+  and a plain-language explanation of what the asset is and does. Clicking
+  the asset id toggles the same panel.
 - `Zone` badge when the topology provides one.
 - Vendor / model / IP line — descriptive metadata from the topology; the UI
   treats it as informational only (it does not influence calculations).

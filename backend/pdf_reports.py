@@ -85,6 +85,15 @@ def _build_styles() -> dict[str, ParagraphStyle]:
         spaceAfter=1 * mm,
     ))
     styles.add(ParagraphStyle(
+        name="SmallCenter",
+        parent=styles["Normal"],
+        fontSize=8,
+        leading=10,
+        textColor=COLOR_MUTED,
+        alignment=TA_CENTER,
+        spaceAfter=2 * mm,
+    ))
+    styles.add(ParagraphStyle(
         name="TableHeader",
         parent=styles["Normal"],
         fontSize=9,
@@ -161,6 +170,27 @@ def _format_pct(value: float | None) -> str:
     return f"{value:.3f}"
 
 
+# Risk-level labels and their colours, matching the frontend palette so the
+# printed report and the dashboard tell the same visual story.
+_RISK_LEVEL_COLORS = {
+    "Critical": COLOR_RISK_CRITICAL,
+    "High": COLOR_RISK_HIGH,
+    "Moderate": COLOR_RISK_MODERATE,
+    "Low": COLOR_RISK_LOW,
+}
+
+
+def _colored_level(level: str) -> str:
+    """Wrap a risk-level label in a coloured font tag (reportlab markup).
+
+    Unknown labels (e.g. "—" when a level is missing) pass through unchanged.
+    """
+    color = _RISK_LEVEL_COLORS.get(str(level).title())
+    if color is None:
+        return str(level)
+    return f'<font color="{color.hexval()}">{level}</font>'
+
+
 def generate_pdf_report(
     result: dict[str, Any],
     output_path: str | Path = "output/assessment.pdf",
@@ -204,6 +234,7 @@ def generate_pdf_report(
 
     # ---- Title ----
     story.append(Paragraph("ICS Bayesian Risk Assessment Report", styles["ReportTitle"]))
+    story.append(Paragraph(f"Generated: {doc.generated_at}", styles["SmallCenter"]))
     story.append(Spacer(1, 3 * mm))
 
     # ---- Executive Summary ----
@@ -220,6 +251,17 @@ def generate_pdf_report(
 
     # Key metrics table (the evidence itself gets its own section below so a
     # large evidence set can wrap and span pages instead of overflowing one row)
+    aggregate = summary.get("aggregate_risk", {}) or {}
+    level_counts = aggregate.get("level_counts") or {}
+    if level_counts:
+        # Analyst-facing distribution, e.g. "Critical 2, High 5, Moderate 8, Low 12"
+        distribution = ", ".join(
+            f"{level.title()} {int(level_counts.get(level, 0) or 0)}"
+            for level in ("critical", "high", "moderate", "low")
+        )
+    else:
+        distribution = "—"
+
     metrics_data = [
         ["Metric", "Value"],
         ["Overall Risk Score", str(_format_pct(overall_risk) if isinstance(overall_risk, (int, float)) else str(overall_risk))],
@@ -227,6 +269,8 @@ def generate_pdf_report(
         ["Assets Assessed", str(summary.get("asset_count", "—"))],
         ["Connections Assessed", str(summary.get("relationship_count", "—"))],
         ["Evidence Items", str(len(evidence_used)) if evidence_used else "None"],
+        ["Assets by Risk Level", distribution],
+        ["Attack Paths Identified", str(len(attack_paths))],
     ]
     metrics_table = Table(metrics_data, colWidths=[4.5 * cm, 10 * cm])
     metrics_table.setStyle(TableStyle([
@@ -246,6 +290,57 @@ def generate_pdf_report(
         ("RIGHTPADDING", (0, 0), (-1, -1), 6),
     ]))
     story.append(metrics_table)
+
+    # ---- Highest-Risk Assets (executive view) ----
+    top_assets = risk_scores[:5]
+    if top_assets:
+        story.append(Paragraph("Highest-Risk Assets", styles["SubHeading"]))
+        story.append(Paragraph(
+            "The five assets with the highest risk index, in register order. "
+            "The complete register appears later in this report.",
+            styles["Small"],
+        ))
+        top_header = ["Rank", "Asset", "Risk Index", "Risk Level"]
+        top_rows: list[list[Any]] = [
+            [Paragraph(cell, styles["TableHeader"]) for cell in top_header]
+        ]
+        for rank, row in enumerate(top_assets, start=1):
+            top_rows.append([
+                str(rank),
+                Paragraph(str(row.get("asset", "—")), styles["TableCell"]),
+                _format_pct(row.get("risk", 0)),
+                Paragraph(
+                    _colored_level(str(row.get("risk_level", "—")).title()),
+                    styles["TableCell"],
+                ),
+            ])
+
+        top_table = Table(
+            top_rows,
+            colWidths=[1.2 * cm, 6.8 * cm, 3.0 * cm, 3.5 * cm],
+            repeatRows=1,
+        )
+        top_style = [
+            ("BACKGROUND", (0, 0), (-1, 0), COLOR_DARK),
+            ("TEXTCOLOR", (0, 0), (-1, 0), COLOR_WHITE),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTSIZE", (0, 0), (-1, 0), 8),
+            ("ALIGN", (0, 0), (0, -1), "CENTER"),
+            ("ALIGN", (2, 0), (2, -1), "RIGHT"),
+            ("ALIGN", (3, 0), (3, -1), "CENTER"),
+            ("GRID", (0, 0), (-1, -1), 0.4, COLOR_BORDER),
+            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ("TOPPADDING", (0, 0), (-1, -1), 3),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+            ("LEFTPADDING", (0, 0), (-1, -1), 4),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 4),
+        ]
+        for i in range(1, len(top_rows)):
+            bg = colors.HexColor("#f8fafc") if i % 2 == 0 else COLOR_WHITE
+            top_style.append(("BACKGROUND", (0, i), (-1, i), bg))
+        top_table.setStyle(TableStyle(top_style))
+        story.append(top_table)
+        story.append(Spacer(1, 2 * mm))
 
     # ---- Selected Evidence ----
     story.append(Paragraph("Selected Evidence", styles["SectionHeading"]))
@@ -382,7 +477,10 @@ def generate_pdf_report(
                 _format_pct(risk_val),
                 _format_pct(row.get("P(compromised|evidence)", None)),
                 _format_pct(row.get("impact", None)),
-                str(row.get("risk_level", "—")).title(),
+                Paragraph(
+                    _colored_level(str(row.get("risk_level", "—")).title()),
+                    styles["TableCell"],
+                ),
             ])
 
         risk_table = Table(
@@ -433,6 +531,11 @@ def generate_pdf_report(
             "combined propagation-and-target-risk score.",
             styles["Body"],
         ))
+        if len(attack_paths) > 5:
+            story.append(Paragraph(
+                f"Showing the 5 highest-scoring of {len(attack_paths)} calculated paths.",
+                styles["Small"],
+            ))
 
         for i, path in enumerate(attack_paths[:5]):
             path_nodes = path.get("path", []) or path.get("nodes", []) or path.get("assets", [])
@@ -444,6 +547,27 @@ def generate_pdf_report(
                 styles["SubHeading"],
             ))
             story.append(Paragraph(path_str, styles["Body"]))
+
+            # Analyst context for each path: where it leads, how viable it is
+            # and how long it is.  Only genuinely present values are shown.
+            details: list[str] = []
+            target = path.get("target")
+            if target:
+                target_risk = path.get("target_risk")
+                if isinstance(target_risk, (int, float)):
+                    details.append(f"Target: {target} (risk index {_format_pct(target_risk)})")
+                else:
+                    details.append(f"Target: {target}")
+            path_prob = path.get("path_probability")
+            if isinstance(path_prob, (int, float)):
+                details.append(f"Weakest-link probability: {_format_pct(path_prob)}")
+            hops = path.get("hops")
+            if hops is None and path_nodes:
+                hops = len(path_nodes) - 1
+            if hops is not None:
+                details.append(f"Hops: {int(hops)}")
+            if details:
+                story.append(Paragraph(" · ".join(details), styles["Small"]))
 
     # ---- Methodology Note ----
     story.append(Paragraph("Methodology", styles["SectionHeading"]))

@@ -22,13 +22,6 @@ from typing import Any
 import networkx as nx
 import yaml
 
-try:
-    import vsdx
-except ImportError:  # pragma: no cover
-    vsdx = None
-
-logger = logging.getLogger(__name__)
-
 from backend.topology import (
     DEFAULT_REL_TYPE,
     VALID_KINDS,
@@ -37,6 +30,13 @@ from backend.topology import (
     parse_generic_json,
     validate_graph,
 )
+
+try:
+    import vsdx
+except ImportError:  # pragma: no cover
+    vsdx = None
+
+logger = logging.getLogger(__name__)
 
 _SUPPORTED_EXTENSIONS = {
     ".json",
@@ -829,7 +829,9 @@ def _parse_vsdx_bytes(content: bytes, filename: str) -> dict[str, Any]:
         relationships: list[Any] = []
 
         for page in doc.pages:
-            for shape in page.shapes:
+            # ``child_shapes`` is the non-deprecated accessor (Page.shapes
+            # is deprecated as of vsdx 0.5.0); fall back for older versions.
+            for shape in (page.child_shapes if hasattr(page, "child_shapes") else page.shapes):
                 text = ""
                 for attr in ("text", "shape_text", "name"):
                     if hasattr(shape, attr):

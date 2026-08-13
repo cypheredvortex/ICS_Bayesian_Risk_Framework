@@ -43,6 +43,10 @@ RUN mkdir -p /app/data /app/output
 COPY data/ data/
 COPY .env.example .env.example
 
+# Schema migration scripts (not part of the Python wheel)
+COPY alembic/ alembic/
+ENV ALEMBIC_SCRIPT_DIR=/app/alembic
+
 # Expose API port
 EXPOSE 8000
 

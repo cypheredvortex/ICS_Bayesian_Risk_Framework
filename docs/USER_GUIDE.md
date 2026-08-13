@@ -787,10 +787,12 @@ dashboard — the dashboard, the CSV, the PDF and the JSON record always agree.
 
 - **Purpose:** management reporting, risk assessment documentation, audit
   evidence, mentor/reviewer presentation.
-- **Contains:** executive summary and key metrics; the selected evidence
-  (table that wraps long entries and spans pages); the model parameters used
+- **Contains:** executive summary with the key metrics, the risk-level
+  distribution and the highest-risk assets; the selected evidence (table that
+  wraps long entries and spans pages); the model parameters used
   (traceability); the **complete risk register** (all assets, ranked, with
-  probability, impact and risk level); attack-path analysis; methodology note.
+  probability, impact and risk level); attack-path analysis (each path with
+  its target, weakest-link probability, hops and route); methodology note.
 - **When to use:** when you need a professional, presentable record of the
   assessment. Tables split across pages with repeating headers, so even large
   evidence sets and topologies stay readable.

@@ -56,16 +56,17 @@ describe('computeZonedPositions', () => {
     const unique = new Set(keys.map((id) => JSON.stringify(positions.get(id))))
     expect(unique.size).toBe(16)
 
-    // Rows within [0, maxRowsPerColumn).
+    // Rows within [0, maxRowsPerColumn). rowStep matches the spacing
+    // constant computeZonedPositions defaults to (220).
     const ys = [...positions.values()].map((p) => p.y)
     const rows = new Set(ys)
     rows.forEach((y) => {
-      expect((y - 46) / 132).toBeLessThan(7)
-      expect((y - 46) / 132).toBeGreaterThanOrEqual(0)
+      expect((y - 46) / 220).toBeLessThan(10)
+      expect((y - 46) / 220).toBeGreaterThanOrEqual(0)
     })
-    // 16 members in 7-row columns => 3 sub-columns.
+    // 16 members in 10-row columns => 2 sub-columns.
     const xs = new Set([...positions.values()].map((p) => p.x))
-    expect(xs.size).toBe(3)
+    expect(xs.size).toBe(2)
   })
 
   it('lays causal chains left-to-right within a zone', () => {
@@ -103,6 +104,15 @@ describe('computeZonedPositions', () => {
     expect(bandB.x).toBeLessThan(1000)
     const maxX = Math.max(...[...positions.values()].map((p) => p.x))
     expect(maxX).toBeLessThan(1000)
+
+    // Level bands are separated by the zone-gap constant so the Purdue
+    // hierarchy reads as distinct columns and cross-zone edge labels
+    // ("connects-to (firewalled)", ~139px) fit in the gap (default 150px).
+    expect(bandB.x - (bandA.x + bandA.width)).toBe(150)
+    // Within a zone, rows sit one rowStep apart (default 220px) so edges and
+    // labels between vertically stacked assets stay readable.
+    expect(positions.get('a1')!.y).toBe(46)
+    expect(positions.get('a2')!.y - positions.get('a1')!.y).toBe(220)
   })
 })
 

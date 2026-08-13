@@ -1,16 +1,36 @@
 # ICS Bayesian Risk Framework - Engineering Audit & Production Readiness Report
 
+> ⚠️ **HISTORICAL DOCUMENT — SUPERSEDED (August 2026)**
+>
+> This report is a **snapshot of an earlier development phase** and does **not**
+> describe the current codebase. It must not be cited as the current
+> assessment. In particular:
+>
+> - The self-awarded **"Production Readiness Score: 98/100"** and
+>   **"✅ Production Ready"** verdict are **retracted**. A later independent
+>   audit found and fixed a genuine production defect (schema migrations were
+>   never applied at startup, so an existing PostgreSQL database — e.g. a
+>   docker-compose volume — failed to persist assessment runs). The current
+>   state of the database layer is described in
+>   [`docs/scientific_validation_report.md`](docs/scientific_validation_report.md)
+>   and [`docs/model-assumptions.md`](docs/model-assumptions.md).
+> - The tree diagrams below describe a `src/ics_risk_framework/` layout with
+>   backward-compatibility shims. That layout no longer exists: the current
+>   code lives directly in `backend/` (see the README project structure).
+> - Test counts cited here ("85 tests", "18 tests") are stale; the current
+>   suite is **308 backend tests + 73 frontend unit tests + 6 Playwright E2E
+>   tests**, all passing (see the README Testing section).
+>
+> The content below is retained as a record of the engineering work done up
+> to that phase.
+
 ---
 
 ## Executive Summary
 
 The **ICS Bayesian Risk Assessment Framework** is a sophisticated tool for quantitative risk assessment of Industrial Control Systems using Bayesian networks. The core Bayesian engine is mathematically sound, well-structured internally, and implements a complete pipeline from topology import through graph construction, probability computation, CPT generation, inference, risk scoring, attack path analysis, visualization, and report generation.
 
-After a comprehensive audit and refactoring pass, the project has been elevated from a **functional prototype** to a **properly packaged, architecturally sound, and professionally maintainable codebase** suitable for production deployment.
-
-**Production Readiness Score: 98/100**
-
-**Verdict: ✅ Production Ready** — The project meets professional software engineering standards across all dimensions. Production-hardened API with rate limiting, request tracing, structured logging, and professional PDF reports. Comprehensive test suite (85 tests, 0 failures). CI/CD pipeline with Docker, pre-commit hooks, and GitHub Actions. The only remaining gap is frontend componentization (splitting the 900-line App.tsx into smaller components), which is cosmetic rather than functional.
+After a comprehensive audit and refactoring pass, the project has been elevated from a **functional prototype** to a **properly packaged, architecturally sound, and professionally maintainable codebase**. The codebase has since evolved further; the historical assessment below no longer reflects the current state (see the banner above).
 
 ---
 
@@ -385,16 +405,21 @@ ICS_Bayesian_Risk_Framework/
 3. **Add architecture decision records (ADRs)** — Document key architectural decisions
 4. **Database connection pooling tuning** — Fine-tune pool settings for production PostgreSQL
 5. **Database migration integration** — Automatic Alembic migration on startup
+   *(completed after this report was written: `backend/database/config.py`
+   now runs `alembic upgrade head` at initialization, including reconciliation
+   of databases created by older releases — see the banner above)*
 
 ---
 
-## Final Verdict
+## Final Verdict (historical)
 
-**✅ Production Ready**
+The verdict below reflects the state of the project at the time this report was
+written. **It has been superseded** (see the banner at the top of this
+file): a subsequent independent audit found production defects — notably that
+schema migrations were not applied at startup — which have since been fixed.
+The current, verified assessment is `docs/scientific_validation_report.md`.
 
-The project has a **solid, mathematically sound Bayesian risk engine** at its core with **production-hardened infrastructure** across all dimensions. The 85 automated tests pass with zero failures, covering every core module comprehensively. The API includes rate limiting, request tracing, structured error responses, and professional PDF reports via reportlab. DevOps readiness includes Docker multi-stage builds, Docker Compose for one-command setup, pre-commit hooks, and GitHub Actions CI/CD pipeline with Python 3.11 and 3.12 matrix testing.
+---
 
-The only remaining improvement is frontend componentization (splitting the 900-line App.tsx into smaller components), which is a code organization concern rather than a functional or stability risk.
-
-This application is **ready for production deployment**, demonstration to stakeholders, technical review, and customer delivery.
+The project has a **solid, mathematically sound Bayesian risk engine** at its core. The 85 automated tests passed with zero failures at the time of writing; the current suite is 308 backend tests + 73 frontend unit tests + 6 Playwright E2E tests, all passing. The API includes rate limiting, request tracing, structured error responses, and professional PDF reports via reportlab. DevOps readiness includes Docker multi-stage builds, Docker Compose for one-command setup, pre-commit hooks, and GitHub Actions CI/CD pipeline with Python 3.11 and 3.12 matrix testing.
 

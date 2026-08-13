@@ -210,8 +210,10 @@ Risk Register (CSV) + Assessment Report (PDF) + sensitivity analysis
 - **Stateless REST API**: FastAPI with optional API-key auth, rate limiting,
   upload limits, request-ID tracing.
 - **Persistence**: SQLAlchemy (SQLite by default, PostgreSQL-ready) for
-  settings and assessment history; the analysis pipeline degrades gracefully
-  when the database is unavailable.
+  settings and assessment history; schema migrations run automatically at
+  startup via Alembic (`alembic/versions/`), including reconciliation of
+  databases created by older releases; the analysis pipeline degrades
+  gracefully when the database is unavailable.
 - **Settings traceability**: every assessment records the exact
   `settings_used` snapshot (CVSS mapping, k/x₀, multipliers, propagation
   weights, thresholds) in the API result, `metrics.json`, `summary.txt` and
@@ -429,7 +431,7 @@ route for investigation prioritisation; it is not proof of a real intrusion.
 ### Backend
 
 ```bash
-python -m pytest tests/ -q          # 261 tests
+python -m pytest tests/ -q          # 308 tests
 ruff check .                        # lint
 mypy backend/ --ignore-missing-imports   # type check (must pass in CI)
 ```

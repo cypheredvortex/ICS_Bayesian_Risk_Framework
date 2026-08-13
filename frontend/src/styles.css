@@ -374,3 +374,23 @@ svg .recharts-sector {
   border-radius: 10px;
   overflow: hidden;
 }
+
+/* Edge labels are informational only: they must never capture the mouse.
+   React Flow's default gives the label wrapper pointer-events: all, so a
+   label sitting on an edge's midpoint would swallow the hover and the
+   edge-detail chip would never appear. Labels render above the edge path
+   but let pointer events fall through to the edge (and its 20px-wide
+   invisible interaction path). */
+.react-flow__edge-textwrapper {
+  pointer-events: none !important;
+}
+
+/* Zone bands are decorative backgrounds: they frame a Purdue level but
+   carry no interactivity of their own. React Flow's default node wrapper
+   is pointer-events: all, so a band sitting between two zones would swallow
+   hovers meant for the edges crossing it (and the edge-detail chip would
+   never appear). Let every pointer event pass through the band to the
+   nodes and edges beneath. */
+.react-flow__node-zoneband {
+  pointer-events: none !important;
+}

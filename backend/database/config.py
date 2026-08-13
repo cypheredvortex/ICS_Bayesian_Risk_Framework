@@ -4,7 +4,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -99,12 +99,102 @@ def _resolve_sqlite_path(db_url: str) -> Path | None:
     return path
 
 
+# First revision of the migration chain (baseline schema).
+_BASELINE_REVISION = "3f1fade8e943"
+
+
+def _resolve_alembic_dir() -> Path:
+    """Locate the alembic migration scripts across installation layouts.
+
+    Candidates, in order:
+    1. ``ALEMBIC_SCRIPT_DIR`` env var (set explicitly in the Docker image,
+       where the package is installed as a wheel and the source-tree layout
+       does not exist);
+    2. the source-tree location ``<repo>/alembic`` (running from a checkout);
+    3. ``<cwd>/alembic`` (Docker image working directory with migrations
+       copied in).
+
+    Returns the first candidate that actually contains ``env.py``, falling
+    back to the source-tree path so any remaining misconfiguration surfaces
+    as a clear alembic error instead of a silent no-op.
+    """
+    candidates = []
+    env_dir = os.getenv("ALEMBIC_SCRIPT_DIR")
+    if env_dir:
+        candidates.append(Path(env_dir))
+    candidates.append(Path(__file__).resolve().parents[2] / "alembic")
+    candidates.append(Path.cwd() / "alembic")
+    for candidate in candidates:
+        if candidate.joinpath("env.py").is_file():
+            return candidate
+    return candidates[1]
+
+
+_ALEMBIC_SCRIPT_DIR = _resolve_alembic_dir()
+
+
+def _run_schema_migrations(engine: Engine) -> None:
+    """Apply pending schema migrations via alembic, reconciling legacy databases.
+
+    Alembic is the source of truth for schema evolution.  On a fresh
+    database ``upgrade head`` creates the full schema.  Databases created by
+    an older release via ``create_all`` (which never stamped ``alembic_version``
+    and never alters existing tables) are reconciled:
+
+    1. try a plain ``upgrade head`` (works when the database is new or
+       already alembic-managed);
+    2. otherwise stamp the baseline revision and upgrade, which applies any
+       pending column additions (e.g. ``assets.purdue_level``);
+    3. if the schema already matches the current models (a legacy
+       ``create_all`` database from a recent release), stamp the head so
+       future migrations apply cleanly.
+
+    Failures that are not legacy-schema artefacts propagate so a genuinely
+    broken migration surfaces loudly instead of being swallowed.
+    """
+    from alembic import command
+    from alembic.config import Config
+
+    def make_config() -> Config:
+        config = Config()
+        config.set_main_option("script_location", str(_ALEMBIC_SCRIPT_DIR))
+        config.set_main_option("sqlalchemy.url", get_db_url())
+        return config
+
+    with engine.connect() as connection:
+        has_version_table = inspect(connection).has_table("alembic_version")
+
+    if has_version_table:
+        command.upgrade(make_config(), "head")
+        return
+
+    # Database that predates alembic management (no alembic_version table).
+    try:
+        command.upgrade(make_config(), "head")
+    except Exception as first_exc:
+        logger.warning(
+            "Alembic upgrade on legacy database failed (tables likely predate "
+            "migrations); reconciling: %s",
+            first_exc,
+        )
+        try:
+            command.stamp(make_config(), _BASELINE_REVISION)
+            command.upgrade(make_config(), "head")
+        except Exception as second_exc:
+            logger.warning(
+                "Alembic reconcile upgrade failed (schema likely already matches "
+                "the current models); stamping head: %s",
+                second_exc,
+            )
+            command.stamp(make_config(), "head")
+
+
 def initialize_database() -> None:
     global _initialized
     if _initialized:
         return
     db_url = get_db_url()
-    logger.info("Initializing SQLite database at %s", db_url)
+    logger.info("Initializing database at %s", db_url)
 
     # Ensure parent directory exists for SQLite databases
     _resolve_sqlite_path(db_url)
@@ -115,6 +205,9 @@ def initialize_database() -> None:
     get_session_factory()
     assert _engine is not None
     Base.metadata.create_all(bind=_engine)
+    # Schema evolution (adding/altering columns on existing databases) is
+    # handled by alembic; create_all alone never changes existing tables.
+    _run_schema_migrations(_engine)
 
     with session_scope() as session:
         existing = session.query(ApplicationSetting).filter(ApplicationSetting.key == "theme").first()

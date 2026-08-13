@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { assetDescription, formatProbability } from '../utils'
+import { assetDescription, assetTypeMeaning, formatProbability } from '../utils'
 import { kindMeta, riskLevelMeta, purdueLevelMeta } from '../constants'
 import { Badge, EmptyState, KvRow } from './ui'
 
@@ -78,6 +78,26 @@ export default function NodeDetails({
         )
       : null
 
+  // "What the abbreviation stands for" (e.g. PLC = Programmable Logic
+  // Controller), derived from the same explanation text so the two always
+  // agree (see assetTypeMeaning in utils).
+  const meaning =
+    selectedNode && assetAttrs
+      ? assetTypeMeaning(
+          assetAttrs,
+          String(assetAttrs.name ?? selectedNode),
+          nodeKindMap.get(selectedNode) ?? 'device',
+        )
+      : null
+
+  // Asset-type chip: the declared type ("PLC") when the topology names one,
+  // otherwise the asset kind label ("Device"). Clicking it toggles the
+  // "what is this asset?" explanation below.
+  const kindKey = nodeKindMap.get(selectedNode ?? '') ?? 'device'
+  const kindLabel = kindMeta[kindKey]?.label ?? kindKey
+  const declaredType = assetAttrs?.type ? String(assetAttrs.type).trim() : ''
+  const typeLabel = declaredType || kindLabel
+
   return (
     <div className="card card-pad rounded-2xl">
       <h2 className="card-title">Node Details</h2>
@@ -131,13 +151,39 @@ export default function NodeDetails({
                     </span>
                   ) : null}
                 </button>
-                <Badge
-                  tone={kindMeta[nodeKindMap.get(selectedNode) ?? 'device']?.badge ?? 'slate'}
+                <button
+                  type="button"
+                  onClick={() => setShowExplanation((value) => !value)}
+                  disabled={!explanation}
+                  aria-expanded={showExplanation}
+                  aria-label={`Asset type ${typeLabel}`}
+                  title={
+                    explanation
+                      ? showExplanation
+                        ? 'Hide what this asset is and does'
+                        : 'Show what this asset is and does'
+                      : undefined
+                  }
+                  className={`badge cursor-pointer transition enabled:hover:brightness-125 ${
+                    'badge-' + (kindMeta[kindKey]?.badge ?? 'slate')
+                  } ${showExplanation ? 'ring-1 ring-cyan-400/60' : ''}`}
                 >
-                  {kindMeta[nodeKindMap.get(selectedNode) ?? 'device']?.label ??
-                    nodeKindMap.get(selectedNode) ??
-                    '—'}
-                </Badge>
+                  <span className="max-w-[140px] truncate">{typeLabel}</span>
+                  <svg
+                    className={`h-3 w-3 shrink-0 transition-transform duration-150 ${
+                      showExplanation ? 'rotate-180' : ''
+                    }`}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
               </div>
 
               {/* Expandable "what is this asset?" explanation. Lives inside
@@ -160,9 +206,15 @@ export default function NodeDetails({
                       </p>
                     )
                   })()}
-                  {assetAttrs?.type ? (
-                    <p className="mt-0.5 text-[11px] font-medium uppercase tracking-wider text-cyan-300/80">
-                      {String(assetAttrs.type)}
+                  {meaning ? (
+                    <p className="mt-1.5 flex flex-wrap items-baseline gap-x-2 text-sm font-semibold text-white">
+                      <span className="font-mono text-cyan-300">
+                        {meaning.acronym}
+                      </span>
+                      <span className="text-slate-500" aria-hidden="true">
+                        =
+                      </span>
+                      <span>{meaning.meaning}</span>
                     </p>
                   ) : null}
                   <p className="mt-1.5 text-xs leading-relaxed text-slate-300">
@@ -209,7 +261,7 @@ export default function NodeDetails({
             </div>
           </div>
 
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2">
             {/* Security context */}
             <div className="rounded-xl border border-slate-800 bg-slate-950/70 px-4 py-3">
               <p className="section-label">Security context</p>

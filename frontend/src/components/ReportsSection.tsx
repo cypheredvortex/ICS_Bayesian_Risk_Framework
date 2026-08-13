@@ -17,7 +17,7 @@ const reports: ReportSpec[] = [
     purpose:
       'Human-readable report for management, audit and documentation — the document you hand to a reviewer or mentor.',
     contains:
-      'Executive summary, model parameters used, the complete risk register (all assets, ranked), selected evidence, attack-path analysis and methodology notes.',
+      'Executive summary with the overall risk, risk-level distribution and the highest-risk assets, the model parameters used, the complete risk register (all assets, ranked), selected evidence, attack-path analysis and methodology notes.',
     when: 'Use when you need a professional, presentable record of the assessment.',
   },
   {

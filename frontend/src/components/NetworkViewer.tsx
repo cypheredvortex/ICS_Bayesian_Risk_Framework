@@ -1,14 +1,17 @@
 import { forwardRef, useEffect, useMemo, useRef, useState } from 'react'
 import {
   Background,
+  BaseEdge,
   Controls,
   Handle,
   MiniMap,
   Position,
   ReactFlow,
   ReactFlowProvider,
+  getSmoothStepPath,
   useReactFlow,
   type Edge,
+  type EdgeProps,
   type Node,
   type NodeProps,
 } from '@xyflow/react'
@@ -65,7 +68,7 @@ function NetworkNode({ data, selected }: NodeProps<Node<NetworkNodeData>>) {
   const borderClass = selected
     ? 'border-white shadow-[0_0_0_4px_rgba(34,211,238,0.25)]'
     : data.onPath
-      ? 'border-rose-400 shadow-[0_0_0_4px_rgba(251,113,133,0.15)]'
+      ? 'border-rose-400 shadow-[0_0_0_4px_rgba(251,113,133,0.4),0_0_20px_rgba(251,113,133,0.45)]'
       : data.pinned
         ? 'border-slate-950 border-dashed'
         : 'border-white/15'
@@ -170,15 +173,205 @@ const nodeTypes = { network: NetworkNode, zoneband: ZoneBand }
 
 // Edge styling constants: the relationship-type colour is the semantic
 // signal; stroke width / opacity / animation carry the state (idle, hovered,
-// relevant to the selection, on the attack path).
-const EDGE_BASE_WIDTH = 1.5
-const EDGE_EMPHASIS_WIDTH = 2.3
-const EDGE_HOVER_WIDTH = 2.8
-const PATH_WIDTH = 3.4
-const ARROW_SIZE = 17
-const PATH_ARROW_SIZE = 24
+// relevant to the selection, on the attack path). Widths and the idle opacity
+// are tuned so every relationship is clearly visible without a selection;
+// the attack path is deliberately the thickest, most glowing element on the
+// canvas so it can never be mistaken for a normal edge.
+const EDGE_BASE_WIDTH = 2.0
+const EDGE_EMPHASIS_WIDTH = 2.6
+const EDGE_HOVER_WIDTH = 3.1
+const PATH_WIDTH = 4.2
+const ARROW_SIZE = 20
+const PATH_ARROW_SIZE = 28
 
 const FIT_PADDING = 0.16
+
+// Edge label positions carried on each edge's data (see edgeLabelPosition).
+type EdgeData = { labelPosition?: { labelX: number; labelY: number } }
+
+// React Flow's built-in SmoothStepEdge always recomputes labelX/labelY from
+// the path — whatever the edge object carries is discarded — so the label
+// pill lands on the bending path's midpoint, which can sit on top of a card.
+// This custom edge renders the same smoothstep path but places the label at
+// the position computed for open space between cards (edgeLabelPosition),
+// falling back to the path midpoint when no position was provided.
+function PlacedLabelEdge({
+  id,
+  sourceX,
+  sourceY,
+  targetX,
+  targetY,
+  sourcePosition = Position.Bottom,
+  targetPosition = Position.Top,
+  label,
+  labelStyle,
+  labelShowBg,
+  labelBgStyle,
+  labelBgPadding,
+  labelBgBorderRadius,
+  style,
+  markerEnd,
+  markerStart,
+  pathOptions,
+  interactionWidth,
+  data,
+}: EdgeProps) {
+  const [path, pathLabelX, pathLabelY] = getSmoothStepPath({
+    sourceX,
+    sourceY,
+    sourcePosition,
+    targetX,
+    targetY,
+    targetPosition,
+    borderRadius: pathOptions?.borderRadius,
+    offset: pathOptions?.offset,
+    stepPosition: pathOptions?.stepPosition,
+  })
+  const placed = (data as EdgeData | undefined)?.labelPosition
+  return (
+    <BaseEdge
+      id={id}
+      path={path}
+      labelX={placed?.labelX ?? pathLabelX}
+      labelY={placed?.labelY ?? pathLabelY}
+      label={label}
+      labelStyle={labelStyle}
+      labelShowBg={labelShowBg}
+      labelBgStyle={labelBgStyle}
+      labelBgPadding={labelBgPadding}
+      labelBgBorderRadius={labelBgBorderRadius}
+      style={style}
+      markerEnd={markerEnd}
+      markerStart={markerStart}
+      interactionWidth={interactionWidth}
+    />
+  )
+}
+
+const edgeTypes = { smoothstep: PlacedLabelEdge }
+
+// Rendered node card size (the 184px-wide card with the three stacked
+// label/zone rows). Used to centre edge labels between node centres.
+const NODE_W = 184
+const NODE_H = 85
+
+// Estimated label pill size: fontSize 10 / weight 700 renders at roughly
+// 6.2px per glyph (measured on the widest pills) plus the pill's own padding.
+// Height is set for two-line labels (e.g. "programs / operates w=0.80" wraps
+// to ~34px). The estimate deliberately overshoots a little — the pill must
+// clear every card, so underestimating would push a label back onto one.
+// Clamped so the estimate stays sane for pathological label texts.
+function estimateLabelPill(text: string | undefined): { w: number; h: number } {
+  const length = (text ?? '').length
+  return { w: Math.min(Math.max(length * 6.2 + 16, 50), 190), h: 36 }
+}
+
+// Place an edge's label in the open space between the two node cards.
+// By default React Flow anchors a label to the midpoint of the edge path;
+// smoothstep routes bend, so that midpoint can land on a card and the label
+// pill overlaps it. The geometric midpoint of the two card centres always
+// sits in the gap between them; for long diagonal edges it can still fall on
+// an intermediate card, and for edges spanning several columns the whole
+// straight line passes through a card. So the label is moved — along the
+// line first, then perpendicularly into the row/column gap — until its pill
+// is clear of every card. Returns the label position, or undefined when
+// either node has no position yet (the label then follows the path).
+function edgeLabelPosition(
+  source: string,
+  target: string,
+  nodePositions: Map<string, { x: number; y: number }>,
+  labelText?: string,
+  placedLabels: Array<{ x: number; y: number; w: number; h: number }> = [],
+): { labelX: number; labelY: number } | undefined {
+  const s = nodePositions.get(source)
+  const t = nodePositions.get(target)
+  if (!s || !t) return undefined
+
+  const sC = { x: s.x + NODE_W / 2, y: s.y + NODE_H / 2 }
+  const tC = { x: t.x + NODE_W / 2, y: t.y + NODE_H / 2 }
+  const mid = { x: (sC.x + tC.x) / 2, y: (sC.y + tC.y) / 2 }
+
+  const { w: pillW, h: pillH } = estimateLabelPill(labelText)
+  const cards = [...nodePositions.values()].map((p) => ({
+    x: p.x,
+    y: p.y,
+    w: NODE_W,
+    h: NODE_H,
+  }))
+
+  // A label that merely *touches* a card edge still looks broken, so the pill
+  // must clear every card by a small margin. CLEARANCE is in the same units as
+  // the layout (px at zoom 1) and keeps the pill visibly separate from cards.
+  // Other labels are avoided too — edges are placed in a stable order, so
+  // each new label dodges the pills already placed, keeping labels readable
+  // instead of stacking on top of each other in the same gap.
+  const CLEARANCE = 6
+  const pillClear = (x: number, y: number) =>
+    !cards.some(
+      (c) =>
+        x + pillW / 2 > c.x - CLEARANCE &&
+        x - pillW / 2 < c.x + c.w + CLEARANCE &&
+        y + pillH / 2 > c.y - CLEARANCE &&
+        y - pillH / 2 < c.y + c.h + CLEARANCE,
+    ) &&
+    !placedLabels.some(
+      (l) =>
+        x + pillW / 2 > l.x - 4 &&
+        x - pillW / 2 < l.x + l.w + 4 &&
+        y + pillH / 2 > l.y - 4 &&
+        y - pillH / 2 < l.y + l.h + 4,
+    )
+
+  // Depth of the deepest overlap (pixels) — used to pick the least-bad spot
+  // when no candidate fully clears every card.
+  const overlapDepth = (x: number, y: number) => {
+    let worst = 0
+    for (const c of cards) {
+      const ox = Math.min(x + pillW / 2, c.x + c.w) - Math.max(x - pillW / 2, c.x)
+      const oy = Math.min(y + pillH / 2, c.y + c.h) - Math.max(y - pillH / 2, c.y)
+      if (ox > 0 && oy > 0) worst = Math.max(worst, Math.min(ox, oy))
+    }
+    return worst
+  }
+
+  if (pillClear(mid.x, mid.y)) return { labelX: mid.x, labelY: mid.y }
+
+  // Candidate positions, in order of preference: points along the line (fine
+  // steps, both sides of the midpoint), then points perpendicular to the line
+  // pushed into the row/column gaps at increasing offsets. The perpendicular
+  // sweep is what rescues edges that span several cards — their entire line
+  // passes through a card, so the only escape is sideways into a gap.
+  const candidates: { x: number; y: number }[] = []
+  for (let i = 1; i < 40; i++) {
+    const r = i / 40
+    candidates.push({ x: sC.x + (tC.x - sC.x) * r, y: sC.y + (tC.y - sC.y) * r })
+  }
+  const dx = tC.x - sC.x
+  const dy = tC.y - sC.y
+  const len = Math.hypot(dx, dy) || 1
+  const px = -dy / len
+  const py = dx / len
+  for (const off of [30, 55, 80, 105, 130]) {
+    candidates.push({ x: mid.x + px * off, y: mid.y + py * off })
+    candidates.push({ x: mid.x - px * off, y: mid.y - py * off })
+  }
+
+  for (const c of candidates) {
+    if (pillClear(c.x, c.y)) return { labelX: c.x, labelY: c.y }
+  }
+  // Pathologically dense layout: keep the candidate with the shallowest
+  // overlap rather than emitting a label pinned to the middle of a card.
+  let best = candidates[0]
+  let bestDepth = Infinity
+  for (const c of candidates) {
+    const d = overlapDepth(c.x, c.y)
+    if (d < bestDepth) {
+      bestDepth = d
+      best = c
+    }
+  }
+  return { labelX: best.x, labelY: best.y }
+}
 
 // Re-fits the viewport whenever the node set or its layout changes (new
 // upload, new assessment, zone metadata arriving), so the whole architecture
@@ -342,9 +535,10 @@ const NetworkViewer = forwardRef<
     x: number
     y: number
   } | null>(null)
-  // When on, every edge shows its label permanently; otherwise labels appear
-  // only for hovered / selected / attack-path edges (clarity without clutter).
-  const [labelsForced, setLabelsForced] = useState(false)
+  // When on, every edge shows its label permanently. Labels default to ON so
+  // the relationship type and causal weight are readable at a glance; the
+  // toolbar toggle hides them when a dense topology gets busy.
+  const [labelsForced, setLabelsForced] = useState(true)
 
   const rankLevel = (level: string | null) =>
     level && purdueLevelMeta[level] ? purdueLevelMeta[level].order : UNZONED_META.order
@@ -443,6 +637,9 @@ const NetworkViewer = forwardRef<
   ])
 
   const networkEdges = useMemo<Edge[]>(() => {
+    // Labels already placed by earlier edges in this pass (stable edge order
+    // makes the dodge deterministic across renders).
+    const placedLabels: Array<{ x: number; y: number; w: number; h: number }> = []
     return edgeList.map(({ source, target, label, relType, weight, firewalled }, index) => {
       const id = `${source}-${target}-${index}`
       const onPath =
@@ -471,15 +668,34 @@ const NetworkViewer = forwardRef<
           ? 1
           : hovered || emphasized
             ? 0.95
-            : 0.6
+            : 0.72
       // Labels: hovered / relevant / attack-path edges always carry one;
       // the toolbar toggle makes every edge labelled.
       const labelled = labelsForced || onPath || hovered || emphasized
+      // Anchor the label to the open space between the two cards instead of
+      // the (bending) smoothstep path midpoint, so it never covers a card.
+      const labelPosition = edgeLabelPosition(
+        source,
+        target,
+        nodePositions,
+        label,
+        placedLabels,
+      )
+      if (labelPosition && labelled) {
+        const { w, h } = estimateLabelPill(label)
+        placedLabels.push({
+          x: labelPosition.labelX - w / 2,
+          y: labelPosition.labelY - h / 2,
+          w,
+          h,
+        })
+      }
       return {
         id,
         source,
         target,
         label: labelled ? label : undefined,
+        data: labelPosition ? { labelPosition } : undefined,
         type: 'smoothstep',
         animated: onPath,
         style: {
@@ -487,10 +703,13 @@ const NetworkViewer = forwardRef<
           strokeWidth: width,
           opacity,
           ...(onPath
-            ? { filter: 'drop-shadow(0 0 3px rgba(251,113,133,0.8))' }
+            ? {
+                filter:
+                  'drop-shadow(0 0 2px rgba(251,113,133,1)) drop-shadow(0 0 6px rgba(251,113,133,0.75))',
+              }
             : {}),
         },
-        labelStyle: { fill: '#cbd5e1', fontSize: 9.5, fontWeight: 600 },
+        labelStyle: { fill: '#e2e8f0', fontSize: 10, fontWeight: 700 },
         labelBgStyle: { fill: '#0f172a', fillOpacity: 0.92 },
         markerEnd: {
           type: 'arrowclosed',
@@ -507,6 +726,7 @@ const NetworkViewer = forwardRef<
     neighborSet,
     hoveredEdge,
     labelsForced,
+    nodePositions,
   ])
 
   const legendSwatches =
@@ -615,7 +835,7 @@ const NetworkViewer = forwardRef<
                 : 'border-slate-700 bg-slate-950 text-slate-300 hover:text-slate-100'
             }`}
             aria-pressed={labelsForced}
-            title="Show the relationship label on every edge (labels already appear on hover, selection and the attack path)"
+            title="Relationship labels (on by default) — hide them when a dense topology gets busy"
           >
             Edge labels
           </button>
@@ -652,13 +872,35 @@ const NetworkViewer = forwardRef<
             </button>
           ) : null}
           {nodeIds.length ? (
+            <>
+            {/* Attack-path indicator: a fixed overlay on the canvas so the
+                highlighted route is obvious even before the eye reaches the
+                legend. Non-interactive — pan/zoom pass straight through. */}
+            {showAttackPath && attackPathNodes.size > 0 ? (
+              <div
+                className="pointer-events-none absolute left-3 top-3 z-10 flex max-w-[60%] items-center gap-2 rounded-lg border border-rose-500/40 bg-slate-950/90 px-2.5 py-1.5 text-xs shadow-lg backdrop-blur-sm"
+                aria-hidden="true"
+              >
+                <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.9)]" />
+                <span className="shrink-0 font-semibold uppercase tracking-wide text-rose-200">
+                  Attack path
+                </span>
+                <span className="truncate font-mono text-[11px] text-slate-400">
+                  {Array.from(attackPathNodes).join(' → ')}
+                </span>
+              </div>
+            ) : null}
             <ReactFlow
               nodes={[...bandNodes, ...networkNodes]}
               edges={networkEdges}
               nodeTypes={nodeTypes}
+              edgeTypes={edgeTypes}
               fitView
               fitViewOptions={{ padding: FIT_PADDING }}
-              minZoom={0.12}
+              // minZoom must be small enough for large multi-zone topologies
+              // (e.g. the 60-asset chemical plant) to fit the canvas on load;
+              // the old 0.12 clamp silently cut off the rightmost zones.
+              minZoom={0.06}
               maxZoom={2.2}
               onNodeClick={(_, node) => {
                 if (node.type === 'network') setSelectedNode(String(node.id))
@@ -699,6 +941,7 @@ const NetworkViewer = forwardRef<
               <Controls showInteractive={false} />
               <Background gap={24} size={1.2} />
             </ReactFlow>
+            </>
           ) : (
             <EmptyState
               title="No topology to display yet"
@@ -754,8 +997,8 @@ const NetworkViewer = forwardRef<
             </p>
           ) : null}
           <p className="mt-1 text-[11px] text-slate-500">
-            Hover to inspect · labels show on hover, selection and the attack
-            path.
+            Hover to inspect · edge labels are on by default; use the Edge
+            labels toggle to hide them.
           </p>
         </div>
       ) : null}
@@ -848,6 +1091,8 @@ const NetworkViewer = forwardRef<
             </strong>{' '}
             — a modelling parameter, not a conditional probability. For one
             active parent, P(target = 1 | parent = 1) = 1 − (1 − leak)·(1 − w).
+            Labels are on by default; use the Edge labels toggle to hide them
+            on dense graphs.
           </p>
           <p className="mt-2">
             An attack path is a calculated sequence of directed links from a

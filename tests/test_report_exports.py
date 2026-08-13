@@ -148,6 +148,29 @@ class ReportExportTests(unittest.TestCase):
         self.assertGreater(report_path.stat().st_size, 3000)
         tmp_path.unlink(missing_ok=True)
 
+    def test_pdf_handles_empty_risk_scores_gracefully(self):
+        """An assessment with no risk scores (e.g. an empty topology) must
+        still produce a valid PDF: no top-assets table, no register, and the
+        metrics rows render with placeholder values."""
+        tmp_path = Path("output/test_empty_register.pdf")
+        generate_pdf_report(
+            {
+                "summary": {
+                    "overall_risk": 0.0,
+                    "risk_level": "low",
+                    "asset_count": 0,
+                    "relationship_count": 0,
+                },
+                "risk_scores": [],
+                "attack_paths": [],
+                "evidence_used": {},
+            },
+            output_path=tmp_path,
+        )
+        self.assertTrue(tmp_path.exists())
+        self.assertGreater(tmp_path.stat().st_size, 500)
+        tmp_path.unlink(missing_ok=True)
+
     def test_pdf_handles_no_evidence_gracefully(self):
         """The evidence section must render a clean note when none was used."""
         tmp_path = Path("output/test_no_evidence.pdf")
@@ -174,6 +197,86 @@ class ReportExportTests(unittest.TestCase):
             output_path=tmp_path,
         )
         self.assertTrue(tmp_path.exists())
+        tmp_path.unlink(missing_ok=True)
+
+    def test_pdf_executive_summary_and_attack_paths_include_analyst_context(self):
+        """The PDF must render the risk-level distribution, the highest-risk
+        assets and the enriched attack-path details without crashing.
+
+        Regression guard for the analyst-facing context added to the report:
+        aggregate risk distribution, top-assets table and per-path target /
+        weakest-link probability / hops.
+        """
+        tmp_path = Path("output/test_context_report.pdf")
+        generate_pdf_report(
+            {
+                "summary": {
+                    "overall_risk": 0.9,
+                    "risk_level": "high",
+                    "asset_count": 4,
+                    "relationship_count": 3,
+                    "aggregate_risk": {
+                        "max_risk": 0.9,
+                        "mean_risk": 0.5,
+                        "median_risk": 0.45,
+                        "level_counts": {
+                            "critical": 1,
+                            "high": 1,
+                            "moderate": 1,
+                            "low": 1,
+                        },
+                        "asset_count": 4,
+                    },
+                },
+                "risk_scores": [
+                    {
+                        "asset": "PLC-01",
+                        "risk": 0.9,
+                        "P(compromised|evidence)": 0.6,
+                        "impact": 0.75,
+                        "risk_level": "Critical",
+                    },
+                    {
+                        "asset": "HMI-01",
+                        "risk": 0.5,
+                        "P(compromised|evidence)": 0.5,
+                        "impact": 0.6,
+                        "risk_level": "High",
+                    },
+                    {
+                        "asset": "SENSOR-01",
+                        "risk": 0.3,
+                        "P(compromised|evidence)": 0.4,
+                        "impact": 0.5,
+                        "risk_level": "Moderate",
+                    },
+                    {
+                        "asset": "SENSOR-02",
+                        "risk": 0.1,
+                        "P(compromised|evidence)": 0.2,
+                        "impact": 0.4,
+                        "risk_level": "Low",
+                    },
+                ],
+                "attack_paths": [
+                    {
+                        "path": ["corp_net", "hmi", "PLC-01"],
+                        "score": 0.412,
+                        "path_probability": 0.35,
+                        "target": "PLC-01",
+                        "target_risk": 0.9,
+                        "source": "corp_net",
+                        "hops": 2,
+                    }
+                ],
+                "evidence_used": {},
+            },
+            output_path=tmp_path,
+        )
+        self.assertTrue(tmp_path.exists())
+        # Four register rows + top-assets table + a full attack path make this
+        # noticeably larger than the tiny two-row smoke test.
+        self.assertGreater(tmp_path.stat().st_size, 1500)
         tmp_path.unlink(missing_ok=True)
 
     def test_assessment_json_export_is_a_complete_record(self):
